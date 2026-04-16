@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/features/settings/presentation/widgets/settings_row.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/settings/presentation/view/language_settings_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -100,8 +102,9 @@ class _SettingsViewState extends State<SettingsView> {
               SettingsRow(
                 icon: Iconsax.global,
                 title: 'Language',
-                onTap: () =>
-                    Navigator.pushNamed(context, AppRoutes.languageSettings),
+                onTap: () => sl<AppNavigator>().push(
+                  screen: const LanguageSettingsView(),
+                ),
               ),
             ],
           ),

@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
-import 'package:masr_al_qsariya/core/theme/app_colors.dart';
-import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/config/app_colors.dart';
+import 'package:masr_al_qsariya/core/config/styles/styles.dart';
 import 'package:masr_al_qsariya/core/widgets/app_text_field.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/sign_up_view.dart';
+import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -31,7 +34,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.scaffoldColorLight,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -116,10 +119,8 @@ class _LoginViewState extends State<LoginView> {
                 _buildGoldButton(
                   text: 'LOG IN',
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      AppRoutes.home,
-                      (route) => false,
+                    sl<AppNavigator>().pushAndRemoveUntil(
+                      screen: const HomeView(),
                     );
                   },
                 ),
@@ -146,7 +147,9 @@ class _LoginViewState extends State<LoginView> {
                               .copyWith(fontWeight: FontWeight.w600),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.pushNamed(context, AppRoutes.signUp);
+                              sl<AppNavigator>().push(
+                                screen: const SignUpView(),
+                              );
                             },
                         ),
                       ],

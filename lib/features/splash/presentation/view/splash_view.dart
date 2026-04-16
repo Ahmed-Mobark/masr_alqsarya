@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/language/presentation/view/language_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -18,7 +20,9 @@ class _SplashViewState extends State<SplashView> {
   Future<void> _navigateToLanguage() async {
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed(AppRoutes.language);
+    sl<AppNavigator>().pushReplacement(
+      screen: const LanguageView(),
+    );
   }
 
   @override

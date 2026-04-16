@@ -1,0 +1,28 @@
+{
+  "@@locale": "ar",
+  "errorFieldRequired": "هذا الحقل مطلوب",
+  "errorInvalidName": "تنسيق الاسم غير صحيح",
+  "errorInvalidUrl": "عنوان URL غير صالح",
+  "errorInvalidPhoneNumber": "رقم الهاتف غير صحيح",
+  "errorInvalidEmail": "عنوان البريد الإلكتروني غير صحيح",
+  "errorInvalidPassword": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل مع أحرف كبيرة وصغيرة ورموز خاصة",
+  "errorPasswordMismatch": "كلمتا المرور غير متطابقتين",
+  "errorInvalidNumber": "رقم غير صالح",
+  "errorInvalidIban": "تنسيق IBAN غير صالح",
+  "errorInvalidMobileNumber": "رقم الجوال غير صالح",
+  "errorInvalidStcPayId": "معرف STC Pay غير صالح",
+  "errorInvalidNationalId": "رقم الهوية الوطنية غير صالح",
+  "errorInvalidPassport": "رقم جواز السفر غير صالح",
+
+  "errorPhoneValidation": "يجب أن يبدأ رقم الهاتف بـ {start} وأن يكون طوله {length} رقم.",
+  "errorExperienceRequired": "يجب إضافة تجربة واحدة على الأقل.",
+  "errorIdDocumentRequired": "يجب رفع مستند الهوية للتحقق من هويتك.",
+  "errorPhotoRequired": "يجب رفع صورة بخلفية بيضاء.",
+
+
+
+
+
+
+
+}

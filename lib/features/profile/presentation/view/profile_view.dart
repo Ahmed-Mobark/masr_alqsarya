@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
+import 'package:masr_al_qsariya/features/profile/presentation/view/account_security_view.dart';
+import 'package:masr_al_qsariya/features/profile/presentation/view/family_info_view.dart';
+import 'package:masr_al_qsariya/features/settings/presentation/view/language_settings_view.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -56,22 +62,30 @@ class ProfileView extends StatelessWidget {
       _MenuItem(
         icon: Iconsax.shield_tick,
         title: 'Account & Security',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.accountSecurity),
+        onTap: () => sl<AppNavigator>().push(
+          screen: const AccountSecurityView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.people,
         title: 'Family Information',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.familyInfo),
+        onTap: () => sl<AppNavigator>().push(
+          screen: const FamilyInfoView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.notification,
         title: 'Notifications',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
+        onTap: () => sl<AppNavigator>().push(
+          screen: const NotificationsView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.global,
         title: 'Language',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.languageSettings),
+        onTap: () => sl<AppNavigator>().push(
+          screen: const LanguageSettingsView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.document_text,
@@ -265,11 +279,7 @@ class ProfileView extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.login,
-                (route) => false,
-              );
+              sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
             },
             child: Text('Log Out',
                 style: AppTextStyles.bodyMedium(color: AppColors.error)),

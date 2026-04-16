@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -60,7 +63,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _onSkip() {
-    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+    sl<AppNavigator>().pushReplacement(screen: const LoginView());
   }
 
   void _onBack() {
@@ -73,11 +76,11 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _onLogin() {
-    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+    sl<AppNavigator>().pushReplacement(screen: const LoginView());
   }
 
   void _onJoinWithCode() {
-    Navigator.of(context).pushReplacementNamed(AppRoutes.verification);
+    sl<AppNavigator>().pushReplacement(screen: const VerificationView());
   }
 
   @override

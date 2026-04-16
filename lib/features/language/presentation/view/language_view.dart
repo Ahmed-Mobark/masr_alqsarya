@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/l10n/locale_provider.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
 
 class LanguageView extends StatefulWidget {
   const LanguageView({super.key});
@@ -111,7 +113,9 @@ class _LanguageViewState extends State<LanguageView> {
   void _onStart() {
     final localeProvider = context.read<LocaleProvider>();
     localeProvider.setLocale(Locale(_selectedLanguageCode));
-    Navigator.of(context).pushReplacementNamed(AppRoutes.onboarding);
+    sl<AppNavigator>().pushReplacement(
+      screen: const OnboardingView(),
+    );
   }
 }
 

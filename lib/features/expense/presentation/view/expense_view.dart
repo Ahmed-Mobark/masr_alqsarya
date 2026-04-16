@@ -3,7 +3,9 @@ import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/expense/presentation/view/add_expense_view.dart';
 
 class ExpenseView extends StatelessWidget {
   const ExpenseView({super.key});
@@ -121,7 +123,7 @@ class ExpenseView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.addExpense);
+          sl<AppNavigator>().push(screen: const AddExpenseView());
         },
         backgroundColor: AppColors.primary,
         icon: const Icon(Iconsax.add, color: AppColors.darkText),

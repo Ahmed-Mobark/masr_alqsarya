@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  
+  "errorFieldRequired": "This field is required",
+  "errorInvalidName": "Invalid name format",
+  "errorInvalidUrl": "Invalid URL",
+  "errorInvalidPhoneNumber": "Invalid phone number",
+  "errorInvalidEmail": "Invalid email address",
+  "errorInvalidPassword": "Password must be at least 8 characters long with uppercase, lowercase, and special characters",
+  "errorPasswordMismatch": "Passwords do not match",
+  "errorInvalidNumber": "Invalid number",
+  "errorInvalidIban": "Invalid IBAN format",
+  "errorInvalidMobileNumber": "Invalid mobile number",
+  "errorInvalidStcPayId": "Invalid STC Pay ID",
+  "errorInvalidNationalId": "Invalid National ID",
+  "errorInvalidPassport": "Invalid passport number",
+
+  "errorPhoneValidation": "The phone number must start with {start} and be {length} digits long.",
+  "errorExperienceRequired": "You must add at least one experience.",
+  "errorIdDocumentRequired": "You must upload an ID document to verify your identity.",
+  "errorPhotoRequired": "You must upload a photo with a white background.",
+
+
+}
