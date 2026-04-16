@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -194,24 +195,24 @@ class ForceUpdateManager {
       canPop: !isMandatoryUpdate,
       child: AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Update Available'),
+        title: Text(context.tr.updateAvailableTitle),
         content: Text(
           isMandatoryUpdate
-              ? 'Please update the app to continue.'
-              : 'A new version is available.',
+              ? context.tr.updatePleaseUpdateToContinue
+              : context.tr.updateNewVersionAvailableShort,
         ),
         actions: [
           if (!isMandatoryUpdate)
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Skip'),
+              child: Text(context.tr.skip),
             ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               _openStore();
             },
-            child: const Text('Update Now'),
+            child: Text(context.tr.updateNow),
           ),
         ],
       ),

@@ -1,13 +1,35 @@
-import 'package:flutter/material.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/navigation/route_observer.dart';
+import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:flutter/material.dart';
 import 'package:masr_al_qsariya/core/theme/app_theme.dart';
 import 'package:masr_al_qsariya/core/translation/app_localizations.dart';
 import 'package:masr_al_qsariya/features/splash/presentation/view/splash_view.dart';
 
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  static MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<MyAppState>();
+
+  @override
+  MyAppState createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  Locale _locale = Locale(sl<Storage>().getLang());
+
+  Future<void> setLocale(Locale locale) async {
+    setState(() {
+      _locale = locale;
+    });
+    await sl<Storage>().storeLang(langCode: locale.languageCode);
+    sl<ApiBaseHelper>().updateLocaleInHeaders(locale.languageCode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,37 +37,24 @@ class MyApp extends StatelessWidget {
       designSize: const Size(393, 852),
       minTextAdapt: true,
       splitScreenMode: true,
-      useInheritedMediaQuery: true,
-      fontSizeResolver: (fontSize, instance) {
-        return fontSize * instance.scaleWidth;
-      },
-      builder: (BuildContext context, Widget? child) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        scrollBehavior: const ScrollBehavior().copyWith(
-          physics: const BouncingScrollPhysics(),
+      builder: (BuildContext context, Widget? child) => AdaptiveTheme(
+        light: AppTheme.appLightTheme,
+        dark: AppTheme.appDarkTheme,
+        initial: AdaptiveThemeMode.light,
+        debugShowFloatingThemeButton: false,
+        builder: (theme, darkTheme) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          scrollBehavior: const ScrollBehavior()
+              .copyWith(physics: const BouncingScrollPhysics()),
+          theme: theme,
+          darkTheme: darkTheme,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorObservers: [ObserverUtils.routeObserver],
+          locale: _locale,
+          navigatorKey: sl<AppNavigator>().navigatorKey,
+          home: const SplashView(),
         ),
-        theme: AppTheme.appLightTheme,
-        darkTheme: AppTheme.appDarkTheme,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('en'),
-        navigatorKey: sl<AppNavigator>().navigatorKey,
-        home: const SplashView(),
-        builder: (context, child) {
-          final mq = MediaQuery.of(context);
-          final scale = mq.textScaler.scale(1.0);
-          final clampedScale = scale.clamp(0.85, 1.15);
-          final textDirection = 'ar' == 'ar'
-              ? TextDirection.rtl
-              : TextDirection.ltr;
-          return Directionality(
-            textDirection: textDirection,
-            child: MediaQuery(
-              data: mq.copyWith(textScaler: TextScaler.linear(clampedScale)),
-              child: child!,
-            ),
-          );
-        },
       ),
     );
   }

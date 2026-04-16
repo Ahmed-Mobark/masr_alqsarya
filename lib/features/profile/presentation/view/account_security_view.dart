@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
@@ -26,7 +27,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
               color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Account & Security', style: AppTextStyles.heading2()),
+        title: Text(context.tr.accountSecurityTitle, style: AppTextStyles.heading2()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -36,7 +37,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
           children: [
             // Email field (read-only)
             _buildReadOnlyField(
-              label: 'Email',
+              label: context.tr.accountSecurityEmailLabel,
               value: 'ahmed.mohamed@email.com',
               icon: Iconsax.sms,
             ),
@@ -44,7 +45,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
 
             // Phone field (read-only)
             _buildReadOnlyField(
-              label: 'Phone',
+              label: context.tr.accountSecurityPhoneLabel,
               value: '+20 100 123 4567',
               icon: Iconsax.call,
             ),
@@ -59,7 +60,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
                   // TODO: navigate to change password
                 },
                 icon: const Icon(Iconsax.lock, size: 20),
-                label: Text('Change Password',
+                label: Text(context.tr.accountSecurityChangePassword,
                     style: AppTextStyles.bodyMedium(color: AppColors.primaryDark)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primaryDark,
@@ -95,7 +96,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      'Enable Two-Factor Authentication',
+                      context.tr.accountSecurityEnableTwoFactor,
                       style: AppTextStyles.bodyMedium(),
                     ),
                   ),
@@ -116,7 +117,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
               child: TextButton(
                 onPressed: () => _showDeleteAccountDialog(context),
                 child: Text(
-                  'Delete Account',
+                  context.tr.accountSecurityDeleteAccount,
                   style: AppTextStyles.bodyMedium(color: AppColors.error),
                 ),
               ),
@@ -166,15 +167,15 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Delete Account', style: AppTextStyles.heading2()),
+        title: Text(context.tr.accountSecurityDeleteAccount, style: AppTextStyles.heading2()),
         content: Text(
-          'Are you sure you want to delete your account? This action cannot be undone.',
+          context.tr.accountSecurityDeleteConfirm,
           style: AppTextStyles.body(color: AppColors.greyText),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel',
+            child: Text(context.tr.commonCancel,
                 style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
           ),
           TextButton(
@@ -182,7 +183,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
               Navigator.pop(context);
               // TODO: handle account deletion
             },
-            child: Text('Delete',
+            child: Text(context.tr.commonDelete,
                 style: AppTextStyles.bodyMedium(color: AppColors.error)),
           ),
         ],

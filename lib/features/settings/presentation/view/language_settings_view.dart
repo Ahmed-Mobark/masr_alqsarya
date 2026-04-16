@@ -1,33 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/l10n/locale_provider.dart';
+import 'package:masr_al_qsariya/core/app/app_body.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:provider/provider.dart';
 
 class LanguageSettingsView extends StatelessWidget {
   const LanguageSettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final localeProvider = context.watch<LocaleProvider>();
-    final currentLocale = localeProvider.locale.languageCode;
+    final currentLocale = Localizations.localeOf(context).languageCode;
 
     final languages = [
-      _LanguageOption(
-        code: 'en',
-        name: 'English',
-        flag: '\u{1F1FA}\u{1F1F8}',
-      ),
+      _LanguageOption(code: 'en', name: 'English', flag: '\u{1F1FA}\u{1F1F8}'),
       _LanguageOption(
         code: 'ar',
         name: '\u0627\u0644\u0639\u0631\u0628\u064A\u0647',
         flag: '\u{1F1EA}\u{1F1EC}',
       ),
-      _LanguageOption(
-        code: 'fr',
-        name: 'Fran\u00E7ais',
-        flag: '\u{1F1EB}\u{1F1F7}',
-      ),
+      _LanguageOption(code: 'fr', name: 'Français', flag: '\u{1F1EB}\u{1F1F7}'),
     ];
 
     return Scaffold(
@@ -37,11 +28,16 @@ class LanguageSettingsView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: AppColors.darkText),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppColors.darkText,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Language', style: AppTextStyles.heading2()),
+        title: Text(
+          context.tr.settingsLanguage,
+          style: AppTextStyles.heading2(),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -52,12 +48,12 @@ class LanguageSettingsView extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: GestureDetector(
-                onTap: () {
-                  localeProvider.setLocale(Locale(lang.code));
-                },
+                onTap: () => MyApp.of(context)?.setLocale(Locale(lang.code)),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.primary : AppColors.cardBg,
                     borderRadius: BorderRadius.circular(16),
@@ -67,10 +63,7 @@ class LanguageSettingsView extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Text(
-                        lang.flag,
-                        style: const TextStyle(fontSize: 28),
-                      ),
+                      Text(lang.flag, style: const TextStyle(fontSize: 28)),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(
@@ -102,8 +95,10 @@ class LanguageSettingsView extends StatelessWidget {
                           height: 24,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border:
-                                Border.all(color: AppColors.border, width: 2),
+                            border: Border.all(
+                              color: AppColors.border,
+                              width: 2,
+                            ),
                           ),
                         ),
                     ],

@@ -13,16 +13,201 @@
   "errorInvalidStcPayId": "معرف STC Pay غير صالح",
   "errorInvalidNationalId": "رقم الهوية الوطنية غير صالح",
   "errorInvalidPassport": "رقم جواز السفر غير صالح",
-
+  "ourMissionDescription": "مهمتنا هي تقديم حلول كيماويات إنشائية عالية الأداء تلبي أعلى معايير الجودة والسلامة والاستدامة. نسعى لدعم عملائنا بمنتجات مبتكرة وإرشاد خبراء، لتمكينهم من تحقيق نتائج بناء متينة وفعالة ومسؤولة بيئياً.",
+  "sorryMessage": "نحن آسفون",
+  "nothingFound": "لم يتم العثور على شيء",
   "errorPhoneValidation": "يجب أن يبدأ رقم الهاتف بـ {start} وأن يكون طوله {length} رقم.",
   "errorExperienceRequired": "يجب إضافة تجربة واحدة على الأقل.",
   "errorIdDocumentRequired": "يجب رفع مستند الهوية للتحقق من هويتك.",
-  "errorPhotoRequired": "يجب رفع صورة بخلفية بيضاء.",
+  "errorPhotoRequired": "يجب رفع صورة بخلفية بيضاء",
+    "updateAvailableTitle": "تحديث متاح",
+  "updateMandatoryMessage": "يتوفر إصدار جديد من التطبيق. يرجى التحديث للمتابعة في استخدام التطبيق.",
+  "updateOptionalMessage": "يتوفر إصدار جديد من التطبيق. نوصي بالتحديث للحصول على أفضل تجربة.",
+  "updateNow": "تحديث الآن",
+  "skip": "تخطي",
+    "chooseImage": "تحميل اختيار صورة",
+  "takePicture": "تحميل التقط صورة",
+  "chooseFromFiles": "تحميل اختيار من الملفات",
 
+  "settingsTitle": "الإعدادات",
+  "settingsPushNotifications": "إشعارات الدفع",
+  "settingsEmailNotifications": "إشعارات البريد الإلكتروني",
+  "settingsDarkMode": "الوضع الداكن",
+  "settingsToneAnalysis": "تحليل النبرة",
+  "settingsLanguage": "اللغة",
 
+  "navHomeTabLabel": "الرئيسية",
+  "navScheduleTabLabel": "الجدول",
+  "navNewsTabLabel": "الأخبار",
+  "navMessagesTabLabel": "الرسائل",
+  "navExpenseTabLabel": "المصروفات",
 
+  "scheduleSharedCalendarTitle": "التقويم المشترك",
+  "scheduleNoEventsForDay": "لا توجد أحداث لهذا اليوم",
+  "scheduleEventTypePickup": "استلام",
+  "scheduleEventTypeMedical": "طبي",
+  "scheduleEventTypeActivity": "نشاط",
+  "scheduleEventTypeSchool": "مدرسة",
+  "scheduleEventTypeCustody": "حضانة",
+  "scheduleAllDay": "طوال اليوم",
 
+  "authLoginTitle": "تسجيل الدخول",
+  "authEmailTab": "البريد الإلكتروني",
+  "authPhoneTab": "رقم الهاتف",
+  "authEmailLabel": "البريد الإلكتروني",
+  "authEmailHint": "example@email.com",
+  "authPhoneLabel": "رقم الهاتف",
+  "authPhoneHint": "+20 123 456 7890",
+  "authPasswordLabel": "كلمة المرور",
+  "authPasswordHint": "********",
+  "authForgotPassword": "نسيت كلمة المرور؟",
+  "authLoginButton": "تسجيل الدخول",
+  "authOrContinueWith": "أو المتابعة باستخدام",
+  "authDontHaveAccountPrefix": "ليس لديك حساب؟ ",
+  "authSignUp": "إنشاء حساب",
 
+  "authSignUpTitle": "إنشاء حساب",
+  "authFirstNameLabel": "الاسم الأول",
+  "authFirstNameHint": "محمد",
+  "authLastNameLabel": "اسم العائلة",
+  "authLastNameHint": "أحمد",
+  "authConfirmPasswordLabel": "تأكيد كلمة المرور",
+  "authAgreeTermsToContinue": "يرجى الموافقة على الشروط والأحكام للمتابعة.",
+  "authSignUpButton": "إنشاء حساب",
+  "authAlreadyHaveAccountPrefix": "لديك حساب بالفعل؟ ",
+  "authLoginLink": "تسجيل الدخول",
 
+  "commonCancel": "إلغاء",
+  "commonClose": "إغلاق",
+  "commonShare": "مشاركة",
+  "commonSave": "حفظ",
+  "commonAdd": "إضافة",
+  "commonDelete": "حذف",
 
+  "profileTitle": "الملف الشخصي",
+  "profileMenuAccountSecurity": "الحساب والأمان",
+  "profileMenuFamilyInformation": "معلومات العائلة",
+  "profileMenuNotifications": "الإشعارات",
+  "profileMenuLanguage": "اللغة",
+  "profileMenuTermsOfUse": "شروط الاستخدام",
+  "profileMenuInvitePeople": "دعوة أشخاص",
+  "profileMenuLogout": "تسجيل الخروج",
+  "profileTermsTitle": "شروط الاستخدام",
+  "profileTermsBody": "باستخدام هذا التطبيق، فإنك توافق على الشروط والأحكام التالية. يرجى قراءتها بعناية قبل المتابعة.\\n\\n1. يجب أن يكون عمرك 18 عامًا على الأقل لاستخدام هذه الخدمة.\\n\\n2. يجب أن تكون جميع المعلومات المقدمة دقيقة ومحدثة.\\n\\n3. أنت مسؤول عن الحفاظ على سرية حسابك.\\n\\n4. نحتفظ بالحق في تعديل هذه الشروط في أي وقت.\\n\\n5. قد يؤدي أي سوء استخدام للمنصة إلى تعليق الحساب.",
+  "profileInviteTitle": "دعوة أشخاص",
+  "profileInviteDescription": "شارك رمز الدعوة الخاص بك مع العائلة والأصدقاء.",
+  "profileLogoutTitle": "تسجيل الخروج",
+  "profileLogoutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+
+  "accountSecurityTitle": "الحساب والأمان",
+  "accountSecurityEmailLabel": "البريد الإلكتروني",
+  "accountSecurityPhoneLabel": "الهاتف",
+  "accountSecurityChangePassword": "تغيير كلمة المرور",
+  "accountSecurityEnableTwoFactor": "تفعيل المصادقة الثنائية",
+  "accountSecurityDeleteAccount": "حذف الحساب",
+  "accountSecurityDeleteConfirm": "هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.",
+
+  "familyInfoTitle": "معلومات العائلة",
+  "familyChildrenTitle": "الأطفال",
+  "familyAddChild": "إضافة طفل",
+  "familyInfoSaved": "تم حفظ معلومات العائلة",
+  "familyCoParent": "الوالد/الوالدة الآخر",
+  "familyConnected": "متصل",
+  "familyYearsOld": "{age} سنة",
+  "@familyYearsOld": {
+    "placeholders": {
+      "age": {}
+    }
+  },
+  "familyChildNameHint": "اسم الطفل",
+  "familyChildAgeHint": "العمر",
+
+  "notificationsTitle": "الإشعارات",
+  "notificationsEmptyTitle": "لا توجد إشعارات بعد",
+  "notificationsEmptySubtitle": "سنخبرك عند وصول أي شيء",
+  "notificationsNewMessageTitle": "رسالة جديدة",
+  "notificationsNewMessageBody": "أرسلت فاطمة رسالة بخصوص جدول عطلة نهاية الأسبوع.",
+  "notificationsScheduleUpdatedTitle": "تم تحديث الجدول",
+  "notificationsScheduleUpdatedBody": "تم تحديث جدول المشاركة للأسبوع القادم.",
+  "notificationsExpenseAddedTitle": "تمت إضافة مصروف",
+  "notificationsExpenseAddedBody": "تم تسجيل مصروف مشترك جديد بقيمة 500 جنيه.",
+  "notificationsReminderTitle": "تذكير",
+  "notificationsReminderBody": "لا تنسَ اجتماع أولياء الأمور غدًا الساعة 4 مساءً.",
+  "notificationsSecurityAlertTitle": "تنبيه أمني",
+  "notificationsSecurityAlertBody": "تم استخدام جهاز جديد لتسجيل الدخول إلى حسابك.",
+  "timeMinutesAgo": "قبل {minutes} دقيقة",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeHoursAgo": "قبل {hours} ساعة",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeHoursAgoPlural": "قبل {hours} ساعات",
+  "@timeHoursAgoPlural": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeYesterday": "أمس",
+  "timeDaysAgo": "قبل {days} أيام",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+
+  "chatTypeMessageHint": "اكتب رسالة...",
+
+  "updatePleaseUpdateToContinue": "يرجى تحديث التطبيق للمتابعة.",
+  "updateNewVersionAvailableShort": "يتوفر إصدار جديد.",
+
+  "languageSelectTitle": "اختر اللغة",
+  "commonStart": "ابدأ",
+
+  "messagesTitle": "الرسائل",
+  "messagesSearch": "بحث",
+
+  "newsTitle": "الأخبار",
+
+  "expenseTitle": "المصروفات",
+  "expenseTotalThisMonth": "الإجمالي هذا الشهر",
+  "expenseYouPaid": "دفعتَ أنت",
+  "expenseCoParentPaid": "دفع الوالد/الوالدة الآخر",
+  "expenseAddExpense": "إضافة مصروف",
+
+  "addExpenseTitle": "إضافة مصروف",
+  "addExpenseCategoryLabel": "الفئة",
+  "addExpenseSelectCategoryHint": "اختر الفئة",
+  "addExpenseDateLabel": "التاريخ",
+  "addExpenseSelectDateHint": "اختر التاريخ",
+  "addExpenseAmountLabel": "المبلغ",
+  "addExpenseEnterAmountHint": "أدخل المبلغ",
+  "addExpenseAmountRequired": "المبلغ مطلوب",
+  "addExpenseEnterValidAmount": "أدخل مبلغًا صحيحًا",
+  "addExpenseCurrencyLabel": "العملة",
+  "addExpenseSelectCurrencyHint": "اختر العملة",
+  "addExpenseDescriptionLabel": "الوصف",
+  "addExpenseEnterDescriptionHint": "أدخل الوصف",
+  "addExpenseProofOfPurchaseLabel": "إثبات الشراء",
+  "addExpenseTapToUpload": "اضغط للرفع",
+  "addExpenseUploadFormats": "JPG أو PNG أو PDF",
+  "addExpenseAlreadyPaidQuestion": "هل قمت بدفع هذا المصروف بالفعل؟",
+  "onboardingSkip": "تخطي",
+  "onboardingNext": "التالي",
+  "onboardingGetStarted": "ابدأ الآن!",
+  "onboardingLogin": "تسجيل الدخول",
+  "onboardingJoinUsingCode": "الانضمام باستخدام رمز",
+  "onboardingPage1Title": "طريقة أفضل للتربية المشتركة",
+  "onboardingPage1Subtitle": "مساحة آمنة تساعد الوالدين على التواصل والتنظيم واتخاذ القرارات بقدر أقل من الخلاف والمزيد من الوضوح.",
+  "onboardingPage2Title": "تواصل واضح ومحترم",
+  "onboardingPage2Subtitle": "جميع الرسائل موثقة ومؤرخة ولا يمكن تعديلها أو حذفها، مما يساعد على إبقاء المحادثات مسؤولة وبنّاءة.",
+  "onboardingPage3Title": "مستندات مهمة ومحفوظة بأمان",
+  "onboardingPage3Subtitle": "احتفظ بالمستندات الطبية والمدرسية والقانونية والمالية مشفرة ومتاحة مع سجل وصول كامل.",
+  "onboardingPage4Title": "مبني على الثقة والخصوصية",
+  "onboardingPage4Subtitle": "بياناتك محمية بإجراءات أمنية قوية ويتم التعامل معها وفقًا لقانون حماية البيانات المصري."
 }

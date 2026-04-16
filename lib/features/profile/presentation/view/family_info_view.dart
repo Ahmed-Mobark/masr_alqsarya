@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
@@ -29,7 +30,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
               color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Family Information', style: AppTextStyles.heading2()),
+        title: Text(context.tr.familyInfoTitle, style: AppTextStyles.heading2()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -42,7 +43,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
             const SizedBox(height: 24),
 
             // Children section
-            Text('Children', style: AppTextStyles.heading2()),
+            Text(context.tr.familyChildrenTitle, style: AppTextStyles.heading2()),
             const SizedBox(height: 12),
             ..._children.asMap().entries.map(
                   (entry) => _buildChildCard(entry.value, entry.key),
@@ -56,7 +57,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
               child: OutlinedButton.icon(
                 onPressed: () => _showAddChildDialog(context),
                 icon: const Icon(Iconsax.add, size: 20),
-                label: Text('Add Child',
+                label: Text(context.tr.familyAddChild,
                     style: AppTextStyles.bodyMedium(color: AppColors.primaryDark)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primaryDark,
@@ -78,7 +79,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Family information saved'),
+                      content: Text(context.tr.familyInfoSaved),
                       backgroundColor: AppColors.success,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
@@ -96,7 +97,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
                   ),
                   elevation: 0,
                 ),
-                child: Text('Save', style: AppTextStyles.button()),
+                child: Text(context.tr.commonSave, style: AppTextStyles.button()),
               ),
             ),
           ],
@@ -133,7 +134,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Co-Parent', style: AppTextStyles.caption()),
+                    Text(context.tr.familyCoParent, style: AppTextStyles.caption()),
                     const SizedBox(height: 2),
                     Text('Fatima Ali', style: AppTextStyles.bodyMedium()),
                   ],
@@ -146,7 +147,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Connected',
+                  context.tr.familyConnected,
                   style: AppTextStyles.small(color: AppColors.success),
                 ),
               ),
@@ -201,7 +202,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
                 Text(child.name, style: AppTextStyles.bodyMedium()),
                 const SizedBox(height: 4),
                 Text(
-                  '${child.age} years old',
+                  context.tr.familyYearsOld(child.age),
                   style: AppTextStyles.caption(),
                 ),
               ],
@@ -227,14 +228,14 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Add Child', style: AppTextStyles.heading2()),
+        title: Text(context.tr.familyAddChild, style: AppTextStyles.heading2()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
               decoration: InputDecoration(
-                hintText: 'Child name',
+                hintText: context.tr.familyChildNameHint,
                 hintStyle: AppTextStyles.body(color: AppColors.greyText),
                 filled: true,
                 fillColor: AppColors.inputBg,
@@ -258,7 +259,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
               controller: ageController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hintText: 'Age',
+                hintText: context.tr.familyChildAgeHint,
                 hintStyle: AppTextStyles.body(color: AppColors.greyText),
                 filled: true,
                 fillColor: AppColors.inputBg,
@@ -282,7 +283,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel',
+            child: Text(context.tr.commonCancel,
                 style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
           ),
           TextButton(
@@ -296,7 +297,7 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
               }
               Navigator.pop(context);
             },
-            child: Text('Add',
+            child: Text(context.tr.commonAdd,
                 style: AppTextStyles.bodyMedium(color: AppColors.primaryDark)),
           ),
         ],

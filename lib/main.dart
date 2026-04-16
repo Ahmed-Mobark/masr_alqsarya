@@ -5,9 +5,8 @@ import 'core/app/app_body.dart';
 import 'core/bloc/bloc_observer.dart';
 import 'core/injection/injection_container.dart' as injection;
 
-
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();  
+  WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
   await injection.init();
   Bloc.observer = MyBlocObserver();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
@@ -91,7 +93,10 @@ class _ScheduleViewState extends State<ScheduleView> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: Text('Shared Calendar', style: AppTextStyles.navTitle()),
+        title: Text(
+          context.tr.scheduleSharedCalendarTitle,
+          style: AppTextStyles.navTitle(),
+        ),
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
@@ -140,8 +145,10 @@ class _ScheduleViewState extends State<ScheduleView> {
                         Icon(Iconsax.calendar, size: 48,
                             color: AppColors.greyText.withValues(alpha: 0.5)),
                         const SizedBox(height: 12),
-                        Text('No events for this day',
-                            style: AppTextStyles.caption()),
+                        Text(
+                          context.tr.scheduleNoEventsForDay,
+                          style: AppTextStyles.caption(),
+                        ),
                       ],
                     ),
                   )
@@ -175,7 +182,8 @@ class _ScheduleViewState extends State<ScheduleView> {
     final startWeekday = firstDayOfMonth.weekday % 7; // Sun=0
     final daysInMonth = lastDayOfMonth.day;
 
-    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final localeName = Localizations.localeOf(context).toString();
+    final weekDays = _weekDayLabels(localeName);
 
     return Column(
       children: [
@@ -261,12 +269,16 @@ class _ScheduleViewState extends State<ScheduleView> {
     );
   }
 
+  List<String> _weekDayLabels(String localeName) {
+    // Generate labels starting from Sunday to match the current grid behavior.
+    final baseSunday = DateTime.utc(2024, 1, 7); // Sunday
+    final formatter = DateFormat.E(localeName);
+    return List.generate(7, (i) => formatter.format(baseSunday.add(Duration(days: i))));
+  }
+
   String _monthYearString(DateTime date) {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
-    ];
-    return '${months[date.month - 1]} ${date.year}';
+    final localeName = Localizations.localeOf(context).toString();
+    return DateFormat.yMMMM(localeName).format(date);
   }
 }
 
@@ -276,6 +288,13 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeCode = Localizations.localeOf(context).languageCode;
+    final title = switch (localeCode) {
+      'ar' => event.titleAr,
+      'fr' => event.titleFr,
+      _ => event.title,
+    };
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.background,
@@ -311,11 +330,14 @@ class _EventCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(event.title,
-                              style: AppTextStyles.button()),
+                          Text(title, style: AppTextStyles.button()),
                           const SizedBox(height: 4),
-                          Text(event.time,
-                              style: AppTextStyles.caption()),
+                          Text(
+                            event.time == 'All Day'
+                                ? context.tr.scheduleAllDay
+                                : event.time,
+                            style: AppTextStyles.caption(),
+                          ),
                         ],
                       ),
                     ),
@@ -327,7 +349,7 @@ class _EventCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        event.type,
+                        _localizedType(context, event.type),
                         style: AppTextStyles.tiny(color: event.color),
                       ),
                     ),
@@ -339,5 +361,16 @@ class _EventCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _localizedType(BuildContext context, String type) {
+    return switch (type) {
+      'Pickup' => context.tr.scheduleEventTypePickup,
+      'Medical' => context.tr.scheduleEventTypeMedical,
+      'Activity' => context.tr.scheduleEventTypeActivity,
+      'School' => context.tr.scheduleEventTypeSchool,
+      'Custody' => context.tr.scheduleEventTypeCustody,
+      _ => type,
+    };
   }
 }

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_fr.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,6 +97,7 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
     Locale('en'),
+    Locale('fr'),
   ];
 
   /// No description provided for @errorFieldRequired.
@@ -176,6 +178,18 @@ abstract class AppLocalizations {
   /// **'Invalid passport number'**
   String get errorInvalidPassport;
 
+  /// No description provided for @sorryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We are sorry'**
+  String get sorryMessage;
+
+  /// No description provided for @nothingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing Found'**
+  String get nothingFound;
+
   /// No description provided for @errorPhoneValidation.
   ///
   /// In en, this message translates to:
@@ -197,584 +211,8 @@ abstract class AppLocalizations {
   /// No description provided for @errorPhotoRequired.
   ///
   /// In en, this message translates to:
-  /// **'You must upload a photo with a white background.'**
+  /// **'You must upload a photo with a white background'**
   String get errorPhotoRequired;
-
-  /// No description provided for @onBoardingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced Chemistry for Better Builds'**
-  String get onBoardingTitle;
-
-  /// No description provided for @onBoardingDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'High-performance admixtures and construction solutions engineered for durability, precision, and superior results.'**
-  String get onBoardingDescription;
-
-  /// No description provided for @onBoardingButtonText.
-  ///
-  /// In en, this message translates to:
-  /// **'Get Started'**
-  String get onBoardingButtonText;
-
-  /// No description provided for @home.
-  ///
-  /// In en, this message translates to:
-  /// **'Home'**
-  String get home;
-
-  /// No description provided for @products.
-  ///
-  /// In en, this message translates to:
-  /// **'Products'**
-  String get products;
-
-  /// No description provided for @projects.
-  ///
-  /// In en, this message translates to:
-  /// **'Projects'**
-  String get projects;
-
-  /// No description provided for @contact.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact'**
-  String get contact;
-
-  /// No description provided for @search_products.
-  ///
-  /// In en, this message translates to:
-  /// **'Search Products'**
-  String get search_products;
-
-  /// No description provided for @heroTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced Chemistry\nfor Better Builds'**
-  String get heroTitle;
-
-  /// No description provided for @heroDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced solutions for durable,\nprecise construction'**
-  String get heroDescription;
-
-  /// No description provided for @exploreProducts.
-  ///
-  /// In en, this message translates to:
-  /// **'Explore Products'**
-  String get exploreProducts;
-
-  /// No description provided for @aboutUs.
-  ///
-  /// In en, this message translates to:
-  /// **'About Us'**
-  String get aboutUs;
-
-  /// No description provided for @whoWeAre.
-  ///
-  /// In en, this message translates to:
-  /// **'Who We Are?'**
-  String get whoWeAre;
-
-  /// No description provided for @whoWeAreDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Ut Efficitur Leo Ut Magna Mollis, Non Scelerisque Loremfa Cilisis.'**
-  String get whoWeAreDescription;
-
-  /// No description provided for @ourStory.
-  ///
-  /// In en, this message translates to:
-  /// **'Our Story'**
-  String get ourStory;
-
-  /// No description provided for @innovativeSolutionsLine1.
-  ///
-  /// In en, this message translates to:
-  /// **'INNOVATIVE SOLUTIONS'**
-  String get innovativeSolutionsLine1;
-
-  /// No description provided for @innovativeSolutionsLine2.
-  ///
-  /// In en, this message translates to:
-  /// **'ADVANCED TECHNOLOGIES'**
-  String get innovativeSolutionsLine2;
-
-  /// No description provided for @aboutCompanyDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'NCC X-Calibur was established in January 2010, specialising in the field of Construction Chemicals. Our primary goal has been to introduce innovative products and services that align with the latest industry technologies while upholding international standards of high-quality production.'**
-  String get aboutCompanyDescription;
-
-  /// No description provided for @ourVision.
-  ///
-  /// In en, this message translates to:
-  /// **'Our Vision'**
-  String get ourVision;
-
-  /// No description provided for @ourVisionDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Our vision at NCC X-Calibur is to lead the global industry in sustainable construction chemical material technology. We are committed to integrating environmental considerations and sustainability into every aspect of our operations. By prioritising innovation and responsible practices, we aim to set new standards for the industry and contribute positively to the future of construction worldwide.'**
-  String get ourVisionDescription;
-
-  /// No description provided for @ourMission.
-  ///
-  /// In en, this message translates to:
-  /// **'Our Mission'**
-  String get ourMission;
-
-  /// No description provided for @ourMissionDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Our mission is to deliver high-performance construction chemical solutions that meet the highest standards of quality, safety, and sustainability. We strive to support our clients with innovative products and expert guidance, enabling them to achieve durable, efficient, and environmentally responsible construction outcomes.'**
-  String get ourMissionDescription;
-
-  /// No description provided for @sorryMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'We are sorry'**
-  String get sorryMessage;
-
-  /// No description provided for @nothingFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing Found'**
-  String get nothingFound;
-
-  /// No description provided for @chooseImage.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload Choose Image'**
-  String get chooseImage;
-
-  /// No description provided for @takePicture.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload Take Picture'**
-  String get takePicture;
-
-  /// No description provided for @chooseFromFiles.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload Choose From Files'**
-  String get chooseFromFiles;
-
-  /// No description provided for @productsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'PRODUCTS'**
-  String get productsTitle;
-
-  /// No description provided for @seeAll.
-  ///
-  /// In en, this message translates to:
-  /// **'See All'**
-  String get seeAll;
-
-  /// No description provided for @productsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Find the right solution by product or industry'**
-  String get productsSubtitle;
-
-  /// No description provided for @construction_chemicals.
-  ///
-  /// In en, this message translates to:
-  /// **'Construction Chemicals'**
-  String get construction_chemicals;
-
-  /// No description provided for @concrete_admixture.
-  ///
-  /// In en, this message translates to:
-  /// **'Concrete Admixtures'**
-  String get concrete_admixture;
-
-  /// No description provided for @flooring_system.
-  ///
-  /// In en, this message translates to:
-  /// **'Flooring Systems'**
-  String get flooring_system;
-
-  /// No description provided for @infrastructure.
-  ///
-  /// In en, this message translates to:
-  /// **'Infrastructure'**
-  String get infrastructure;
-
-  /// No description provided for @featurd_projects.
-  ///
-  /// In en, this message translates to:
-  /// **'FEATURED PROJECTS'**
-  String get featurd_projects;
-
-  /// No description provided for @proven_project_resaults.
-  ///
-  /// In en, this message translates to:
-  /// **'Proven results across key industries'**
-  String get proven_project_resaults;
-
-  /// No description provided for @read_more.
-  ///
-  /// In en, this message translates to:
-  /// **'Read More'**
-  String get read_more;
-
-  /// No description provided for @blogs.
-  ///
-  /// In en, this message translates to:
-  /// **'BLOGS'**
-  String get blogs;
-
-  /// No description provided for @blogs_sub_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Latest Articles & Insights'**
-  String get blogs_sub_title;
-
-  /// No description provided for @getInTouchTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Get in Touch'**
-  String get getInTouchTitle;
-
-  /// No description provided for @getInTouchDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'The point of using Lorem Ipsum is that it has more-or-less normal'**
-  String get getInTouchDescription;
-
-  /// No description provided for @fullName.
-  ///
-  /// In en, this message translates to:
-  /// **'Full Name'**
-  String get fullName;
-
-  /// No description provided for @phoneNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone Number'**
-  String get phoneNumber;
-
-  /// No description provided for @writeHere.
-  ///
-  /// In en, this message translates to:
-  /// **'Write Here...'**
-  String get writeHere;
-
-  /// No description provided for @sendMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Send Message'**
-  String get sendMessage;
-
-  /// No description provided for @email.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get email;
-
-  /// No description provided for @company.
-  ///
-  /// In en, this message translates to:
-  /// **'Company'**
-  String get company;
-
-  /// No description provided for @contactLocationTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'New York'**
-  String get contactLocationTitle;
-
-  /// No description provided for @contactLocationSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'42 Mammoun Street, Saba Carpet and Antiques Store, UK'**
-  String get contactLocationSubtitle;
-
-  /// No description provided for @contactPhoneTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone Number'**
-  String get contactPhoneTitle;
-
-  /// No description provided for @contactPhoneSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'+44 123 456 789'**
-  String get contactPhoneSubtitle;
-
-  /// No description provided for @contactEmailTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get contactEmailTitle;
-
-  /// No description provided for @contactEmailSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'info@ncc.com'**
-  String get contactEmailSubtitle;
-
-  /// No description provided for @product_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Product Type'**
-  String get product_type;
-
-  /// No description provided for @choose_industry.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Industry'**
-  String get choose_industry;
-
-  /// No description provided for @download_brochure_pdf.
-  ///
-  /// In en, this message translates to:
-  /// **'Download TDS ( Technical Data Sheet )'**
-  String get download_brochure_pdf;
-
-  /// No description provided for @calculate_quantity.
-  ///
-  /// In en, this message translates to:
-  /// **'Calculate Quantity'**
-  String get calculate_quantity;
-
-  /// No description provided for @admixture.
-  ///
-  /// In en, this message translates to:
-  /// **'Admixture'**
-  String get admixture;
-
-  /// No description provided for @waterproofing.
-  ///
-  /// In en, this message translates to:
-  /// **'Waterproofing'**
-  String get waterproofing;
-
-  /// No description provided for @industrial.
-  ///
-  /// In en, this message translates to:
-  /// **'Industrial'**
-  String get industrial;
-
-  /// No description provided for @strength_enhancement.
-  ///
-  /// In en, this message translates to:
-  /// **'Strength Enhancement'**
-  String get strength_enhancement;
-
-  /// No description provided for @durability.
-  ///
-  /// In en, this message translates to:
-  /// **'Durability'**
-  String get durability;
-
-  /// No description provided for @repair.
-  ///
-  /// In en, this message translates to:
-  /// **'Repair'**
-  String get repair;
-
-  /// No description provided for @flooring.
-  ///
-  /// In en, this message translates to:
-  /// **'Flooring'**
-  String get flooring;
-
-  /// No description provided for @features.
-  ///
-  /// In en, this message translates to:
-  /// **'Features'**
-  String get features;
-
-  /// No description provided for @usage.
-  ///
-  /// In en, this message translates to:
-  /// **'Usage'**
-  String get usage;
-
-  /// No description provided for @packaging.
-  ///
-  /// In en, this message translates to:
-  /// **'Packaging'**
-  String get packaging;
-
-  /// No description provided for @interestedInProduct.
-  ///
-  /// In en, this message translates to:
-  /// **'Interested in This Product?'**
-  String get interestedInProduct;
-
-  /// No description provided for @contactTeamDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact our team to check availability, specifications, and guidance for your project needs'**
-  String get contactTeamDesc;
-
-  /// No description provided for @emailLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'EMAIL'**
-  String get emailLabel;
-
-  /// No description provided for @addressLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'ADDRESS'**
-  String get addressLabel;
-
-  /// No description provided for @phoneLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'PHONE'**
-  String get phoneLabel;
-
-  /// No description provided for @nccAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'233 Industrial Zone, New Cairo – Egypt'**
-  String get nccAddress;
-
-  /// No description provided for @nccPhoneOne.
-  ///
-  /// In en, this message translates to:
-  /// **'Whatsapp: +20 120 509 5090'**
-  String get nccPhoneOne;
-
-  /// No description provided for @nccHotline.
-  ///
-  /// In en, this message translates to:
-  /// **'Hotline: 16960'**
-  String get nccHotline;
-
-  /// No description provided for @calculatorResultTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Calculation Result'**
-  String get calculatorResultTitle;
-
-  /// No description provided for @calculatorResultLiters.
-  ///
-  /// In en, this message translates to:
-  /// **'Required in Liters'**
-  String get calculatorResultLiters;
-
-  /// No description provided for @unitLiters.
-  ///
-  /// In en, this message translates to:
-  /// **'Liters'**
-  String get unitLiters;
-
-  /// No description provided for @calculatorResultGallons.
-  ///
-  /// In en, this message translates to:
-  /// **'Required in Gallons'**
-  String get calculatorResultGallons;
-
-  /// No description provided for @unitGallons.
-  ///
-  /// In en, this message translates to:
-  /// **'Gallons'**
-  String get unitGallons;
-
-  /// No description provided for @calculatorProductLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Product'**
-  String get calculatorProductLabel;
-
-  /// No description provided for @calculatorProductHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Select product'**
-  String get calculatorProductHint;
-
-  /// No description provided for @calculatorTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Calculator'**
-  String get calculatorTitle;
-
-  /// No description provided for @calculatorHeaderTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Product Quantity Calculator'**
-  String get calculatorHeaderTitle;
-
-  /// No description provided for @calculatorHeaderDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter the area to instantly calculate the required quantity in L, Gal, and Kg.'**
-  String get calculatorHeaderDescription;
-
-  /// No description provided for @calculatorAreaLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter the working area (km²)?'**
-  String get calculatorAreaLabel;
-
-  /// No description provided for @dropdownTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the working area'**
-  String get dropdownTitle;
-
-  /// No description provided for @similar_projects.
-  ///
-  /// In en, this message translates to:
-  /// **'SIMILAR PROJECTS'**
-  String get similar_projects;
-
-  /// No description provided for @products_used.
-  ///
-  /// In en, this message translates to:
-  /// **'PRODUCTS USED'**
-  String get products_used;
-
-  /// No description provided for @our_projects.
-  ///
-  /// In en, this message translates to:
-  /// **'OUR PROJECTS'**
-  String get our_projects;
-
-  /// No description provided for @projetc_use_this_product.
-  ///
-  /// In en, this message translates to:
-  /// **'Projects Using This Product'**
-  String get projetc_use_this_product;
-
-  /// No description provided for @projetc_use_this_product_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Explore real projects where this product delivered proven performance and reliable results.'**
-  String get projetc_use_this_product_desc;
-
-  /// No description provided for @country.
-  ///
-  /// In en, this message translates to:
-  /// **'Country'**
-  String get country;
-
-  /// No description provided for @construction_products.
-  ///
-  /// In en, this message translates to:
-  /// **'Construction Products'**
-  String get construction_products;
-
-  /// No description provided for @insights_financial_updates.
-  ///
-  /// In en, this message translates to:
-  /// **'INSIGHTS & FINANCIAL\nUPDATES'**
-  String get insights_financial_updates;
-
-  /// No description provided for @related_posts.
-  ///
-  /// In en, this message translates to:
-  /// **'RELATED POSTS'**
-  String get related_posts;
 
   /// No description provided for @updateAvailableTitle.
   ///
@@ -806,48 +244,869 @@ abstract class AppLocalizations {
   /// **'Skip'**
   String get skip;
 
-  /// No description provided for @is_required.
+  /// No description provided for @chooseImage.
   ///
   /// In en, this message translates to:
-  /// **'is required'**
-  String get is_required;
+  /// **'Upload Choose Image'**
+  String get chooseImage;
 
-  /// No description provided for @search_projects.
+  /// No description provided for @takePicture.
   ///
   /// In en, this message translates to:
-  /// **'Search projects'**
-  String get search_projects;
+  /// **'Upload Take Picture'**
+  String get takePicture;
 
-  /// No description provided for @no_projects_found.
+  /// No description provided for @chooseFromFiles.
   ///
   /// In en, this message translates to:
-  /// **'No projects found'**
-  String get no_projects_found;
+  /// **'Upload Choose From Files'**
+  String get chooseFromFiles;
 
-  /// No description provided for @load_more.
+  /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Load more'**
-  String get load_more;
+  /// **'Settings'**
+  String get settingsTitle;
 
-  /// No description provided for @successful_projects_across_industries.
+  /// No description provided for @settingsPushNotifications.
   ///
   /// In en, this message translates to:
-  /// **'Successful Projects\nAcross Industries'**
-  String get successful_projects_across_industries;
+  /// **'Push Notifications'**
+  String get settingsPushNotifications;
 
-  /// No description provided for @discover_real_world_applications_of_our_solutions_across_different_industries.
+  /// No description provided for @settingsEmailNotifications.
   ///
   /// In en, this message translates to:
-  /// **'Discover Real-World Applications\n Of Our Solutions Across Different Industries'**
-  String
-  get discover_real_world_applications_of_our_solutions_across_different_industries;
+  /// **'Email Notifications'**
+  String get settingsEmailNotifications;
 
-  /// No description provided for @no_products_found.
+  /// No description provided for @settingsDarkMode.
   ///
   /// In en, this message translates to:
-  /// **'No products found'**
-  String get no_products_found;
+  /// **'Dark Mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsToneAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone Analysis'**
+  String get settingsToneAnalysis;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @navHomeTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHomeTabLabel;
+
+  /// No description provided for @navScheduleTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get navScheduleTabLabel;
+
+  /// No description provided for @navNewsTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'News'**
+  String get navNewsTabLabel;
+
+  /// No description provided for @navMessagesTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get navMessagesTabLabel;
+
+  /// No description provided for @navExpenseTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get navExpenseTabLabel;
+
+  /// No description provided for @scheduleSharedCalendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared Calendar'**
+  String get scheduleSharedCalendarTitle;
+
+  /// No description provided for @scheduleNoEventsForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No events for this day'**
+  String get scheduleNoEventsForDay;
+
+  /// No description provided for @scheduleEventTypePickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup'**
+  String get scheduleEventTypePickup;
+
+  /// No description provided for @scheduleEventTypeMedical.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical'**
+  String get scheduleEventTypeMedical;
+
+  /// No description provided for @scheduleEventTypeActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get scheduleEventTypeActivity;
+
+  /// No description provided for @scheduleEventTypeSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'School'**
+  String get scheduleEventTypeSchool;
+
+  /// No description provided for @scheduleEventTypeCustody.
+  ///
+  /// In en, this message translates to:
+  /// **'Custody'**
+  String get scheduleEventTypeCustody;
+
+  /// No description provided for @scheduleAllDay.
+  ///
+  /// In en, this message translates to:
+  /// **'All Day'**
+  String get scheduleAllDay;
+
+  /// No description provided for @authLoginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get authLoginTitle;
+
+  /// No description provided for @authEmailTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmailTab;
+
+  /// No description provided for @authPhoneTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get authPhoneTab;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmailLabel;
+
+  /// No description provided for @authEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'example@email.com'**
+  String get authEmailHint;
+
+  /// No description provided for @authPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get authPhoneLabel;
+
+  /// No description provided for @authPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+20 123 456 7890'**
+  String get authPhoneHint;
+
+  /// No description provided for @authPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPasswordLabel;
+
+  /// No description provided for @authPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'********'**
+  String get authPasswordHint;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get authForgotPassword;
+
+  /// No description provided for @authLoginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'LOG IN'**
+  String get authLoginButton;
+
+  /// No description provided for @authOrContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Or continue with'**
+  String get authOrContinueWith;
+
+  /// No description provided for @authDontHaveAccountPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? '**
+  String get authDontHaveAccountPrefix;
+
+  /// No description provided for @authSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get authSignUp;
+
+  /// No description provided for @authSignUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get authSignUpTitle;
+
+  /// No description provided for @authFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get authFirstNameLabel;
+
+  /// No description provided for @authFirstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'John'**
+  String get authFirstNameHint;
+
+  /// No description provided for @authLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get authLastNameLabel;
+
+  /// No description provided for @authLastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Doe'**
+  String get authLastNameHint;
+
+  /// No description provided for @authConfirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get authConfirmPasswordLabel;
+
+  /// No description provided for @authAgreeTermsToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to the Terms & Conditions to continue.'**
+  String get authAgreeTermsToContinue;
+
+  /// No description provided for @authSignUpButton.
+  ///
+  /// In en, this message translates to:
+  /// **'SIGN UP'**
+  String get authSignUpButton;
+
+  /// No description provided for @authAlreadyHaveAccountPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get authAlreadyHaveAccountPrefix;
+
+  /// No description provided for @authLoginLink.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGIN'**
+  String get authLoginLink;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonClose;
+
+  /// No description provided for @commonShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get commonShare;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get commonSave;
+
+  /// No description provided for @commonAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get commonAdd;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commonDelete;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @profileMenuAccountSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & Security'**
+  String get profileMenuAccountSecurity;
+
+  /// No description provided for @profileMenuFamilyInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Information'**
+  String get profileMenuFamilyInformation;
+
+  /// No description provided for @profileMenuNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get profileMenuNotifications;
+
+  /// No description provided for @profileMenuLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get profileMenuLanguage;
+
+  /// No description provided for @profileMenuTermsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get profileMenuTermsOfUse;
+
+  /// No description provided for @profileMenuInvitePeople.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite People'**
+  String get profileMenuInvitePeople;
+
+  /// No description provided for @profileMenuLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profileMenuLogout;
+
+  /// No description provided for @profileTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get profileTermsTitle;
+
+  /// No description provided for @profileTermsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'By using this application, you agree to the following terms and conditions. Please read them carefully before proceeding.\\n\\n1. You must be at least 18 years old to use this service.\\n\\n2. All information provided must be accurate and up to date.\\n\\n3. You are responsible for maintaining the confidentiality of your account.\\n\\n4. We reserve the right to modify these terms at any time.\\n\\n5. Any misuse of the platform may result in account suspension.'**
+  String get profileTermsBody;
+
+  /// No description provided for @profileInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite People'**
+  String get profileInviteTitle;
+
+  /// No description provided for @profileInviteDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your invite code with family and friends.'**
+  String get profileInviteDescription;
+
+  /// No description provided for @profileLogoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profileLogoutTitle;
+
+  /// No description provided for @profileLogoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
+  String get profileLogoutConfirm;
+
+  /// No description provided for @accountSecurityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & Security'**
+  String get accountSecurityTitle;
+
+  /// No description provided for @accountSecurityEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get accountSecurityEmailLabel;
+
+  /// No description provided for @accountSecurityPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get accountSecurityPhoneLabel;
+
+  /// No description provided for @accountSecurityChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get accountSecurityChangePassword;
+
+  /// No description provided for @accountSecurityEnableTwoFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Two-Factor Authentication'**
+  String get accountSecurityEnableTwoFactor;
+
+  /// No description provided for @accountSecurityDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get accountSecurityDeleteAccount;
+
+  /// No description provided for @accountSecurityDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? This action cannot be undone.'**
+  String get accountSecurityDeleteConfirm;
+
+  /// No description provided for @familyInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Information'**
+  String get familyInfoTitle;
+
+  /// No description provided for @familyChildrenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Children'**
+  String get familyChildrenTitle;
+
+  /// No description provided for @familyAddChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Child'**
+  String get familyAddChild;
+
+  /// No description provided for @familyInfoSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Family information saved'**
+  String get familyInfoSaved;
+
+  /// No description provided for @familyCoParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-Parent'**
+  String get familyCoParent;
+
+  /// No description provided for @familyConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get familyConnected;
+
+  /// No description provided for @familyYearsOld.
+  ///
+  /// In en, this message translates to:
+  /// **'{age} years old'**
+  String familyYearsOld(Object age);
+
+  /// No description provided for @familyChildNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Child name'**
+  String get familyChildNameHint;
+
+  /// No description provided for @familyChildAgeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get familyChildAgeHint;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notificationsEmptyTitle;
+
+  /// No description provided for @notificationsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll notify you when something arrives'**
+  String get notificationsEmptySubtitle;
+
+  /// No description provided for @notificationsNewMessageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Message'**
+  String get notificationsNewMessageTitle;
+
+  /// No description provided for @notificationsNewMessageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fatima sent you a message about this weekend\'s schedule.'**
+  String get notificationsNewMessageBody;
+
+  /// No description provided for @notificationsScheduleUpdatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule Updated'**
+  String get notificationsScheduleUpdatedTitle;
+
+  /// No description provided for @notificationsScheduleUpdatedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The co-parenting schedule for next week has been updated.'**
+  String get notificationsScheduleUpdatedBody;
+
+  /// No description provided for @notificationsExpenseAddedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Added'**
+  String get notificationsExpenseAddedTitle;
+
+  /// No description provided for @notificationsExpenseAddedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A new shared expense of 500 EGP has been recorded.'**
+  String get notificationsExpenseAddedBody;
+
+  /// No description provided for @notificationsReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get notificationsReminderTitle;
+
+  /// No description provided for @notificationsReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t forget the parent-teacher meeting tomorrow at 4 PM.'**
+  String get notificationsReminderBody;
+
+  /// No description provided for @notificationsSecurityAlertTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Security Alert'**
+  String get notificationsSecurityAlertTitle;
+
+  /// No description provided for @notificationsSecurityAlertBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A new device was used to sign in to your account.'**
+  String get notificationsSecurityAlertBody;
+
+  /// No description provided for @timeMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min ago'**
+  String timeMinutesAgo(Object minutes);
+
+  /// No description provided for @timeHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hour ago'**
+  String timeHoursAgo(Object hours);
+
+  /// No description provided for @timeHoursAgoPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String timeHoursAgoPlural(Object hours);
+
+  /// No description provided for @timeYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get timeYesterday;
+
+  /// No description provided for @timeDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String timeDaysAgo(Object days);
+
+  /// No description provided for @chatTypeMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message...'**
+  String get chatTypeMessageHint;
+
+  /// No description provided for @updatePleaseUpdateToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Please update the app to continue.'**
+  String get updatePleaseUpdateToContinue;
+
+  /// No description provided for @updateNewVersionAvailableShort.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available.'**
+  String get updateNewVersionAvailableShort;
+
+  /// No description provided for @languageSelectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get languageSelectTitle;
+
+  /// No description provided for @commonStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get commonStart;
+
+  /// No description provided for @messagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get messagesTitle;
+
+  /// No description provided for @messagesSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get messagesSearch;
+
+  /// No description provided for @newsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'News'**
+  String get newsTitle;
+
+  /// No description provided for @expenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get expenseTitle;
+
+  /// No description provided for @expenseTotalThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Total This Month'**
+  String get expenseTotalThisMonth;
+
+  /// No description provided for @expenseYouPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You Paid'**
+  String get expenseYouPaid;
+
+  /// No description provided for @expenseCoParentPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-parent Paid'**
+  String get expenseCoParentPaid;
+
+  /// No description provided for @expenseAddExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get expenseAddExpense;
+
+  /// No description provided for @addExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get addExpenseTitle;
+
+  /// No description provided for @addExpenseCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get addExpenseCategoryLabel;
+
+  /// No description provided for @addExpenseSelectCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Category'**
+  String get addExpenseSelectCategoryHint;
+
+  /// No description provided for @addExpenseDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get addExpenseDateLabel;
+
+  /// No description provided for @addExpenseSelectDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get addExpenseSelectDateHint;
+
+  /// No description provided for @addExpenseAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get addExpenseAmountLabel;
+
+  /// No description provided for @addExpenseEnterAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount'**
+  String get addExpenseEnterAmountHint;
+
+  /// No description provided for @addExpenseAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required'**
+  String get addExpenseAmountRequired;
+
+  /// No description provided for @addExpenseEnterValidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount'**
+  String get addExpenseEnterValidAmount;
+
+  /// No description provided for @addExpenseCurrencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get addExpenseCurrencyLabel;
+
+  /// No description provided for @addExpenseSelectCurrencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Currency'**
+  String get addExpenseSelectCurrencyHint;
+
+  /// No description provided for @addExpenseDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get addExpenseDescriptionLabel;
+
+  /// No description provided for @addExpenseEnterDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter description'**
+  String get addExpenseEnterDescriptionHint;
+
+  /// No description provided for @addExpenseProofOfPurchaseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Proof of Purchase'**
+  String get addExpenseProofOfPurchaseLabel;
+
+  /// No description provided for @addExpenseTapToUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to upload'**
+  String get addExpenseTapToUpload;
+
+  /// No description provided for @addExpenseUploadFormats.
+  ///
+  /// In en, this message translates to:
+  /// **'JPG, PNG or PDF'**
+  String get addExpenseUploadFormats;
+
+  /// No description provided for @addExpenseAlreadyPaidQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Have you already paid this expense?'**
+  String get addExpenseAlreadyPaidQuestion;
+
+  /// No description provided for @ourMissionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Our mission is to provide high-performance construction chemical solutions that meet the highest standards of quality, safety, and sustainability. We support our customers with innovative products and expert guidance, enabling them to achieve durable, efficient, and environmentally responsible construction results.'**
+  String get ourMissionDescription;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started!'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @onboardingLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get onboardingLogin;
+
+  /// No description provided for @onboardingJoinUsingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Using a Code'**
+  String get onboardingJoinUsingCode;
+
+  /// No description provided for @onboardingPage1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'A better way to co-parent'**
+  String get onboardingPage1Title;
+
+  /// No description provided for @onboardingPage1Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A secure space designed to help parents communicate, organize, and make decisions with less conflict and more clarity.'**
+  String get onboardingPage1Subtitle;
+
+  /// No description provided for @onboardingPage2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear and respectful communication'**
+  String get onboardingPage2Title;
+
+  /// No description provided for @onboardingPage2Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All messages are documented, time-stamped, and cannot be edited or deleted, helping conversations stay accountable and constructive.'**
+  String get onboardingPage2Subtitle;
+
+  /// No description provided for @onboardingPage3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Important documents, safely stored'**
+  String get onboardingPage3Title;
+
+  /// No description provided for @onboardingPage3Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep medical, school, legal, and financial documents encrypted and accessible with full access history.'**
+  String get onboardingPage3Subtitle;
+
+  /// No description provided for @onboardingPage4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Built on trust and privacy'**
+  String get onboardingPage4Title;
+
+  /// No description provided for @onboardingPage4Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is protected with strong security measures and handled according to Egyptian data protection law.'**
+  String get onboardingPage4Subtitle;
 }
 
 class _AppLocalizationsDelegate
@@ -861,7 +1120,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+      <String>['ar', 'en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -874,6 +1133,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
   }
 
   throw FlutterError(

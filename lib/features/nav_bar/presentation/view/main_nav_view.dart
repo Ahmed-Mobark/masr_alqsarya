@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/features/nav_bar/presentation/cubit/nav_bar_cubit.dart';
 import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/view/schedule_view.dart';
 import 'package:masr_al_qsariya/features/news/presentation/view/news_view.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/view/messages_view.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/view/expense_view.dart';
 
-class MainNavView extends StatefulWidget {
+class MainNavView extends StatelessWidget {
   const MainNavView({super.key});
 
   @override
-  State<MainNavView> createState() => _MainNavViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<NavBarCubit>(),
+      child: const _MainNavContent(),
+    );
+  }
 }
 
-class _MainNavViewState extends State<MainNavView> {
-  int _currentIndex = 0;
+class _MainNavContent extends StatelessWidget {
+  const _MainNavContent();
 
-  /// Whether the Messages tab has unread messages.
-  final bool _hasUnreadMessages = true;
-
-  final List<Widget> _screens = const [
+  static const List<Widget> _screens = [
     HomeView(),
     ScheduleView(),
     NewsView(),
@@ -31,10 +37,13 @@ class _MainNavViewState extends State<MainNavView> {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<NavBarCubit>();
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      body: BlocBuilder<NavBarCubit, NavBarState>(
+        buildWhen: (prev, next) => prev.currentIndex != next.currentIndex,
+        builder: (context, state) {
+          return IndexedStack(index: state.currentIndex, children: _screens);
+        },
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -50,57 +59,55 @@ class _MainNavViewState extends State<MainNavView> {
         child: SafeArea(
           child: SizedBox(
             height: 64,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _NavBarItem(
-                  icon: Iconsax.home,
-                  activeIcon: Iconsax.home_1,
-                  label: 'Home',
-                  isActive: _currentIndex == 0,
-                  onTap: () => _onTabTap(0),
-                ),
-                _NavBarItem(
-                  icon: Iconsax.calendar,
-                  activeIcon: Iconsax.calendar_1,
-                  label: 'Schedule',
-                  isActive: _currentIndex == 1,
-                  onTap: () => _onTabTap(1),
-                ),
-                _NavBarItem(
-                  icon: Iconsax.note,
-                  activeIcon: Iconsax.note_1,
-                  label: 'News',
-                  isActive: _currentIndex == 2,
-                  onTap: () => _onTabTap(2),
-                ),
-                _NavBarItem(
-                  icon: Iconsax.message,
-                  activeIcon: Iconsax.message,
-                  label: 'Messages',
-                  isActive: _currentIndex == 3,
-                  showBadge: _hasUnreadMessages,
-                  onTap: () => _onTabTap(3),
-                ),
-                _NavBarItem(
-                  icon: Iconsax.wallet_3,
-                  activeIcon: Iconsax.wallet_1,
-                  label: 'Expense',
-                  isActive: _currentIndex == 4,
-                  onTap: () => _onTabTap(4),
-                ),
-              ],
+            child: BlocBuilder<NavBarCubit, NavBarState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _NavBarItem(
+                      icon: Iconsax.home,
+                      activeIcon: Iconsax.home_1,
+                      label: context.tr.navHomeTabLabel,
+                      isActive: state.currentIndex == 0,
+                      onTap: () => cubit.setIndex(0),
+                    ),
+                    _NavBarItem(
+                      icon: Iconsax.calendar,
+                      activeIcon: Iconsax.calendar_1,
+                      label: context.tr.navScheduleTabLabel,
+                      isActive: state.currentIndex == 1,
+                      onTap: () => cubit.setIndex(1),
+                    ),
+                    _NavBarItem(
+                      icon: Iconsax.note,
+                      activeIcon: Iconsax.note_1,
+                      label: context.tr.navNewsTabLabel,
+                      isActive: state.currentIndex == 2,
+                      onTap: () => cubit.setIndex(2),
+                    ),
+                    _NavBarItem(
+                      icon: Iconsax.message,
+                      activeIcon: Iconsax.message,
+                      label: context.tr.navMessagesTabLabel,
+                      isActive: state.currentIndex == 3,
+                      showBadge: state.hasUnreadMessages,
+                      onTap: () => cubit.setIndex(3),
+                    ),
+                    _NavBarItem(
+                      icon: Iconsax.wallet_3,
+                      activeIcon: Iconsax.wallet_1,
+                      label: context.tr.navExpenseTabLabel,
+                      isActive: state.currentIndex == 4,
+                      onTap: () => cubit.setIndex(4),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
       ),
     );
-  }
-
-  void _onTabTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
   }
 }
 

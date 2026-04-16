@@ -19,6 +19,7 @@ class AppIcons {
   static const String productsIcon = '${_path}products_icon.png';
   static const String projectsIcon = '${_path}projects_icon.png';
   static const String contactIcon = '${_path}contact_us_icon.png';
+  static const String languageIcon = '${_path}language_icon.png';
 
   // Method to render SVG as a widget
   static Widget icon({required String icon, double size = 24, Color? color}) {

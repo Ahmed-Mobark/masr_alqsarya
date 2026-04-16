@@ -49,6 +49,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorInvalidPassport => 'رقم جواز السفر غير صالح';
 
   @override
+  String get sorryMessage => 'نحن آسفون';
+
+  @override
+  String get nothingFound => 'لم يتم العثور على شيء';
+
+  @override
   String errorPhoneValidation(Object length, Object start) {
     return 'يجب أن يبدأ رقم الهاتف بـ $start وأن يكون طوله $length رقم.';
   }
@@ -60,306 +66,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorIdDocumentRequired => 'يجب رفع مستند الهوية للتحقق من هويتك.';
 
   @override
-  String get errorPhotoRequired => 'يجب رفع صورة بخلفية بيضاء.';
-
-  @override
-  String get onBoardingTitle => 'الكيمياء المتقدمة لبناء أفضل';
-
-  @override
-  String get onBoardingDescription =>
-      'الإمدادات المقاومة للإجهاد والحلول المبنية للبناء مصممة لضمان المقاومة والدقة والنتائج العالية.';
-
-  @override
-  String get onBoardingButtonText => 'ابدأ الآن';
-
-  @override
-  String get home => 'الرئيسية';
-
-  @override
-  String get products => 'المنتجات';
-
-  @override
-  String get projects => 'مشاريع';
-
-  @override
-  String get contact => 'اتصل بنا';
-
-  @override
-  String get search_products => 'البحث عن المنتجات';
-
-  @override
-  String get heroTitle => 'الكيمياء المتقدمة\nلبناء أفضل';
-
-  @override
-  String get heroDescription => 'حلول متقدمة للبناء المستدام،\nالدقيق';
-
-  @override
-  String get exploreProducts => 'استكشف المنتجات';
-
-  @override
-  String get aboutUs => 'معلومات عنا';
-
-  @override
-  String get whoWeAre => 'من نحن؟';
-
-  @override
-  String get whoWeAreDescription =>
-      'لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينج إيليت. أوت إفيسيتور ليو أوت ماجنا موليس، نون سسيليسكيو لوريمفا سيلليسيس.';
-
-  @override
-  String get ourStory => 'قصتنا';
-
-  @override
-  String get innovativeSolutionsLine1 => 'حلول مبتكرة';
-
-  @override
-  String get innovativeSolutionsLine2 => 'تقنيات متقدمة';
-
-  @override
-  String get aboutCompanyDescription =>
-      'تأسست إن سي سي إكس-كاليبر في يناير 2010، متخصصة في مجال الكيماويات الإنشائية. كان هدفنا الأساسي تقديم منتجات وخدمات مبتكرة تتماشى مع أحدث تقنيات الصناعة مع الحفاظ على المعايير الدولية للإنتاج عالي الجودة.';
-
-  @override
-  String get ourVision => 'رؤيتنا';
-
-  @override
-  String get ourVisionDescription =>
-      'رؤيتنا في إن سي سي إكس-كاليبر هي قيادة الصناعة العالمية في تقنية مواد الكيماويات الإنشائية المستدامة. نحن ملتزمون بدمج الاعتبارات البيئية والاستدامة في كل جانب من عملياتنا. من خلال إعطاء الأولوية للابتكار والممارسات المسؤولة، نهدف إلى وضع معايير جديدة للصناعة والإسهام إيجابياً في مستقبل البناء worldwide.';
-
-  @override
-  String get ourMission => 'مهمتنا';
-
-  @override
-  String get ourMissionDescription =>
-      'مهمتنا هي تقديم حلول كيماويات إنشائية عالية الأداء تلبي أعلى معايير الجودة والسلامة والاستدامة. نسعى لدعم عملائنا بمنتجات مبتكرة وإرشاد خبراء، لتمكينهم من تحقيق نتائج بناء متينة وفعالة ومسؤولة بيئياً.';
-
-  @override
-  String get sorryMessage => 'نحن آسفون';
-
-  @override
-  String get nothingFound => 'لم يتم العثور على شيء';
-
-  @override
-  String get chooseImage => 'تحميل اختيار صورة';
-
-  @override
-  String get takePicture => 'تحميل التقط صورة';
-
-  @override
-  String get chooseFromFiles => 'تحميل اختيار من الملفات';
-
-  @override
-  String get productsTitle => 'المنتجات';
-
-  @override
-  String get seeAll => 'عرض الكل';
-
-  @override
-  String get productsSubtitle => 'ابحث عن الحل المناسب حسب المنتج أو الصناعة';
-
-  @override
-  String get construction_chemicals => 'مواد كيميائية للبناء';
-
-  @override
-  String get concrete_admixture => 'إضافات الخرسانة';
-
-  @override
-  String get flooring_system => 'أنظمة الأرضيات';
-
-  @override
-  String get infrastructure => 'بنية تحتية';
-
-  @override
-  String get featurd_projects => 'المشاريع المميزة';
-
-  @override
-  String get proven_project_resaults =>
-      'نتائج مثبتة في مختلف القطاعات الرئيسية';
-
-  @override
-  String get read_more => 'اقرأ المزيد';
-
-  @override
-  String get blogs => 'المدونات';
-
-  @override
-  String get blogs_sub_title => 'أحدث المقالات والتحليلات';
-
-  @override
-  String get getInTouchTitle => 'تواصل معنا';
-
-  @override
-  String get getInTouchDescription =>
-      'نقطة استخدام لوريم إيبسوم هي أنها تحتوي على أكثر أو أقل طبيعي';
-
-  @override
-  String get fullName => 'الاسم الكامل';
-
-  @override
-  String get phoneNumber => 'رقم الهاتف';
-
-  @override
-  String get writeHere => 'اكتب هنا...';
-
-  @override
-  String get sendMessage => 'إرسال الرسالة';
-
-  @override
-  String get email => 'البريد الإلكتروني';
-
-  @override
-  String get company => 'الشركة';
-
-  @override
-  String get contactLocationTitle => 'نيويورك';
-
-  @override
-  String get contactLocationSubtitle =>
-      '42 شارع مأمون، متجر سابا للسجاد والتحف، المملكة المتحدة';
-
-  @override
-  String get contactPhoneTitle => 'رقم الهاتف';
-
-  @override
-  String get contactPhoneSubtitle => '+44 123 456 789';
-
-  @override
-  String get contactEmailTitle => 'البريد الإلكتروني';
-
-  @override
-  String get contactEmailSubtitle => 'info@ncc.com';
-
-  @override
-  String get product_type => 'نوع المنتج';
-
-  @override
-  String get choose_industry => 'اختر الصناعة';
-
-  @override
-  String get download_brochure_pdf => 'تحميل TDS ( ورقة البيانات الفنية )';
-
-  @override
-  String get calculate_quantity => 'حساب الكمية';
-
-  @override
-  String get admixture => 'إضافات';
-
-  @override
-  String get waterproofing => 'عزل مائي';
-
-  @override
-  String get industrial => 'صناعي';
-
-  @override
-  String get strength_enhancement => 'تعزيز القوة';
-
-  @override
-  String get durability => 'المتانة';
-
-  @override
-  String get repair => 'إصلاح';
-
-  @override
-  String get flooring => 'الأرضيات';
-
-  @override
-  String get features => 'المميزات';
-
-  @override
-  String get usage => 'الاستخدام';
-
-  @override
-  String get packaging => 'التعبئة';
-
-  @override
-  String get interestedInProduct => 'مهتم بهذا المنتج؟';
-
-  @override
-  String get contactTeamDesc =>
-      'تواصل مع فريقنا للتحقق من التوفر والمواصفات والإرشادات لاحتياجات مشروعك';
-
-  @override
-  String get emailLabel => 'البريد الإلكتروني';
-
-  @override
-  String get addressLabel => 'العنوان';
-
-  @override
-  String get phoneLabel => 'الهاتف';
-
-  @override
-  String get nccAddress => '233 المنطقة الصناعية، التجمع الخامس – مصر';
-
-  @override
-  String get nccPhoneOne => 'واتساب: +20 120 509 5090';
-
-  @override
-  String get nccHotline => 'الخط الساخن: 16960';
-
-  @override
-  String get calculatorResultTitle => 'نتيجة الحساب';
-
-  @override
-  String get calculatorResultLiters => 'المطلوب باللتر';
-
-  @override
-  String get unitLiters => 'لتر';
-
-  @override
-  String get calculatorResultGallons => 'المطلوب بالجالون';
-
-  @override
-  String get unitGallons => 'جالون';
-
-  @override
-  String get calculatorProductLabel => 'المنتج';
-
-  @override
-  String get calculatorProductHint => 'اختر المنتج';
-
-  @override
-  String get calculatorTitle => 'آلة حاسبة';
-
-  @override
-  String get calculatorHeaderTitle => 'حاسبة كمية المنتج';
-
-  @override
-  String get calculatorHeaderDescription =>
-      'أدخل المنطقة لحساب الكمية المطلوبة على الفور باللتر والجالون والكيلوجرام.';
-
-  @override
-  String get calculatorAreaLabel => 'أدخل منطقة العمل (كم²)؟';
-
-  @override
-  String get dropdownTitle => 'حدد منطقة العمل';
-
-  @override
-  String get similar_projects => 'مشاريع مماثلة';
-
-  @override
-  String get products_used => 'المنتجات المستخدمة';
-
-  @override
-  String get our_projects => 'مشاريعنا';
-
-  @override
-  String get projetc_use_this_product => 'المشاريع التي تستخدم هذا المنتج';
-
-  @override
-  String get projetc_use_this_product_desc =>
-      'استكشف مشاريع حقيقية حيث قدم هذا المنتج أداءً مثبتاً ونتائج موثوقة.';
-
-  @override
-  String get country => 'دولة';
-
-  @override
-  String get construction_products => 'منتجات البناء';
-
-  @override
-  String get insights_financial_updates => 'رؤى وتحديثات مالية';
-
-  @override
-  String get related_posts => 'منشورات ذات صلة';
+  String get errorPhotoRequired => 'يجب رفع صورة بخلفية بيضاء';
 
   @override
   String get updateAvailableTitle => 'تحديث متاح';
@@ -379,26 +86,458 @@ class AppLocalizationsAr extends AppLocalizations {
   String get skip => 'تخطي';
 
   @override
-  String get is_required => 'مطلوب';
+  String get chooseImage => 'تحميل اختيار صورة';
 
   @override
-  String get search_projects => 'البحث عن المشاريع';
+  String get takePicture => 'تحميل التقط صورة';
 
   @override
-  String get no_projects_found => 'لم يتم العثور على أي مشاريع';
+  String get chooseFromFiles => 'تحميل اختيار من الملفات';
 
   @override
-  String get load_more => 'تحميل المزيد';
+  String get settingsTitle => 'الإعدادات';
 
   @override
-  String get successful_projects_across_industries =>
-      'مشاريع ناجحة في مختلف القطاعات';
+  String get settingsPushNotifications => 'إشعارات الدفع';
 
   @override
-  String
-  get discover_real_world_applications_of_our_solutions_across_different_industries =>
-      'اكتشف التطبيقات العملية لحلولنا في مختلف الصناعات';
+  String get settingsEmailNotifications => 'إشعارات البريد الإلكتروني';
 
   @override
-  String get no_products_found => 'لم يتم العثور على منتجات';
+  String get settingsDarkMode => 'الوضع الداكن';
+
+  @override
+  String get settingsToneAnalysis => 'تحليل النبرة';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get navHomeTabLabel => 'الرئيسية';
+
+  @override
+  String get navScheduleTabLabel => 'الجدول';
+
+  @override
+  String get navNewsTabLabel => 'الأخبار';
+
+  @override
+  String get navMessagesTabLabel => 'الرسائل';
+
+  @override
+  String get navExpenseTabLabel => 'المصروفات';
+
+  @override
+  String get scheduleSharedCalendarTitle => 'التقويم المشترك';
+
+  @override
+  String get scheduleNoEventsForDay => 'لا توجد أحداث لهذا اليوم';
+
+  @override
+  String get scheduleEventTypePickup => 'استلام';
+
+  @override
+  String get scheduleEventTypeMedical => 'طبي';
+
+  @override
+  String get scheduleEventTypeActivity => 'نشاط';
+
+  @override
+  String get scheduleEventTypeSchool => 'مدرسة';
+
+  @override
+  String get scheduleEventTypeCustody => 'حضانة';
+
+  @override
+  String get scheduleAllDay => 'طوال اليوم';
+
+  @override
+  String get authLoginTitle => 'تسجيل الدخول';
+
+  @override
+  String get authEmailTab => 'البريد الإلكتروني';
+
+  @override
+  String get authPhoneTab => 'رقم الهاتف';
+
+  @override
+  String get authEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get authEmailHint => 'example@email.com';
+
+  @override
+  String get authPhoneLabel => 'رقم الهاتف';
+
+  @override
+  String get authPhoneHint => '+20 123 456 7890';
+
+  @override
+  String get authPasswordLabel => 'كلمة المرور';
+
+  @override
+  String get authPasswordHint => '********';
+
+  @override
+  String get authForgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get authLoginButton => 'تسجيل الدخول';
+
+  @override
+  String get authOrContinueWith => 'أو المتابعة باستخدام';
+
+  @override
+  String get authDontHaveAccountPrefix => 'ليس لديك حساب؟ ';
+
+  @override
+  String get authSignUp => 'إنشاء حساب';
+
+  @override
+  String get authSignUpTitle => 'إنشاء حساب';
+
+  @override
+  String get authFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get authFirstNameHint => 'محمد';
+
+  @override
+  String get authLastNameLabel => 'اسم العائلة';
+
+  @override
+  String get authLastNameHint => 'أحمد';
+
+  @override
+  String get authConfirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
+  String get authAgreeTermsToContinue =>
+      'يرجى الموافقة على الشروط والأحكام للمتابعة.';
+
+  @override
+  String get authSignUpButton => 'إنشاء حساب';
+
+  @override
+  String get authAlreadyHaveAccountPrefix => 'لديك حساب بالفعل؟ ';
+
+  @override
+  String get authLoginLink => 'تسجيل الدخول';
+
+  @override
+  String get commonCancel => 'إلغاء';
+
+  @override
+  String get commonClose => 'إغلاق';
+
+  @override
+  String get commonShare => 'مشاركة';
+
+  @override
+  String get commonSave => 'حفظ';
+
+  @override
+  String get commonAdd => 'إضافة';
+
+  @override
+  String get commonDelete => 'حذف';
+
+  @override
+  String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get profileMenuAccountSecurity => 'الحساب والأمان';
+
+  @override
+  String get profileMenuFamilyInformation => 'معلومات العائلة';
+
+  @override
+  String get profileMenuNotifications => 'الإشعارات';
+
+  @override
+  String get profileMenuLanguage => 'اللغة';
+
+  @override
+  String get profileMenuTermsOfUse => 'شروط الاستخدام';
+
+  @override
+  String get profileMenuInvitePeople => 'دعوة أشخاص';
+
+  @override
+  String get profileMenuLogout => 'تسجيل الخروج';
+
+  @override
+  String get profileTermsTitle => 'شروط الاستخدام';
+
+  @override
+  String get profileTermsBody =>
+      'باستخدام هذا التطبيق، فإنك توافق على الشروط والأحكام التالية. يرجى قراءتها بعناية قبل المتابعة.\\n\\n1. يجب أن يكون عمرك 18 عامًا على الأقل لاستخدام هذه الخدمة.\\n\\n2. يجب أن تكون جميع المعلومات المقدمة دقيقة ومحدثة.\\n\\n3. أنت مسؤول عن الحفاظ على سرية حسابك.\\n\\n4. نحتفظ بالحق في تعديل هذه الشروط في أي وقت.\\n\\n5. قد يؤدي أي سوء استخدام للمنصة إلى تعليق الحساب.';
+
+  @override
+  String get profileInviteTitle => 'دعوة أشخاص';
+
+  @override
+  String get profileInviteDescription =>
+      'شارك رمز الدعوة الخاص بك مع العائلة والأصدقاء.';
+
+  @override
+  String get profileLogoutTitle => 'تسجيل الخروج';
+
+  @override
+  String get profileLogoutConfirm => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
+
+  @override
+  String get accountSecurityTitle => 'الحساب والأمان';
+
+  @override
+  String get accountSecurityEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get accountSecurityPhoneLabel => 'الهاتف';
+
+  @override
+  String get accountSecurityChangePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get accountSecurityEnableTwoFactor => 'تفعيل المصادقة الثنائية';
+
+  @override
+  String get accountSecurityDeleteAccount => 'حذف الحساب';
+
+  @override
+  String get accountSecurityDeleteConfirm =>
+      'هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get familyInfoTitle => 'معلومات العائلة';
+
+  @override
+  String get familyChildrenTitle => 'الأطفال';
+
+  @override
+  String get familyAddChild => 'إضافة طفل';
+
+  @override
+  String get familyInfoSaved => 'تم حفظ معلومات العائلة';
+
+  @override
+  String get familyCoParent => 'الوالد/الوالدة الآخر';
+
+  @override
+  String get familyConnected => 'متصل';
+
+  @override
+  String familyYearsOld(Object age) {
+    return '$age سنة';
+  }
+
+  @override
+  String get familyChildNameHint => 'اسم الطفل';
+
+  @override
+  String get familyChildAgeHint => 'العمر';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsEmptyTitle => 'لا توجد إشعارات بعد';
+
+  @override
+  String get notificationsEmptySubtitle => 'سنخبرك عند وصول أي شيء';
+
+  @override
+  String get notificationsNewMessageTitle => 'رسالة جديدة';
+
+  @override
+  String get notificationsNewMessageBody =>
+      'أرسلت فاطمة رسالة بخصوص جدول عطلة نهاية الأسبوع.';
+
+  @override
+  String get notificationsScheduleUpdatedTitle => 'تم تحديث الجدول';
+
+  @override
+  String get notificationsScheduleUpdatedBody =>
+      'تم تحديث جدول المشاركة للأسبوع القادم.';
+
+  @override
+  String get notificationsExpenseAddedTitle => 'تمت إضافة مصروف';
+
+  @override
+  String get notificationsExpenseAddedBody =>
+      'تم تسجيل مصروف مشترك جديد بقيمة 500 جنيه.';
+
+  @override
+  String get notificationsReminderTitle => 'تذكير';
+
+  @override
+  String get notificationsReminderBody =>
+      'لا تنسَ اجتماع أولياء الأمور غدًا الساعة 4 مساءً.';
+
+  @override
+  String get notificationsSecurityAlertTitle => 'تنبيه أمني';
+
+  @override
+  String get notificationsSecurityAlertBody =>
+      'تم استخدام جهاز جديد لتسجيل الدخول إلى حسابك.';
+
+  @override
+  String timeMinutesAgo(Object minutes) {
+    return 'قبل $minutes دقيقة';
+  }
+
+  @override
+  String timeHoursAgo(Object hours) {
+    return 'قبل $hours ساعة';
+  }
+
+  @override
+  String timeHoursAgoPlural(Object hours) {
+    return 'قبل $hours ساعات';
+  }
+
+  @override
+  String get timeYesterday => 'أمس';
+
+  @override
+  String timeDaysAgo(Object days) {
+    return 'قبل $days أيام';
+  }
+
+  @override
+  String get chatTypeMessageHint => 'اكتب رسالة...';
+
+  @override
+  String get updatePleaseUpdateToContinue => 'يرجى تحديث التطبيق للمتابعة.';
+
+  @override
+  String get updateNewVersionAvailableShort => 'يتوفر إصدار جديد.';
+
+  @override
+  String get languageSelectTitle => 'اختر اللغة';
+
+  @override
+  String get commonStart => 'ابدأ';
+
+  @override
+  String get messagesTitle => 'الرسائل';
+
+  @override
+  String get messagesSearch => 'بحث';
+
+  @override
+  String get newsTitle => 'الأخبار';
+
+  @override
+  String get expenseTitle => 'المصروفات';
+
+  @override
+  String get expenseTotalThisMonth => 'الإجمالي هذا الشهر';
+
+  @override
+  String get expenseYouPaid => 'دفعتَ أنت';
+
+  @override
+  String get expenseCoParentPaid => 'دفع الوالد/الوالدة الآخر';
+
+  @override
+  String get expenseAddExpense => 'إضافة مصروف';
+
+  @override
+  String get addExpenseTitle => 'إضافة مصروف';
+
+  @override
+  String get addExpenseCategoryLabel => 'الفئة';
+
+  @override
+  String get addExpenseSelectCategoryHint => 'اختر الفئة';
+
+  @override
+  String get addExpenseDateLabel => 'التاريخ';
+
+  @override
+  String get addExpenseSelectDateHint => 'اختر التاريخ';
+
+  @override
+  String get addExpenseAmountLabel => 'المبلغ';
+
+  @override
+  String get addExpenseEnterAmountHint => 'أدخل المبلغ';
+
+  @override
+  String get addExpenseAmountRequired => 'المبلغ مطلوب';
+
+  @override
+  String get addExpenseEnterValidAmount => 'أدخل مبلغًا صحيحًا';
+
+  @override
+  String get addExpenseCurrencyLabel => 'العملة';
+
+  @override
+  String get addExpenseSelectCurrencyHint => 'اختر العملة';
+
+  @override
+  String get addExpenseDescriptionLabel => 'الوصف';
+
+  @override
+  String get addExpenseEnterDescriptionHint => 'أدخل الوصف';
+
+  @override
+  String get addExpenseProofOfPurchaseLabel => 'إثبات الشراء';
+
+  @override
+  String get addExpenseTapToUpload => 'اضغط للرفع';
+
+  @override
+  String get addExpenseUploadFormats => 'JPG أو PNG أو PDF';
+
+  @override
+  String get addExpenseAlreadyPaidQuestion => 'هل قمت بدفع هذا المصروف بالفعل؟';
+
+  @override
+  String get ourMissionDescription =>
+      'مهمتنا هي تقديم حلول كيماويات إنشائية عالية الأداء تلبي أعلى معايير الجودة والسلامة والاستدامة. نسعى لدعم عملائنا بمنتجات مبتكرة وإرشاد خبراء، لتمكينهم من تحقيق نتائج بناء متينة وفعالة ومسؤولة بيئياً.';
+
+  @override
+  String get onboardingSkip => 'تخطي';
+
+  @override
+  String get onboardingNext => 'التالي';
+
+  @override
+  String get onboardingGetStarted => 'ابدأ الآن!';
+
+  @override
+  String get onboardingLogin => 'تسجيل الدخول';
+
+  @override
+  String get onboardingJoinUsingCode => 'الانضمام باستخدام رمز';
+
+  @override
+  String get onboardingPage1Title => 'طريقة أفضل للتربية المشتركة';
+
+  @override
+  String get onboardingPage1Subtitle =>
+      'مساحة آمنة تساعد الوالدين على التواصل والتنظيم واتخاذ القرارات بقدر أقل من الخلاف والمزيد من الوضوح.';
+
+  @override
+  String get onboardingPage2Title => 'تواصل واضح ومحترم';
+
+  @override
+  String get onboardingPage2Subtitle =>
+      'جميع الرسائل موثقة ومؤرخة ولا يمكن تعديلها أو حذفها، مما يساعد على إبقاء المحادثات مسؤولة وبنّاءة.';
+
+  @override
+  String get onboardingPage3Title => 'مستندات مهمة ومحفوظة بأمان';
+
+  @override
+  String get onboardingPage3Subtitle =>
+      'احتفظ بالمستندات الطبية والمدرسية والقانونية والمالية مشفرة ومتاحة مع سجل وصول كامل.';
+
+  @override
+  String get onboardingPage4Title => 'مبني على الثقة والخصوصية';
+
+  @override
+  String get onboardingPage4Subtitle =>
+      'بياناتك محمية بإجراءات أمنية قوية ويتم التعامل معها وفقًا لقانون حماية البيانات المصري.';
 }

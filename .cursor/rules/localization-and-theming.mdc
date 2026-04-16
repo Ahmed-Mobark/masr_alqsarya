@@ -1,0 +1,79 @@
+---
+description: Localization (ARB / gen-l10n) and theming (AppColors, AppTextStyles, adaptive_theme)
+globs: assets/translation/*.arb,lib/core/theme/**/*.dart,lib/core/config/app_colors.dart,lib/core/config/styles/**/*.dart,lib/core/translation/**/*.dart
+alwaysApply: false
+---
+
+# Localization & Theming
+
+## Localization
+
+### Supported Locales
+
+**Arabic (`ar`)**, **English (`en`)**, **French (`fr`)** — all three must stay in sync.
+
+### ARB Files
+
+- Located in `assets/translation/` — `en.arb` (template), `ar.arb`, `fr.arb`.
+- Regenerate with `flutter gen-l10n` (automatic via `flutter: generate: true` in `pubspec.yaml`).
+- Generated output: `lib/core/translation/app_localizations*.dart`.
+
+### Adding a New String
+
+1. Add the key + English value to `en.arb`.
+2. Add the Arabic translation to `ar.arb`.
+3. Add the French translation to `fr.arb`.
+4. Use in code: `context.tr.yourNewKey`.
+
+### Key Naming
+
+- `camelCase`, prefixed by feature: `loginEmailLabel`, `schedulePickupEvent`, `expenseAddTitle`.
+- Group related keys together in the ARB file with a comment separator.
+
+### Runtime Locale
+
+- `MyAppState.setLocale()` updates `MaterialApp.locale` and persists via `Storage.storeLang`.
+- Also calls `ApiBaseHelper().updateLocaleInHeaders(langCode)` to keep API responses localised.
+
+## Theming
+
+### Colors
+
+- Canonical source: `lib/core/config/app_colors.dart` (abstract class `AppColors` with static consts).
+- Re-exported from `lib/core/theme/app_colors.dart` for shorter imports.
+- Always use `AppColors.*` — never inline `Color(0xFF...)`.
+- Key tokens: `primary` (gold #FEDB65), `primaryDark` (purple #645A9E), `white`, `black`, `darkText`, `greyText`, `border`, `error`, `success`.
+
+### Text Styles
+
+- Base styles: `lib/core/config/styles/styles.dart` → `TextStyles` (weight × size matrix) + `AppTextStyles` (semantic aliases).
+- Semantic aliases to use in screens:
+
+| Style | Base | Typical use |
+|-------|------|-------------|
+| `heading1` | Bold 30sp | Screen titles |
+| `heading2` | Bold 20sp | Section headings |
+| `button` | SemiBold 14sp | Button labels |
+| `body` | Regular 14sp | Body text |
+| `caption` | Regular 12sp | Secondary info |
+| `small` | Regular 10sp | Badges, timestamps |
+
+- Fine-tune with `.copyWith(fontSize: X.sp)` when the design requires a size between tokens.
+
+### ScreenUtil
+
+- Design size: **393 × 852** (set in `MyApp`).
+- Use `.w` for widths/horizontal spacing, `.h` for heights/vertical spacing, `.r` for radii, `.sp` for font sizes.
+
+### Light / Dark Theme
+
+- `adaptive_theme` wraps `MaterialApp` with `AppTheme.appLightTheme` / `appDarkTheme`.
+- Component themes (AppBar, Input, Buttons, Tabs, PageTransitions) are centralised in `app_theme_data.dart`.
+- When adding a new component theme, extend `AppThemeData`, not the screen.
+
+## Rules
+
+- Every user-visible string goes through ARB + `context.tr` — no exceptions.
+- When adding a new colour, add it to `AppColors` first, then reference it.
+- Never skip a locale — all three ARBs must have every key.
+- Prefer semantic `AppTextStyles.*` over raw `TextStyles.textView*` in screens.

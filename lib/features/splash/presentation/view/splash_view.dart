@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masr_al_qsariya/core/config/app_images.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/features/language/presentation/view/language_view.dart';
@@ -31,7 +32,7 @@ class _SplashViewState extends State<SplashView> {
       backgroundColor: Colors.white,
       body: Center(
         child: Image.asset(
-          'assets/images/logoapp.png',
+          AppImages.logoApp,
           width: 150,
           height: 172,
         ),

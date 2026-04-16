@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:masr_al_qsariya/core/config/app_images.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
@@ -19,33 +21,6 @@ class _OnboardingViewState extends State<OnboardingView> {
   int _currentPage = 0;
 
   static const _totalPages = 4;
-
-  static const _backgrounds = [
-    'assets/images/onboarding_1.png',
-    'assets/images/onboarding_2.png',
-    'assets/images/onboarding_3.png',
-    'assets/images/onboarding_4.png',
-  ];
-
-  static const _titles = [
-    'A better way to co-parent',
-    'Clear and respectful communication',
-    'Important documents, safely stored',
-    'Built on trust and privacy',
-  ];
-
-  static const _subtitles = [
-    'A secure space designed to help parents communicate, organize, and make decisions — with less conflict and more clarity.',
-    'All messages are documented, time-stamped, and cannot be edited or deleted — helping conversations stay accountable and constructive.',
-    'Keep medical, school, legal, and financial documents encrypted and accessible — with full access history.',
-    'Your data is protected with strong security measures and handled according to Egyptian data protection law.',
-  ];
-
-  static const _buttonLabels = [
-    'NEXT',
-    'NEXT',
-    'Get Started!',
-  ];
 
   @override
   void dispose() {
@@ -85,84 +60,55 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      _OnboardingPageData(
+        imagePath: AppImages.onboarding1,
+        title: context.tr.onboardingPage1Title,
+        subtitle: context.tr.onboardingPage1Subtitle,
+      ),
+      _OnboardingPageData(
+        imagePath: AppImages.onboarding2,
+        title: context.tr.onboardingPage2Title,
+        subtitle: context.tr.onboardingPage2Subtitle,
+      ),
+      _OnboardingPageData(
+        imagePath: AppImages.onboarding3,
+        title: context.tr.onboardingPage3Title,
+        subtitle: context.tr.onboardingPage3Subtitle,
+      ),
+      _OnboardingPageData(
+        imagePath: AppImages.onboarding4,
+        title: context.tr.onboardingPage4Title,
+        subtitle: context.tr.onboardingPage4Subtitle,
+      ),
+    ];
+
     return Scaffold(
-      body: Stack(
-        children: [
-          // Page view
-          PageView.builder(
-            controller: _pageController,
-            itemCount: _totalPages,
-            onPageChanged: (index) => setState(() => _currentPage = index),
-            itemBuilder: (context, index) => _buildPage(index),
-          ),
-          // Top bar
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Back arrow
-                  GestureDetector(
-                    onTap: _onBack,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFF5F5F5),
-                          width: 0.5,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new,
-                        size: 12,
-                        color: Color(0xFFFBBC05),
-                      ),
-                    ),
-                  ),
-                  // Logo
-                  Image.asset(
-                    'assets/images/logo_small.png',
-                    width: 90,
-                    height: 68,
-                    fit: BoxFit.contain,
-                  ),
-                  // Skip
-                  GestureDetector(
-                    onTap: _onSkip,
-                    child: Text(
-                      'SKIP',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      body: PageView.builder(
+        controller: _pageController,
+        itemCount: _totalPages,
+        onPageChanged: (index) => setState(() => _currentPage = index),
+        itemBuilder: (context, index) =>
+            _buildPage(context, pages[index], index: index),
       ),
     );
   }
 
-  Widget _buildPage(int index) {
-    final bool isFinalPage = index == 3;
+  Widget _buildPage(
+    BuildContext context,
+    _OnboardingPageData page, {
+    required int index,
+  }) {
+    final isFinalPage = index == _totalPages - 1;
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Background image
         Image.asset(
-          _backgrounds[index],
+          page.imagePath,
           fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
         ),
-        // Dark gradient overlay at bottom for readability
         Positioned.fill(
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -170,168 +116,313 @@ class _OnboardingViewState extends State<OnboardingView> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
+                  Colors.black.withValues(alpha: 0.03),
                   Colors.transparent,
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.6),
+                  Colors.black.withValues(alpha: 0.18),
+                  Colors.black.withValues(alpha: isFinalPage ? 0.94 : 0.90),
                 ],
-                stops: const [0.0, 0.4, 1.0],
+                stops: const [0.0, 0.42, 0.68, 1.0],
               ),
             ),
           ),
         ),
-        // Bottom content area
-        Positioned(
-          top: 539,
-          left: 16,
-          right: 16,
-          bottom: 0,
-          child: isFinalPage ? _buildFinalPageContent() : _buildPageContent(index),
+        SafeArea(
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(10.w, 6.h, 10.w, 24.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _OnboardingTopBar(
+                  onBack: _onBack,
+                  onSkip: _onSkip,
+                  skipLabel: context.tr.onboardingSkip.toUpperCase(),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w),
+                  child: _OnboardingBottomContent(
+                    title: page.title,
+                    subtitle: page.subtitle,
+                    isFinalPage: isFinalPage,
+                    currentIndex: index,
+                    onNext: _onNext,
+                    onLogin: _onLogin,
+                    onJoinWithCode: _onJoinWithCode,
+                    nextLabel: index == _totalPages - 2
+                        ? context.tr.onboardingGetStarted.toUpperCase()
+                        : context.tr.onboardingNext.toUpperCase(),
+                    loginLabel: context.tr.onboardingLogin.toUpperCase(),
+                    joinWithCodeLabel: context.tr.onboardingJoinUsingCode
+                        .toUpperCase(),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
   }
+}
 
-  Widget _buildPageContent(int index) {
+class _OnboardingPageData {
+  const _OnboardingPageData({
+    required this.imagePath,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String imagePath;
+  final String title;
+  final String subtitle;
+}
+
+class _OnboardingTopBar extends StatelessWidget {
+  const _OnboardingTopBar({
+    required this.onBack,
+    required this.onSkip,
+    required this.skipLabel,
+  });
+
+  final VoidCallback onBack;
+  final VoidCallback onSkip;
+  final String skipLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 46.h,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: _TopCircleButton(
+              icon: Icons.arrow_back_ios_new_rounded,
+              onTap: onBack,
+            ),
+          ),
+          Center(
+            child: Image.asset(
+              AppImages.logoSmall,
+              width: 92.w,
+              height: 68.h,
+              fit: BoxFit.contain,
+            ),
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: GestureDetector(
+              onTap: onSkip,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
+                child: Text(
+                  skipLabel,
+                  style: AppTextStyles.button(
+                    color: AppColors.white,
+                  ).copyWith(fontSize: 15.sp, letterSpacing: 0, height: 1),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OnboardingBottomContent extends StatelessWidget {
+  const _OnboardingBottomContent({
+    required this.title,
+    required this.subtitle,
+    required this.isFinalPage,
+    required this.currentIndex,
+    required this.onNext,
+    required this.onLogin,
+    required this.onJoinWithCode,
+    required this.nextLabel,
+    required this.loginLabel,
+    required this.joinWithCodeLabel,
+  });
+
+  final String title;
+  final String subtitle;
+  final bool isFinalPage;
+  final int currentIndex;
+  final VoidCallback onNext;
+  final VoidCallback onLogin;
+  final VoidCallback onJoinWithCode;
+  final String nextLabel;
+  final String loginLabel;
+  final String joinWithCodeLabel;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Page indicator dots
-        Row(
-          children: List.generate(3, (dotIndex) {
-            final bool isActive = dotIndex == index;
-            return Container(
-              width: isActive ? 22 : 5,
-              height: 5,
-              margin: EdgeInsets.only(right: dotIndex < 2 ? 4 : 0),
-              decoration: BoxDecoration(
-                color: isActive
-                    ? const Color(0xFFFEDB65)
-                    : const Color(0xFFE2E2E2),
-                borderRadius: BorderRadius.circular(5),
-              ),
-            );
-          }),
-        ),
-        const SizedBox(height: 16),
-        // Title
-        SizedBox(
-          width: 271,
+        if (!isFinalPage) _OnboardingPageIndicator(currentIndex: currentIndex),
+        if (!isFinalPage) SizedBox(height: 18.h),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 308.w),
           child: Text(
-            _titles[index],
-            style: GoogleFonts.inter(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+            title,
+            style: AppTextStyles.heading1(
               color: AppColors.white,
-            ),
+            ).copyWith(fontSize: 26.sp, height: 1.18),
           ),
         ),
-        const SizedBox(height: 16),
-        // Subtitle
-        Text(
-          _subtitles[index],
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: const Color(0xFFE2E2E2),
+        SizedBox(height: 14.h),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 350.w),
+          child: Text(
+            subtitle,
+            style: AppTextStyles.body(
+              color: AppColors.white.withValues(alpha: 0.90),
+            ).copyWith(fontSize: 14.sp, height: 1.35),
           ),
         ),
-        const SizedBox(height: 32),
-        // Button
-        SizedBox(
-          width: 343,
-          height: 44,
-          child: ElevatedButton(
-            onPressed: _onNext,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFEDB65),
-              foregroundColor: AppColors.darkText,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+        SizedBox(height: 28.h),
+        if (isFinalPage)
+          Column(
+            children: [
+              _PrimaryOnboardingButton(text: loginLabel, onPressed: onLogin),
+              SizedBox(height: 14.h),
+              _SecondaryOnboardingButton(
+                text: joinWithCodeLabel,
+                onPressed: onJoinWithCode,
               ),
-            ),
-            child: Text(
-              _buttonLabels[index],
-              style: AppTextStyles.button(),
-            ),
-          ),
-        ),
+            ],
+          )
+        else
+          _PrimaryOnboardingButton(text: nextLabel, onPressed: onNext),
       ],
     );
   }
+}
 
-  Widget _buildFinalPageContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Title
-        Text(
-          _titles[3],
-          style: GoogleFonts.inter(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: AppColors.white,
+class _TopCircleButton extends StatelessWidget {
+  const _TopCircleButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999.r),
+        child: Ink(
+          width: 32.w,
+          height: 32.w,
+          decoration: BoxDecoration(
+            color: AppColors.white.withValues(alpha: 0.96),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 14.sp, color: AppColors.primaryDark),
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingPageIndicator extends StatelessWidget {
+  const _OnboardingPageIndicator({required this.currentIndex});
+
+  final int currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: List.generate(3, (index) {
+        final isActive = index == currentIndex;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          width: isActive ? 24.w : 7.w,
+          height: 5.h,
+          margin: EdgeInsetsDirectional.only(end: index == 2 ? 0 : 5.w),
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.primary
+                : AppColors.white.withValues(alpha: 0.88),
+            borderRadius: BorderRadius.circular(999.r),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _PrimaryOnboardingButton extends StatelessWidget {
+  const _PrimaryOnboardingButton({required this.text, required this.onPressed});
+
+  final String text;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 58.h,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.darkText,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999.r),
           ),
         ),
-        const SizedBox(height: 16),
-        // Subtitle
-        Text(
-          _subtitles[3],
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: const Color(0xFFE2E2E2),
+        child: Text(
+          text,
+          style: AppTextStyles.button(
+            color: AppColors.darkText,
+          ).copyWith(fontSize: 15.sp, height: 1),
+        ),
+      ),
+    );
+  }
+}
+
+class _SecondaryOnboardingButton extends StatelessWidget {
+  const _SecondaryOnboardingButton({
+    required this.text,
+    required this.onPressed,
+  });
+
+  final String text;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 58.h,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          backgroundColor: AppColors.white,
+          foregroundColor: AppColors.darkText,
+          side: BorderSide(
+            color: AppColors.primary.withValues(alpha: 0.85),
+            width: 1.2,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999.r),
           ),
         ),
-        const SizedBox(height: 32),
-        // LOG IN button
-        SizedBox(
-          width: 343,
-          height: 44,
-          child: ElevatedButton(
-            onPressed: _onLogin,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFEDB65),
-              foregroundColor: AppColors.darkText,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
-            child: Text(
-              'LOG IN',
-              style: AppTextStyles.button(),
-            ),
-          ),
+        child: Text(
+          text,
+          style: AppTextStyles.button(
+            color: AppColors.darkText,
+          ).copyWith(fontSize: 15.sp, height: 1),
         ),
-        const SizedBox(height: 24),
-        // JOIN USING A CODE button
-        SizedBox(
-          width: 343,
-          height: 44,
-          child: OutlinedButton(
-            onPressed: _onJoinWithCode,
-            style: OutlinedButton.styleFrom(
-              backgroundColor: AppColors.white,
-              foregroundColor: AppColors.darkText,
-              elevation: 0,
-              side: const BorderSide(
-                color: Color(0xFFFEDB65),
-                width: 1,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
-            child: Text(
-              'JOIN USING A CODE',
-              style: AppTextStyles.button(),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

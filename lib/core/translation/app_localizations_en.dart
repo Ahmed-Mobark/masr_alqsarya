@@ -49,6 +49,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorInvalidPassport => 'Invalid passport number';
 
   @override
+  String get sorryMessage => 'We are sorry';
+
+  @override
+  String get nothingFound => 'Nothing Found';
+
+  @override
   String errorPhoneValidation(Object length, Object start) {
     return 'The phone number must start with $start and be $length digits long.';
   }
@@ -62,307 +68,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPhotoRequired =>
-      'You must upload a photo with a white background.';
-
-  @override
-  String get onBoardingTitle => 'Advanced Chemistry for Better Builds';
-
-  @override
-  String get onBoardingDescription =>
-      'High-performance admixtures and construction solutions engineered for durability, precision, and superior results.';
-
-  @override
-  String get onBoardingButtonText => 'Get Started';
-
-  @override
-  String get home => 'Home';
-
-  @override
-  String get products => 'Products';
-
-  @override
-  String get projects => 'Projects';
-
-  @override
-  String get contact => 'Contact';
-
-  @override
-  String get search_products => 'Search Products';
-
-  @override
-  String get heroTitle => 'Advanced Chemistry\nfor Better Builds';
-
-  @override
-  String get heroDescription =>
-      'Advanced solutions for durable,\nprecise construction';
-
-  @override
-  String get exploreProducts => 'Explore Products';
-
-  @override
-  String get aboutUs => 'About Us';
-
-  @override
-  String get whoWeAre => 'Who We Are?';
-
-  @override
-  String get whoWeAreDescription =>
-      'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Ut Efficitur Leo Ut Magna Mollis, Non Scelerisque Loremfa Cilisis.';
-
-  @override
-  String get ourStory => 'Our Story';
-
-  @override
-  String get innovativeSolutionsLine1 => 'INNOVATIVE SOLUTIONS';
-
-  @override
-  String get innovativeSolutionsLine2 => 'ADVANCED TECHNOLOGIES';
-
-  @override
-  String get aboutCompanyDescription =>
-      'NCC X-Calibur was established in January 2010, specialising in the field of Construction Chemicals. Our primary goal has been to introduce innovative products and services that align with the latest industry technologies while upholding international standards of high-quality production.';
-
-  @override
-  String get ourVision => 'Our Vision';
-
-  @override
-  String get ourVisionDescription =>
-      'Our vision at NCC X-Calibur is to lead the global industry in sustainable construction chemical material technology. We are committed to integrating environmental considerations and sustainability into every aspect of our operations. By prioritising innovation and responsible practices, we aim to set new standards for the industry and contribute positively to the future of construction worldwide.';
-
-  @override
-  String get ourMission => 'Our Mission';
-
-  @override
-  String get ourMissionDescription =>
-      'Our mission is to deliver high-performance construction chemical solutions that meet the highest standards of quality, safety, and sustainability. We strive to support our clients with innovative products and expert guidance, enabling them to achieve durable, efficient, and environmentally responsible construction outcomes.';
-
-  @override
-  String get sorryMessage => 'We are sorry';
-
-  @override
-  String get nothingFound => 'Nothing Found';
-
-  @override
-  String get chooseImage => 'Upload Choose Image';
-
-  @override
-  String get takePicture => 'Upload Take Picture';
-
-  @override
-  String get chooseFromFiles => 'Upload Choose From Files';
-
-  @override
-  String get productsTitle => 'PRODUCTS';
-
-  @override
-  String get seeAll => 'See All';
-
-  @override
-  String get productsSubtitle =>
-      'Find the right solution by product or industry';
-
-  @override
-  String get construction_chemicals => 'Construction Chemicals';
-
-  @override
-  String get concrete_admixture => 'Concrete Admixtures';
-
-  @override
-  String get flooring_system => 'Flooring Systems';
-
-  @override
-  String get infrastructure => 'Infrastructure';
-
-  @override
-  String get featurd_projects => 'FEATURED PROJECTS';
-
-  @override
-  String get proven_project_resaults => 'Proven results across key industries';
-
-  @override
-  String get read_more => 'Read More';
-
-  @override
-  String get blogs => 'BLOGS';
-
-  @override
-  String get blogs_sub_title => 'Latest Articles & Insights';
-
-  @override
-  String get getInTouchTitle => 'Get in Touch';
-
-  @override
-  String get getInTouchDescription =>
-      'The point of using Lorem Ipsum is that it has more-or-less normal';
-
-  @override
-  String get fullName => 'Full Name';
-
-  @override
-  String get phoneNumber => 'Phone Number';
-
-  @override
-  String get writeHere => 'Write Here...';
-
-  @override
-  String get sendMessage => 'Send Message';
-
-  @override
-  String get email => 'Email';
-
-  @override
-  String get company => 'Company';
-
-  @override
-  String get contactLocationTitle => 'New York';
-
-  @override
-  String get contactLocationSubtitle =>
-      '42 Mammoun Street, Saba Carpet and Antiques Store, UK';
-
-  @override
-  String get contactPhoneTitle => 'Phone Number';
-
-  @override
-  String get contactPhoneSubtitle => '+44 123 456 789';
-
-  @override
-  String get contactEmailTitle => 'Email';
-
-  @override
-  String get contactEmailSubtitle => 'info@ncc.com';
-
-  @override
-  String get product_type => 'Product Type';
-
-  @override
-  String get choose_industry => 'Choose Industry';
-
-  @override
-  String get download_brochure_pdf => 'Download TDS ( Technical Data Sheet )';
-
-  @override
-  String get calculate_quantity => 'Calculate Quantity';
-
-  @override
-  String get admixture => 'Admixture';
-
-  @override
-  String get waterproofing => 'Waterproofing';
-
-  @override
-  String get industrial => 'Industrial';
-
-  @override
-  String get strength_enhancement => 'Strength Enhancement';
-
-  @override
-  String get durability => 'Durability';
-
-  @override
-  String get repair => 'Repair';
-
-  @override
-  String get flooring => 'Flooring';
-
-  @override
-  String get features => 'Features';
-
-  @override
-  String get usage => 'Usage';
-
-  @override
-  String get packaging => 'Packaging';
-
-  @override
-  String get interestedInProduct => 'Interested in This Product?';
-
-  @override
-  String get contactTeamDesc =>
-      'Contact our team to check availability, specifications, and guidance for your project needs';
-
-  @override
-  String get emailLabel => 'EMAIL';
-
-  @override
-  String get addressLabel => 'ADDRESS';
-
-  @override
-  String get phoneLabel => 'PHONE';
-
-  @override
-  String get nccAddress => '233 Industrial Zone, New Cairo – Egypt';
-
-  @override
-  String get nccPhoneOne => 'Whatsapp: +20 120 509 5090';
-
-  @override
-  String get nccHotline => 'Hotline: 16960';
-
-  @override
-  String get calculatorResultTitle => 'Calculation Result';
-
-  @override
-  String get calculatorResultLiters => 'Required in Liters';
-
-  @override
-  String get unitLiters => 'Liters';
-
-  @override
-  String get calculatorResultGallons => 'Required in Gallons';
-
-  @override
-  String get unitGallons => 'Gallons';
-
-  @override
-  String get calculatorProductLabel => 'Product';
-
-  @override
-  String get calculatorProductHint => 'Select product';
-
-  @override
-  String get calculatorTitle => 'Calculator';
-
-  @override
-  String get calculatorHeaderTitle => 'Product Quantity Calculator';
-
-  @override
-  String get calculatorHeaderDescription =>
-      'Enter the area to instantly calculate the required quantity in L, Gal, and Kg.';
-
-  @override
-  String get calculatorAreaLabel => 'Enter the working area (km²)?';
-
-  @override
-  String get dropdownTitle => 'Select the working area';
-
-  @override
-  String get similar_projects => 'SIMILAR PROJECTS';
-
-  @override
-  String get products_used => 'PRODUCTS USED';
-
-  @override
-  String get our_projects => 'OUR PROJECTS';
-
-  @override
-  String get projetc_use_this_product => 'Projects Using This Product';
-
-  @override
-  String get projetc_use_this_product_desc =>
-      'Explore real projects where this product delivered proven performance and reliable results.';
-
-  @override
-  String get country => 'Country';
-
-  @override
-  String get construction_products => 'Construction Products';
-
-  @override
-  String get insights_financial_updates => 'INSIGHTS & FINANCIAL\nUPDATES';
-
-  @override
-  String get related_posts => 'RELATED POSTS';
+      'You must upload a photo with a white background';
 
   @override
   String get updateAvailableTitle => 'Update Available';
@@ -382,26 +88,462 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skip => 'Skip';
 
   @override
-  String get is_required => 'is required';
+  String get chooseImage => 'Upload Choose Image';
 
   @override
-  String get search_projects => 'Search projects';
+  String get takePicture => 'Upload Take Picture';
 
   @override
-  String get no_projects_found => 'No projects found';
+  String get chooseFromFiles => 'Upload Choose From Files';
 
   @override
-  String get load_more => 'Load more';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get successful_projects_across_industries =>
-      'Successful Projects\nAcross Industries';
+  String get settingsPushNotifications => 'Push Notifications';
 
   @override
-  String
-  get discover_real_world_applications_of_our_solutions_across_different_industries =>
-      'Discover Real-World Applications\n Of Our Solutions Across Different Industries';
+  String get settingsEmailNotifications => 'Email Notifications';
 
   @override
-  String get no_products_found => 'No products found';
+  String get settingsDarkMode => 'Dark Mode';
+
+  @override
+  String get settingsToneAnalysis => 'Tone Analysis';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get navHomeTabLabel => 'Home';
+
+  @override
+  String get navScheduleTabLabel => 'Schedule';
+
+  @override
+  String get navNewsTabLabel => 'News';
+
+  @override
+  String get navMessagesTabLabel => 'Messages';
+
+  @override
+  String get navExpenseTabLabel => 'Expense';
+
+  @override
+  String get scheduleSharedCalendarTitle => 'Shared Calendar';
+
+  @override
+  String get scheduleNoEventsForDay => 'No events for this day';
+
+  @override
+  String get scheduleEventTypePickup => 'Pickup';
+
+  @override
+  String get scheduleEventTypeMedical => 'Medical';
+
+  @override
+  String get scheduleEventTypeActivity => 'Activity';
+
+  @override
+  String get scheduleEventTypeSchool => 'School';
+
+  @override
+  String get scheduleEventTypeCustody => 'Custody';
+
+  @override
+  String get scheduleAllDay => 'All Day';
+
+  @override
+  String get authLoginTitle => 'Log In';
+
+  @override
+  String get authEmailTab => 'Email';
+
+  @override
+  String get authPhoneTab => 'Phone Number';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authEmailHint => 'example@email.com';
+
+  @override
+  String get authPhoneLabel => 'Phone Number';
+
+  @override
+  String get authPhoneHint => '+20 123 456 7890';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authPasswordHint => '********';
+
+  @override
+  String get authForgotPassword => 'Forgot Password?';
+
+  @override
+  String get authLoginButton => 'LOG IN';
+
+  @override
+  String get authOrContinueWith => 'Or continue with';
+
+  @override
+  String get authDontHaveAccountPrefix => 'Don\'t have an account? ';
+
+  @override
+  String get authSignUp => 'Sign Up';
+
+  @override
+  String get authSignUpTitle => 'Sign Up';
+
+  @override
+  String get authFirstNameLabel => 'First Name';
+
+  @override
+  String get authFirstNameHint => 'John';
+
+  @override
+  String get authLastNameLabel => 'Last Name';
+
+  @override
+  String get authLastNameHint => 'Doe';
+
+  @override
+  String get authConfirmPasswordLabel => 'Confirm Password';
+
+  @override
+  String get authAgreeTermsToContinue =>
+      'Please agree to the Terms & Conditions to continue.';
+
+  @override
+  String get authSignUpButton => 'SIGN UP';
+
+  @override
+  String get authAlreadyHaveAccountPrefix => 'Already have an account? ';
+
+  @override
+  String get authLoginLink => 'LOGIN';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get commonShare => 'Share';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileMenuAccountSecurity => 'Account & Security';
+
+  @override
+  String get profileMenuFamilyInformation => 'Family Information';
+
+  @override
+  String get profileMenuNotifications => 'Notifications';
+
+  @override
+  String get profileMenuLanguage => 'Language';
+
+  @override
+  String get profileMenuTermsOfUse => 'Terms of Use';
+
+  @override
+  String get profileMenuInvitePeople => 'Invite People';
+
+  @override
+  String get profileMenuLogout => 'Log Out';
+
+  @override
+  String get profileTermsTitle => 'Terms of Use';
+
+  @override
+  String get profileTermsBody =>
+      'By using this application, you agree to the following terms and conditions. Please read them carefully before proceeding.\\n\\n1. You must be at least 18 years old to use this service.\\n\\n2. All information provided must be accurate and up to date.\\n\\n3. You are responsible for maintaining the confidentiality of your account.\\n\\n4. We reserve the right to modify these terms at any time.\\n\\n5. Any misuse of the platform may result in account suspension.';
+
+  @override
+  String get profileInviteTitle => 'Invite People';
+
+  @override
+  String get profileInviteDescription =>
+      'Share your invite code with family and friends.';
+
+  @override
+  String get profileLogoutTitle => 'Log Out';
+
+  @override
+  String get profileLogoutConfirm => 'Are you sure you want to log out?';
+
+  @override
+  String get accountSecurityTitle => 'Account & Security';
+
+  @override
+  String get accountSecurityEmailLabel => 'Email';
+
+  @override
+  String get accountSecurityPhoneLabel => 'Phone';
+
+  @override
+  String get accountSecurityChangePassword => 'Change Password';
+
+  @override
+  String get accountSecurityEnableTwoFactor =>
+      'Enable Two-Factor Authentication';
+
+  @override
+  String get accountSecurityDeleteAccount => 'Delete Account';
+
+  @override
+  String get accountSecurityDeleteConfirm =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
+
+  @override
+  String get familyInfoTitle => 'Family Information';
+
+  @override
+  String get familyChildrenTitle => 'Children';
+
+  @override
+  String get familyAddChild => 'Add Child';
+
+  @override
+  String get familyInfoSaved => 'Family information saved';
+
+  @override
+  String get familyCoParent => 'Co-Parent';
+
+  @override
+  String get familyConnected => 'Connected';
+
+  @override
+  String familyYearsOld(Object age) {
+    return '$age years old';
+  }
+
+  @override
+  String get familyChildNameHint => 'Child name';
+
+  @override
+  String get familyChildAgeHint => 'Age';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsEmptyTitle => 'No notifications yet';
+
+  @override
+  String get notificationsEmptySubtitle =>
+      'We\'ll notify you when something arrives';
+
+  @override
+  String get notificationsNewMessageTitle => 'New Message';
+
+  @override
+  String get notificationsNewMessageBody =>
+      'Fatima sent you a message about this weekend\'s schedule.';
+
+  @override
+  String get notificationsScheduleUpdatedTitle => 'Schedule Updated';
+
+  @override
+  String get notificationsScheduleUpdatedBody =>
+      'The co-parenting schedule for next week has been updated.';
+
+  @override
+  String get notificationsExpenseAddedTitle => 'Expense Added';
+
+  @override
+  String get notificationsExpenseAddedBody =>
+      'A new shared expense of 500 EGP has been recorded.';
+
+  @override
+  String get notificationsReminderTitle => 'Reminder';
+
+  @override
+  String get notificationsReminderBody =>
+      'Don\'t forget the parent-teacher meeting tomorrow at 4 PM.';
+
+  @override
+  String get notificationsSecurityAlertTitle => 'Security Alert';
+
+  @override
+  String get notificationsSecurityAlertBody =>
+      'A new device was used to sign in to your account.';
+
+  @override
+  String timeMinutesAgo(Object minutes) {
+    return '$minutes min ago';
+  }
+
+  @override
+  String timeHoursAgo(Object hours) {
+    return '$hours hour ago';
+  }
+
+  @override
+  String timeHoursAgoPlural(Object hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String get timeYesterday => 'Yesterday';
+
+  @override
+  String timeDaysAgo(Object days) {
+    return '$days days ago';
+  }
+
+  @override
+  String get chatTypeMessageHint => 'Type a message...';
+
+  @override
+  String get updatePleaseUpdateToContinue =>
+      'Please update the app to continue.';
+
+  @override
+  String get updateNewVersionAvailableShort => 'A new version is available.';
+
+  @override
+  String get languageSelectTitle => 'Select Language';
+
+  @override
+  String get commonStart => 'Start';
+
+  @override
+  String get messagesTitle => 'Messages';
+
+  @override
+  String get messagesSearch => 'Search';
+
+  @override
+  String get newsTitle => 'News';
+
+  @override
+  String get expenseTitle => 'Expense';
+
+  @override
+  String get expenseTotalThisMonth => 'Total This Month';
+
+  @override
+  String get expenseYouPaid => 'You Paid';
+
+  @override
+  String get expenseCoParentPaid => 'Co-parent Paid';
+
+  @override
+  String get expenseAddExpense => 'Add Expense';
+
+  @override
+  String get addExpenseTitle => 'Add Expense';
+
+  @override
+  String get addExpenseCategoryLabel => 'Category';
+
+  @override
+  String get addExpenseSelectCategoryHint => 'Select Category';
+
+  @override
+  String get addExpenseDateLabel => 'Date';
+
+  @override
+  String get addExpenseSelectDateHint => 'Select Date';
+
+  @override
+  String get addExpenseAmountLabel => 'Amount';
+
+  @override
+  String get addExpenseEnterAmountHint => 'Enter amount';
+
+  @override
+  String get addExpenseAmountRequired => 'Amount is required';
+
+  @override
+  String get addExpenseEnterValidAmount => 'Enter a valid amount';
+
+  @override
+  String get addExpenseCurrencyLabel => 'Currency';
+
+  @override
+  String get addExpenseSelectCurrencyHint => 'Select Currency';
+
+  @override
+  String get addExpenseDescriptionLabel => 'Description';
+
+  @override
+  String get addExpenseEnterDescriptionHint => 'Enter description';
+
+  @override
+  String get addExpenseProofOfPurchaseLabel => 'Proof of Purchase';
+
+  @override
+  String get addExpenseTapToUpload => 'Tap to upload';
+
+  @override
+  String get addExpenseUploadFormats => 'JPG, PNG or PDF';
+
+  @override
+  String get addExpenseAlreadyPaidQuestion =>
+      'Have you already paid this expense?';
+
+  @override
+  String get ourMissionDescription =>
+      'Our mission is to provide high-performance construction chemical solutions that meet the highest standards of quality, safety, and sustainability. We support our customers with innovative products and expert guidance, enabling them to achieve durable, efficient, and environmentally responsible construction results.';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGetStarted => 'Get Started!';
+
+  @override
+  String get onboardingLogin => 'Log In';
+
+  @override
+  String get onboardingJoinUsingCode => 'Join Using a Code';
+
+  @override
+  String get onboardingPage1Title => 'A better way to co-parent';
+
+  @override
+  String get onboardingPage1Subtitle =>
+      'A secure space designed to help parents communicate, organize, and make decisions with less conflict and more clarity.';
+
+  @override
+  String get onboardingPage2Title => 'Clear and respectful communication';
+
+  @override
+  String get onboardingPage2Subtitle =>
+      'All messages are documented, time-stamped, and cannot be edited or deleted, helping conversations stay accountable and constructive.';
+
+  @override
+  String get onboardingPage3Title => 'Important documents, safely stored';
+
+  @override
+  String get onboardingPage3Subtitle =>
+      'Keep medical, school, legal, and financial documents encrypted and accessible with full access history.';
+
+  @override
+  String get onboardingPage4Title => 'Built on trust and privacy';
+
+  @override
+  String get onboardingPage4Subtitle =>
+      'Your data is protected with strong security measures and handled according to Egyptian data protection law.';
 }

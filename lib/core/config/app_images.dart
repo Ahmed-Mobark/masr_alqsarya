@@ -2,20 +2,16 @@ class AppImages {
   static const String _path = 'assets/images/';
 
   // Image paths
-
   static const String logo = "${_path}logo.jpg";
+  static const String logoApp = "${_path}logoapp.png";
+  static const String logoSmall = "${_path}logo_small.png";
   static const String splashLogo = "${_path}splash.png";
   static const String onBoarding = "${_path}on_boarding.jpg";
-  static const String homeSectionCard = "${_path}home_section_card.jpg";
-  static const String flooringSystem = "${_path}flooring_system.png";
-  static const String infrastructure = "${_path}infrastructure.png";
-  static const String jerken = "${_path}jerken_image.png";
-  static const String feturedProject = "${_path}feturd_project_iamge.jpg";
-  static const String blogs = "${_path}blogs_image.jpg";
-  static const String getInTouchBackground = "${_path}get_in_toush_background.png";
-  static const String videoPreview = "${_path}video_preview.jpg";
-  static const String mapPreview = "${_path}map.png";
-  static const String heroProjects = "${_path}hero_projects.jpg";
+  static const String onboarding1 = "${_path}onboarding_1.png";
+  static const String onboarding2 = "${_path}onboarding_2.png";
+  static const String onboarding3 = "${_path}onboarding_3.png";
+  static const String onboarding4 = "${_path}onboarding_4.png";
+
 }
 
 /// Splash and other video/GIF assets under assets/videos/

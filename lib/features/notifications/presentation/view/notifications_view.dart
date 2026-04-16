@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
@@ -11,37 +12,37 @@ class NotificationsView extends StatelessWidget {
     final notifications = <_NotificationItem>[
       _NotificationItem(
         icon: Iconsax.message_text,
-        title: 'New Message',
-        body: 'Fatima sent you a message about this weekend\'s schedule.',
-        time: '2 min ago',
+        title: context.tr.notificationsNewMessageTitle,
+        body: context.tr.notificationsNewMessageBody,
+        time: context.tr.timeMinutesAgo(2),
         isRead: false,
       ),
       _NotificationItem(
         icon: Iconsax.calendar_tick,
-        title: 'Schedule Updated',
-        body: 'The co-parenting schedule for next week has been updated.',
-        time: '1 hour ago',
+        title: context.tr.notificationsScheduleUpdatedTitle,
+        body: context.tr.notificationsScheduleUpdatedBody,
+        time: context.tr.timeHoursAgo(1),
         isRead: false,
       ),
       _NotificationItem(
         icon: Iconsax.money_send,
-        title: 'Expense Added',
-        body: 'A new shared expense of 500 EGP has been recorded.',
-        time: '3 hours ago',
+        title: context.tr.notificationsExpenseAddedTitle,
+        body: context.tr.notificationsExpenseAddedBody,
+        time: context.tr.timeHoursAgoPlural(3),
         isRead: true,
       ),
       _NotificationItem(
         icon: Iconsax.info_circle,
-        title: 'Reminder',
-        body: 'Don\'t forget the parent-teacher meeting tomorrow at 4 PM.',
-        time: 'Yesterday',
+        title: context.tr.notificationsReminderTitle,
+        body: context.tr.notificationsReminderBody,
+        time: context.tr.timeYesterday,
         isRead: true,
       ),
       _NotificationItem(
         icon: Iconsax.shield_tick,
-        title: 'Security Alert',
-        body: 'A new device was used to sign in to your account.',
-        time: '2 days ago',
+        title: context.tr.notificationsSecurityAlertTitle,
+        body: context.tr.notificationsSecurityAlertBody,
+        time: context.tr.timeDaysAgo(2),
         isRead: true,
       ),
     ];
@@ -57,11 +58,11 @@ class NotificationsView extends StatelessWidget {
               color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Notifications', style: AppTextStyles.heading2()),
+        title: Text(context.tr.notificationsTitle, style: AppTextStyles.heading2()),
         centerTitle: true,
       ),
       body: notifications.isEmpty
-          ? _buildEmptyState()
+          ? _buildEmptyState(context)
           : ListView.builder(
               padding: const EdgeInsets.all(20),
               itemCount: notifications.length,
@@ -73,7 +74,7 @@ class NotificationsView extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -81,11 +82,13 @@ class NotificationsView extends StatelessWidget {
           Icon(Iconsax.notification,
               size: 64, color: AppColors.greyText.withValues(alpha: 0.5)),
           const SizedBox(height: 16),
-          Text('No notifications yet',
-              style: AppTextStyles.body(color: AppColors.greyText)),
+          Text(
+            context.tr.notificationsEmptyTitle,
+            style: AppTextStyles.body(color: AppColors.greyText),
+          ),
           const SizedBox(height: 8),
           Text(
-            'We\'ll notify you when something arrives',
+            context.tr.notificationsEmptySubtitle,
             style: AppTextStyles.caption(),
           ),
         ],

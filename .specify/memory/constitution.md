@@ -55,6 +55,7 @@ Sync Impact Report
 - UI widgets MUST remain dumb: business rules belong in domain/use-cases; state belongs in Cubits.
 - Cubits MUST expose minimal, immutable state.
 - Cubits MUST NOT perform navigation; they emit states that UI reacts to.
+- `provider` / `ChangeNotifier` state management is NOT allowed (no `ChangeNotifierProvider`, `context.watch<T>()` from provider, or `notifyListeners()` patterns).
 - State updates MUST be efficient:
   - avoid rebuild storms,
   - split widgets,
@@ -86,7 +87,15 @@ Sync Impact Report
 - **Flutter/Dart**: Stable Flutter channel; Dart 3.9+.
 - **State management**: Use Cubit-first via `flutter_bloc`; keep UI state local only for ephemeral UI concerns.
 - **DI**: Use `get_it` via `sl` (`lib/core/injection/injection_container.dart`).
+- **DI registration convention**:
+  - Every feature/core module that registers Cubits/services MUST have a dedicated `*_inj.dart` with a single public entrypoint: `Future<void> init<Module>NameInjection(GetIt sl) async { ... }`.
+  - `lib/core/injection/injection_container.dart` is the only place that calls these `init*Injection` functions (keep app boot consistent and predictable).
+  - Register app-wide Cubits as `registerLazySingleton` (e.g. locale), and screen/flow Cubits as `registerFactory` (e.g. nav bar) unless a longer lifecycle is required.
 - **Localization**: Use ARB files under `assets/translation/` and generated localization; no hard-coded user-facing strings in final UI.
+  - UI copy MUST use `context.tr.<key>` (from `lib/core/extensions/localization.dart`) instead of string literals.
+  - Every new key MUST be added to **all locales** (`en.arb`, `ar.arb`, `fr.arb`) before running `flutter gen-l10n`.
+  - Use lowerCamelCase keys with feature/screen prefixes (e.g. `authLoginTitle`, `profileLogoutConfirm`, `addExpenseAmountRequired`).
+  - Prefer placeholder-based keys for dynamic strings (e.g. `{count}`, `{name}`) over manual string interpolation in widgets.
 - **Performance**: 60fps target; avoid heavy rebuilds; use const constructors; move heavy work off UI thread.
 - **SOLID**: New code MUST follow SOLID. If a shortcut is taken, it MUST be intentional, documented in the PR/spec, and localized (not spread).
 - **DRY**: Avoid duplication; extract shared logic into domain/core utilities where it belongs.
