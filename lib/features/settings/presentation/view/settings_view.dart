@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/features/settings/presentation/widgets/settings_row.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/settings/presentation/view/language_settings_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -31,7 +34,7 @@ class _SettingsViewState extends State<SettingsView> {
               color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Settings', style: AppTextStyles.heading2()),
+        title: Text(context.tr.settingsTitle, style: AppTextStyles.heading2()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -47,7 +50,7 @@ class _SettingsViewState extends State<SettingsView> {
               // Push Notifications
               SettingsRow(
                 icon: Iconsax.notification,
-                title: 'Push Notifications',
+                title: context.tr.settingsPushNotifications,
                 trailing: Switch(
                   value: _pushNotifications,
                   onChanged: (v) => setState(() => _pushNotifications = v),
@@ -60,7 +63,7 @@ class _SettingsViewState extends State<SettingsView> {
               // Email Notifications
               SettingsRow(
                 icon: Iconsax.sms,
-                title: 'Email Notifications',
+                title: context.tr.settingsEmailNotifications,
                 trailing: Switch(
                   value: _emailNotifications,
                   onChanged: (v) => setState(() => _emailNotifications = v),
@@ -73,7 +76,7 @@ class _SettingsViewState extends State<SettingsView> {
               // Dark Mode (disabled)
               SettingsRow(
                 icon: Iconsax.moon,
-                title: 'Dark Mode',
+                title: context.tr.settingsDarkMode,
                 trailing: Switch(
                   value: _darkMode,
                   onChanged: null, // disabled for now
@@ -86,7 +89,7 @@ class _SettingsViewState extends State<SettingsView> {
               // Tone Analysis
               SettingsRow(
                 icon: Iconsax.message_text,
-                title: 'Tone Analysis',
+                title: context.tr.settingsToneAnalysis,
                 trailing: Switch(
                   value: _toneAnalysis,
                   onChanged: (v) => setState(() => _toneAnalysis = v),
@@ -99,9 +102,10 @@ class _SettingsViewState extends State<SettingsView> {
               // Language
               SettingsRow(
                 icon: Iconsax.global,
-                title: 'Language',
-                onTap: () =>
-                    Navigator.pushNamed(context, AppRoutes.languageSettings),
+                title: context.tr.settingsLanguage,
+                onTap: () => sl<AppNavigator>().push(
+                  screen: const LanguageSettingsView(),
+                ),
               ),
             ],
           ),

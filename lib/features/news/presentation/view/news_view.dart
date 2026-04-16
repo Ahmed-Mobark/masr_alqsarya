@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
@@ -12,7 +13,7 @@ class NewsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: Text('News', style: AppTextStyles.navTitle()),
+        title: Text(context.tr.newsTitle, style: AppTextStyles.navTitle()),
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,

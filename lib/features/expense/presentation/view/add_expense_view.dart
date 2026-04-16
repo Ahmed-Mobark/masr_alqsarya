@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
@@ -74,7 +75,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
           icon: const Icon(Iconsax.arrow_left, color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Add Expense', style: AppTextStyles.navTitle()),
+        title: Text(context.tr.addExpenseTitle, style: AppTextStyles.navTitle()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -85,18 +86,18 @@ class _AddExpenseViewState extends State<AddExpenseView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Category dropdown
-              _buildLabel('Category'),
+              _buildLabel(context.tr.addExpenseCategoryLabel),
               const SizedBox(height: 8),
               _buildDropdown<String>(
                 value: _selectedCategory,
-                hint: 'Select Category',
+                hint: context.tr.addExpenseSelectCategoryHint,
                 items: _categories,
                 onChanged: (val) => setState(() => _selectedCategory = val),
               ),
               const SizedBox(height: 20),
 
               // Date picker
-              _buildLabel('Date'),
+              _buildLabel(context.tr.addExpenseDateLabel),
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: _pickDate,
@@ -114,7 +115,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                         child: Text(
                           _selectedDate != null
                               ? '${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}'
-                              : 'Select Date',
+                              : context.tr.addExpenseSelectDateHint,
                           style: _selectedDate != null
                               ? AppTextStyles.bodyMedium()
                               : AppTextStyles.caption(),
@@ -128,45 +129,45 @@ class _AddExpenseViewState extends State<AddExpenseView> {
               const SizedBox(height: 20),
 
               // Amount
-              _buildLabel('Amount'),
+              _buildLabel(context.tr.addExpenseAmountLabel),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 style: AppTextStyles.bodyMedium(),
-                decoration: _inputDecoration('Enter amount'),
+                decoration: _inputDecoration(context.tr.addExpenseEnterAmountHint),
                 validator: (val) {
-                  if (val == null || val.isEmpty) return 'Amount is required';
-                  if (double.tryParse(val) == null) return 'Enter a valid amount';
+                  if (val == null || val.isEmpty) return context.tr.addExpenseAmountRequired;
+                  if (double.tryParse(val) == null) return context.tr.addExpenseEnterValidAmount;
                   return null;
                 },
               ),
               const SizedBox(height: 20),
 
               // Currency
-              _buildLabel('Currency'),
+              _buildLabel(context.tr.addExpenseCurrencyLabel),
               const SizedBox(height: 8),
               _buildDropdown<String>(
                 value: _selectedCurrency,
-                hint: 'Select Currency',
+                hint: context.tr.addExpenseSelectCurrencyHint,
                 items: _currencies,
                 onChanged: (val) => setState(() => _selectedCurrency = val ?? 'USD'),
               ),
               const SizedBox(height: 20),
 
               // Description
-              _buildLabel('Description'),
+              _buildLabel(context.tr.addExpenseDescriptionLabel),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 3,
                 style: AppTextStyles.bodyMedium(),
-                decoration: _inputDecoration('Enter description'),
+                decoration: _inputDecoration(context.tr.addExpenseEnterDescriptionHint),
               ),
               const SizedBox(height: 20),
 
               // Proof of purchase
-              _buildLabel('Proof of Purchase'),
+              _buildLabel(context.tr.addExpenseProofOfPurchaseLabel),
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
@@ -184,9 +185,9 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                     children: [
                       const Icon(Iconsax.document_upload, size: 32, color: AppColors.greyText),
                       const SizedBox(height: 8),
-                      Text('Tap to upload', style: AppTextStyles.caption()),
+                      Text(context.tr.addExpenseTapToUpload, style: AppTextStyles.caption()),
                       const SizedBox(height: 4),
-                      Text('JPG, PNG or PDF', style: AppTextStyles.tiny(color: AppColors.greyText)),
+                      Text(context.tr.addExpenseUploadFormats, style: AppTextStyles.tiny(color: AppColors.greyText)),
                     ],
                   ),
                 ),
@@ -211,7 +212,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Have you already paid this expense?',
+                      context.tr.addExpenseAlreadyPaidQuestion,
                       style: AppTextStyles.bodyMedium(),
                     ),
                   ),
@@ -238,7 +239,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                  child: Text('Save', style: AppTextStyles.button()),
+                  child: Text(context.tr.commonSave, style: AppTextStyles.button()),
                 ),
               ),
               const SizedBox(height: 24),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/expense/presentation/view/add_expense_view.dart';
 
 class ExpenseView extends StatelessWidget {
   const ExpenseView({super.key});
@@ -24,7 +27,7 @@ class ExpenseView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: Text('Expense', style: AppTextStyles.navTitle()),
+        title: Text(context.tr.expenseTitle, style: AppTextStyles.navTitle()),
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
@@ -44,7 +47,7 @@ class ExpenseView extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Total This Month',
+                    context.tr.expenseTotalThisMonth,
                     style: AppTextStyles.caption(
                         color: AppColors.darkText),
                   ),
@@ -63,7 +66,7 @@ class ExpenseView extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'You Paid',
+                              context.tr.expenseYouPaid,
                               style: AppTextStyles.tiny(
                                   color: AppColors.darkText),
                             ),
@@ -85,7 +88,7 @@ class ExpenseView extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Co-parent Paid',
+                              context.tr.expenseCoParentPaid,
                               style: AppTextStyles.tiny(
                                   color: AppColors.darkText),
                             ),
@@ -121,11 +124,11 @@ class ExpenseView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.addExpense);
+          sl<AppNavigator>().push(screen: const AddExpenseView());
         },
         backgroundColor: AppColors.primary,
         icon: const Icon(Iconsax.add, color: AppColors.darkText),
-        label: Text('Add Expense', style: AppTextStyles.button()),
+        label: Text(context.tr.expenseAddExpense, style: AppTextStyles.button()),
       ),
     );
   }

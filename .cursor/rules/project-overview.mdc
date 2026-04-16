@@ -1,0 +1,99 @@
+---
+description: Project overview – business domain, architecture, and core conventions for Masr Al-Qsariya
+alwaysApply: true
+---
+
+# Masr Al-Qsariya – Project Overview
+
+## Business Domain
+
+Masr Al-Qsariya is a **co-parenting companion app** for separated/divorced parents in Egypt.
+It provides a secure, accountable space where co-parents can:
+
+- **Communicate** via documented, time-stamped, non-editable messages.
+- **Share a calendar** for custody schedules, medical visits, school events, and pickups.
+- **Track shared expenses** with receipts and approvals.
+- **Store family documents** (medical, school, legal, financial) with encryption and access history.
+- **Manage family profiles** and account security.
+
+All features must respect Egyptian data-protection law and prioritise trust, privacy, and conflict reduction.
+
+## Tech Stack
+
+| Layer | Choice |
+|-------|--------|
+| Framework | Flutter (SDK ^3.9.0) |
+| State management | `flutter_bloc` ^9 — **Cubits** preferred over full Blocs |
+| DI | `get_it` ^8 — global `sl` service locator |
+| Networking | `Dio` ^5 via `ApiBaseHelper` singleton |
+| Local storage | `hive` + `hive_flutter` |
+| Error model | `dartz` `Either<Failure, T>` in repositories |
+| Responsive sizing | `flutter_screenutil` (design size 393 × 852) |
+| Localisation | Flutter gen-l10n — ARB files for **ar**, **en**, **fr** |
+| Theming | `adaptive_theme` — light/dark |
+
+## Directory Layout
+
+```
+lib/
+├── main.dart
+├── core/
+│   ├── app/              # MyApp root widget, MaterialApp setup
+│   ├── bloc/             # Global BlocObserver
+│   ├── config/           # AppColors, AppIcons, AppImages, AppEndpoints, styles/, dimensions/
+│   ├── data/             # Shared dummy data (temporary until APIs land)
+│   ├── entities/         # Core domain entities (Pagination, etc.)
+│   ├── enums/            # Shared enums
+│   ├── extensions/       # Extension methods (localization, etc.)
+│   ├── injection/        # injection_container.dart — GetIt init()
+│   ├── l10n/             # LocaleCubit, locale_inj
+│   ├── methods/          # Utility helpers (download, datetime, network files)
+│   ├── models/           # Core shared models (PaginationModel, etc.)
+│   ├── navigation/       # AppNavigator, AppPageRoute, RouteObserver
+│   ├── network/          # ApiBaseHelper, exceptions, failures, RepositoryHelper
+│   ├── services/         # MediaService and other cross-feature services
+│   ├── storage/          # Storage abstract + Hive impl
+│   ├── theme/            # AppTheme, re-exports of AppColors/AppTextStyles
+│   ├── toast/            # Toast utilities
+│   ├── translation/      # Generated AppLocalizations files
+│   ├── utils/            # Validator, misc helpers
+│   └── widgets/          # Shared reusable widgets
+└── features/
+    └── <feature_name>/
+        ├── data/         # DataSources, Models, Repository impl
+        ├── domain/       # Entities, Repository contract, UseCases
+        └── presentation/
+            ├── cubit/    # Feature Cubits + States
+            ├── view/     # Screen widgets (*_view.dart)
+            └── widgets/  # Feature-specific extracted widgets
+```
+
+## Naming Conventions
+
+| What | Pattern | Example |
+|------|---------|---------|
+| Files | `snake_case.dart` | `login_view.dart`, `api_basehelper.dart` |
+| Classes | `PascalCase` | `LoginView`, `NavBarCubit` |
+| Screen widgets | `*View` suffix | `SplashView`, `ProfileView` |
+| Private widgets | `_PascalCase` | `_OnboardingTopBar` |
+| DI modules | `*_inj.dart` | `nav_bar_inj.dart`, `storage_inj.dart` |
+| Config classes | `App*` prefix | `AppColors`, `AppImages`, `AppEndpoints` |
+| Cubits | `*Cubit` / `*State` | `NavBarCubit`, `NavBarState` |
+| Repositories | `*Repository` (contract) / `*RepositoryImpl` | `AuthRepository` / `AuthRepositoryImpl` |
+| Use cases | `PascalCase` verb-noun | `LoginUseCase`, `GetScheduleUseCase` |
+| ARB keys | `camelCase`, feature-prefixed | `onboardingPage1Title`, `loginEmailLabel` |
+
+## Navigation
+
+- Use `sl<AppNavigator>()` for forward navigation (`push`, `pushReplacement`, `pushAndRemoveUntil`).
+- Use `Navigator.pop(context)` only for local back/close within the same flow.
+- Available animations: `fade` (default), `slide`, `scale`, `cupertino`.
+- App flow: Splash → Language → Onboarding → Auth → MainNavView (home shell).
+
+## General Rules
+
+- Never hardcode user-facing strings; always use `context.tr.*` and add keys to all three ARB files.
+- Never use raw `Color(0xFF...)` when `AppColors` has an appropriate constant.
+- Prefer `.w`, `.h`, `.r`, `.sp` from `flutter_screenutil` over fixed pixel values.
+- Keep features independent — a feature should never import from another feature's internals.
+- All layouts must be **RTL-safe** (use `Directional` variants: `EdgeInsetsDirectional`, `AlignmentDirectional`, `TextDirection`-aware icons).

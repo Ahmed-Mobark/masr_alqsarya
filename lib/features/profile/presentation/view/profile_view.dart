@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
+import 'package:masr_al_qsariya/features/profile/presentation/view/account_security_view.dart';
+import 'package:masr_al_qsariya/features/profile/presentation/view/family_info_view.dart';
+import 'package:masr_al_qsariya/features/settings/presentation/view/language_settings_view.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -15,7 +22,7 @@ class ProfileView extends StatelessWidget {
         backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text('PROFILE', style: AppTextStyles.heading2()),
+        title: Text(context.tr.profileTitle, style: AppTextStyles.heading2()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -55,37 +62,45 @@ class ProfileView extends StatelessWidget {
     final menuItems = [
       _MenuItem(
         icon: Iconsax.shield_tick,
-        title: 'Account & Security',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.accountSecurity),
+        title: context.tr.profileMenuAccountSecurity,
+        onTap: () => sl<AppNavigator>().push(
+          screen: const AccountSecurityView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.people,
-        title: 'Family Information',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.familyInfo),
+        title: context.tr.profileMenuFamilyInformation,
+        onTap: () => sl<AppNavigator>().push(
+          screen: const FamilyInfoView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.notification,
-        title: 'Notifications',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
+        title: context.tr.profileMenuNotifications,
+        onTap: () => sl<AppNavigator>().push(
+          screen: const NotificationsView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.global,
-        title: 'Language',
-        onTap: () => Navigator.pushNamed(context, AppRoutes.languageSettings),
+        title: context.tr.profileMenuLanguage,
+        onTap: () => sl<AppNavigator>().push(
+          screen: const LanguageSettingsView(),
+        ),
       ),
       _MenuItem(
         icon: Iconsax.document_text,
-        title: 'Terms of Use',
+        title: context.tr.profileMenuTermsOfUse,
         onTap: () => _showTermsOfUse(context),
       ),
       _MenuItem(
         icon: Iconsax.send_2,
-        title: 'Invite People',
+        title: context.tr.profileMenuInvitePeople,
         onTap: () => _showInviteDialog(context),
       ),
       _MenuItem(
         icon: Iconsax.logout,
-        title: 'Log Out',
+        title: context.tr.profileMenuLogout,
         isDestructive: true,
         onTap: () => _showLogoutDialog(context),
       ),
@@ -173,19 +188,13 @@ class ProfileView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text('Terms of Use', style: AppTextStyles.heading1()),
+              Text(context.tr.profileTermsTitle, style: AppTextStyles.heading1()),
               const SizedBox(height: 16),
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Text(
-                    'By using this application, you agree to the following terms and conditions. '
-                    'Please read them carefully before proceeding.\n\n'
-                    '1. You must be at least 18 years old to use this service.\n\n'
-                    '2. All information provided must be accurate and up to date.\n\n'
-                    '3. You are responsible for maintaining the confidentiality of your account.\n\n'
-                    '4. We reserve the right to modify these terms at any time.\n\n'
-                    '5. Any misuse of the platform may result in account suspension.',
+                    context.tr.profileTermsBody,
                     style: AppTextStyles.body(color: AppColors.greyText),
                   ),
                 ),
@@ -203,12 +212,12 @@ class ProfileView extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Invite People', style: AppTextStyles.heading2()),
+        title: Text(context.tr.profileInviteTitle, style: AppTextStyles.heading2()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Share your invite code with family and friends.',
+              context.tr.profileInviteDescription,
               style: AppTextStyles.body(color: AppColors.greyText),
             ),
             const SizedBox(height: 16),
@@ -232,12 +241,12 @@ class ProfileView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close',
+            child: Text(context.tr.commonClose,
                 style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Share',
+            child: Text(context.tr.commonShare,
                 style: AppTextStyles.bodyMedium(color: AppColors.primaryDark)),
           ),
         ],
@@ -251,27 +260,23 @@ class ProfileView extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Log Out', style: AppTextStyles.heading2()),
+        title: Text(context.tr.profileLogoutTitle, style: AppTextStyles.heading2()),
         content: Text(
-          'Are you sure you want to log out?',
+          context.tr.profileLogoutConfirm,
           style: AppTextStyles.body(color: AppColors.greyText),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel',
+            child: Text(context.tr.commonCancel,
                 style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.login,
-                (route) => false,
-              );
+              sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
             },
-            child: Text('Log Out',
+            child: Text(context.tr.profileLogoutTitle,
                 style: AppTextStyles.bodyMedium(color: AppColors.error)),
           ),
         ],

@@ -1,9 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
-import 'package:masr_al_qsariya/core/theme/app_colors.dart';
-import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/config/app_colors.dart';
+import 'package:masr_al_qsariya/core/config/styles/styles.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/widgets/app_text_field.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/sign_up_view.dart';
+import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -31,7 +35,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.scaffoldColorLight,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -49,7 +53,7 @@ class _LoginViewState extends State<LoginView> {
                 // Title
                 Center(
                   child: Text(
-                    'Log In',
+                    context.tr.authLoginTitle,
                     style: AppTextStyles.heading2(),
                   ),
                 ),
@@ -62,15 +66,15 @@ class _LoginViewState extends State<LoginView> {
                 // Email or Phone field
                 if (_selectedTab == 0)
                   AppTextField(
-                    label: 'Email',
-                    hint: 'example@email.com',
+                    label: context.tr.authEmailLabel,
+                    hint: context.tr.authEmailHint,
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                   )
                 else
                   AppTextField(
-                    label: 'Phone Number',
-                    hint: '+20 123 456 7890',
+                    label: context.tr.authPhoneLabel,
+                    hint: context.tr.authPhoneHint,
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                   ),
@@ -78,8 +82,8 @@ class _LoginViewState extends State<LoginView> {
 
                 // Password field
                 AppTextField(
-                  label: 'Password',
-                  hint: '********',
+                  label: context.tr.authPasswordLabel,
+                  hint: context.tr.authPasswordHint,
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
@@ -105,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
                       // TODO: Navigate to forgot password
                     },
                     child: Text(
-                      'Forgot Password?',
+                      context.tr.authForgotPassword,
                       style: AppTextStyles.caption(color: AppColors.primaryDark),
                     ),
                   ),
@@ -114,19 +118,17 @@ class _LoginViewState extends State<LoginView> {
 
                 // LOG IN button
                 _buildGoldButton(
-                  text: 'LOG IN',
+                  text: context.tr.authLoginButton,
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      AppRoutes.home,
-                      (route) => false,
+                    sl<AppNavigator>().pushAndRemoveUntil(
+                      screen: const HomeView(),
                     );
                   },
                 ),
                 const SizedBox(height: 24),
 
                 // Divider with "Or continue with"
-                _buildDividerWithText('Or continue with'),
+                _buildDividerWithText(context.tr.authOrContinueWith),
                 const SizedBox(height: 20),
 
                 // Social login buttons
@@ -137,16 +139,18 @@ class _LoginViewState extends State<LoginView> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      text: "Don't have an account? ",
+                      text: context.tr.authDontHaveAccountPrefix,
                       style: AppTextStyles.tiny(color: AppColors.captionText),
                       children: [
                         TextSpan(
-                          text: 'Sign Up',
+                          text: context.tr.authSignUp,
                           style: AppTextStyles.tiny(color: AppColors.primaryDark)
                               .copyWith(fontWeight: FontWeight.w600),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.pushNamed(context, AppRoutes.signUp);
+                              sl<AppNavigator>().push(
+                                screen: const SignUpView(),
+                              );
                             },
                         ),
                       ],
@@ -172,8 +176,8 @@ class _LoginViewState extends State<LoginView> {
       ),
       child: Row(
         children: [
-          _buildTab('Email', 0),
-          _buildTab('Phone Number', 1),
+          _buildTab(context.tr.authEmailTab, 0),
+          _buildTab(context.tr.authPhoneTab, 1),
         ],
       ),
     );

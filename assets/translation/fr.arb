@@ -1,0 +1,215 @@
+{
+  "@@locale": "fr",
+  
+  "errorFieldRequired": "Ce champ est obligatoire",
+  "errorInvalidName": "Format de nom invalide",
+  "errorInvalidUrl": "URL invalide",
+  "errorInvalidPhoneNumber": "Numéro de téléphone invalide",
+  "errorInvalidEmail": "Adresse e-mail invalide",
+  "errorInvalidPassword": "Le mot de passe doit contenir au moins 8 caractères avec des majuscules, des minuscules et des caractères spéciaux",
+  "errorPasswordMismatch": "Les mots de passe ne correspondent pas",
+  "errorInvalidNumber": "Nombre invalide",
+  "errorInvalidIban": "Format IBAN invalide",
+  "errorInvalidMobileNumber": "Numéro de mobile invalide",
+  "errorInvalidStcPayId": "Identifiant STC Pay invalide",
+  "errorInvalidNationalId": "Numéro d'identité nationale invalide",
+  "errorInvalidPassport": "Numéro de passeport invalide",
+  "sorryMessage": "Nous sommes désolés",
+  "nothingFound": "Aucun résultat trouvé",
+  "errorPhoneValidation": "Le numéro de téléphone doit commencer par {start} et contenir {length} chiffres.",
+  "errorExperienceRequired": "Vous devez ajouter au moins une expérience.",
+  "errorIdDocumentRequired": "Vous devez télécharger un document d'identité pour vérifier votre identité.",
+  "errorPhotoRequired": "Vous devez télécharger une photo avec un fond blanc",
+  "updateAvailableTitle": "Mise à jour disponible",
+  "updateMandatoryMessage": "Une nouvelle version de l'application est disponible. Veuillez mettre à jour pour continuer à utiliser l'application.",
+  "updateOptionalMessage": "Une nouvelle version de l'application est disponible. Nous vous recommandons de mettre à jour pour une meilleure expérience.",
+  "updateNow": "Mettre à jour maintenant",
+  "skip": "Ignorer",
+  "chooseImage": "Téléverser choisir une image",
+  "takePicture": "Téléverser prendre une photo",
+  "chooseFromFiles": "Téléverser choisir depuis les fichiers",
+
+  "settingsTitle": "Paramètres",
+  "settingsPushNotifications": "Notifications push",
+  "settingsEmailNotifications": "Notifications e-mail",
+  "settingsDarkMode": "Mode sombre",
+  "settingsToneAnalysis": "Analyse du ton",
+  "settingsLanguage": "Langue",
+
+  "navHomeTabLabel": "Accueil",
+  "navScheduleTabLabel": "Agenda",
+  "navNewsTabLabel": "Actualités",
+  "navMessagesTabLabel": "Messages",
+  "navExpenseTabLabel": "Dépenses",
+
+  "scheduleSharedCalendarTitle": "Calendrier partagé",
+  "scheduleNoEventsForDay": "Aucun événement pour ce jour",
+  "scheduleEventTypePickup": "Récupération",
+  "scheduleEventTypeMedical": "Médical",
+  "scheduleEventTypeActivity": "Activité",
+  "scheduleEventTypeSchool": "École",
+  "scheduleEventTypeCustody": "Garde",
+  "scheduleAllDay": "Toute la journée",
+
+  "authLoginTitle": "Connexion",
+  "authEmailTab": "E-mail",
+  "authPhoneTab": "Numéro de téléphone",
+  "authEmailLabel": "E-mail",
+  "authEmailHint": "example@email.com",
+  "authPhoneLabel": "Numéro de téléphone",
+  "authPhoneHint": "+20 123 456 7890",
+  "authPasswordLabel": "Mot de passe",
+  "authPasswordHint": "********",
+  "authForgotPassword": "Mot de passe oublié ?",
+  "authLoginButton": "SE CONNECTER",
+  "authOrContinueWith": "Ou continuer avec",
+  "authDontHaveAccountPrefix": "Vous n’avez pas de compte ? ",
+  "authSignUp": "S’inscrire",
+
+  "authSignUpTitle": "Inscription",
+  "authFirstNameLabel": "Prénom",
+  "authFirstNameHint": "Jean",
+  "authLastNameLabel": "Nom",
+  "authLastNameHint": "Dupont",
+  "authConfirmPasswordLabel": "Confirmer le mot de passe",
+  "authAgreeTermsToContinue": "Veuillez accepter les Conditions générales pour continuer.",
+  "authSignUpButton": "S’INSCRIRE",
+  "authAlreadyHaveAccountPrefix": "Vous avez déjà un compte ? ",
+  "authLoginLink": "CONNEXION",
+
+  "commonCancel": "Annuler",
+  "commonClose": "Fermer",
+  "commonShare": "Partager",
+  "commonSave": "Enregistrer",
+  "commonAdd": "Ajouter",
+  "commonDelete": "Supprimer",
+
+  "profileTitle": "Profil",
+  "profileMenuAccountSecurity": "Compte et sécurité",
+  "profileMenuFamilyInformation": "Informations familiales",
+  "profileMenuNotifications": "Notifications",
+  "profileMenuLanguage": "Langue",
+  "profileMenuTermsOfUse": "Conditions d’utilisation",
+  "profileMenuInvitePeople": "Inviter des personnes",
+  "profileMenuLogout": "Déconnexion",
+  "profileTermsTitle": "Conditions d’utilisation",
+  "profileTermsBody": "En utilisant cette application, vous acceptez les conditions suivantes. Veuillez les lire attentivement avant de continuer.\\n\\n1. Vous devez avoir au moins 18 ans pour utiliser ce service.\\n\\n2. Toutes les informations fournies doivent être exactes et à jour.\\n\\n3. Vous êtes responsable de la confidentialité de votre compte.\\n\\n4. Nous nous réservons le droit de modifier ces conditions à tout moment.\\n\\n5. Toute utilisation abusive de la plateforme peut entraîner la suspension du compte.",
+  "profileInviteTitle": "Inviter des personnes",
+  "profileInviteDescription": "Partagez votre code d’invitation avec votre famille et vos amis.",
+  "profileLogoutTitle": "Déconnexion",
+  "profileLogoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
+
+  "accountSecurityTitle": "Compte et sécurité",
+  "accountSecurityEmailLabel": "E-mail",
+  "accountSecurityPhoneLabel": "Téléphone",
+  "accountSecurityChangePassword": "Changer le mot de passe",
+  "accountSecurityEnableTwoFactor": "Activer l’authentification à deux facteurs",
+  "accountSecurityDeleteAccount": "Supprimer le compte",
+  "accountSecurityDeleteConfirm": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+
+  "familyInfoTitle": "Informations familiales",
+  "familyChildrenTitle": "Enfants",
+  "familyAddChild": "Ajouter un enfant",
+  "familyInfoSaved": "Informations familiales enregistrées",
+  "familyCoParent": "Co-parent",
+  "familyConnected": "Connecté",
+  "familyYearsOld": "{age} ans",
+  "@familyYearsOld": {
+    "placeholders": {
+      "age": {}
+    }
+  },
+  "familyChildNameHint": "Nom de l’enfant",
+  "familyChildAgeHint": "Âge",
+
+  "notificationsTitle": "Notifications",
+  "notificationsEmptyTitle": "Aucune notification pour le moment",
+  "notificationsEmptySubtitle": "Nous vous informerons dès qu’il y aura du nouveau",
+  "notificationsNewMessageTitle": "Nouveau message",
+  "notificationsNewMessageBody": "Fatima vous a envoyé un message au sujet du planning de ce week-end.",
+  "notificationsScheduleUpdatedTitle": "Agenda mis à jour",
+  "notificationsScheduleUpdatedBody": "Le planning de coparentalité de la semaine prochaine a été mis à jour.",
+  "notificationsExpenseAddedTitle": "Dépense ajoutée",
+  "notificationsExpenseAddedBody": "Une nouvelle dépense partagée de 500 EGP a été enregistrée.",
+  "notificationsReminderTitle": "Rappel",
+  "notificationsReminderBody": "N’oubliez pas la réunion parents-professeurs demain à 16 h.",
+  "notificationsSecurityAlertTitle": "Alerte de sécurité",
+  "notificationsSecurityAlertBody": "Un nouvel appareil a été utilisé pour se connecter à votre compte.",
+  "timeMinutesAgo": "Il y a {minutes} min",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeHoursAgo": "Il y a {hours} h",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeHoursAgoPlural": "Il y a {hours} h",
+  "@timeHoursAgoPlural": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeYesterday": "Hier",
+  "timeDaysAgo": "Il y a {days} jours",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+
+  "chatTypeMessageHint": "Écrire un message...",
+
+  "updatePleaseUpdateToContinue": "Veuillez mettre à jour l’application pour continuer.",
+  "updateNewVersionAvailableShort": "Une nouvelle version est disponible.",
+
+  "languageSelectTitle": "Choisir la langue",
+  "commonStart": "Commencer",
+
+  "messagesTitle": "Messages",
+  "messagesSearch": "Rechercher",
+
+  "newsTitle": "Actualités",
+
+  "expenseTitle": "Dépenses",
+  "expenseTotalThisMonth": "Total ce mois-ci",
+  "expenseYouPaid": "Vous avez payé",
+  "expenseCoParentPaid": "Co-parent a payé",
+  "expenseAddExpense": "Ajouter une dépense",
+
+  "addExpenseTitle": "Ajouter une dépense",
+  "addExpenseCategoryLabel": "Catégorie",
+  "addExpenseSelectCategoryHint": "Sélectionner une catégorie",
+  "addExpenseDateLabel": "Date",
+  "addExpenseSelectDateHint": "Sélectionner une date",
+  "addExpenseAmountLabel": "Montant",
+  "addExpenseEnterAmountHint": "Saisir le montant",
+  "addExpenseAmountRequired": "Le montant est obligatoire",
+  "addExpenseEnterValidAmount": "Saisissez un montant valide",
+  "addExpenseCurrencyLabel": "Devise",
+  "addExpenseSelectCurrencyHint": "Sélectionner une devise",
+  "addExpenseDescriptionLabel": "Description",
+  "addExpenseEnterDescriptionHint": "Saisir la description",
+  "addExpenseProofOfPurchaseLabel": "Justificatif d’achat",
+  "addExpenseTapToUpload": "Appuyez pour téléverser",
+  "addExpenseUploadFormats": "JPG, PNG ou PDF",
+  "addExpenseAlreadyPaidQuestion": "Avez-vous déjà payé cette dépense ?",
+
+  "ourMissionDescription": "Notre mission est de fournir des solutions de chimie de la construction haute performance répondant aux plus hauts standards de qualité, de sécurité et de durabilité. Nous accompagnons nos clients avec des produits innovants et des conseils d’experts afin de leur permettre d’obtenir des résultats de construction durables, efficaces et respectueux de l’environnement.",
+  "onboardingSkip": "Ignorer",
+  "onboardingNext": "Suivant",
+  "onboardingGetStarted": "Commencer !",
+  "onboardingLogin": "Connexion",
+  "onboardingJoinUsingCode": "Rejoindre avec un code",
+  "onboardingPage1Title": "Une meilleure façon de coparenter",
+  "onboardingPage1Subtitle": "Un espace sécurisé conçu pour aider les parents à communiquer, s’organiser et prendre des décisions avec moins de conflits et plus de clarté.",
+  "onboardingPage2Title": "Une communication claire et respectueuse",
+  "onboardingPage2Subtitle": "Tous les messages sont documentés, horodatés et ne peuvent être ni modifiés ni supprimés, pour des échanges responsables et constructifs.",
+  "onboardingPage3Title": "Documents importants, stockés en toute sécurité",
+  "onboardingPage3Subtitle": "Gardez les documents médicaux, scolaires, juridiques et financiers chiffrés et accessibles avec un historique complet des accès.",
+  "onboardingPage4Title": "Fondé sur la confiance et la confidentialité",
+  "onboardingPage4Subtitle": "Vos données sont protégées par des mesures de sécurité solides et traitées conformément à la loi égyptienne sur la protection des données."
+}

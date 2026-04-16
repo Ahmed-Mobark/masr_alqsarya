@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
@@ -157,7 +158,7 @@ class _ChatViewState extends State<ChatView> {
                     child: TextField(
                       controller: _messageController,
                       decoration: InputDecoration(
-                        hintText: 'Type a message...',
+                        hintText: context.tr.chatTypeMessageHint,
                         hintStyle: AppTextStyles.caption(color: AppColors.greyText),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(vertical: 10),

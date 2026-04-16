@@ -3,10 +3,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
 import 'package:masr_al_qsariya/features/home/presentation/widgets/quick_action_card.dart';
 import 'package:masr_al_qsariya/features/home/presentation/widgets/awaiting_card.dart';
 import 'package:masr_al_qsariya/features/home/presentation/widgets/activity_item_tile.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -100,7 +102,7 @@ class HomeView extends StatelessWidget {
           // Notification bell
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, AppRoutes.notifications);
+              sl<AppNavigator>().push(screen: const NotificationsView());
             },
             child: Container(
               width: 32,
@@ -112,7 +114,7 @@ class HomeView extends StatelessWidget {
               child: const Icon(
                 Iconsax.notification,
                 size: 20,
-                color: AppColors.primaryDark, // #FBBC05
+                color: AppColors.primaryDark,
               ),
             ),
           ),

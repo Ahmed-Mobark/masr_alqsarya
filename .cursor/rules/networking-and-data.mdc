@@ -1,0 +1,79 @@
+---
+description: Networking layer, API calls, error handling, and data models
+globs: lib/core/network/**/*.dart,lib/**/data/**/*.dart
+alwaysApply: false
+---
+
+# Networking & Data Layer
+
+## ApiBaseHelper
+
+- Singleton accessed via `sl<ApiBaseHelper>()`.
+- Supports multiple environments: `ApiEnvironment.primary`, `.secondary`, `.map`.
+- Methods: `get`, `post`, `put`, `patch`, `delete` — all generic `Future<T>`.
+- Auth token is automatically attached from `Storage.getToken()` on each request.
+- Locale header is kept in sync via `updateLocaleInHeaders`.
+
+## Making API Calls (in Remote Data Sources)
+
+```dart
+class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
+  final ApiBaseHelper _api;
+  const ScheduleRemoteDataSourceImpl(this._api);
+
+  @override
+  Future<List<ScheduleModel>> fetchSchedule() async {
+    final response = await _api.get<Map<String, dynamic>>(
+      url: AppEndpoints.schedule,
+    );
+    final list = response['data'] as List;
+    return list.map((e) => ScheduleModel.fromJson(e)).toList();
+  }
+}
+```
+
+## Error Handling Chain
+
+1. `ApiBaseHelper._performRequest` catches `DioException` → maps via `ErrorHelper.handleDioError` → throws typed `AppException` subclass.
+2. Repository impl uses `RepositoryHelper.handleEither` → catches `ServerException`, `ValidationException`, `NetworkException` → returns `Left(Failure)`.
+3. Cubit receives `Either<Failure, T>` → `fold()` to update state.
+
+### Exception Types (`core/network/network_service/exceptions.dart`)
+
+| Exception | When |
+|-----------|------|
+| `ServerException` | 500, unexpected server error |
+| `BadRequestException` | 400 |
+| `UnauthorizedException` | 401 |
+| `NotFoundException` | 404 |
+| `ValidationException` | 422 — carries `validationErrors` map |
+| `NetworkException` | No internet / `SocketException` |
+| `CacheException` | Hive / local storage failure |
+
+### Failure Types (`core/network/network_service/failures.dart`)
+
+| Failure | Maps from |
+|---------|-----------|
+| `ServerFailure` | `ServerException` + catch-all |
+| `NetworkFailure` | `NetworkException` |
+| `ValidationFailure` | `ValidationException` (carries `errors` map) |
+| `CacheFailure` | `CacheException` |
+
+## Data Models
+
+- Place in `features/<name>/data/models/`.
+- Extend or map to a domain entity: `toEntity()` method.
+- Include `factory fromJson(Map<String, dynamic>)` and `Map<String, dynamic> toJson()`.
+- Use `Equatable` when the model is used in state comparisons.
+
+## Endpoints
+
+- Define new endpoints as static constants in `lib/core/config/app_end_points.dart`.
+- Map endpoints go in `map_end_points.dart`.
+
+## Rules
+
+- Data sources are the only layer that touches `ApiBaseHelper`.
+- Repositories must never throw — always return `Either`.
+- Never decode JSON inside a Cubit or View; that belongs in the model/data-source.
+- `FormData` uploads: pass `formData:` param to `post`/`put`/`patch`.

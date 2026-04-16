@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/view/chat_view.dart';
 
 class MessagesView extends StatelessWidget {
   const MessagesView({super.key});
@@ -14,7 +17,7 @@ class MessagesView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: Text('Messages', style: AppTextStyles.navTitle()),
+        title: Text(context.tr.messagesTitle, style: AppTextStyles.navTitle()),
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
@@ -37,7 +40,7 @@ class MessagesView extends StatelessWidget {
                   const Icon(Iconsax.search_normal,
                       size: 18, color: AppColors.greyText),
                   const SizedBox(width: 8),
-                  Text('Search',
+                  Text(context.tr.messagesSearch,
                       style:
                           AppTextStyles.caption(color: AppColors.greyText)),
                 ],
@@ -75,13 +78,11 @@ class _MessageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          AppRoutes.chat,
-          arguments: {
-            'name': message.name,
-            'avatarUrl': message.avatarUrl,
-          },
+        sl<AppNavigator>().push(
+          screen: ChatView(
+            name: message.name,
+            avatarUrl: message.avatarUrl,
+          ),
         );
       },
       child: Container(

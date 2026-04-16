@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:masr_al_qsariya/core/app/app_body.dart';
+import 'package:masr_al_qsariya/core/config/app_icons.dart';
+import 'package:masr_al_qsariya/core/config/app_images.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/core/l10n/locale_provider.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
 
 class LanguageView extends StatefulWidget {
   const LanguageView({super.key});
@@ -13,13 +18,22 @@ class LanguageView extends StatefulWidget {
 }
 
 class _LanguageViewState extends State<LanguageView> {
-  String _selectedLanguageCode = 'en';
+  late String _selectedLanguageCode;
 
   static const _languages = [
     _LanguageOption(code: 'en', name: 'English'),
-    _LanguageOption(code: 'ar', name: '\u0627\u0644\u0639\u0631\u0628\u064A\u0647'),
+    _LanguageOption(
+      code: 'ar',
+      name: '\u0627\u0644\u0639\u0631\u0628\u064A\u0647',
+    ),
     _LanguageOption(code: 'fr', name: 'French'),
   ];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _selectedLanguageCode = Localizations.localeOf(context).languageCode;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,47 +41,77 @@ class _LanguageViewState extends State<LanguageView> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(
             children: [
-              const SizedBox(height: 48),
-              // Brand logo
-              Image.asset(
-                'assets/images/logoapp.png',
-                width: 150,
-                height: 172,
-              ),
-              const SizedBox(height: 40),
-              // Title
-              Text(
-                'Select Language',
-                style: AppTextStyles.heading1(),
-              ),
-              const SizedBox(height: 24),
-              // Language cards
-              ..._languages.map((lang) => Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: _buildLanguageCard(lang),
-                  )),
-              const Spacer(),
-              // Start button
-              SizedBox(
-                width: 343,
-                height: 44,
-                child: ElevatedButton(
-                  onPressed: _onStart,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.darkText,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 36.h),
+                      Image.asset(
+                        AppImages.logoApp,
+                        width: 190.w,
+                        height: 210.h,
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(height: 26.h),
+                      Text(
+                        context.tr.languageSelectTitle,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.heading2().copyWith(
+                          fontSize: 20.sp,
+                          color: AppColors.darkText,
+                        ),
+                      ),
+                      SizedBox(height: 32.h),
+                      ..._languages.map(
+                        (lang) => Padding(
+                          padding: EdgeInsets.only(bottom: 22.h),
+                          child: _LanguageCard(
+                            option: lang,
+                            isSelected: _selectedLanguageCode == lang.code,
+                            onTap: () {
+                              if (_selectedLanguageCode == lang.code) return;
+                              setState(() {
+                                _selectedLanguageCode = lang.code;
+                              });
+                              MyApp.of(context)?.setLocale(Locale(lang.code));
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text('START', style: AppTextStyles.button()),
                 ),
               ),
-              const SizedBox(height: 32),
+              Padding(
+                padding: EdgeInsets.only(bottom: 20.h, top: 16.h),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56.h,
+                  child: ElevatedButton(
+                    onPressed: _onStart,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.darkText,
+                      elevation: 0,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28.r),
+                      ),
+                    ),
+                    child: Text(
+                      context.tr.commonStart.toUpperCase(),
+                      style: AppTextStyles.button().copyWith(
+                        fontSize: 16.sp,
+                        color: AppColors.darkText,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -75,43 +119,77 @@ class _LanguageViewState extends State<LanguageView> {
     );
   }
 
-  Widget _buildLanguageCard(_LanguageOption lang) {
-    final isSelected = _selectedLanguageCode == lang.code;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedLanguageCode = lang.code),
-      child: Container(
-        width: 343,
-        height: 64,
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : const Color(0xFFF5F5F5),
-            width: 1,
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            // Language icon
-            Image.asset(
-              'assets/icons/language_icon.png',
-              width: 32,
-              height: 32,
+  Future<void> _onStart() async {
+    final appState = MyApp.of(context);
+    if (appState == null) return;
+    await appState.setLocale(Locale(_selectedLanguageCode));
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sl<AppNavigator>().pushReplacement(screen: const OnboardingView());
+    });
+  }
+}
+
+class _LanguageCard extends StatelessWidget {
+  const _LanguageCard({
+    required this.option,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final _LanguageOption option;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20.r),
+        child: Ink(
+          height: 76.h,
+          padding: EdgeInsets.symmetric(horizontal: 18.w),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: 0.08)
+                : AppColors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.primary
+                  : AppColors.border.withValues(alpha: 0.55),
             ),
-            const SizedBox(width: 16),
-            // Language name
-            Text(lang.name, style: AppTextStyles.cardTitle()),
-          ],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 18.r,
+                offset: Offset(0, 6.h),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Image.asset(
+                AppIcons.languageIcon,
+                width: 28.w,
+                height: 28.w,
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: Text(
+                  option.name,
+                  style: AppTextStyles.bodyMedium(
+                    color: AppColors.darkText,
+                  ).copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  void _onStart() {
-    final localeProvider = context.read<LocaleProvider>();
-    localeProvider.setLocale(Locale(_selectedLanguageCode));
-    Navigator.of(context).pushReplacementNamed(AppRoutes.onboarding);
   }
 }
 
@@ -119,8 +197,5 @@ class _LanguageOption {
   final String code;
   final String name;
 
-  const _LanguageOption({
-    required this.code,
-    required this.name,
-  });
+  const _LanguageOption({required this.code, required this.name});
 }

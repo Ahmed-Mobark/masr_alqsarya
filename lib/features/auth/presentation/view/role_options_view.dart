@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
 
 class RoleOptionsView extends StatefulWidget {
   const RoleOptionsView({super.key});
@@ -79,10 +81,8 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
                 text: 'Next',
                 onPressed: _selectedRoleIndex != null
                     ? () {
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          AppRoutes.home,
-                          (route) => false,
+                        sl<AppNavigator>().pushAndRemoveUntil(
+                          screen: const HomeView(),
                         );
                       }
                     : null,

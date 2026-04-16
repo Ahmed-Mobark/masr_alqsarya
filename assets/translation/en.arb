@@ -1,0 +1,215 @@
+{
+  "@@locale": "en",
+  
+  "errorFieldRequired": "This field is required",
+  "errorInvalidName": "Invalid name format",
+  "errorInvalidUrl": "Invalid URL",
+  "errorInvalidPhoneNumber": "Invalid phone number",
+  "errorInvalidEmail": "Invalid email address",
+  "errorInvalidPassword": "Password must be at least 8 characters long with uppercase, lowercase, and special characters",
+  "errorPasswordMismatch": "Passwords do not match",
+  "errorInvalidNumber": "Invalid number",
+  "errorInvalidIban": "Invalid IBAN format",
+  "errorInvalidMobileNumber": "Invalid mobile number",
+  "errorInvalidStcPayId": "Invalid STC Pay ID",
+  "errorInvalidNationalId": "Invalid National ID",
+  "errorInvalidPassport": "Invalid passport number",
+  "sorryMessage": "We are sorry",
+  "nothingFound": "Nothing Found",
+  "errorPhoneValidation": "The phone number must start with {start} and be {length} digits long.",
+  "errorExperienceRequired": "You must add at least one experience.",
+  "errorIdDocumentRequired": "You must upload an ID document to verify your identity.",
+  "errorPhotoRequired": "You must upload a photo with a white background",
+  "updateAvailableTitle": "Update Available",
+  "updateMandatoryMessage": "A new version of the app is available. Please update to continue using the app.",
+  "updateOptionalMessage": "A new version of the app is available. We recommend updating for the best experience.",
+  "updateNow": "Update Now",
+  "skip": "Skip",
+    "chooseImage": "Upload Choose Image",
+  "takePicture": "Upload Take Picture",
+  "chooseFromFiles": "Upload Choose From Files",
+
+  "settingsTitle": "Settings",
+  "settingsPushNotifications": "Push Notifications",
+  "settingsEmailNotifications": "Email Notifications",
+  "settingsDarkMode": "Dark Mode",
+  "settingsToneAnalysis": "Tone Analysis",
+  "settingsLanguage": "Language",
+
+  "navHomeTabLabel": "Home",
+  "navScheduleTabLabel": "Schedule",
+  "navNewsTabLabel": "News",
+  "navMessagesTabLabel": "Messages",
+  "navExpenseTabLabel": "Expense",
+
+  "scheduleSharedCalendarTitle": "Shared Calendar",
+  "scheduleNoEventsForDay": "No events for this day",
+  "scheduleEventTypePickup": "Pickup",
+  "scheduleEventTypeMedical": "Medical",
+  "scheduleEventTypeActivity": "Activity",
+  "scheduleEventTypeSchool": "School",
+  "scheduleEventTypeCustody": "Custody",
+  "scheduleAllDay": "All Day",
+
+  "authLoginTitle": "Log In",
+  "authEmailTab": "Email",
+  "authPhoneTab": "Phone Number",
+  "authEmailLabel": "Email",
+  "authEmailHint": "example@email.com",
+  "authPhoneLabel": "Phone Number",
+  "authPhoneHint": "+20 123 456 7890",
+  "authPasswordLabel": "Password",
+  "authPasswordHint": "********",
+  "authForgotPassword": "Forgot Password?",
+  "authLoginButton": "LOG IN",
+  "authOrContinueWith": "Or continue with",
+  "authDontHaveAccountPrefix": "Don't have an account? ",
+  "authSignUp": "Sign Up",
+
+  "authSignUpTitle": "Sign Up",
+  "authFirstNameLabel": "First Name",
+  "authFirstNameHint": "John",
+  "authLastNameLabel": "Last Name",
+  "authLastNameHint": "Doe",
+  "authConfirmPasswordLabel": "Confirm Password",
+  "authAgreeTermsToContinue": "Please agree to the Terms & Conditions to continue.",
+  "authSignUpButton": "SIGN UP",
+  "authAlreadyHaveAccountPrefix": "Already have an account? ",
+  "authLoginLink": "LOGIN",
+
+  "commonCancel": "Cancel",
+  "commonClose": "Close",
+  "commonShare": "Share",
+  "commonSave": "Save",
+  "commonAdd": "Add",
+  "commonDelete": "Delete",
+
+  "profileTitle": "Profile",
+  "profileMenuAccountSecurity": "Account & Security",
+  "profileMenuFamilyInformation": "Family Information",
+  "profileMenuNotifications": "Notifications",
+  "profileMenuLanguage": "Language",
+  "profileMenuTermsOfUse": "Terms of Use",
+  "profileMenuInvitePeople": "Invite People",
+  "profileMenuLogout": "Log Out",
+  "profileTermsTitle": "Terms of Use",
+  "profileTermsBody": "By using this application, you agree to the following terms and conditions. Please read them carefully before proceeding.\\n\\n1. You must be at least 18 years old to use this service.\\n\\n2. All information provided must be accurate and up to date.\\n\\n3. You are responsible for maintaining the confidentiality of your account.\\n\\n4. We reserve the right to modify these terms at any time.\\n\\n5. Any misuse of the platform may result in account suspension.",
+  "profileInviteTitle": "Invite People",
+  "profileInviteDescription": "Share your invite code with family and friends.",
+  "profileLogoutTitle": "Log Out",
+  "profileLogoutConfirm": "Are you sure you want to log out?",
+
+  "accountSecurityTitle": "Account & Security",
+  "accountSecurityEmailLabel": "Email",
+  "accountSecurityPhoneLabel": "Phone",
+  "accountSecurityChangePassword": "Change Password",
+  "accountSecurityEnableTwoFactor": "Enable Two-Factor Authentication",
+  "accountSecurityDeleteAccount": "Delete Account",
+  "accountSecurityDeleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
+
+  "familyInfoTitle": "Family Information",
+  "familyChildrenTitle": "Children",
+  "familyAddChild": "Add Child",
+  "familyInfoSaved": "Family information saved",
+  "familyCoParent": "Co-Parent",
+  "familyConnected": "Connected",
+  "familyYearsOld": "{age} years old",
+  "@familyYearsOld": {
+    "placeholders": {
+      "age": {}
+    }
+  },
+  "familyChildNameHint": "Child name",
+  "familyChildAgeHint": "Age",
+
+  "notificationsTitle": "Notifications",
+  "notificationsEmptyTitle": "No notifications yet",
+  "notificationsEmptySubtitle": "We'll notify you when something arrives",
+  "notificationsNewMessageTitle": "New Message",
+  "notificationsNewMessageBody": "Fatima sent you a message about this weekend's schedule.",
+  "notificationsScheduleUpdatedTitle": "Schedule Updated",
+  "notificationsScheduleUpdatedBody": "The co-parenting schedule for next week has been updated.",
+  "notificationsExpenseAddedTitle": "Expense Added",
+  "notificationsExpenseAddedBody": "A new shared expense of 500 EGP has been recorded.",
+  "notificationsReminderTitle": "Reminder",
+  "notificationsReminderBody": "Don't forget the parent-teacher meeting tomorrow at 4 PM.",
+  "notificationsSecurityAlertTitle": "Security Alert",
+  "notificationsSecurityAlertBody": "A new device was used to sign in to your account.",
+  "timeMinutesAgo": "{minutes} min ago",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeHoursAgo": "{hours} hour ago",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeHoursAgoPlural": "{hours} hours ago",
+  "@timeHoursAgoPlural": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeYesterday": "Yesterday",
+  "timeDaysAgo": "{days} days ago",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+
+  "chatTypeMessageHint": "Type a message...",
+
+  "updatePleaseUpdateToContinue": "Please update the app to continue.",
+  "updateNewVersionAvailableShort": "A new version is available.",
+
+  "languageSelectTitle": "Select Language",
+  "commonStart": "Start",
+
+  "messagesTitle": "Messages",
+  "messagesSearch": "Search",
+
+  "newsTitle": "News",
+
+  "expenseTitle": "Expense",
+  "expenseTotalThisMonth": "Total This Month",
+  "expenseYouPaid": "You Paid",
+  "expenseCoParentPaid": "Co-parent Paid",
+  "expenseAddExpense": "Add Expense",
+
+  "addExpenseTitle": "Add Expense",
+  "addExpenseCategoryLabel": "Category",
+  "addExpenseSelectCategoryHint": "Select Category",
+  "addExpenseDateLabel": "Date",
+  "addExpenseSelectDateHint": "Select Date",
+  "addExpenseAmountLabel": "Amount",
+  "addExpenseEnterAmountHint": "Enter amount",
+  "addExpenseAmountRequired": "Amount is required",
+  "addExpenseEnterValidAmount": "Enter a valid amount",
+  "addExpenseCurrencyLabel": "Currency",
+  "addExpenseSelectCurrencyHint": "Select Currency",
+  "addExpenseDescriptionLabel": "Description",
+  "addExpenseEnterDescriptionHint": "Enter description",
+  "addExpenseProofOfPurchaseLabel": "Proof of Purchase",
+  "addExpenseTapToUpload": "Tap to upload",
+  "addExpenseUploadFormats": "JPG, PNG or PDF",
+  "addExpenseAlreadyPaidQuestion": "Have you already paid this expense?",
+
+  "ourMissionDescription": "Our mission is to provide high-performance construction chemical solutions that meet the highest standards of quality, safety, and sustainability. We support our customers with innovative products and expert guidance, enabling them to achieve durable, efficient, and environmentally responsible construction results.",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingGetStarted": "Get Started!",
+  "onboardingLogin": "Log In",
+  "onboardingJoinUsingCode": "Join Using a Code",
+  "onboardingPage1Title": "A better way to co-parent",
+  "onboardingPage1Subtitle": "A secure space designed to help parents communicate, organize, and make decisions with less conflict and more clarity.",
+  "onboardingPage2Title": "Clear and respectful communication",
+  "onboardingPage2Subtitle": "All messages are documented, time-stamped, and cannot be edited or deleted, helping conversations stay accountable and constructive.",
+  "onboardingPage3Title": "Important documents, safely stored",
+  "onboardingPage3Subtitle": "Keep medical, school, legal, and financial documents encrypted and accessible with full access history.",
+  "onboardingPage4Title": "Built on trust and privacy",
+  "onboardingPage4Subtitle": "Your data is protected with strong security measures and handled according to Egyptian data protection law."
+}

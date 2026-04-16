@@ -1,0 +1,58 @@
+---
+description: Flutter UI screen and widget implementation conventions
+globs: lib/features/**/presentation/**/*.dart,lib/core/widgets/**/*.dart
+alwaysApply: false
+---
+
+# Flutter UI Screens & Widgets
+
+## Screen Structure
+
+- Every screen is a `*View` class (e.g. `ExpenseView`) inside `features/<name>/presentation/view/`.
+- Wrap with `Scaffold`. Use `SafeArea` where needed (not inside tab shells that already provide it).
+- For scrollable content, use `SingleChildScrollView` or `CustomScrollView` — never let content overflow.
+- Provide the feature Cubit via `BlocProvider` at the screen entry point, not globally.
+
+## Layout & Sizing
+
+- Use `flutter_screenutil`: `.w` for widths, `.h` for heights, `.r` for radii, `.sp` for font sizes.
+- Design size is **393 × 852** — all `.w`/`.h` values are relative to this.
+- Never hardcode pixel values like `343`, `44`, `16` — always use `343.w`, `44.h`, `16.w`.
+
+## Design Tokens
+
+- **Colors:** Always use `AppColors.*` — never inline `Color(0xFF...)`.
+- **Typography:** Use `AppTextStyles.*` (`heading1`, `body`, `button`, `caption`, etc.). Fine-tune with `.copyWith(fontSize: X.sp)`.
+- **Shared widgets:** Check `lib/core/widgets/` first (buttons, text fields, shimmer, dialogs, empty states, cached images).
+
+## Strings & Localisation
+
+- All user-facing strings via `context.tr.*`.
+- Add keys to **all three** ARB files: `en.arb`, `ar.arb`, `fr.arb`.
+
+## Navigation
+
+- Forward: `sl<AppNavigator>().push(screen: ...)` / `.pushReplacement(...)` / `.pushAndRemoveUntil(...)`.
+- Back/close: `Navigator.pop(context)` — only for local dismiss actions.
+- Available animations: `NavAnimation.fade` (default), `.slide`, `.scale`, `.cupertino`.
+
+## RTL Support
+
+- Use `EdgeInsetsDirectional` / `AlignmentDirectional` / `BorderRadiusDirectional` instead of fixed LTR variants.
+- Use `TextDirection`-aware icons (e.g. `arrow_back_ios_new_rounded` auto-flips).
+- Test layouts in both Arabic (RTL) and English (LTR).
+
+## Widget Extraction
+
+- Extract repeated UI blocks into `_PrivateWidget` classes in the same file.
+- If a widget is reused across features, move it to `lib/core/widgets/`.
+- Feature-specific widgets go in `features/<name>/presentation/widgets/`.
+
+## UX Consistency
+
+- Buttons: fully rounded (`BorderRadius.circular(999.r)`), height `50–58.h`.
+- Cards: rounded corners `12–16.r`, light border or subtle shadow.
+- Spacing: consistent `16.w` horizontal padding, `12–24.h` vertical gaps.
+- Loading states: use `Shimmer` widgets from `core/widgets/`, not bare `CircularProgressIndicator`.
+- Empty states: use `AppEmptyScreen` with illustration + message.
+- Error states: show user-friendly message from `Failure.message`, not raw exceptions.

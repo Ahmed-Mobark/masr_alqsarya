@@ -1,0 +1,64 @@
+---
+description: State management (BLoC/Cubit) and dependency injection (GetIt) patterns
+globs: lib/**/*cubit*.dart,lib/**/*_inj.dart,lib/core/injection/**/*.dart
+alwaysApply: false
+---
+
+# State Management & Dependency Injection
+
+## Cubit over Bloc
+
+- Prefer **Cubit** for new features — simpler, less boilerplate.
+- Use full **Bloc** only when you need explicit event-driven traceability (e.g. complex auth flows with many distinct events).
+
+## Cubit Conventions
+
+```dart
+class ExpenseCubit extends Cubit<ExpenseState> {
+  final GetExpensesUseCase _getExpenses;
+  ExpenseCubit(this._getExpenses) : super(const ExpenseState());
+
+  Future<void> loadExpenses() async {
+    emit(state.copyWith(status: RequestStatus.loading));
+    final result = await _getExpenses();
+    result.fold(
+      (failure) => emit(state.copyWith(status: RequestStatus.failure, error: failure.message)),
+      (data) => emit(state.copyWith(status: RequestStatus.success, expenses: data)),
+    );
+  }
+}
+```
+
+- State classes extend `Equatable` and use `copyWith`.
+- Use a `RequestStatus` enum (`initial`, `loading`, `success`, `failure`) instead of separate state subclasses.
+- Keep cubits **thin**: business logic lives in use cases, not cubits.
+
+## Providing Cubits
+
+- Wrap the **screen** (not the app) with `BlocProvider`:
+
+```dart
+BlocProvider(
+  create: (_) => sl<ExpenseCubit>()..loadExpenses(),
+  child: const ExpenseView(),
+)
+```
+
+- For cubits needed across multiple screens (e.g. `LocaleCubit`), provide them in `MyApp` or `MainNavView`.
+
+## GetIt (`sl`)
+
+- The global service locator is `sl` from `lib/core/injection/injection_container.dart`.
+- **Registration types:**
+  - `registerLazySingleton` — data sources, repositories, use cases, services, `AppNavigator`.
+  - `registerFactory` — cubits (new instance per `BlocProvider`).
+  - `registerSingleton` — Hive boxes, objects that must exist immediately.
+- **Init order** matters — register dependencies before dependents. Storage first, then network, then features.
+- Each feature has its own `*_inj.dart` file. Call it from `init()` in `injection_container.dart`.
+
+## Rules
+
+- Never call `sl()` inside widget `build()`. Resolve in `BlocProvider.create` or pass via constructor.
+- Never register the same type twice without a named qualifier.
+- Cubits must be `registerFactory` so each provider gets a fresh instance.
+- Singletons (data sources, repos) must be `registerLazySingleton`.

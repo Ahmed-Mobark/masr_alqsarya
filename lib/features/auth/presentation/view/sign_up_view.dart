@@ -1,9 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/navigation/app_router.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/widgets/app_text_field.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -56,7 +60,7 @@ class _SignUpViewState extends State<SignUpView> {
                 // Title
                 Center(
                   child: Text(
-                    'Sign Up',
+                    context.tr.authSignUpTitle,
                     style: AppTextStyles.heading2(),
                   ),
                 ),
@@ -64,8 +68,8 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // First Name
                 AppTextField(
-                  label: 'First Name',
-                  hint: 'John',
+                  label: context.tr.authFirstNameLabel,
+                  hint: context.tr.authFirstNameHint,
                   controller: _firstNameController,
                   keyboardType: TextInputType.name,
                 ),
@@ -73,8 +77,8 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // Last Name
                 AppTextField(
-                  label: 'Last Name',
-                  hint: 'Doe',
+                  label: context.tr.authLastNameLabel,
+                  hint: context.tr.authLastNameHint,
                   controller: _lastNameController,
                   keyboardType: TextInputType.name,
                 ),
@@ -82,8 +86,8 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // Email
                 AppTextField(
-                  label: 'Email',
-                  hint: 'example@email.com',
+                  label: context.tr.authEmailLabel,
+                  hint: context.tr.authEmailHint,
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -91,8 +95,8 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // Phone
                 AppTextField(
-                  label: 'Phone Number',
-                  hint: '+20 123 456 7890',
+                  label: context.tr.authPhoneLabel,
+                  hint: context.tr.authPhoneHint,
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                 ),
@@ -100,8 +104,8 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // Password
                 AppTextField(
-                  label: 'Password',
-                  hint: '********',
+                  label: context.tr.authPasswordLabel,
+                  hint: context.tr.authPasswordHint,
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
@@ -121,8 +125,8 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // Confirm Password
                 AppTextField(
-                  label: 'Confirm Password',
-                  hint: '********',
+                  label: context.tr.authConfirmPasswordLabel,
+                  hint: context.tr.authPasswordHint,
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirm,
                   suffixIcon: IconButton(
@@ -161,7 +165,7 @@ class _SignUpViewState extends State<SignUpView> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Please agree to the Terms & Conditions to continue.',
+                        context.tr.authAgreeTermsToContinue,
                         style: AppTextStyles.tiny(color: AppColors.captionText),
                       ),
                     ),
@@ -171,15 +175,15 @@ class _SignUpViewState extends State<SignUpView> {
 
                 // SIGN UP button
                 _buildGoldButton(
-                  text: 'SIGN UP',
+                  text: context.tr.authSignUpButton,
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.verification);
+                    sl<AppNavigator>().push(screen: const VerificationView());
                   },
                 ),
                 const SizedBox(height: 24),
 
                 // Divider with "Or continue with"
-                _buildDividerWithText('Or continue with'),
+                _buildDividerWithText(context.tr.authOrContinueWith),
                 const SizedBox(height: 20),
 
                 // Social login buttons
@@ -190,16 +194,18 @@ class _SignUpViewState extends State<SignUpView> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      text: 'Already have an account? ',
+                      text: context.tr.authAlreadyHaveAccountPrefix,
                       style: AppTextStyles.tiny(color: AppColors.captionText),
                       children: [
                         TextSpan(
-                          text: 'LOGIN',
+                          text: context.tr.authLoginLink,
                           style: AppTextStyles.tiny(color: AppColors.primaryDark)
                               .copyWith(fontWeight: FontWeight.w600),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.pushNamed(context, AppRoutes.login);
+                              sl<AppNavigator>().pushReplacement(
+                                screen: const LoginView(),
+                              );
                             },
                         ),
                       ],

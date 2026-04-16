@@ -1,0 +1,77 @@
+---
+description: Clean Architecture layers for feature modules
+globs: lib/features/**/*.dart
+alwaysApply: false
+---
+
+# Feature Architecture (Clean Architecture)
+
+Every feature under `lib/features/<name>/` must follow three layers:
+
+## 1. Domain (`domain/`)
+
+- **Entities** — pure Dart classes, no Flutter/framework imports. Use `Equatable`.
+- **Repository contracts** — abstract classes defining the API surface. Return `Future<Either<Failure, T>>`.
+- **Use cases** — single-responsibility classes with a `call()` method. Inject the repository via constructor.
+
+```dart
+class GetScheduleUseCase {
+  final ScheduleRepository _repo;
+  const GetScheduleUseCase(this._repo);
+
+  Future<Either<Failure, List<ScheduleEntity>>> call() => _repo.getSchedule();
+}
+```
+
+## 2. Data (`data/`)
+
+- **Models** — extend or map to domain entities. Include `fromJson` / `toJson`.
+- **Data sources** — abstract + impl. Remote sources use `ApiBaseHelper`; local sources use `Storage` or Hive boxes.
+- **Repository impl** — implements the domain contract. Mix in `RepositoryHelper` to wrap calls with `handleEither`.
+
+```dart
+class ScheduleRepositoryImpl with RepositoryHelper implements ScheduleRepository {
+  final ScheduleRemoteDataSource _remote;
+  const ScheduleRepositoryImpl(this._remote);
+
+  @override
+  Future<Either<Failure, List<ScheduleEntity>>> getSchedule() =>
+    handleEither(() async {
+      final models = await _remote.fetchSchedule();
+      return models.map((m) => m.toEntity()).toList();
+    });
+}
+```
+
+## 3. Presentation (`presentation/`)
+
+- **Cubit / State** — extends `Cubit<FeatureState>`. States use `Equatable`. Inject use cases, not repositories.
+- **Views** — `*_view.dart` files. Wrap with `BlocProvider` at the screen level.
+- **Widgets** — extracted private/feature widgets for readability.
+
+## DI Registration
+
+- Create `<feature>_inj.dart` at feature root (e.g. `lib/features/schedule/schedule_inj.dart`).
+- Register data source, repository, use case, and cubit in that file.
+- Call the init function from `lib/core/injection/injection_container.dart` → `init()`.
+
+```dart
+Future<void> initScheduleInjection(GetIt sl) async {
+  sl.registerLazySingleton<ScheduleRemoteDataSource>(
+    () => ScheduleRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<ScheduleRepository>(
+    () => ScheduleRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => GetScheduleUseCase(sl()));
+  sl.registerFactory(() => ScheduleCubit(sl()));
+}
+```
+
+## Rules
+
+- Domain must **never** import from data or presentation.
+- Data may import domain but **never** presentation.
+- Presentation may import domain (entities, use cases) but **never** data directly.
+- One use case = one public method (`call`). Do not bundle multiple actions.
+- Feature folders must not import from other features. Share through `core/`.
