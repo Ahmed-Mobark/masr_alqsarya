@@ -20,6 +20,9 @@ class AppIcons {
   static const String projectsIcon = '${_path}projects_icon.png';
   static const String contactIcon = '${_path}contact_us_icon.png';
   static const String languageIcon = '${_path}language_icon.png';
+  static const String googleIcon = '${_path}google_icon.svg';
+  static const String appleIcon = '${_path}apple_icon.svg';
+
 
   // Method to render SVG as a widget
   static Widget icon({required String icon, double size = 24, Color? color}) {

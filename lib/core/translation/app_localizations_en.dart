@@ -157,6 +157,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authLoginTitle => 'Log In';
 
   @override
+  String get authLoginIntroTitle => 'Welcome to Masr Al-Osariya';
+
+  @override
+  String get authLoginIntroSubtitle =>
+      'Start building a safe and organized co-parenting experience.';
+
+  @override
   String get authEmailTab => 'Email';
 
   @override
@@ -164,6 +171,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authEmailLabel => 'Email';
+
+  @override
+  String get authEmailEntryHint => 'Enter Email';
 
   @override
   String get authEmailHint => 'example@email.com';
@@ -199,6 +209,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSignUpTitle => 'Sign Up';
 
   @override
+  String get authSignUpIntroTitle => 'How will you use the app?';
+
+  @override
+  String get authSignUpIntroSubtitle =>
+      'Choose the option that best describes you.';
+
+  @override
+  String get authFullNameLabel => 'Full Name';
+
+  @override
+  String get authFullNameHint => 'Full Name';
+
+  @override
   String get authFirstNameLabel => 'First Name';
 
   @override
@@ -214,8 +237,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authConfirmPasswordLabel => 'Confirm Password';
 
   @override
+  String get authAgreeTermsPrefix => 'Please agree to the ';
+
+  @override
+  String get authTermsAndConditions => 'Terms & Conditions';
+
+  @override
+  String get authAgreeTermsSuffix => ' to continue.';
+
+  @override
   String get authAgreeTermsToContinue =>
       'Please agree to the Terms & Conditions to continue.';
+
+  @override
+  String get authOrShort => 'Or';
+
+  @override
+  String get authContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get authContinueWithApple => 'Continue with Apple';
 
   @override
   String get authSignUpButton => 'SIGN UP';

@@ -1,328 +1,229 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:masr_al_qsariya/core/config/app_icons.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
-import 'package:masr_al_qsariya/core/theme/app_colors.dart';
-import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/core/widgets/app_text_field.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/theme/app_colors.dart';
+import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_bottom_link.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_divider.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_field.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_primary_button.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_social_button.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_text_input.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/phone_prefix.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/sign_up_terms.dart';
 
-class SignUpView extends StatefulWidget {
+class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
 
   @override
-  State<SignUpView> createState() => _SignUpViewState();
-}
-
-class _SignUpViewState extends State<SignUpView> {
-  final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _obscureConfirm = true;
-  bool _agreeTerms = false;
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
+    return BlocProvider(
+      create: (_) => sl<AuthCubit>(),
+      child: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) => previous.action != current.action,
+        listener: (context, state) {
+          switch (state.action) {
+            case AuthAction.navigateToVerification:
+              sl<AppNavigator>().push(screen: const VerificationView());
+              context.read<AuthCubit>().clearAction();
+              return;
+            case AuthAction.navigateToLogin:
+              sl<AppNavigator>().pushReplacement(screen: const LoginView());
+              context.read<AuthCubit>().clearAction();
+              return;
+            case null:
+            case AuthAction.navigateToHome:
+            case AuthAction.navigateToSignUp:
+              return;
+          }
+        },
+        builder: (context, state) {
+          final cubit = context.read<AuthCubit>();
 
-                // Back arrow
-                _buildBackArrow(context),
-                const SizedBox(height: 24),
-
-                // Title
-                Center(
-                  child: Text(
-                    context.tr.authSignUpTitle,
-                    style: AppTextStyles.heading2(),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // First Name
-                AppTextField(
-                  label: context.tr.authFirstNameLabel,
-                  hint: context.tr.authFirstNameHint,
-                  controller: _firstNameController,
-                  keyboardType: TextInputType.name,
-                ),
-                const SizedBox(height: 16),
-
-                // Last Name
-                AppTextField(
-                  label: context.tr.authLastNameLabel,
-                  hint: context.tr.authLastNameHint,
-                  controller: _lastNameController,
-                  keyboardType: TextInputType.name,
-                ),
-                const SizedBox(height: 16),
-
-                // Email
-                AppTextField(
-                  label: context.tr.authEmailLabel,
-                  hint: context.tr.authEmailHint,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 16),
-
-                // Phone
-                AppTextField(
-                  label: context.tr.authPhoneLabel,
-                  hint: context.tr.authPhoneHint,
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: 16),
-
-                // Password
-                AppTextField(
-                  label: context.tr.authPasswordLabel,
-                  hint: context.tr.authPasswordHint,
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    },
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.greyText,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Confirm Password
-                AppTextField(
-                  label: context.tr.authConfirmPasswordLabel,
-                  hint: context.tr.authPasswordHint,
-                  controller: _confirmPasswordController,
-                  obscureText: _obscureConfirm,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() => _obscureConfirm = !_obscureConfirm);
-                    },
-                    icon: Icon(
-                      _obscureConfirm
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.greyText,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Terms & Conditions checkbox
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: _agreeTerms,
-                        onChanged: (v) =>
-                            setState(() => _agreeTerms = v ?? false),
-                        activeColor: AppColors.primaryDark,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+          return Scaffold(
+            backgroundColor: AppColors.scaffoldColorLight,
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Form(
+                  key: cubit.signUpFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 12.h),
+                      AuthBackButton(onTap: () => Navigator.pop(context)),
+                      SizedBox(height: 14.h),
+                      Center(
+                        child: Text(
+                          context.tr.authSignUpTitle,
+                          style: AppTextStyles.heading2().copyWith(
+                            fontSize: 18.sp,
+                          ),
                         ),
-                        side: const BorderSide(color: AppColors.border),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        context.tr.authAgreeTermsToContinue,
-                        style: AppTextStyles.tiny(color: AppColors.captionText),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // SIGN UP button
-                _buildGoldButton(
-                  text: context.tr.authSignUpButton,
-                  onPressed: () {
-                    sl<AppNavigator>().push(screen: const VerificationView());
-                  },
-                ),
-                const SizedBox(height: 24),
-
-                // Divider with "Or continue with"
-                _buildDividerWithText(context.tr.authOrContinueWith),
-                const SizedBox(height: 20),
-
-                // Social login buttons
-                _buildSocialRow(),
-                const SizedBox(height: 28),
-
-                // Already have an account? LOGIN
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      text: context.tr.authAlreadyHaveAccountPrefix,
-                      style: AppTextStyles.tiny(color: AppColors.captionText),
-                      children: [
-                        TextSpan(
-                          text: context.tr.authLoginLink,
-                          style: AppTextStyles.tiny(color: AppColors.primaryDark)
-                              .copyWith(fontWeight: FontWeight.w600),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              sl<AppNavigator>().pushReplacement(
-                                screen: const LoginView(),
-                              );
-                            },
+                      SizedBox(height: 32.h),
+                      Text(
+                        context.tr.authSignUpIntroTitle,
+                        style: AppTextStyles.heading2().copyWith(
+                          fontSize: 18.sp,
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        context.tr.authSignUpIntroSubtitle,
+                        style: AppTextStyles.body(
+                          color: AppColors.greyText,
+                        ).copyWith(fontSize: 13.sp, height: 1.45),
+                      ),
+                      SizedBox(height: 28.h),
+                      AuthField(
+                        label: context.tr.authFullNameLabel,
+                        child: AuthTextInput(
+                          controller: cubit.signUpFullNameController,
+                          hint: context.tr.authFullNameHint,
+                          keyboardType: TextInputType.name,
+                          validator: (value) => cubit.validateName(value),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+                      AuthField(
+                        label: context.tr.authEmailLabel,
+                        child: AuthTextInput(
+                          controller: cubit.signUpEmailController,
+                          hint: context.tr.authEmailEntryHint,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) => cubit.validateEmail(value),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+                      AuthField(
+                        label: context.tr.authPhoneLabel,
+                        child: AuthTextInput(
+                          controller: cubit.signUpPhoneController,
+                          hint: context.tr.authPhoneLabel,
+                          keyboardType: TextInputType.phone,
+                          validator: (value) => cubit.validatePhone(value),
+                          prefix: PhonePrefix(
+                            selectedDialCode: state.selectedDialCode,
+                            onChanged: cubit.setSelectedDialCode,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+                      AuthField(
+                        label: context.tr.authPasswordLabel,
+                        child: AuthTextInput(
+                          controller: cubit.signUpPasswordController,
+                          hint: context.tr.authPasswordHint,
+                          obscureText: state.isSignUpPasswordObscured,
+                          validator: (value) => cubit.validatePassword(value),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                          suffixWidget: IconButton(
+                            onPressed: cubit.toggleSignUpPasswordVisibility,
+                            icon: Icon(
+                              state.isSignUpPasswordObscured
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: AppColors.greyText,
+                              size: 20.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+                      AuthField(
+                        label: context.tr.authConfirmPasswordLabel,
+                        child: AuthTextInput(
+                          controller: cubit.signUpConfirmPasswordController,
+                          hint: context.tr.authPasswordHint,
+                          obscureText: state.isSignUpConfirmPasswordObscured,
+                          validator: (value) =>
+                              cubit.validateConfirmPassword(value),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                          suffixWidget: IconButton(
+                            onPressed:
+                                cubit.toggleSignUpConfirmPasswordVisibility,
+                            icon: Icon(
+                              state.isSignUpConfirmPasswordObscured
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: AppColors.greyText,
+                              size: 20.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 14.h),
+                      SignUpTerms(
+                        value: state.hasAcceptedTerms,
+                        showError: state.showTermsError,
+                        onChanged: cubit.setTermsAccepted,
+                      ),
+                      SizedBox(height: 28.h),
+                      AuthPrimaryButton(
+                        text: context.tr.authSignUpButton,
+                        onPressed: cubit.submitSignUp,
+                        height: 48.h,
+                      ),
+                      SizedBox(height: 32.h),
+                      AuthDivider(label: context.tr.authOrShort),
+                      SizedBox(height: 18.h),
+                      AuthSocialButton(
+                        label: context.tr.authContinueWithGoogle,
+                        iconPath: AppIcons.googleIcon,
+                        onTap: () {},
+                        height: 48.h,
+                      ),
+                      SizedBox(height: 14.h),
+                      AuthSocialButton(
+                        label: context.tr.authContinueWithApple,
+                        iconPath: AppIcons.appleIcon,
+                        onTap: () {},
+                        height: 48.h,
+                      ),
+                      SizedBox(height: 24.h),
+                      Center(
+                        child: AuthBottomLink(
+                          prefixText: context.tr.authAlreadyHaveAccountPrefix,
+                          linkText: context.tr.authLoginLink,
+                          onTap: cubit.goToLogin,
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 24),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
-
-  Widget _buildGoldButton({
-    required String text,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      width: 343,
-      height: 44,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.darkText,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-        ),
-        child: Text(
-          text,
-          style: AppTextStyles.button(color: AppColors.darkText),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDividerWithText(String text) {
-    return Row(
-      children: [
-        const Expanded(child: Divider(color: AppColors.border, thickness: 1)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            text,
-            style: AppTextStyles.caption(color: AppColors.greyText),
-          ),
-        ),
-        const Expanded(child: Divider(color: AppColors.border, thickness: 1)),
-      ],
-    );
-  }
-
-  Widget _buildSocialRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSocialCircle(
-          color: AppColors.google,
-          icon: Icons.g_mobiledata_rounded,
-          onTap: () {},
-        ),
-        const SizedBox(width: 20),
-        _buildSocialCircle(
-          color: AppColors.apple,
-          icon: Icons.apple,
-          onTap: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialCircle({
-    required Color color,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-        ),
-        child: Icon(icon, color: AppColors.white, size: 24),
-      ),
-    );
-  }
-}
-
-Widget _buildBackArrow(BuildContext context) {
-  return GestureDetector(
-    onTap: () => Navigator.pop(context),
-    child: Container(
-      width: 36,
-      height: 36,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.arrow_back_ios_new_rounded,
-        size: 16,
-        color: AppColors.primaryDark,
-      ),
-    ),
-  );
 }

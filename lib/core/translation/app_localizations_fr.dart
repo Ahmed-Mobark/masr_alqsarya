@@ -158,6 +158,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authLoginTitle => 'Connexion';
 
   @override
+  String get authLoginIntroTitle => 'Bienvenue sur Masr Al-Osariya';
+
+  @override
+  String get authLoginIntroSubtitle =>
+      'Commencez à construire une expérience de coparentalité sûre et organisée.';
+
+  @override
   String get authEmailTab => 'E-mail';
 
   @override
@@ -165,6 +172,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authEmailLabel => 'E-mail';
+
+  @override
+  String get authEmailEntryHint => 'Entrez l’e-mail';
 
   @override
   String get authEmailHint => 'example@email.com';
@@ -200,6 +210,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authSignUpTitle => 'Inscription';
 
   @override
+  String get authSignUpIntroTitle =>
+      'Comment allez-vous utiliser l’application ?';
+
+  @override
+  String get authSignUpIntroSubtitle =>
+      'Choisissez l’option qui vous décrit le mieux.';
+
+  @override
+  String get authFullNameLabel => 'Nom complet';
+
+  @override
+  String get authFullNameHint => 'Nom complet';
+
+  @override
   String get authFirstNameLabel => 'Prénom';
 
   @override
@@ -215,8 +239,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authConfirmPasswordLabel => 'Confirmer le mot de passe';
 
   @override
+  String get authAgreeTermsPrefix => 'Veuillez accepter les ';
+
+  @override
+  String get authTermsAndConditions => 'Conditions générales';
+
+  @override
+  String get authAgreeTermsSuffix => ' pour continuer.';
+
+  @override
   String get authAgreeTermsToContinue =>
       'Veuillez accepter les Conditions générales pour continuer.';
+
+  @override
+  String get authOrShort => 'Ou';
+
+  @override
+  String get authContinueWithGoogle => 'Continuer avec Google';
+
+  @override
+  String get authContinueWithApple => 'Continuer avec Apple';
 
   @override
   String get authSignUpButton => 'S’INSCRIRE';
