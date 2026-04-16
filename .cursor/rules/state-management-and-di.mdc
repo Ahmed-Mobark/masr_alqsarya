@@ -1,6 +1,6 @@
 ---
 description: State management (BLoC/Cubit) and dependency injection (GetIt) patterns
-globs: lib/**/*cubit*.dart,lib/**/*_inj.dart,lib/core/injection/**/*.dart
+globs: lib/**/*cubit*.dart,lib/**/*_inj.dart,lib/core/injection/**/*.dart,lib/features/**/presentation/view/**/*.dart
 alwaysApply: false
 ---
 
@@ -62,3 +62,6 @@ BlocProvider(
 - Never register the same type twice without a named qualifier.
 - Cubits must be `registerFactory` so each provider gets a fresh instance.
 - Singletons (data sources, repos) must be `registerLazySingleton`.
+- `*_view.dart` files are UI-only. Do not keep `TextEditingController`, `FocusNode`, `GlobalKey<FormState>`, validation methods, submit handlers, or mutable screen state inside views.
+- Put screen interaction logic and owned controller/form state in `presentation/cubit/` and expose them to the UI through a Cubit + State pair.
+- Views should consume cubits with `BlocProvider`, `BlocBuilder`, `BlocListener`, or `BlocConsumer`, and trigger behavior by calling cubit methods only.

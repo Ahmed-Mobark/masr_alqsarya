@@ -12,6 +12,8 @@ alwaysApply: false
 - Wrap with `Scaffold`. Use `SafeArea` where needed (not inside tab shells that already provide it).
 - For scrollable content, use `SingleChildScrollView` or `CustomScrollView` — never let content overflow.
 - Provide the feature Cubit via `BlocProvider` at the screen entry point, not globally.
+- Keep `view/` files focused on rendering, layout composition, and connecting UI callbacks to cubit methods.
+- Do not keep controllers, form keys, mutable flags, validation logic, or submit/navigation decision logic inside a `*_view.dart` file.
 
 ## Layout & Sizing
 
@@ -44,9 +46,10 @@ alwaysApply: false
 
 ## Widget Extraction
 
-- Extract repeated UI blocks into `_PrivateWidget` classes in the same file.
-- If a widget is reused across features, move it to `lib/core/widgets/`.
-- Feature-specific widgets go in `features/<name>/presentation/widgets/`.
+- Follow SRP/SOLID in the presentation layer: `view/` files should focus on screen composition, state wiring, and navigation only.
+- For feature UI, extract non-trivial sections into `features/<name>/presentation/widgets/` instead of keeping many helper widgets/classes inside the `*_view.dart` file.
+- Use tiny private widgets inside a view only for very small one-off fragments; once a widget has meaningful layout/styling logic, reusable parameters, or may be shared by another screen in the feature, move it to the `widgets/` folder.
+- If a widget is reused across multiple features, move it to `lib/core/widgets/`.
 
 ## UX Consistency
 

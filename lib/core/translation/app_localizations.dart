@@ -382,6 +382,18 @@ abstract class AppLocalizations {
   /// **'Log In'**
   String get authLoginTitle;
 
+  /// No description provided for @authLoginIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Masr Al-Osariya'**
+  String get authLoginIntroTitle;
+
+  /// No description provided for @authLoginIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start building a safe and organized co-parenting experience.'**
+  String get authLoginIntroSubtitle;
+
   /// No description provided for @authEmailTab.
   ///
   /// In en, this message translates to:
@@ -399,6 +411,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email'**
   String get authEmailLabel;
+
+  /// No description provided for @authEmailEntryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Email'**
+  String get authEmailEntryHint;
 
   /// No description provided for @authEmailHint.
   ///
@@ -466,6 +484,30 @@ abstract class AppLocalizations {
   /// **'Sign Up'**
   String get authSignUpTitle;
 
+  /// No description provided for @authSignUpIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How will you use the app?'**
+  String get authSignUpIntroTitle;
+
+  /// No description provided for @authSignUpIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the option that best describes you.'**
+  String get authSignUpIntroSubtitle;
+
+  /// No description provided for @authFullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get authFullNameLabel;
+
+  /// No description provided for @authFullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get authFullNameHint;
+
   /// No description provided for @authFirstNameLabel.
   ///
   /// In en, this message translates to:
@@ -496,11 +538,47 @@ abstract class AppLocalizations {
   /// **'Confirm Password'**
   String get authConfirmPasswordLabel;
 
+  /// No description provided for @authAgreeTermsPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to the '**
+  String get authAgreeTermsPrefix;
+
+  /// No description provided for @authTermsAndConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get authTermsAndConditions;
+
+  /// No description provided for @authAgreeTermsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' to continue.'**
+  String get authAgreeTermsSuffix;
+
   /// No description provided for @authAgreeTermsToContinue.
   ///
   /// In en, this message translates to:
   /// **'Please agree to the Terms & Conditions to continue.'**
   String get authAgreeTermsToContinue;
+
+  /// No description provided for @authOrShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Or'**
+  String get authOrShort;
+
+  /// No description provided for @authContinueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get authContinueWithGoogle;
+
+  /// No description provided for @authContinueWithApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get authContinueWithApple;
 
   /// No description provided for @authSignUpButton.
   ///

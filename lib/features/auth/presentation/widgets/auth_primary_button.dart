@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:masr_al_qsariya/core/theme/app_colors.dart';
+import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+
+class AuthPrimaryButton extends StatelessWidget {
+  const AuthPrimaryButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.height,
+  });
+
+  final String text;
+  final VoidCallback onPressed;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: height ?? 56.h,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.darkText,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999.r),
+          ),
+        ),
+        child: Text(
+          text,
+          style: AppTextStyles.button(
+            color: AppColors.darkText,
+          ).copyWith(fontSize: 15.sp, fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+}
