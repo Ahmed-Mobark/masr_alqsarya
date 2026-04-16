@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/utils/validator.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
 
 export 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(const AuthState());
+  AuthCubit(this._registerUseCase) : super(const AuthState());
+
+  final RegisterUseCase _registerUseCase;
 
   final loginFormKey = GlobalKey<FormState>();
   final signUpFormKey = GlobalKey<FormState>();
@@ -59,7 +65,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(action: AuthAction.navigateToHome));
   }
 
-  void submitSignUp() {
+  Future<void> submitSignUp() async {
     final isFormValid = signUpFormKey.currentState?.validate() ?? false;
     final hasAcceptedTerms = state.hasAcceptedTerms;
 
@@ -69,7 +75,49 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    emit(state.copyWith(action: AuthAction.navigateToVerification));
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final name = signUpFullNameController.text.trim();
+    final parts = name
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
+    final firstName = parts.isNotEmpty ? parts.first : name;
+    final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : firstName;
+
+    final phoneDigits = signUpPhoneController.text.trim();
+    final fullPhone = '${state.selectedDialCode}$phoneDigits';
+
+    final deviceName = kIsWeb ? null : Platform.operatingSystem;
+
+    final result = await _registerUseCase(
+      RegisterParams(
+        firstName: firstName,
+        lastName: lastName,
+        phone: fullPhone,
+        email: signUpEmailController.text.trim(),
+        type: '',
+        password: signUpPasswordController.text,
+        passwordConfirmation: signUpConfirmPasswordController.text,
+        deviceName: deviceName,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (data) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            registeredEmail: data.email,
+            registerMessage: data.message,
+            action: AuthAction.navigateToVerification,
+          ),
+        );
+      },
+    );
   }
 
   void goToSignUp() {
@@ -82,6 +130,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   void clearAction() {
     emit(state.copyWith(clearAction: true));
+  }
+
+  void clearSubmitError() {
+    emit(state.copyWith(clearSubmitError: true));
   }
 
   String? validateName(String? value) => Validator.name(value);

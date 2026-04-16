@@ -52,10 +52,7 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
 
               // Title
               Center(
-                child: Text(
-                  'Role Options',
-                  style: AppTextStyles.heading2(),
-                ),
+                child: Text('Role Options', style: AppTextStyles.heading2()),
               ),
               const SizedBox(height: 24),
 
@@ -117,17 +114,14 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
               child: Container(
                 height: 45,
                 decoration: BoxDecoration(
-                  color:
-                      isSelected ? AppColors.primary : Colors.transparent,
+                  color: isSelected ? AppColors.primary : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   label,
                   style: AppTextStyles.bodyMedium(
-                    color: isSelected
-                        ? AppColors.darkText
-                        : AppColors.greyText,
+                    color: isSelected ? AppColors.darkText : AppColors.greyText,
                   ),
                 ),
               ),
@@ -195,9 +189,7 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.bodyMedium(
-                      color: AppColors.darkText,
-                    ),
+                    style: AppTextStyles.bodyMedium(color: AppColors.darkText),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -224,8 +216,7 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              enabled ? AppColors.primary : AppColors.border,
+          backgroundColor: enabled ? AppColors.primary : AppColors.border,
           foregroundColor: AppColors.darkText,
           elevation: 0,
           shape: RoundedRectangleBorder(

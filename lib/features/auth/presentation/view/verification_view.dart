@@ -15,8 +15,10 @@ class VerificationView extends StatefulWidget {
 }
 
 class _VerificationViewState extends State<VerificationView> {
-  final List<TextEditingController> _controllers =
-      List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
 
   int _secondsRemaining = 60;
@@ -97,9 +99,7 @@ class _VerificationViewState extends State<VerificationView> {
                   return Container(
                     width: 50,
                     height: 50,
-                    margin: EdgeInsets.only(
-                      left: index == 0 ? 0 : 12,
-                    ),
+                    margin: EdgeInsets.only(left: index == 0 ? 0 : 12),
                     child: TextFormField(
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
@@ -107,9 +107,7 @@ class _VerificationViewState extends State<VerificationView> {
                       textAlign: TextAlign.center,
                       maxLength: 1,
                       style: AppTextStyles.heading2(),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         counterText: '',
                         filled: true,
@@ -117,18 +115,18 @@ class _VerificationViewState extends State<VerificationView> {
                         contentPadding: EdgeInsets.zero,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide:
-                              const BorderSide(color: AppColors.border),
+                          borderSide: const BorderSide(color: AppColors.border),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide:
-                              const BorderSide(color: AppColors.border),
+                          borderSide: const BorderSide(color: AppColors.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                              color: AppColors.primary, width: 1.5),
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
                         ),
                       ),
                       onChanged: (value) {
@@ -149,8 +147,7 @@ class _VerificationViewState extends State<VerificationView> {
                 child: _secondsRemaining > 0
                     ? Text(
                         'Resend code in ${_secondsRemaining}s',
-                        style:
-                            AppTextStyles.caption(color: AppColors.greyText),
+                        style: AppTextStyles.caption(color: AppColors.greyText),
                       )
                     : GestureDetector(
                         onTap: _startTimer,
@@ -158,13 +155,14 @@ class _VerificationViewState extends State<VerificationView> {
                           text: TextSpan(
                             text: "Didn't receive? ",
                             style: AppTextStyles.caption(
-                                color: AppColors.greyText),
+                              color: AppColors.greyText,
+                            ),
                             children: [
                               TextSpan(
                                 text: 'Resend',
                                 style: AppTextStyles.caption(
-                                        color: AppColors.primaryDark)
-                                    .copyWith(fontWeight: FontWeight.w600),
+                                  color: AppColors.primaryDark,
+                                ).copyWith(fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),

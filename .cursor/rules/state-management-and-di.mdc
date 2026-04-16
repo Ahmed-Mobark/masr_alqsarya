@@ -32,6 +32,7 @@ class ExpenseCubit extends Cubit<ExpenseState> {
 - State classes extend `Equatable` and use `copyWith`.
 - Use a `RequestStatus` enum (`initial`, `loading`, `success`, `failure`) instead of separate state subclasses.
 - Keep cubits **thin**: business logic lives in use cases, not cubits.
+- For requests, emit **loading → result** and keep the View responsible for UX rendering (button loading, snackbars, navigation).
 
 ## Providing Cubits
 
@@ -65,3 +66,10 @@ BlocProvider(
 - `*_view.dart` files are UI-only. Do not keep `TextEditingController`, `FocusNode`, `GlobalKey<FormState>`, validation methods, submit handlers, or mutable screen state inside views.
 - Put screen interaction logic and owned controller/form state in `presentation/cubit/` and expose them to the UI through a Cubit + State pair.
 - Views should consume cubits with `BlocProvider`, `BlocBuilder`, `BlocListener`, or `BlocConsumer`, and trigger behavior by calling cubit methods only.
+
+### DI wiring checklist for new requests
+
+- **Remote data source**: `registerLazySingleton<FeatureRemoteDataSource>(() => FeatureRemoteDataSourceImpl(sl<ApiBaseHelper>()))`
+- **Repository**: `registerLazySingleton<FeatureRepository>(() => FeatureRepositoryImpl(sl<FeatureRemoteDataSource>()))`
+- **Use case**: `registerLazySingleton(() => SomeUseCase(sl<FeatureRepository>()))`
+- **Cubit**: `registerFactory(() => FeatureCubit(sl<SomeUseCase>()))`

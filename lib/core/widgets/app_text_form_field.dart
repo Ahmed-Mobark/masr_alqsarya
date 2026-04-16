@@ -98,6 +98,9 @@ class AppTextFormField extends StatelessWidget {
       style: TextStyles.textViewMedium14.copyWith(
         color: textColor ?? Colors.black,
       ),
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       obscuringCharacter: obscuringCharacter ?? "●",
       onChanged: onChanged,
       inputFormatters: onlyDigit
@@ -107,7 +110,6 @@ class AppTextFormField extends StatelessWidget {
       cursorColor: Theme.of(context).primaryColor,
       keyboardType: keyboardType ?? TextInputType.text,
       maxLength: maxLength,
-      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       maxLengthEnforcement: MaxLengthEnforcement.none,
       decoration: InputDecoration(
         filled: true,

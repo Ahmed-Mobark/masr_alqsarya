@@ -26,8 +26,20 @@ class LoginView extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
-        listenWhen: (previous, current) => previous.action != current.action,
+        listenWhen: (previous, current) =>
+            previous.action != current.action ||
+            previous.submitError != current.submitError,
         listener: (context, state) {
+          if (state.submitError != null && state.submitError!.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.submitError!),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+            context.read<AuthCubit>().clearSubmitError();
+          }
+
           switch (state.action) {
             case AuthAction.navigateToHome:
               sl<AppNavigator>().pushAndRemoveUntil(screen: const HomeView());
@@ -134,6 +146,7 @@ class LoginView extends StatelessWidget {
                       AuthPrimaryButton(
                         text: context.tr.authLoginButton,
                         onPressed: cubit.submitLogin,
+                        isLoading: state.isSubmitting,
                       ),
                       SizedBox(height: 36.h),
                       AuthDivider(label: context.tr.authOrShort),

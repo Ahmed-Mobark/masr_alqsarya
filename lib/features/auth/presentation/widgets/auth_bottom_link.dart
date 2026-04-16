@@ -25,7 +25,7 @@ class AuthBottomLink extends StatelessWidget {
           prefixText,
           style: AppTextStyles.caption(
             color: AppColors.captionText,
-          ).copyWith(fontSize: 12.sp),
+          ).copyWith(fontSize: 14.sp),
           textAlign: TextAlign.center,
         ),
         GestureDetector(
@@ -34,7 +34,7 @@ class AuthBottomLink extends StatelessWidget {
             linkText,
             style: AppTextStyles.caption(
               color: AppColors.primary,
-            ).copyWith(fontSize: 12.sp, fontWeight: FontWeight.w700),
+            ).copyWith(fontSize: 14.sp, fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
         ),
