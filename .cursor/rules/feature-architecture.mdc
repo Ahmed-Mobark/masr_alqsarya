@@ -8,6 +8,65 @@ alwaysApply: false
 
 Every feature under `lib/features/<name>/` must follow three layers:
 
+## The Correct Request Cycle (End-to-End)
+
+When you “call an API request” in this project, the flow must always be:
+
+- **View (`presentation/view`)**
+  - Collects user input and triggers a cubit method only.
+  - Shows UI states (loading/error/success) from the cubit.
+- **Cubit (`presentation/cubit`)**
+  - Orchestrates UI state and calls a **use case**.
+  - Never parses JSON, never talks to `ApiBaseHelper` directly.
+- **Use case (`domain/usecases`)**
+  - Single action with `call(params)`; calls **repository contract**.
+- **Repository contract (`domain/repositories`)**
+  - Returns `Future<Either<Failure, T>>`.
+- **Repository impl (`data/repositories`)**
+  - Uses `RepositoryHelper.handleEither` and calls a data source.
+- **Remote data source (`data/datasources`)**
+  - The ONLY place that calls `ApiBaseHelper` (`get/post/put/...`).
+  - Converts raw response → model(s).
+- **Model (`data/models`)**
+  - `fromJson` + `toEntity()` (or mapping) into domain entities.
+
+### Visual flow
+
+`View → Cubit → UseCase → Repo(Contract) → RepoImpl → RemoteDataSource → ApiBaseHelper → HTTP`
+
+and response back:
+
+`HTTP → ApiBaseHelper → RemoteDataSource(Model) → RepoImpl(Either) → UseCase → Cubit(State) → View(UI)`
+
+## Recommended Implementation Order (How to Build Any New Request)
+
+To keep the codebase consistent and prevent “UI-driven networking”, implement requests in this order:
+
+1. **Endpoint constant**
+   - Add to `lib/core/config/app_end_points.dart` (e.g. `AppEndpoints.authRegister`).
+2. **Domain first (contract-driven)**
+   - Add **entity** (response shape in your app).
+   - Add **repository contract** method signature.
+   - Add **use case** + `Params` (input for the request).
+3. **Data layer**
+   - Add **model** (API JSON parsing) + `toEntity()`.
+   - Add **remote data source** (calls `ApiBaseHelper` and returns the model).
+   - Add **repository impl** (wrap with `handleEither`, map model → entity).
+4. **DI wiring**
+   - Register datasource → repo → usecase → cubit in `<feature>_inj.dart`.
+5. **Presentation**
+   - Cubit method calls the use case, emits loading/error/success.
+   - View listens for state and renders UX (spinner, snackbar, navigation).
+
+### Note about “starting with data then domain”
+
+You *can* start in `data/` when you already have a finalized API response, but it’s **not the preferred approach**:
+
+- Starting with **domain** forces you to define the app’s contract first (what the UI needs), then map API details into it.
+- Starting with **data** often leaks API shape upward (views/cubits become coupled to backend JSON).
+
+For this repo, the standard is **Domain → Data → Presentation** (with endpoints/DI as glue).
+
 ## 1. Domain (`domain/`)
 
 - **Entities** — pure Dart classes, no Flutter/framework imports. Use `Equatable`.

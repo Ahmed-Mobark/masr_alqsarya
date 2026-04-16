@@ -32,6 +32,25 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
 }
 ```
 
+## Request Example (FormData POST)
+
+If the backend expects `form-data` (like `auth/register`), use `FormData.fromMap` and pass it via `formData:`:
+
+```dart
+final response = await _api.post<Map<String, dynamic>>(
+  url: AppEndpoints.authRegister,
+  formData: FormData.fromMap({
+    'first_name': params.firstName,
+    'last_name': params.lastName,
+    'phone': params.phone,
+    'email': params.email,
+    'type': params.type,
+    'password': params.password,
+    'password_confirmation': params.passwordConfirmation,
+  }),
+);
+```
+
 ## Error Handling Chain
 
 1. `ApiBaseHelper._performRequest` catches `DioException` → maps via `ErrorHelper.handleDioError` → throws typed `AppException` subclass.

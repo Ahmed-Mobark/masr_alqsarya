@@ -14,10 +14,10 @@ import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_but
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_bottom_link.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_divider.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_field.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_phone_number_field.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_social_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_text_input.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/widgets/phone_prefix.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/sign_up_terms.dart';
 
 class SignUpView extends StatelessWidget {
@@ -28,8 +28,20 @@ class SignUpView extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
-        listenWhen: (previous, current) => previous.action != current.action,
+        listenWhen: (previous, current) =>
+            previous.action != current.action ||
+            previous.submitError != current.submitError,
         listener: (context, state) {
+          if (state.submitError != null && state.submitError!.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.submitError!),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+            context.read<AuthCubit>().clearSubmitError();
+          }
+
           switch (state.action) {
             case AuthAction.navigateToVerification:
               sl<AppNavigator>().push(screen: const VerificationView());
@@ -114,19 +126,12 @@ class SignUpView extends StatelessWidget {
                       SizedBox(height: 18.h),
                       AuthField(
                         label: context.tr.authPhoneLabel,
-                        child: AuthTextInput(
+                        child: AuthPhoneNumberField(
                           controller: cubit.signUpPhoneController,
                           hint: context.tr.authPhoneLabel,
-                          keyboardType: TextInputType.phone,
                           validator: (value) => cubit.validatePhone(value),
-                          prefix: PhonePrefix(
-                            selectedDialCode: state.selectedDialCode,
-                            onChanged: cubit.setSelectedDialCode,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 16.h,
-                          ),
+                          selectedDialCode: state.selectedDialCode,
+                          onDialCodeChanged: cubit.setSelectedDialCode,
                         ),
                       ),
                       SizedBox(height: 18.h),
@@ -190,6 +195,7 @@ class SignUpView extends StatelessWidget {
                         text: context.tr.authSignUpButton,
                         onPressed: cubit.submitSignUp,
                         height: 48.h,
+                        isLoading: state.isSubmitting,
                       ),
                       SizedBox(height: 32.h),
                       AuthDivider(label: context.tr.authOrShort),
