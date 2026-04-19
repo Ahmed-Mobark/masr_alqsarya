@@ -7,6 +7,7 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
@@ -33,18 +34,19 @@ class SignUpView extends StatelessWidget {
             previous.submitError != current.submitError,
         listener: (context, state) {
           if (state.submitError != null && state.submitError!.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.submitError!),
-                behavior: SnackBarBehavior.floating,
-              ),
+            appToast(
+              context: context,
+              type: ToastType.error,
+              message: state.submitError!,
             );
             context.read<AuthCubit>().clearSubmitError();
           }
 
           switch (state.action) {
             case AuthAction.navigateToVerification:
-              sl<AppNavigator>().push(screen: const VerificationView());
+              sl<AppNavigator>().push(
+                screen: VerificationView(email: state.registeredEmail),
+              );
               context.read<AuthCubit>().clearAction();
               return;
             case AuthAction.navigateToLogin:

@@ -3,16 +3,39 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/utils/validator.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/resend_code_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
 
 export 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this._registerUseCase) : super(const AuthState());
+  AuthCubit({
+    required RegisterUseCase registerUseCase,
+    required LoginUseCase loginUseCase,
+    required VerifyEmailUseCase verifyEmailUseCase,
+    required ResendCodeUseCase resendCodeUseCase,
+    required LogoutUseCase logoutUseCase,
+    required Storage storage,
+  })  : _registerUseCase = registerUseCase,
+        _loginUseCase = loginUseCase,
+        _verifyEmailUseCase = verifyEmailUseCase,
+        _resendCodeUseCase = resendCodeUseCase,
+        _logoutUseCase = logoutUseCase,
+        _storage = storage,
+        super(const AuthState());
 
   final RegisterUseCase _registerUseCase;
+  final LoginUseCase _loginUseCase;
+  final VerifyEmailUseCase _verifyEmailUseCase;
+  final ResendCodeUseCase _resendCodeUseCase;
+  final LogoutUseCase _logoutUseCase;
+  final Storage _storage;
 
   final loginFormKey = GlobalKey<FormState>();
   final signUpFormKey = GlobalKey<FormState>();
@@ -56,13 +79,38 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(selectedDialCode: dialCode));
   }
 
-  void submitLogin() {
+  Future<void> submitLogin() async {
     final isFormValid = loginFormKey.currentState?.validate() ?? false;
-    if (!isFormValid) {
-      return;
-    }
+    if (!isFormValid) return;
 
-    emit(state.copyWith(action: AuthAction.navigateToHome));
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final deviceName = kIsWeb ? null : Platform.operatingSystem;
+
+    final result = await _loginUseCase(
+      LoginParams(
+        email: loginEmailController.text.trim(),
+        password: loginPasswordController.text,
+        deviceName: deviceName,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (data) {
+        if (data.token != null && data.token!.isNotEmpty) {
+          _storage.storeToken(token: data.token!);
+        }
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            action: AuthAction.navigateToHome,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> submitSignUp() async {
@@ -120,6 +168,79 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<void> verifyEmail(String code) async {
+    final email = state.registeredEmail;
+    if (email == null || email.isEmpty) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final deviceName = kIsWeb ? null : Platform.operatingSystem;
+
+    final result = await _verifyEmailUseCase(
+      VerifyEmailParams(
+        email: email,
+        code: code,
+        deviceName: deviceName,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (data) {
+        if (data.token.isNotEmpty) {
+          _storage.storeToken(token: data.token);
+        }
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            action: AuthAction.navigateToHome,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> resendVerificationCode() async {
+    final email = state.registeredEmail;
+    if (email == null || email.isEmpty) return;
+
+    emit(state.copyWith(isResending: true, clearSubmitError: true));
+
+    final result = await _resendCodeUseCase(email);
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isResending: false, submitError: failure.message));
+      },
+      (_) {
+        emit(state.copyWith(isResending: false, resendSuccess: true));
+      },
+    );
+  }
+
+  Future<void> logout() async {
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final result = await _logoutUseCase();
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (_) {
+        _storage.deleteToken();
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            action: AuthAction.navigateToLogin,
+          ),
+        );
+      },
+    );
+  }
+
   void goToSignUp() {
     emit(state.copyWith(action: AuthAction.navigateToSignUp));
   }
@@ -134,6 +255,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   void clearSubmitError() {
     emit(state.copyWith(clearSubmitError: true));
+  }
+
+  void setRegisteredEmail(String email) {
+    emit(state.copyWith(registeredEmail: email));
   }
 
   String? validateName(String? value) => Validator.name(value);

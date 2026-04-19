@@ -6,6 +6,19 @@ class ErrorHelper {
   /// Supports: { "error": { "message": "..." } } and { "message": "..." }.
   static String _extractMessage(dynamic data) {
     if (data is! Map<String, dynamic>) return 'Unknown server error';
+
+    // Check for field-level errors first (e.g. { "errors": { "email": ["..."] } })
+    final errors = data['errors'];
+    if (errors is Map<String, dynamic> && errors.isNotEmpty) {
+      final firstValue = errors.values.first;
+      if (firstValue is List && firstValue.isNotEmpty) {
+        return firstValue.first.toString();
+      }
+      if (firstValue is String && firstValue.isNotEmpty) {
+        return firstValue;
+      }
+    }
+
     final error = data['error'];
     if (error is Map<String, dynamic>) {
       final msg = error['message'];

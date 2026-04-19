@@ -7,6 +7,7 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/sign_up_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
@@ -31,11 +32,10 @@ class LoginView extends StatelessWidget {
             previous.submitError != current.submitError,
         listener: (context, state) {
           if (state.submitError != null && state.submitError!.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.submitError!),
-                behavior: SnackBarBehavior.floating,
-              ),
+            appToast(
+              context: context,
+              type: ToastType.error,
+              message: state.submitError!,
             );
             context.read<AuthCubit>().clearSubmitError();
           }

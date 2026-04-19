@@ -1,11 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
+import 'package:masr_al_qsariya/features/auth/data/models/login_response_model.dart';
 import 'package:masr_al_qsariya/features/auth/data/models/register_response_model.dart';
+import 'package:masr_al_qsariya/features/auth/data/models/user_profile_model.dart';
+import 'package:masr_al_qsariya/features/auth/data/models/verify_email_response_model.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
 
 abstract class AuthRemoteDataSource {
   Future<RegisterResponseModel> register(RegisterParams params);
+  Future<LoginResponseModel> login(LoginParams params);
+  Future<VerifyEmailResponseModel> verifyEmail(VerifyEmailParams params);
+  Future<void> resendVerificationCode(String email);
+  Future<void> logout();
+  Future<UserProfileModel> getProfile();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -33,5 +43,59 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
 
     return RegisterResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<LoginResponseModel> login(LoginParams params) async {
+    final response = await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.authLogin,
+      formData: FormData.fromMap(
+        {
+          'email': params.email,
+          'password': params.password,
+          'device_name': params.deviceName,
+        }..removeWhere((key, value) => value == null || value == ''),
+      ),
+    );
+
+    return LoginResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<VerifyEmailResponseModel> verifyEmail(VerifyEmailParams params) async {
+    final response = await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.authVerifyEmail,
+      formData: FormData.fromMap(
+        {
+          'email': params.email,
+          'code': params.code,
+          'device_name': params.deviceName,
+        }..removeWhere((key, value) => value == null || value == ''),
+      ),
+    );
+
+    return VerifyEmailResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<void> resendVerificationCode(String email) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.authResendCode,
+      formData: FormData.fromMap({'email': email}),
+    );
+  }
+
+  @override
+  Future<void> logout() async {
+    await _api.post<Map<String, dynamic>>(url: AppEndpoints.authLogout);
+  }
+
+  @override
+  Future<UserProfileModel> getProfile() async {
+    final response = await _api.get<Map<String, dynamic>>(
+      url: AppEndpoints.authUser,
+    );
+
+    return UserProfileModel.fromJson(response);
   }
 }

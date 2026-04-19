@@ -52,7 +52,7 @@ class _LanguageViewState extends State<LanguageView> {
                       SizedBox(height: 36.h),
                       Image.asset(
                         AppImages.logoApp,
-                        width: 190.w,
+                        width: 140.w,
                         height: 210.h,
                         fit: BoxFit.contain,
                       ),
@@ -61,7 +61,7 @@ class _LanguageViewState extends State<LanguageView> {
                         context.tr.languageSelectTitle,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.heading2().copyWith(
-                          fontSize: 20.sp,
+                          fontSize: 16.sp,
                           color: AppColors.darkText,
                         ),
                       ),
@@ -149,7 +149,7 @@ class _LanguageCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(20.r),
         child: Ink(
-          height: 76.h,
+          height: 60.h,
           padding: EdgeInsets.symmetric(horizontal: 18.w),
           decoration: BoxDecoration(
             color: isSelected
@@ -171,18 +171,14 @@ class _LanguageCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Image.asset(
-                AppIcons.languageIcon,
-                width: 28.w,
-                height: 28.w,
-              ),
+              Image.asset(AppIcons.languageIcon, width: 28.w, height: 28.w),
               SizedBox(width: 16.w),
               Expanded(
                 child: Text(
                   option.name,
                   style: AppTextStyles.bodyMedium(
                     color: AppColors.darkText,
-                  ).copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                  ).copyWith(fontSize: 15.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],

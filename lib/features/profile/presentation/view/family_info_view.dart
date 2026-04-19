@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 
 class FamilyInfoView extends StatefulWidget {
   const FamilyInfoView({super.key});
@@ -77,15 +78,10 @@ class _FamilyInfoViewState extends State<FamilyInfoView> {
               height: 56,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(context.tr.familyInfoSaved),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                  appToast(
+                    context: context,
+                    type: ToastType.success,
+                    message: context.tr.familyInfoSaved,
                   );
                   Navigator.pop(context);
                 },

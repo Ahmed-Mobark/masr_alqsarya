@@ -55,7 +55,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _onJoinWithCode() {
-    sl<AppNavigator>().pushReplacement(screen: const VerificationView());
+    sl<AppNavigator>().push(screen: const VerificationView());
   }
 
   @override

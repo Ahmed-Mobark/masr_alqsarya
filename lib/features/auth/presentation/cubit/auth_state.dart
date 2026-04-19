@@ -16,9 +16,11 @@ class AuthState extends Equatable {
     this.showTermsError = false,
     this.selectedDialCode = '+20',
     this.isSubmitting = false,
+    this.isResending = false,
     this.submitError,
     this.registeredEmail,
     this.registerMessage,
+    this.resendSuccess = false,
     this.action,
   });
 
@@ -29,9 +31,11 @@ class AuthState extends Equatable {
   final bool showTermsError;
   final String selectedDialCode;
   final bool isSubmitting;
+  final bool isResending;
   final String? submitError;
   final String? registeredEmail;
   final String? registerMessage;
+  final bool resendSuccess;
   final AuthAction? action;
 
   AuthState copyWith({
@@ -42,9 +46,11 @@ class AuthState extends Equatable {
     bool? showTermsError,
     String? selectedDialCode,
     bool? isSubmitting,
+    bool? isResending,
     String? submitError,
     String? registeredEmail,
     String? registerMessage,
+    bool? resendSuccess,
     AuthAction? action,
     bool clearSubmitError = false,
     bool clearAction = false,
@@ -61,9 +67,11 @@ class AuthState extends Equatable {
       showTermsError: showTermsError ?? this.showTermsError,
       selectedDialCode: selectedDialCode ?? this.selectedDialCode,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      isResending: isResending ?? this.isResending,
       submitError: clearSubmitError ? null : submitError ?? this.submitError,
       registeredEmail: registeredEmail ?? this.registeredEmail,
       registerMessage: registerMessage ?? this.registerMessage,
+      resendSuccess: resendSuccess ?? false,
       action: clearAction ? null : action ?? this.action,
     );
   }
@@ -77,9 +85,11 @@ class AuthState extends Equatable {
     showTermsError,
     selectedDialCode,
     isSubmitting,
+    isResending,
     submitError,
     registeredEmail,
     registerMessage,
+    resendSuccess,
     action,
   ];
 }
