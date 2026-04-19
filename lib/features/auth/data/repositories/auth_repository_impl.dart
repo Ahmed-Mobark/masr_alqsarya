@@ -8,6 +8,8 @@ import 'package:masr_al_qsariya/features/auth/domain/entities/user_profile.dart'
 import 'package:masr_al_qsariya/features/auth/domain/entities/verify_email_response.dart';
 import 'package:masr_al_qsariya/features/auth/domain/repositories/auth_repository.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
 
@@ -61,6 +63,20 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
     return handleEither(() async {
       final model = await _remote.getProfile();
       return model.toEntity();
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> inviteCoPartner(InviteCoPartnerParams params) {
+    return handleEither(() async {
+      await _remote.inviteCoPartner(params);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> addChild(AddChildParams params) {
+    return handleEither(() async {
+      await _remote.addChild(params);
     });
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/utils/validator.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
@@ -21,12 +23,16 @@ class AuthCubit extends Cubit<AuthState> {
     required VerifyEmailUseCase verifyEmailUseCase,
     required ResendCodeUseCase resendCodeUseCase,
     required LogoutUseCase logoutUseCase,
+    required InviteCoPartnerUseCase inviteCoPartnerUseCase,
+    required AddChildUseCase addChildUseCase,
     required Storage storage,
   })  : _registerUseCase = registerUseCase,
         _loginUseCase = loginUseCase,
         _verifyEmailUseCase = verifyEmailUseCase,
         _resendCodeUseCase = resendCodeUseCase,
         _logoutUseCase = logoutUseCase,
+        _inviteCoPartnerUseCase = inviteCoPartnerUseCase,
+        _addChildUseCase = addChildUseCase,
         _storage = storage,
         super(const AuthState());
 
@@ -35,10 +41,14 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyEmailUseCase _verifyEmailUseCase;
   final ResendCodeUseCase _resendCodeUseCase;
   final LogoutUseCase _logoutUseCase;
+  final InviteCoPartnerUseCase _inviteCoPartnerUseCase;
+  final AddChildUseCase _addChildUseCase;
   final Storage _storage;
 
   final loginFormKey = GlobalKey<FormState>();
   final signUpFormKey = GlobalKey<FormState>();
+  final coPartnerFormKey = GlobalKey<FormState>();
+  final addChildFormKey = GlobalKey<FormState>();
 
   final loginEmailController = TextEditingController();
   final loginPasswordController = TextEditingController();
@@ -48,6 +58,18 @@ class AuthCubit extends Cubit<AuthState> {
   final signUpPhoneController = TextEditingController();
   final signUpPasswordController = TextEditingController();
   final signUpConfirmPasswordController = TextEditingController();
+
+  final coPartnerFirstNameController = TextEditingController();
+  final coPartnerLastNameController = TextEditingController();
+  final coPartnerEmailController = TextEditingController();
+  final coPartnerPhoneController = TextEditingController();
+
+  final childDisplayNameController = TextEditingController();
+  final childFirstNameController = TextEditingController();
+  final childLastNameController = TextEditingController();
+  final childEmailController = TextEditingController();
+  final childPhoneController = TextEditingController();
+  final childDateOfBirthController = TextEditingController();
 
   void toggleLoginPasswordVisibility() {
     emit(
@@ -77,6 +99,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   void setSelectedDialCode(String dialCode) {
     emit(state.copyWith(selectedDialCode: dialCode));
+  }
+
+  void setCoPartnerDialCode(String dialCode) {
+    emit(state.copyWith(coPartnerDialCode: dialCode));
   }
 
   Future<void> submitLogin() async {
@@ -195,7 +221,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(
           state.copyWith(
             isSubmitting: false,
-            action: AuthAction.navigateToHome,
+            action: AuthAction.navigateToRoleOptions,
           ),
         );
       },
@@ -235,6 +261,71 @@ class AuthCubit extends Cubit<AuthState> {
           state.copyWith(
             isSubmitting: false,
             action: AuthAction.navigateToLogin,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitInviteCoPartner() async {
+    final isFormValid = coPartnerFormKey.currentState?.validate() ?? false;
+    if (!isFormValid) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final phoneDigits = coPartnerPhoneController.text.trim();
+    final fullPhone = '${state.coPartnerDialCode}$phoneDigits';
+
+    final result = await _inviteCoPartnerUseCase(
+      InviteCoPartnerParams(
+        firstName: coPartnerFirstNameController.text.trim(),
+        lastName: coPartnerLastNameController.text.trim(),
+        phone: fullPhone,
+        email: coPartnerEmailController.text.trim(),
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (_) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            action: AuthAction.coPartnerInvited,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitAddChild() async {
+    final isFormValid = addChildFormKey.currentState?.validate() ?? false;
+    if (!isFormValid) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final result = await _addChildUseCase(
+      AddChildParams(
+        displayName: childDisplayNameController.text.trim(),
+        firstName: childFirstNameController.text.trim(),
+        lastName: childLastNameController.text.trim(),
+        email: childEmailController.text.trim(),
+        phone: childPhoneController.text.trim(),
+        dateOfBirth: childDateOfBirthController.text.trim(),
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (_) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            action: AuthAction.childAdded,
           ),
         );
       },
@@ -282,6 +373,16 @@ class AuthCubit extends Cubit<AuthState> {
     signUpPhoneController.dispose();
     signUpPasswordController.dispose();
     signUpConfirmPasswordController.dispose();
+    coPartnerFirstNameController.dispose();
+    coPartnerLastNameController.dispose();
+    coPartnerEmailController.dispose();
+    coPartnerPhoneController.dispose();
+    childDisplayNameController.dispose();
+    childFirstNameController.dispose();
+    childLastNameController.dispose();
+    childEmailController.dispose();
+    childPhoneController.dispose();
+    childDateOfBirthController.dispose();
     return super.close();
   }
 }

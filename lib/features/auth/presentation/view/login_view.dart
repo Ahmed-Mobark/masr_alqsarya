@@ -51,7 +51,10 @@ class LoginView extends StatelessWidget {
               return;
             case null:
             case AuthAction.navigateToVerification:
+            case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToLogin:
+            case AuthAction.coPartnerInvited:
+            case AuthAction.childAdded:
               return;
           }
         },

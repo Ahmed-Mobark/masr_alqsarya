@@ -587,4 +587,121 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingPage4Subtitle =>
       'Your data is protected with strong security measures and handled according to Egyptian data protection law.';
+
+  @override
+  String get authVerifyTitle => 'Verification';
+
+  @override
+  String get authVerifyCodeHeading => 'Enter verification code';
+
+  @override
+  String get authVerifySubtitle =>
+      'We sent a verification code to your email address. Please enter it below.';
+
+  @override
+  String get authDidntReceive => 'Didn\'t receive the code?';
+
+  @override
+  String get authResend => 'Resend';
+
+  @override
+  String get authContinue => 'Continue';
+
+  @override
+  String get authVerificationCodeSent => 'Verification code sent successfully';
+
+  @override
+  String get authRoleOptionsTitle => 'Role Options';
+
+  @override
+  String get authRoleOptionsHeading => 'How will you use the app?';
+
+  @override
+  String get authRoleOptionsSubtitle =>
+      'Choose the option that best describes your situation.';
+
+  @override
+  String get authRoleFamilySpace => 'Family Space';
+
+  @override
+  String get authRoleFamilySpaceDesc =>
+      'Co-parent with your partner in a shared family workspace.';
+
+  @override
+  String get authRoleSolo => 'Solo';
+
+  @override
+  String get authRoleSoloDesc =>
+      'Manage your parenting schedule independently.';
+
+  @override
+  String get authNext => 'Next';
+
+  @override
+  String get authCoParentDetailsTitle => 'Co-Parent Details';
+
+  @override
+  String get authCoParentDetailsHeading => 'Invite your co-parent';
+
+  @override
+  String get authCoParentDetailsSubtitle =>
+      'Enter your co-parent\'s details to send them an invitation.';
+
+  @override
+  String get authCoParentFirstName => 'First Name';
+
+  @override
+  String get authCoParentLastName => 'Last Name';
+
+  @override
+  String get authCoParentEmail => 'Email';
+
+  @override
+  String get authCoParentPhone => 'Phone Number';
+
+  @override
+  String get authCoParentDate => 'Date of Birth';
+
+  @override
+  String get authCoParentNote =>
+      'Your co-parent will receive an email invitation to join the family workspace.';
+
+  @override
+  String get familyChildDisplayNameLabel => 'Display Name';
+
+  @override
+  String get familyChildDisplayNameHint => 'Enter display name';
+
+  @override
+  String get familyChildFirstNameLabel => 'First Name';
+
+  @override
+  String get familyChildFirstNameHint => 'Enter first name';
+
+  @override
+  String get familyChildLastNameLabel => 'Last Name';
+
+  @override
+  String get familyChildLastNameHint => 'Enter last name';
+
+  @override
+  String get familyChildEmailLabel => 'Email';
+
+  @override
+  String get familyChildEmailHint => 'Enter email address';
+
+  @override
+  String get familyChildPhoneLabel => 'Phone Number';
+
+  @override
+  String get familyChildPhoneHint => 'Enter phone number';
+
+  @override
+  String get familyChildDateOfBirthLabel => 'Date of Birth';
+
+  @override
+  String get familyChildDateOfBirthHint => 'DD-MM-YYYY';
+
+  @override
+  String get familyChildAddedSuccess => 'Child added successfully';
 }

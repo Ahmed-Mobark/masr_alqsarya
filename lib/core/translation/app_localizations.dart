@@ -1185,6 +1185,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your data is protected with strong security measures and handled according to Egyptian data protection law.'**
   String get onboardingPage4Subtitle;
+
+  /// No description provided for @authVerifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get authVerifyTitle;
+
+  /// No description provided for @authVerifyCodeHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter verification code'**
+  String get authVerifyCodeHeading;
+
+  /// No description provided for @authVerifySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a verification code to your email address. Please enter it below.'**
+  String get authVerifySubtitle;
+
+  /// No description provided for @authDidntReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t receive the code?'**
+  String get authDidntReceive;
+
+  /// No description provided for @authResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get authResend;
+
+  /// No description provided for @authContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get authContinue;
+
+  /// No description provided for @authVerificationCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent successfully'**
+  String get authVerificationCodeSent;
+
+  /// No description provided for @authRoleOptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Role Options'**
+  String get authRoleOptionsTitle;
+
+  /// No description provided for @authRoleOptionsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'How will you use the app?'**
+  String get authRoleOptionsHeading;
+
+  /// No description provided for @authRoleOptionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the option that best describes your situation.'**
+  String get authRoleOptionsSubtitle;
+
+  /// No description provided for @authRoleFamilySpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Space'**
+  String get authRoleFamilySpace;
+
+  /// No description provided for @authRoleFamilySpaceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-parent with your partner in a shared family workspace.'**
+  String get authRoleFamilySpaceDesc;
+
+  /// No description provided for @authRoleSolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo'**
+  String get authRoleSolo;
+
+  /// No description provided for @authRoleSoloDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your parenting schedule independently.'**
+  String get authRoleSoloDesc;
+
+  /// No description provided for @authNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get authNext;
+
+  /// No description provided for @authCoParentDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-Parent Details'**
+  String get authCoParentDetailsTitle;
+
+  /// No description provided for @authCoParentDetailsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite your co-parent'**
+  String get authCoParentDetailsHeading;
+
+  /// No description provided for @authCoParentDetailsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your co-parent\'s details to send them an invitation.'**
+  String get authCoParentDetailsSubtitle;
+
+  /// No description provided for @authCoParentFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get authCoParentFirstName;
+
+  /// No description provided for @authCoParentLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get authCoParentLastName;
+
+  /// No description provided for @authCoParentEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authCoParentEmail;
+
+  /// No description provided for @authCoParentPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get authCoParentPhone;
+
+  /// No description provided for @authCoParentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get authCoParentDate;
+
+  /// No description provided for @authCoParentNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your co-parent will receive an email invitation to join the family workspace.'**
+  String get authCoParentNote;
+
+  /// No description provided for @familyChildDisplayNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Name'**
+  String get familyChildDisplayNameLabel;
+
+  /// No description provided for @familyChildDisplayNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter display name'**
+  String get familyChildDisplayNameHint;
+
+  /// No description provided for @familyChildFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get familyChildFirstNameLabel;
+
+  /// No description provided for @familyChildFirstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter first name'**
+  String get familyChildFirstNameHint;
+
+  /// No description provided for @familyChildLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get familyChildLastNameLabel;
+
+  /// No description provided for @familyChildLastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter last name'**
+  String get familyChildLastNameHint;
+
+  /// No description provided for @familyChildEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get familyChildEmailLabel;
+
+  /// No description provided for @familyChildEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email address'**
+  String get familyChildEmailHint;
+
+  /// No description provided for @familyChildPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get familyChildPhoneLabel;
+
+  /// No description provided for @familyChildPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get familyChildPhoneHint;
+
+  /// No description provided for @familyChildDateOfBirthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get familyChildDateOfBirthLabel;
+
+  /// No description provided for @familyChildDateOfBirthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'DD-MM-YYYY'**
+  String get familyChildDateOfBirthHint;
+
+  /// No description provided for @familyChildAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Child added successfully'**
+  String get familyChildAddedSuccess;
 }
 
 class _AppLocalizationsDelegate

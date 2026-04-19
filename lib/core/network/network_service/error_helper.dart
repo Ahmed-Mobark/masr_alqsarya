@@ -7,16 +7,18 @@ class ErrorHelper {
   static String _extractMessage(dynamic data) {
     if (data is! Map<String, dynamic>) return 'Unknown server error';
 
-    // Check for field-level errors first (e.g. { "errors": { "email": ["..."] } })
+    // Collect all field-level errors (e.g. { "errors": { "email": ["..."], "password": ["..."] } })
     final errors = data['errors'];
     if (errors is Map<String, dynamic> && errors.isNotEmpty) {
-      final firstValue = errors.values.first;
-      if (firstValue is List && firstValue.isNotEmpty) {
-        return firstValue.first.toString();
+      final allMessages = <String>[];
+      for (final value in errors.values) {
+        if (value is List) {
+          allMessages.addAll(value.map((e) => e.toString()));
+        } else if (value is String && value.isNotEmpty) {
+          allMessages.add(value);
+        }
       }
-      if (firstValue is String && firstValue.isNotEmpty) {
-        return firstValue;
-      }
+      if (allMessages.isNotEmpty) return allMessages.join('\n');
     }
 
     final error = data['error'];

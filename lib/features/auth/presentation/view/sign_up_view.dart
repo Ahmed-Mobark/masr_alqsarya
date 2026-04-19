@@ -55,7 +55,10 @@ class SignUpView extends StatelessWidget {
               return;
             case null:
             case AuthAction.navigateToHome:
+            case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToSignUp:
+            case AuthAction.coPartnerInvited:
+            case AuthAction.childAdded:
               return;
           }
         },

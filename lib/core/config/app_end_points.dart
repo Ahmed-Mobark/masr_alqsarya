@@ -10,4 +10,8 @@ class AppEndpoints {
   static const String authLogout = "auth/logout";
   static const String authUser = "auth/user";
   static const String authTwoFactorChallenge = "auth/two-factor-challenge";
+
+  // Family Workspace
+  static const String inviteCoPartner = "family-workspace/invite-co-partner";
+  static const String addChild = "family-workspace/add-child";
 }

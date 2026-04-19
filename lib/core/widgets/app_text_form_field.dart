@@ -143,6 +143,7 @@ class AppTextFormField extends StatelessWidget {
         prefix: prefix,
         suffix: suffix,
 
+        errorMaxLines: 3,
         enabledBorder: buildBorder(borderColor ?? Colors.grey.shade500),
         focusedBorder: buildBorder(
           focusedBorderColor ?? Theme.of(context).primaryColor,

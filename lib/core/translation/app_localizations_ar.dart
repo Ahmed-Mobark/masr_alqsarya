@@ -580,4 +580,119 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get onboardingPage4Subtitle =>
       'بياناتك محمية بإجراءات أمنية قوية ويتم التعامل معها وفقًا لقانون حماية البيانات المصري.';
+
+  @override
+  String get authVerifyTitle => 'التحقق';
+
+  @override
+  String get authVerifyCodeHeading => 'أدخل رمز التحقق';
+
+  @override
+  String get authVerifySubtitle =>
+      'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني. يرجى إدخاله أدناه.';
+
+  @override
+  String get authDidntReceive => 'لم تستلم الرمز؟';
+
+  @override
+  String get authResend => 'إعادة الإرسال';
+
+  @override
+  String get authContinue => 'متابعة';
+
+  @override
+  String get authVerificationCodeSent => 'تم إرسال رمز التحقق بنجاح';
+
+  @override
+  String get authRoleOptionsTitle => 'خيارات الدور';
+
+  @override
+  String get authRoleOptionsHeading => 'كيف ستستخدم التطبيق؟';
+
+  @override
+  String get authRoleOptionsSubtitle => 'اختر الخيار الذي يصف وضعك بشكل أفضل.';
+
+  @override
+  String get authRoleFamilySpace => 'مساحة العائلة';
+
+  @override
+  String get authRoleFamilySpaceDesc =>
+      'شارك في تربية أطفالك مع شريكك في مساحة عائلية مشتركة.';
+
+  @override
+  String get authRoleSolo => 'فردي';
+
+  @override
+  String get authRoleSoloDesc => 'أدر جدول الأبوة بشكل مستقل.';
+
+  @override
+  String get authNext => 'التالي';
+
+  @override
+  String get authCoParentDetailsTitle => 'تفاصيل الوالد/الوالدة الآخر';
+
+  @override
+  String get authCoParentDetailsHeading => 'ادعُ شريكك في التربية';
+
+  @override
+  String get authCoParentDetailsSubtitle =>
+      'أدخل تفاصيل شريكك في التربية لإرسال دعوة له.';
+
+  @override
+  String get authCoParentFirstName => 'الاسم الأول';
+
+  @override
+  String get authCoParentLastName => 'اسم العائلة';
+
+  @override
+  String get authCoParentEmail => 'البريد الإلكتروني';
+
+  @override
+  String get authCoParentPhone => 'رقم الهاتف';
+
+  @override
+  String get authCoParentDate => 'تاريخ الميلاد';
+
+  @override
+  String get authCoParentNote =>
+      'سيتلقى شريكك في التربية دعوة عبر البريد الإلكتروني للانضمام إلى مساحة العائلة.';
+
+  @override
+  String get familyChildDisplayNameLabel => 'الاسم المعروض';
+
+  @override
+  String get familyChildDisplayNameHint => 'أدخل الاسم المعروض';
+
+  @override
+  String get familyChildFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get familyChildFirstNameHint => 'أدخل الاسم الأول';
+
+  @override
+  String get familyChildLastNameLabel => 'اسم العائلة';
+
+  @override
+  String get familyChildLastNameHint => 'أدخل اسم العائلة';
+
+  @override
+  String get familyChildEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get familyChildEmailHint => 'أدخل البريد الإلكتروني';
+
+  @override
+  String get familyChildPhoneLabel => 'رقم الهاتف';
+
+  @override
+  String get familyChildPhoneHint => 'أدخل رقم الهاتف';
+
+  @override
+  String get familyChildDateOfBirthLabel => 'تاريخ الميلاد';
+
+  @override
+  String get familyChildDateOfBirthHint => 'يوم-شهر-سنة';
+
+  @override
+  String get familyChildAddedSuccess => 'تمت إضافة الطفل بنجاح';
 }

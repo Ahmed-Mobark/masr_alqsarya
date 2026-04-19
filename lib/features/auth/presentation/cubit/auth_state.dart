@@ -3,8 +3,11 @@ import 'package:equatable/equatable.dart';
 enum AuthAction {
   navigateToHome,
   navigateToVerification,
+  navigateToRoleOptions,
   navigateToLogin,
   navigateToSignUp,
+  coPartnerInvited,
+  childAdded,
 }
 
 class AuthState extends Equatable {
@@ -15,6 +18,7 @@ class AuthState extends Equatable {
     this.hasAcceptedTerms = false,
     this.showTermsError = false,
     this.selectedDialCode = '+20',
+    this.coPartnerDialCode = '+20',
     this.isSubmitting = false,
     this.isResending = false,
     this.submitError,
@@ -30,6 +34,7 @@ class AuthState extends Equatable {
   final bool hasAcceptedTerms;
   final bool showTermsError;
   final String selectedDialCode;
+  final String coPartnerDialCode;
   final bool isSubmitting;
   final bool isResending;
   final String? submitError;
@@ -45,6 +50,7 @@ class AuthState extends Equatable {
     bool? hasAcceptedTerms,
     bool? showTermsError,
     String? selectedDialCode,
+    String? coPartnerDialCode,
     bool? isSubmitting,
     bool? isResending,
     String? submitError,
@@ -66,6 +72,7 @@ class AuthState extends Equatable {
       hasAcceptedTerms: hasAcceptedTerms ?? this.hasAcceptedTerms,
       showTermsError: showTermsError ?? this.showTermsError,
       selectedDialCode: selectedDialCode ?? this.selectedDialCode,
+      coPartnerDialCode: coPartnerDialCode ?? this.coPartnerDialCode,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isResending: isResending ?? this.isResending,
       submitError: clearSubmitError ? null : submitError ?? this.submitError,
@@ -84,6 +91,7 @@ class AuthState extends Equatable {
     hasAcceptedTerms,
     showTermsError,
     selectedDialCode,
+    coPartnerDialCode,
     isSubmitting,
     isResending,
     submitError,
