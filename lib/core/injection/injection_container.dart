@@ -11,6 +11,7 @@ import 'package:get_it/get_it.dart';
 GetIt sl = GetIt.instance;
 
 Future<void> init() async {
+  sl.allowReassignment = true;
   await initStorageInjection(sl);
   await initLocaleInjection(sl);
   await initAuthInjection(sl);

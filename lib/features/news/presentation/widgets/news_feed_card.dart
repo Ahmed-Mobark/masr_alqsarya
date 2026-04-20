@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/widgets/app_cached_network_image.dart';
 import 'package:masr_al_qsariya/features/news/domain/entities/news_feed.dart';
 
-class NewsFeedCard extends StatelessWidget {
+class NewsFeedCard extends StatefulWidget {
   const NewsFeedCard({
     super.key,
     required this.item,
@@ -21,6 +23,15 @@ class NewsFeedCard extends StatelessWidget {
   final VoidCallback onLike;
   final VoidCallback onHelpful;
 
+  @override
+  State<NewsFeedCard> createState() => _NewsFeedCardState();
+}
+
+class _NewsFeedCardState extends State<NewsFeedCard> {
+  bool _isExpanded = false;
+
+  NewsFeedItem get item => widget.item;
+
   List<String> get _imageUrls {
     final urls = <String>[];
     for (final a in item.attachments) {
@@ -31,25 +42,15 @@ class NewsFeedCard extends StatelessWidget {
     return urls;
   }
 
-  bool get _isEdited {
-    final created = item.createdAt;
-    final updated = item.updatedAt;
-    if (created == null || updated == null) return false;
-    return created != updated;
-  }
-
   @override
   Widget build(BuildContext context) {
     final imageUrls = _imageUrls;
     final headerTitle =
-        (item.category?.name.trim().isNotEmpty ?? false)
-            ? item.category!.name
-            : (item.persona?.name ?? item.title);
+        (item.persona?.name.trim().isNotEmpty ?? false)
+            ? item.persona!.name
+            : (item.postedByUser?.fullName ?? item.title);
 
-    final metaText = [
-      if (item.publishDate.trim().isNotEmpty) item.publishDate.trim(),
-      if (_isEdited) 'Edited',
-    ].join('  •  ');
+    final metaText = item.publishDate.trim();
 
     final topicLabel =
         item.type.trim().isNotEmpty ? item.type.trim() : null;
@@ -60,28 +61,40 @@ class NewsFeedCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(26.r),
-        border: Border.all(color: AppColors.border.withValues(alpha: 0.7)),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      padding: EdgeInsetsDirectional.fromSTEB(16.w, 16.h, 16.w, 12.h),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+          // ── Header ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Avatar
               Container(
-                width: 44.w,
-                height: 44.w,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF7DA7F7),
+                width: 46.w,
+                height: 46.w,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0EDE6),
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
                 ),
-                child: Icon(Icons.person_outline,
-                    color: AppColors.white, size: 22.sp),
+                child: Icon(Iconsax.user,
+                    color: AppColors.greyText, size: 22.sp),
               ),
               SizedBox(width: 12.w),
+              // Title + meta + topic
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,31 +108,32 @@ class NewsFeedCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.heading2(
                               color: AppColors.darkText,
-                            ).copyWith(fontSize: 16.sp),
+                            ).copyWith(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         SizedBox(width: 8.w),
-                        Flexible(
-                          child: Text(
-                            metaText,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.caption(
-                              color: AppColors.lightGreyText,
-                            ).copyWith(fontSize: 11.sp, height: 1.2),
-                          ),
+                        Text(
+                          metaText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.caption(
+                            color: AppColors.lightGreyText,
+                          ).copyWith(fontSize: 12.sp),
                         ),
                       ],
                     ),
                     if (topicLabel != null) ...[
-                      SizedBox(height: 6.h),
+                      SizedBox(height: 4.h),
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 10.w,
-                          vertical: 4.h,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.22),
+                          color: AppColors.primary.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(999.r),
                         ),
                         child: Text(
@@ -133,95 +147,119 @@ class NewsFeedCard extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 10.w),
-              Icon(
-                Icons.push_pin_outlined,
-                color: AppColors.primary.withValues(alpha: 0.95),
-                size: 20.sp,
-              ),
             ],
-          ),
-
-          SizedBox(height: 12.h),
-
-          // Body text
-          Text(
-            item.content,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.body(color: AppColors.darkText).copyWith(
-              height: 1.35,
-              fontSize: 13.sp,
-            ),
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            '...see more',
-            style: AppTextStyles.caption(color: AppColors.lightGreyText)
-                .copyWith(fontSize: 12.sp),
           ),
 
           SizedBox(height: 14.h),
 
-          // Media
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18.r),
-            child: SizedBox(
-              height: 150.h,
-              width: double.infinity,
-              child: imageUrls.isNotEmpty
-                  ? _AttachmentsSlider(imageUrls: imageUrls)
-                  : Container(
-                      color: AppColors.inputBg,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.image_outlined,
-                        color: AppColors.greyText.withValues(alpha: 0.55),
-                        size: 30.sp,
-                      ),
+          // ── Body text with inline see more ──
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final textStyle =
+                  AppTextStyles.body(color: AppColors.darkText).copyWith(
+                height: 1.5,
+                fontSize: 14.sp,
+              );
+              final seeMoreStyle =
+                  AppTextStyles.body(color: AppColors.lightGreyText).copyWith(
+                height: 1.5,
+                fontSize: 14.sp,
+              );
+
+              if (_isExpanded) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.content, style: textStyle),
+                    SizedBox(height: 2.h),
+                    GestureDetector(
+                      onTap: () => setState(() => _isExpanded = false),
+                      child: Text(context.tr.newsShowLess, style: seeMoreStyle),
                     ),
-            ),
+                  ],
+                );
+              }
+
+              final textSpan = TextSpan(text: item.content, style: textStyle);
+              final tp = TextPainter(
+                text: textSpan,
+                maxLines: 3,
+                textDirection: Directionality.of(context),
+              )..layout(maxWidth: constraints.maxWidth);
+
+              final isOverflowing = tp.didExceedMaxLines;
+
+              if (!isOverflowing) {
+                return Text(item.content, style: textStyle);
+              }
+
+              return GestureDetector(
+                onTap: () => setState(() => _isExpanded = true),
+                child: RichText(
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: item.content,
+                    style: textStyle,
+                    children: [
+                      TextSpan(text: '....', style: seeMoreStyle),
+                      TextSpan(text: context.tr.newsSeeMore, style: seeMoreStyle),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: 14.h),
 
-          // Reactions count
+          // ── Media ──
+          if (imageUrls.isNotEmpty) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.r),
+              child: SizedBox(
+                height: 200.h,
+                width: double.infinity,
+                child: _AttachmentsSlider(imageUrls: imageUrls),
+              ),
+            ),
+            SizedBox(height: 14.h),
+          ],
+
+          // ── Reactions count ──
           Row(
             children: [
               _ReactionBadge(),
               SizedBox(width: 6.w),
               Text(
                 '$totalReactions',
-                style: AppTextStyles.caption(color: AppColors.greyText)
-                    .copyWith(fontSize: 12.sp),
+                style: AppTextStyles.bodyMedium(color: AppColors.darkText)
+                    .copyWith(fontSize: 14.sp),
               ),
             ],
           ),
 
           SizedBox(height: 10.h),
-          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.7)),
-          SizedBox(height: 6.h),
+          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.5)),
+          SizedBox(height: 4.h),
 
-          // Actions
+          // ── Actions ──
           Row(
             children: [
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.thumb_up_outlined,
-                  label: 'Like',
-                  isSelected: isLiked,
-                  isLoading: isLikeLoading,
-                  onTap: onLike,
-                ),
+              _ActionButton(
+                icon: Iconsax.like_1,
+                label: context.tr.newsLike,
+                isSelected: isLiked,
+                isLoading: widget.isLikeLoading,
+                onTap: widget.onLike,
               ),
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.handshake_outlined,
-                  label: 'Helpful',
-                  isSelected: isHelpful,
-                  isLoading: isHelpfulLoading,
-                  onTap: onHelpful,
-                ),
+              SizedBox(width: 24.w),
+              _ActionButton(
+                icon: Iconsax.lovely,
+                label: context.tr.newsHelpful,
+                isSelected: isHelpful,
+                isLoading: widget.isHelpfulLoading,
+                onTap: widget.onHelpful,
               ),
             ],
           ),
@@ -235,35 +273,36 @@ class _ReactionBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 22.w,
+      width: 36.w,
       height: 22.w,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          PositionedDirectional(
-            start: 0,
-            top: 2.h,
+          Positioned(
+            left: 0,
+            top: 0,
             child: Container(
-              width: 18.w,
-              height: 18.w,
+              width: 22.w,
+              height: 22.w,
               decoration: const BoxDecoration(
                 color: Color(0xFF2F80ED),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.thumb_up, color: Colors.white, size: 10.sp),
+              child: Icon(Icons.thumb_up, color: Colors.white, size: 12.sp),
             ),
           ),
-          PositionedDirectional(
-            start: 9.w,
-            top: 2.h,
+          Positioned(
+            left: 14.w,
+            top: 0,
             child: Container(
-              width: 18.w,
-              height: 18.w,
-              decoration: const BoxDecoration(
-                color: Color(0xFFEB5757),
+              width: 22.w,
+              height: 22.w,
+              decoration: BoxDecoration(
+                color: const Color(0xFFEB5757),
                 shape: BoxShape.circle,
+                border: Border.all(color: AppColors.background, width: 1.5),
               ),
-              child: Icon(Icons.favorite, color: Colors.white, size: 10.sp),
+              child: Icon(Icons.favorite, color: Colors.white, size: 12.sp),
             ),
           ),
         ],
@@ -293,27 +332,27 @@ class _ActionButton extends StatelessWidget {
     return InkWell(
       onTap: isLoading ? null : onTap,
       borderRadius: BorderRadius.circular(12.r),
-      child: SizedBox(
-        height: 40.h,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (isLoading)
               SizedBox(
-                width: 16.w,
-                height: 16.w,
+                width: 18.w,
+                height: 18.w,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   color: color,
                 ),
               )
             else
-              Icon(icon, size: 18.sp, color: color),
-            SizedBox(width: 8.w),
+              Icon(icon, size: 20.sp, color: color),
+            SizedBox(width: 6.w),
             Text(
               label,
               style: AppTextStyles.bodyMedium(color: color)
-                  .copyWith(fontSize: 13.sp),
+                  .copyWith(fontSize: 14.sp),
             ),
           ],
         ),
@@ -349,10 +388,10 @@ class _AttachmentsSliderState extends State<_AttachmentsSlider> {
           ),
         ),
         if (count > 1)
-          PositionedDirectional(
+          Positioned(
             bottom: 10.h,
-            start: 0,
-            end: 0,
+            left: 0,
+            right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(count, (i) {
@@ -376,4 +415,3 @@ class _AttachmentsSliderState extends State<_AttachmentsSlider> {
     );
   }
 }
-

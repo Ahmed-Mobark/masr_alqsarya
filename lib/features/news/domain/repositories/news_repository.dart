@@ -17,5 +17,7 @@ abstract class NewsRepository {
     required int feedId,
     required String reaction, // like | helpful
   });
+
+  Future<Either<Failure, void>> deleteReaction({required int feedId});
 }
 

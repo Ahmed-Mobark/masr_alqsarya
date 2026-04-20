@@ -20,7 +20,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
   final _descriptionController = TextEditingController();
   String _selectedCurrency = 'USD';
 
-  final List<String> _categories = [
+  static const List<String> _categoryKeys = [
     'Education',
     'Healthcare',
     'Activities',
@@ -30,6 +30,20 @@ class _AddExpenseViewState extends State<AddExpenseView> {
     'Transportation',
     'Other',
   ];
+
+  String _categoryLabel(BuildContext context, String key) {
+    return switch (key) {
+      'Education' => context.tr.expenseCategoryEducation,
+      'Healthcare' => context.tr.expenseCategoryHealthcare,
+      'Activities' => context.tr.expenseCategoryActivities,
+      'Essentials' => context.tr.expenseCategoryEssentials,
+      'Clothing' => context.tr.expenseCategoryClothing,
+      'Food' => context.tr.expenseCategoryFood,
+      'Transportation' => context.tr.expenseCategoryTransportation,
+      'Other' => context.tr.expenseCategoryOther,
+      _ => key,
+    };
+  }
 
   final List<String> _currencies = ['USD', 'EUR', 'GBP', 'MAD', 'SAR', 'AED'];
 
@@ -88,12 +102,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
               // Category dropdown
               _buildLabel(context.tr.addExpenseCategoryLabel),
               const SizedBox(height: 8),
-              _buildDropdown<String>(
-                value: _selectedCategory,
-                hint: context.tr.addExpenseSelectCategoryHint,
-                items: _categories,
-                onChanged: (val) => setState(() => _selectedCategory = val),
-              ),
+              _buildCategoryDropdown(context),
               const SizedBox(height: 20),
 
               // Date picker
@@ -277,6 +286,33 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                 ))
             .toList(),
         onChanged: onChanged,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+        ),
+        icon: const Icon(Iconsax.arrow_down_1, size: 18, color: AppColors.greyText),
+      ),
+    );
+  }
+
+  Widget _buildCategoryDropdown(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: DropdownButtonFormField<String>(
+        value: _selectedCategory,
+        hint: Text(context.tr.addExpenseSelectCategoryHint, style: AppTextStyles.caption()),
+        items: _categoryKeys
+            .map((key) => DropdownMenuItem(
+                  value: key,
+                  child: Text(_categoryLabel(context, key), style: AppTextStyles.bodyMedium()),
+                ))
+            .toList(),
+        onChanged: (val) => setState(() => _selectedCategory = val),
         decoration: const InputDecoration(
           border: InputBorder.none,
           contentPadding: EdgeInsets.zero,

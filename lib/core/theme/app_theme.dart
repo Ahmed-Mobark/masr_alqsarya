@@ -81,6 +81,28 @@ class AppTheme {
       backgroundColor: AppColors.primary,
       foregroundColor: AppColors.textColorDark,
     ),
+    timePickerTheme: TimePickerThemeData(
+      backgroundColor: AppColors.cardColorLight,
+      hourMinuteColor: AppColors.primary,
+      hourMinuteTextColor: AppColors.textColorLight,
+      dialHandColor: AppColors.primary,
+      dialBackgroundColor: AppColors.primary.withValues(alpha: 0.12),
+      dialTextColor: AppColors.textColorLight,
+      entryModeIconColor: AppColors.textColorLight,
+      dayPeriodColor: AppColors.primary,
+      dayPeriodTextColor: AppColors.textColorLight,
+      dayPeriodBorderSide: BorderSide(color: AppColors.borderColorLight),
+      helpTextStyle: TextStyle(
+        color: AppColors.textColorLight,
+        fontFamily: AppFont.fontFamily,
+      ),
+      cancelButtonStyle: const ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(AppColors.textColorLight),
+      ),
+      confirmButtonStyle: const ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(AppColors.textColorLight),
+      ),
+    ),
     listTileTheme: const ListTileThemeData(
       horizontalTitleGap: 2,
       minLeadingWidth: 0,
@@ -166,6 +188,28 @@ class AppTheme {
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: AppColors.primaryDark,
       foregroundColor: AppColors.textColorDark,
+    ),
+    timePickerTheme: TimePickerThemeData(
+      backgroundColor: AppColors.cardColorDark,
+      hourMinuteColor: AppColors.primaryDark,
+      hourMinuteTextColor: AppColors.textColorDark,
+      dialHandColor: AppColors.primaryDark,
+      dialBackgroundColor: AppColors.primaryDark.withValues(alpha: 0.2),
+      dialTextColor: AppColors.textColorDark,
+      entryModeIconColor: AppColors.textColorDark,
+      dayPeriodColor: AppColors.primaryDark,
+      dayPeriodTextColor: AppColors.textColorDark,
+      dayPeriodBorderSide: BorderSide(color: AppColors.borderColorDark),
+      helpTextStyle: TextStyle(
+        color: AppColors.textColorDark,
+        fontFamily: AppFont.fontFamily,
+      ),
+      cancelButtonStyle: const ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(AppColors.textColorDark),
+      ),
+      confirmButtonStyle: const ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(AppColors.textColorDark),
+      ),
     ),
     listTileTheme: const ListTileThemeData(
       horizontalTitleGap: 2,

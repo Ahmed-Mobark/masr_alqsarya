@@ -1,14 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/features/news/domain/entities/news_feed.dart';
+import 'package:masr_al_qsariya/features/news/domain/usecases/delete_reaction_usecase.dart';
 import 'package:masr_al_qsariya/features/news/domain/usecases/get_news_feeds_usecase.dart';
 import 'package:masr_al_qsariya/features/news/domain/usecases/react_to_feed_usecase.dart';
 import 'package:masr_al_qsariya/features/news/presentation/cubit/news_state.dart';
 
 class NewsCubit extends Cubit<NewsState> {
-  NewsCubit(this._getNewsFeeds, this._reactToFeed) : super(const NewsState());
+  NewsCubit(this._getNewsFeeds, this._reactToFeed, this._deleteReaction)
+      : super(const NewsState());
 
   final GetNewsFeedsUseCase _getNewsFeeds;
   final ReactToFeedUseCase _reactToFeed;
+  final DeleteReactionUseCase _deleteReaction;
 
   NewsFeedItem _copyItem(
     NewsFeedItem item, {
@@ -81,11 +84,14 @@ class NewsCubit extends Cubit<NewsState> {
     final nextReacting = {...state.reacting, feedId: reaction};
     emit(state.copyWith(items: nextItems, reacting: nextReacting));
 
+    final isTogglingOff = previousReaction == reaction;
     final apiReaction =
         reaction == NewsReaction.like ? 'like' : 'helpful';
-    final result = await _reactToFeed(
-      ReactToFeedParams(feedId: feedId, reaction: apiReaction),
-    );
+    final result = isTogglingOff
+        ? await _deleteReaction(feedId)
+        : await _reactToFeed(
+            ReactToFeedParams(feedId: feedId, reaction: apiReaction),
+          );
 
     result.fold(
       (_) {
@@ -110,11 +116,19 @@ class NewsCubit extends Cubit<NewsState> {
     );
   }
 
+  GetNewsFeedsParams _buildParams({int page = 1}) {
+    return GetNewsFeedsParams(
+      page: page,
+      perPage: state.perPage,
+      search: state.search,
+      type: state.selectedType,
+      sortDirection: state.sortDirection,
+    );
+  }
+
   Future<void> loadInitial() async {
     emit(state.copyWith(status: NewsStatus.loading, clearError: true));
-    final result = await _getNewsFeeds(
-      GetNewsFeedsParams(page: 1, perPage: state.perPage),
-    );
+    final result = await _getNewsFeeds(_buildParams());
     result.fold(
       (failure) => emit(
         state.copyWith(status: NewsStatus.failure, error: failure.message),
@@ -132,10 +146,7 @@ class NewsCubit extends Cubit<NewsState> {
   }
 
   Future<void> refresh() async {
-    // Keep UX snappy: show refresh indicator, not full-screen spinner.
-    final result = await _getNewsFeeds(
-      GetNewsFeedsParams(page: 1, perPage: state.perPage),
-    );
+    final result = await _getNewsFeeds(_buildParams());
     result.fold(
       (failure) => emit(
         state.copyWith(status: NewsStatus.failure, error: failure.message),
@@ -160,9 +171,7 @@ class NewsCubit extends Cubit<NewsState> {
     emit(state.copyWith(status: NewsStatus.loadingMore, clearError: true));
     final nextPage = state.currentPage + 1;
 
-    final result = await _getNewsFeeds(
-      GetNewsFeedsParams(page: nextPage, perPage: state.perPage),
-    );
+    final result = await _getNewsFeeds(_buildParams(page: nextPage));
     result.fold(
       (failure) => emit(
         state.copyWith(status: NewsStatus.failure, error: failure.message),
@@ -177,6 +186,31 @@ class NewsCubit extends Cubit<NewsState> {
         ),
       ),
     );
+  }
+
+  Future<void> applyFilters({
+    String? search,
+    String? type,
+    String? sortDirection,
+  }) async {
+    emit(state.copyWith(
+      search: search,
+      selectedType: type,
+      sortDirection: sortDirection,
+      clearSearch: search == null,
+      clearType: type == null,
+      clearSort: sortDirection == null,
+    ));
+    await loadInitial();
+  }
+
+  Future<void> resetFilters() async {
+    emit(state.copyWith(
+      clearSearch: true,
+      clearType: true,
+      clearSort: true,
+    ));
+    await loadInitial();
   }
 }
 

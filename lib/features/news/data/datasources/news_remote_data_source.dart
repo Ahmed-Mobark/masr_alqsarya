@@ -15,6 +15,7 @@ abstract class NewsRemoteDataSource {
   });
 
   Future<void> reactToFeed({required int feedId, required String reaction});
+  Future<void> deleteReaction({required int feedId});
 }
 
 class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
@@ -56,6 +57,13 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     await _api.post<Map<String, dynamic>>(
       url: AppEndpoints.newsFeedReactions(feedId),
       formData: FormData.fromMap({'reaction': reaction}),
+    );
+  }
+
+  @override
+  Future<void> deleteReaction({required int feedId}) async {
+    await _api.delete<Map<String, dynamic>>(
+      url: AppEndpoints.newsFeedReactions(feedId),
     );
   }
 }

@@ -640,6 +640,36 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profileTitle;
 
+  /// No description provided for @profileMoreInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'More Information'**
+  String get profileMoreInformation;
+
+  /// No description provided for @profileMenuAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get profileMenuAccount;
+
+  /// No description provided for @profileMenuFamilySpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Space'**
+  String get profileMenuFamilySpace;
+
+  /// No description provided for @profileMenuPrivacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get profileMenuPrivacySecurity;
+
+  /// No description provided for @profileMenuNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get profileMenuNotification;
+
   /// No description provided for @profileMenuAccountSecurity.
   ///
   /// In en, this message translates to:
@@ -664,6 +694,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get profileMenuLanguage;
 
+  /// No description provided for @profileMenuLegalTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Terms of Use'**
+  String get profileMenuLegalTerms;
+
   /// No description provided for @profileMenuTermsOfUse.
   ///
   /// In en, this message translates to:
@@ -675,6 +711,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invite People'**
   String get profileMenuInvitePeople;
+
+  /// No description provided for @profileMenuDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get profileMenuDeleteAccount;
 
   /// No description provided for @profileMenuLogout.
   ///
@@ -724,6 +766,36 @@ abstract class AppLocalizations {
   /// **'Account & Security'**
   String get accountSecurityTitle;
 
+  /// No description provided for @accountSecurityPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Info'**
+  String get accountSecurityPersonalInfo;
+
+  /// No description provided for @accountSecurityFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get accountSecurityFirstNameLabel;
+
+  /// No description provided for @accountSecurityLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get accountSecurityLastNameLabel;
+
+  /// No description provided for @accountSecurityEmailAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get accountSecurityEmailAddressLabel;
+
+  /// No description provided for @accountSecurityPhoneNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get accountSecurityPhoneNumberLabel;
+
   /// No description provided for @accountSecurityEmailLabel.
   ///
   /// In en, this message translates to:
@@ -759,6 +831,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete your account? This action cannot be undone.'**
   String get accountSecurityDeleteConfirm;
+
+  /// No description provided for @languageDeviceLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Language'**
+  String get languageDeviceLanguage;
 
   /// No description provided for @familyInfoTitle.
   ///
@@ -964,6 +1042,24 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get messagesSearch;
 
+  /// No description provided for @messagesAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get messagesAll;
+
+  /// No description provided for @messagesUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get messagesUnread;
+
+  /// No description provided for @messagesMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get messagesMarkAllRead;
+
   /// No description provided for @newsTitle.
   ///
   /// In en, this message translates to:
@@ -975,6 +1071,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expense'**
   String get expenseTitle;
+
+  /// No description provided for @expenseRegularExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular Expense'**
+  String get expenseRegularExpense;
+
+  /// No description provided for @expenseSupportPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Payment'**
+  String get expenseSupportPayment;
+
+  /// No description provided for @expenseChildName.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Name'**
+  String get expenseChildName;
+
+  /// No description provided for @expenseSubmittedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted By'**
+  String get expenseSubmittedBy;
+
+  /// No description provided for @expenseReferenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference Number'**
+  String get expenseReferenceNumber;
+
+  /// No description provided for @expensePaymentPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Period'**
+  String get expensePaymentPeriod;
+
+  /// No description provided for @expenseCourtCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Court Case'**
+  String get expenseCourtCase;
+
+  /// No description provided for @expenseViewReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'VIEW RECEIPT'**
+  String get expenseViewReceipt;
 
   /// No description provided for @expenseTotalThisMonth.
   ///
@@ -1503,6 +1647,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// No description provided for @homeQuickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get homeQuickActions;
+
+  /// No description provided for @homeAwaitingResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting Your Response'**
+  String get homeAwaitingResponse;
+
+  /// No description provided for @homeRecentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
+  String get homeRecentActivity;
+
+  /// No description provided for @homeGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get homeGuest;
+
+  /// No description provided for @homeWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get homeWelcomeBack;
+
+  /// No description provided for @homeGoodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning'**
+  String get homeGoodMorning;
+
+  /// No description provided for @homeFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From: '**
+  String get homeFrom;
+
+  /// No description provided for @newsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get newsFilter;
+
+  /// No description provided for @newsResetFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Filters'**
+  String get newsResetFilters;
+
+  /// No description provided for @newsSearchByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by Name'**
+  String get newsSearchByName;
+
+  /// No description provided for @newsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get newsSearchHint;
+
+  /// No description provided for @newsSearchByType.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by Type'**
+  String get newsSearchByType;
+
+  /// No description provided for @newsSortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get newsSortBy;
+
+  /// No description provided for @newsApplyFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'APPLY FILTERS'**
+  String get newsApplyFilters;
+
+  /// No description provided for @newsAllPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'All Posts'**
+  String get newsAllPosts;
+
+  /// No description provided for @newsUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get newsUpdates;
+
+  /// No description provided for @newsAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements'**
+  String get newsAnnouncements;
+
+  /// No description provided for @newsPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get newsPhotos;
+
+  /// No description provided for @newsDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get newsDocuments;
+
+  /// No description provided for @newsExpenseUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Updates'**
+  String get newsExpenseUpdates;
+
+  /// No description provided for @newsNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get newsNewest;
+
+  /// No description provided for @newsOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest'**
+  String get newsOldest;
+
+  /// No description provided for @newsName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get newsName;
+
+  /// No description provided for @newsSeeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'see more'**
+  String get newsSeeMore;
+
+  /// No description provided for @newsShowLess.
+  ///
+  /// In en, this message translates to:
+  /// **'show less'**
+  String get newsShowLess;
+
+  /// No description provided for @newsLike.
+  ///
+  /// In en, this message translates to:
+  /// **'Like'**
+  String get newsLike;
+
+  /// No description provided for @newsHelpful.
+  ///
+  /// In en, this message translates to:
+  /// **'Helpful'**
+  String get newsHelpful;
+
+  /// No description provided for @expenseCategoryEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get expenseCategoryEducation;
+
+  /// No description provided for @expenseCategoryHealthcare.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthcare'**
+  String get expenseCategoryHealthcare;
+
+  /// No description provided for @expenseCategoryActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get expenseCategoryActivities;
+
+  /// No description provided for @expenseCategoryEssentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Essentials'**
+  String get expenseCategoryEssentials;
+
+  /// No description provided for @expenseCategoryClothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Clothing'**
+  String get expenseCategoryClothing;
+
+  /// No description provided for @expenseCategoryFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get expenseCategoryFood;
+
+  /// No description provided for @expenseCategoryTransportation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get expenseCategoryTransportation;
+
+  /// No description provided for @expenseCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get expenseCategoryOther;
+
+  /// No description provided for @scheduleFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get scheduleFilterAll;
+
+  /// No description provided for @scheduleFilterParentingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Parenting Time'**
+  String get scheduleFilterParentingTime;
+
+  /// No description provided for @scheduleFilterSchoolActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'School & Activities'**
+  String get scheduleFilterSchoolActivities;
+
+  /// No description provided for @scheduleFilterMedical.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical'**
+  String get scheduleFilterMedical;
+
+  /// No description provided for @scheduleLegendApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get scheduleLegendApproved;
+
+  /// No description provided for @scheduleLegendPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get scheduleLegendPending;
+
+  /// No description provided for @scheduleLegendEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get scheduleLegendEvent;
+
+  /// No description provided for @scheduleLegendCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get scheduleLegendCall;
+
+  /// No description provided for @scheduleLegendRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get scheduleLegendRejected;
+
+  /// No description provided for @scheduleNewScheduleRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'New Schedule Request'**
+  String get scheduleNewScheduleRequest;
+
+  /// No description provided for @scheduleAddNewSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Schedule'**
+  String get scheduleAddNewSchedule;
+
+  /// No description provided for @scheduleEventType.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Type'**
+  String get scheduleEventType;
+
+  /// No description provided for @scheduleChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get scheduleChild;
+
+  /// No description provided for @scheduleDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get scheduleDate;
+
+  /// No description provided for @scheduleTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get scheduleTime;
+
+  /// No description provided for @scheduleNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get scheduleNotes;
+
+  /// No description provided for @scheduleSendRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'SEND REQUEST'**
+  String get scheduleSendRequest;
+
+  /// No description provided for @scheduleSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get scheduleSelect;
+
+  /// No description provided for @scheduleVoiceCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Call'**
+  String get scheduleVoiceCall;
+
+  /// No description provided for @scheduleJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'JOIN'**
+  String get scheduleJoin;
+
+  /// No description provided for @scheduleViewReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'VIEW RECEIPT'**
+  String get scheduleViewReceipt;
+
+  /// No description provided for @scheduleExpensePaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Paid'**
+  String get scheduleExpensePaid;
+
+  /// No description provided for @scheduleCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get scheduleCategory;
+
+  /// No description provided for @homeSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get homeSendMessage;
+
+  /// No description provided for @homeAddSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Schedule'**
+  String get homeAddSchedule;
+
+  /// No description provided for @homeExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get homeExpense;
+
+  /// No description provided for @homeSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get homeSessions;
+
+  /// No description provided for @homeSessionsLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions Library'**
+  String get homeSessionsLibrary;
+
+  /// No description provided for @homeDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get homeDocuments;
+
+  /// No description provided for @homeUpcomingCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Call'**
+  String get homeUpcomingCall;
+
+  /// No description provided for @homeReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get homeReminder;
+
+  /// No description provided for @homeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'CONFIRM'**
+  String get homeConfirm;
+
+  /// No description provided for @homeRequestReschedule.
+  ///
+  /// In en, this message translates to:
+  /// **'REQUEST RESCHEDULE'**
+  String get homeRequestReschedule;
+
+  /// No description provided for @homeNewEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'New Event'**
+  String get homeNewEvent;
+
+  /// No description provided for @homeNewSession.
+  ///
+  /// In en, this message translates to:
+  /// **'New Session'**
+  String get homeNewSession;
+
+  /// No description provided for @homePendingCost.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Pending cost'**
+  String homePendingCost(Object count);
+
+  /// No description provided for @homeReview.
+  ///
+  /// In en, this message translates to:
+  /// **'REVIEW'**
+  String get homeReview;
+
+  /// No description provided for @rescheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Reschedule'**
+  String get rescheduleTitle;
+
+  /// No description provided for @rescheduleSelectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a new date'**
+  String get rescheduleSelectDate;
+
+  /// No description provided for @rescheduleSelectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time'**
+  String get rescheduleSelectTime;
+
+  /// No description provided for @rescheduleSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'REQUEST RESCHEDULE'**
+  String get rescheduleSubmit;
 }
 
 class _AppLocalizationsDelegate

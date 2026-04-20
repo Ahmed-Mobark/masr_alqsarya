@@ -42,5 +42,12 @@ class NewsRepositoryImpl with RepositoryHelper implements NewsRepository {
       await _remote.reactToFeed(feedId: feedId, reaction: reaction);
     });
   }
+
+  @override
+  Future<Either<Failure, void>> deleteReaction({required int feedId}) {
+    return handleEither(() async {
+      await _remote.deleteReaction(feedId: feedId);
+    });
+  }
 }
 

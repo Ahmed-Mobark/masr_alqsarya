@@ -303,23 +303,18 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
 
-    final result = await _logoutUseCase();
+    await _logoutUseCase();
 
-    result.fold(
-      (failure) {
-        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
-      },
-      (_) {
-        _storage.deleteToken();
-        _storage.deleteUser();
-        _storage.deleteSelectedRole();
-        emit(
-          state.copyWith(
-            isSubmitting: false,
-            action: AuthAction.navigateToLogin,
-          ),
-        );
-      },
+    // Always clear cache regardless of API result
+    await _storage.deleteToken();
+    await _storage.deleteUser();
+    await _storage.deleteSelectedRole();
+
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        action: AuthAction.navigateToLogin,
+      ),
     );
   }
 

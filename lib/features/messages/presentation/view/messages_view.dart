@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
@@ -9,8 +8,22 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/view/chat_view.dart';
 
-class MessagesView extends StatelessWidget {
+class MessagesView extends StatefulWidget {
   const MessagesView({super.key});
+
+  @override
+  State<MessagesView> createState() => _MessagesViewState();
+}
+
+class _MessagesViewState extends State<MessagesView> {
+  int _selectedTab = 0;
+
+  List<MessageItem> get _filteredMessages {
+    if (_selectedTab == 1) {
+      return DummyData.messages.where((m) => m.unreadCount > 0).toList();
+    }
+    return DummyData.messages;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,21 +61,90 @@ class MessagesView extends StatelessWidget {
             ),
           ),
 
+          // Tabs: All | Unread | Mark all as read
+          Container(
+            color: AppColors.background,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Row(
+              children: [
+                _TabButton(
+                  label: context.tr.messagesAll,
+                  isSelected: _selectedTab == 0,
+                  onTap: () => setState(() => _selectedTab = 0),
+                ),
+                const SizedBox(width: 24),
+                _TabButton(
+                  label: context.tr.messagesUnread,
+                  isSelected: _selectedTab == 1,
+                  onTap: () => setState(() => _selectedTab = 1),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {},
+                  child: Text(
+                    context.tr.messagesMarkAllRead,
+                    style: AppTextStyles.caption(color: AppColors.greyText),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Messages list
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: DummyData.messages.length,
-              separatorBuilder: (_, __) => const Divider(
-                height: 1,
-                indent: 80,
-                color: AppColors.border,
+            child: Container(
+              color: AppColors.background,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                itemCount: _filteredMessages.length,
+                separatorBuilder: (_, __) => Divider(
+                  height: 1,
+                  indent: 80,
+                  endIndent: 16,
+                  color: AppColors.border.withValues(alpha: 0.5),
+                ),
+                itemBuilder: (context, index) {
+                  final msg = _filteredMessages[index];
+                  return _MessageTile(message: msg);
+                },
               ),
-              itemBuilder: (context, index) {
-                final msg = DummyData.messages[index];
-                return _MessageTile(message: msg);
-              },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TabButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _TabButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: AppTextStyles.button(
+              color: isSelected ? AppColors.primaryDark : AppColors.greyText,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            height: 2,
+            width: 40,
+            color: isSelected ? AppColors.primaryDark : AppColors.transparent,
           ),
         ],
       ),
@@ -87,63 +169,60 @@ class _MessageTile extends StatelessWidget {
       },
       child: Container(
         color: AppColors.background,
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            // Avatar with online indicator
-            Stack(
-              children: [
-                ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: message.avatarUrl,
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => Container(
-                      width: 48,
-                      height: 48,
-                      color: AppColors.inputBg,
-                    ),
-                    errorWidget: (_, __, ___) => Container(
-                      width: 48,
-                      height: 48,
-                      color: AppColors.inputBg,
-                      child: const Icon(Iconsax.user,
-                          size: 24, color: AppColors.greyText),
-                    ),
+            // Avatar with colored ring
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: message.avatarRingColor,
+                  width: 2.5,
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: message.avatarRingColor.withValues(alpha: 0.1),
+                  ),
+                  child: Icon(
+                    Iconsax.user,
+                    size: 22,
+                    color: message.avatarRingColor,
                   ),
                 ),
-                if (message.isOnline)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: AppColors.success,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: AppColors.background, width: 2),
-                      ),
-                    ),
-                  ),
-              ],
+              ),
             ),
             const SizedBox(width: 12),
 
-            // Name + message preview
+            // Name + role + message preview
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(message.name, style: AppTextStyles.button()),
+                  Row(
+                    children: [
+                      Text(message.name, style: AppTextStyles.button()),
+                      const SizedBox(width: 4),
+                      Text(
+                        '( ${message.role} )',
+                        style: AppTextStyles.button(
+                          color: message.roleColor,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     message.lastMessage,
-                    style: AppTextStyles.caption(),
-                    maxLines: 1,
+                    style: AppTextStyles.caption(color: AppColors.greyText),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -151,26 +230,25 @@ class _MessageTile extends StatelessWidget {
             ),
             const SizedBox(width: 8),
 
-            // Time + unread badge
+            // Date + unread badge
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(message.time, style: AppTextStyles.small()),
+                Text(message.time,
+                    style: AppTextStyles.small(color: AppColors.greyText)),
                 if (message.unreadCount > 0) ...[
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
-                    constraints: const BoxConstraints(minWidth: 20),
-                    decoration: const BoxDecoration(
-                      color: AppColors.error,
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      color: message.roleColor,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: Text(
                         '${message.unreadCount}',
-                        style:
-                            AppTextStyles.tiny(color: AppColors.white),
+                        style: AppTextStyles.tiny(color: AppColors.white),
                       ),
                     ),
                   ),

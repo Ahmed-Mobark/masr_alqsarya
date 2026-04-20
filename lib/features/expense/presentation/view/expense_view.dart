@@ -8,221 +8,230 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/view/add_expense_view.dart';
 
-class ExpenseView extends StatelessWidget {
+class ExpenseView extends StatefulWidget {
   const ExpenseView({super.key});
 
-  double get _totalExpenses =>
-      DummyData.expenses.fold(0.0, (sum, e) => sum + e.amount);
+  @override
+  State<ExpenseView> createState() => _ExpenseViewState();
+}
 
-  double get _parentAPaid => DummyData.expenses
-      .where((e) => e.paidBy == 'Parent A')
-      .fold(0.0, (sum, e) => sum + e.amount);
+class _ExpenseViewState extends State<ExpenseView> {
+  int _selectedTab = 0;
 
-  double get _parentBPaid => DummyData.expenses
-      .where((e) => e.paidBy == 'Parent B')
-      .fold(0.0, (sum, e) => sum + e.amount);
+  List<ExpenseItem> get _filteredExpenses {
+    if (_selectedTab == 0) {
+      return DummyData.expenses
+          .where((e) => e.type == ExpenseType.regular)
+          .toList();
+    } else {
+      return DummyData.expenses
+          .where((e) => e.type == ExpenseType.support)
+          .toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(context.tr.expenseTitle, style: AppTextStyles.navTitle()),
         backgroundColor: AppColors.background,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, size: 20),
+          onPressed: () => sl<AppNavigator>().pop(),
+        ),
+        title: Text(context.tr.expenseTitle, style: AppTextStyles.heading2()),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Iconsax.add, size: 24),
+            onPressed: () {
+              sl<AppNavigator>().push(screen: const AddExpenseView());
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
-          // Summary Card
+          const SizedBox(height: 8),
+          // Tabs
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              height: 44,
               decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.inputBg,
+                borderRadius: BorderRadius.circular(22),
               ),
-              child: Column(
+              child: Row(
                 children: [
-                  Text(
-                    context.tr.expenseTotalThisMonth,
-                    style: AppTextStyles.caption(
-                        color: AppColors.darkText),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '\$${_totalExpenses.toStringAsFixed(2)}',
-                    style: AppTextStyles.heading1().copyWith(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedTab = 0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: _selectedTab == 0
+                              ? AppColors.primary
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        child: Text(
+                          context.tr.expenseRegularExpense,
+                          style: AppTextStyles.bodyMedium(
+                            color: _selectedTab == 0
+                                ? AppColors.darkText
+                                : AppColors.greyText,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              context.tr.expenseYouPaid,
-                              style: AppTextStyles.tiny(
-                                  color: AppColors.darkText),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '\$${_parentAPaid.toStringAsFixed(2)}',
-                              style: AppTextStyles.heading2(),
-                            ),
-                          ],
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedTab = 1),
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: _selectedTab == 1
+                              ? AppColors.primary
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        child: Text(
+                          context.tr.expenseSupportPayment,
+                          style: AppTextStyles.bodyMedium(
+                            color: _selectedTab == 1
+                                ? AppColors.darkText
+                                : AppColors.greyText,
+                          ),
                         ),
                       ),
-                      Container(
-                        width: 1,
-                        height: 36,
-                        color:
-                            AppColors.darkText.withValues(alpha: 0.2),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              context.tr.expenseCoParentPaid,
-                              style: AppTextStyles.tiny(
-                                  color: AppColors.darkText),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '\$${_parentBPaid.toStringAsFixed(2)}',
-                              style: AppTextStyles.heading2(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-
+          const SizedBox(height: 20),
           // Expense list
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: DummyData.expenses.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: _filteredExpenses.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 14),
               itemBuilder: (context, index) {
-                final expense = DummyData.expenses[index];
-                return _ExpenseItemCard(expense: expense);
+                final expense = _filteredExpenses[index];
+                return _ExpenseDetailCard(expense: expense);
               },
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'expense_fab',
-        onPressed: () {
-          sl<AppNavigator>().push(screen: const AddExpenseView());
-        },
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Iconsax.add, color: AppColors.darkText),
-        label: Text(context.tr.expenseAddExpense, style: AppTextStyles.button()),
-      ),
     );
   }
 }
 
-class _ExpenseItemCard extends StatelessWidget {
+class _ExpenseDetailCard extends StatelessWidget {
   final ExpenseItem expense;
-  const _ExpenseItemCard({required this.expense});
-
-  Color get _iconBgColor {
-    switch (expense.category) {
-      case 'Education':
-        return const Color(0xFFE3F2FD);
-      case 'Healthcare':
-        return const Color(0xFFE8F5E9);
-      case 'Activities':
-        return const Color(0xFFFFF3E0);
-      case 'Essentials':
-        return const Color(0xFFFCE4EC);
-      default:
-        return AppColors.inputBg;
-    }
-  }
-
-  Color get _iconColor {
-    switch (expense.category) {
-      case 'Education':
-        return const Color(0xFF1976D2);
-      case 'Healthcare':
-        return AppColors.success;
-      case 'Activities':
-        return const Color(0xFFE65100);
-      case 'Essentials':
-        return const Color(0xFFC62828);
-      default:
-        return AppColors.greyText;
-    }
-  }
+  const _ExpenseDetailCard({required this.expense});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: AppColors.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border, width: 1),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Icon circle
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: _iconBgColor,
-              shape: BoxShape.circle,
-            ),
-            child:
-                Icon(expense.icon, size: 20, color: _iconColor),
+          // Child Name row
+          _buildInfoRow(
+            context.tr.expenseChildName,
+            expense.childName,
           ),
-          const SizedBox(width: 12),
-
-          // Title + category + date
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(expense.title,
-                    style: AppTextStyles.button()),
-                const SizedBox(height: 3),
-                Text(expense.category,
-                    style: AppTextStyles.caption()),
-                const SizedBox(height: 2),
-                Text(expense.date,
-                    style: AppTextStyles.small()),
-              ],
-            ),
+          const SizedBox(height: 12),
+          // Submitted By row
+          _buildInfoRow(
+            context.tr.expenseSubmittedBy,
+            expense.submittedBy,
           ),
-
-          // Amount
-          Text(
-            '\$${expense.amount.toStringAsFixed(2)}',
-            style: AppTextStyles.button(),
+          const SizedBox(height: 12),
+          // Category or Court Case row
+          if (expense.type == ExpenseType.support && expense.courtCase != null)
+            _buildInfoRow(
+              context.tr.expenseCourtCase,
+              expense.courtCase!,
+            )
+          else
+            _buildInfoRow(
+              context.tr.addExpenseCategoryLabel,
+              expense.category,
+            ),
+          const SizedBox(height: 12),
+          // Reference Number row
+          _buildInfoRow(
+            context.tr.expenseReferenceNumber,
+            expense.referenceNumber,
+          ),
+          const SizedBox(height: 12),
+          // Payment Period row
+          _buildInfoRow(
+            context.tr.expensePaymentPeriod,
+            expense.paymentPeriod,
+          ),
+          const SizedBox(height: 16),
+          // Divider
+          const Divider(height: 1, color: AppColors.border),
+          const SizedBox(height: 14),
+          // Amount + VIEW RECEIPT
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${expense.amount.toStringAsFixed(0)} EGP',
+                style: AppTextStyles.heading2().copyWith(
+                  color: AppColors.primaryDark,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Text(
+                  context.tr.expenseViewReceipt,
+                  style: AppTextStyles.smallMedium(
+                    color: AppColors.primaryDark,
+                  ).copyWith(
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.primaryDark,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: AppTextStyles.caption(color: AppColors.greyText),
+        ),
+        Text(
+          value,
+          style: AppTextStyles.bodyMedium(),
+        ),
+      ],
     );
   }
 }

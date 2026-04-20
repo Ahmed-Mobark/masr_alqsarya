@@ -289,6 +289,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileTitle => 'Profile';
 
   @override
+  String get profileMoreInformation => 'More Information';
+
+  @override
+  String get profileMenuAccount => 'Account';
+
+  @override
+  String get profileMenuFamilySpace => 'Family Space';
+
+  @override
+  String get profileMenuPrivacySecurity => 'Privacy & Security';
+
+  @override
+  String get profileMenuNotification => 'Notification';
+
+  @override
   String get profileMenuAccountSecurity => 'Account & Security';
 
   @override
@@ -301,10 +316,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileMenuLanguage => 'Language';
 
   @override
+  String get profileMenuLegalTerms => 'Legal & Terms of Use';
+
+  @override
   String get profileMenuTermsOfUse => 'Terms of Use';
 
   @override
   String get profileMenuInvitePeople => 'Invite People';
+
+  @override
+  String get profileMenuDeleteAccount => 'Delete Account';
 
   @override
   String get profileMenuLogout => 'Log Out';
@@ -333,6 +354,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountSecurityTitle => 'Account & Security';
 
   @override
+  String get accountSecurityPersonalInfo => 'Personal Info';
+
+  @override
+  String get accountSecurityFirstNameLabel => 'First Name';
+
+  @override
+  String get accountSecurityLastNameLabel => 'Last Name';
+
+  @override
+  String get accountSecurityEmailAddressLabel => 'Email Address';
+
+  @override
+  String get accountSecurityPhoneNumberLabel => 'Phone Number';
+
+  @override
   String get accountSecurityEmailLabel => 'Email';
 
   @override
@@ -351,6 +387,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountSecurityDeleteConfirm =>
       'Are you sure you want to delete your account? This action cannot be undone.';
+
+  @override
+  String get languageDeviceLanguage => 'Device Language';
 
   @override
   String get familyInfoTitle => 'Family Information';
@@ -472,10 +511,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesSearch => 'Search';
 
   @override
+  String get messagesAll => 'All';
+
+  @override
+  String get messagesUnread => 'Unread';
+
+  @override
+  String get messagesMarkAllRead => 'Mark all as read';
+
+  @override
   String get newsTitle => 'News';
 
   @override
   String get expenseTitle => 'Expense';
+
+  @override
+  String get expenseRegularExpense => 'Regular Expense';
+
+  @override
+  String get expenseSupportPayment => 'Support Payment';
+
+  @override
+  String get expenseChildName => 'Child Name';
+
+  @override
+  String get expenseSubmittedBy => 'Submitted By';
+
+  @override
+  String get expenseReferenceNumber => 'Reference Number';
+
+  @override
+  String get expensePaymentPeriod => 'Payment Period';
+
+  @override
+  String get expenseCourtCase => 'Court Case';
+
+  @override
+  String get expenseViewReceipt => 'VIEW RECEIPT';
 
   @override
   String get expenseTotalThisMonth => 'Total This Month';
@@ -755,4 +827,234 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get homeQuickActions => 'Quick Actions';
+
+  @override
+  String get homeAwaitingResponse => 'Awaiting Your Response';
+
+  @override
+  String get homeRecentActivity => 'Recent Activity';
+
+  @override
+  String get homeGuest => 'Guest';
+
+  @override
+  String get homeWelcomeBack => 'Welcome back';
+
+  @override
+  String get homeGoodMorning => 'Good Morning';
+
+  @override
+  String get homeFrom => 'From: ';
+
+  @override
+  String get newsFilter => 'Filter';
+
+  @override
+  String get newsResetFilters => 'Reset Filters';
+
+  @override
+  String get newsSearchByName => 'Search by Name';
+
+  @override
+  String get newsSearchHint => 'Search';
+
+  @override
+  String get newsSearchByType => 'Search by Type';
+
+  @override
+  String get newsSortBy => 'Sort by';
+
+  @override
+  String get newsApplyFilters => 'APPLY FILTERS';
+
+  @override
+  String get newsAllPosts => 'All Posts';
+
+  @override
+  String get newsUpdates => 'Updates';
+
+  @override
+  String get newsAnnouncements => 'Announcements';
+
+  @override
+  String get newsPhotos => 'Photos';
+
+  @override
+  String get newsDocuments => 'Documents';
+
+  @override
+  String get newsExpenseUpdates => 'Expense Updates';
+
+  @override
+  String get newsNewest => 'Newest';
+
+  @override
+  String get newsOldest => 'Oldest';
+
+  @override
+  String get newsName => 'Name';
+
+  @override
+  String get newsSeeMore => 'see more';
+
+  @override
+  String get newsShowLess => 'show less';
+
+  @override
+  String get newsLike => 'Like';
+
+  @override
+  String get newsHelpful => 'Helpful';
+
+  @override
+  String get expenseCategoryEducation => 'Education';
+
+  @override
+  String get expenseCategoryHealthcare => 'Healthcare';
+
+  @override
+  String get expenseCategoryActivities => 'Activities';
+
+  @override
+  String get expenseCategoryEssentials => 'Essentials';
+
+  @override
+  String get expenseCategoryClothing => 'Clothing';
+
+  @override
+  String get expenseCategoryFood => 'Food';
+
+  @override
+  String get expenseCategoryTransportation => 'Transportation';
+
+  @override
+  String get expenseCategoryOther => 'Other';
+
+  @override
+  String get scheduleFilterAll => 'All';
+
+  @override
+  String get scheduleFilterParentingTime => 'Parenting Time';
+
+  @override
+  String get scheduleFilterSchoolActivities => 'School & Activities';
+
+  @override
+  String get scheduleFilterMedical => 'Medical';
+
+  @override
+  String get scheduleLegendApproved => 'Approved';
+
+  @override
+  String get scheduleLegendPending => 'Pending';
+
+  @override
+  String get scheduleLegendEvent => 'Event';
+
+  @override
+  String get scheduleLegendCall => 'Call';
+
+  @override
+  String get scheduleLegendRejected => 'Rejected';
+
+  @override
+  String get scheduleNewScheduleRequest => 'New Schedule Request';
+
+  @override
+  String get scheduleAddNewSchedule => 'Add New Schedule';
+
+  @override
+  String get scheduleEventType => 'Event Type';
+
+  @override
+  String get scheduleChild => 'Child';
+
+  @override
+  String get scheduleDate => 'Date';
+
+  @override
+  String get scheduleTime => 'Time';
+
+  @override
+  String get scheduleNotes => 'Notes';
+
+  @override
+  String get scheduleSendRequest => 'SEND REQUEST';
+
+  @override
+  String get scheduleSelect => 'Select';
+
+  @override
+  String get scheduleVoiceCall => 'Voice Call';
+
+  @override
+  String get scheduleJoin => 'JOIN';
+
+  @override
+  String get scheduleViewReceipt => 'VIEW RECEIPT';
+
+  @override
+  String get scheduleExpensePaid => 'Expense Paid';
+
+  @override
+  String get scheduleCategory => 'Category';
+
+  @override
+  String get homeSendMessage => 'Send Message';
+
+  @override
+  String get homeAddSchedule => 'Add Schedule';
+
+  @override
+  String get homeExpense => 'Expense';
+
+  @override
+  String get homeSessions => 'Sessions';
+
+  @override
+  String get homeSessionsLibrary => 'Sessions Library';
+
+  @override
+  String get homeDocuments => 'Documents';
+
+  @override
+  String get homeUpcomingCall => 'Upcoming Call';
+
+  @override
+  String get homeReminder => 'Reminder';
+
+  @override
+  String get homeConfirm => 'CONFIRM';
+
+  @override
+  String get homeRequestReschedule => 'REQUEST RESCHEDULE';
+
+  @override
+  String get homeNewEvent => 'New Event';
+
+  @override
+  String get homeNewSession => 'New Session';
+
+  @override
+  String homePendingCost(Object count) {
+    return '$count Pending cost';
+  }
+
+  @override
+  String get homeReview => 'REVIEW';
+
+  @override
+  String get rescheduleTitle => 'Request Reschedule';
+
+  @override
+  String get rescheduleSelectDate => 'Select a new date';
+
+  @override
+  String get rescheduleSelectTime => 'Select Time';
+
+  @override
+  String get rescheduleSubmit => 'REQUEST RESCHEDULE';
 }

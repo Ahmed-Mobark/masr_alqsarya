@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
+import 'package:masr_al_qsariya/features/schedule/presentation/view/add_schedule_view.dart';
 
 class ScheduleView extends StatefulWidget {
   const ScheduleView({super.key});
@@ -16,28 +20,33 @@ class ScheduleView extends StatefulWidget {
 class _ScheduleViewState extends State<ScheduleView> {
   DateTime _focusedMonth = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  int _selectedFilterIndex = 0;
 
   // Dummy calendar events
   final List<CalendarEvent> _events = [
     CalendarEvent(
       id: '1',
-      title: 'Pickup from School',
-      titleAr: 'الاستلام من المدرسة',
-      titleFr: 'Récupérer à l\'école',
+      title: 'School Event, Kelli',
+      titleAr: 'حدث مدرسي، كيلي',
+      titleFr: 'Événement scolaire, Kelli',
       date: DateTime.now(),
       time: '3:00 PM',
-      color: AppColors.primaryDark,
-      type: 'Pickup',
+      color: const Color(0xFF5B7FFF),
+      type: 'School',
+      location: '620 E Walnut Street, Colton 81233',
+      notes: 'Lorem ipsum dolor sit amet consectetur. Lorem ipsum dolor sit amet consectetur.',
+      status: 'approved',
     ),
     CalendarEvent(
       id: '2',
-      title: 'Doctor Appointment',
-      titleAr: 'موعد الطبيب',
-      titleFr: 'Rendez-vous médecin',
+      title: 'Voice Call',
+      titleAr: 'مكالمة صوتية',
+      titleFr: 'Appel vocal',
       date: DateTime.now(),
-      time: '10:30 AM',
-      color: AppColors.error,
-      type: 'Medical',
+      time: '2:00 PM',
+      color: AppColors.primaryDark,
+      type: 'Call',
+      status: 'pending',
     ),
     CalendarEvent(
       id: '3',
@@ -48,6 +57,7 @@ class _ScheduleViewState extends State<ScheduleView> {
       time: '5:00 PM',
       color: AppColors.success,
       type: 'Activity',
+      status: 'approved',
     ),
     CalendarEvent(
       id: '4',
@@ -58,6 +68,7 @@ class _ScheduleViewState extends State<ScheduleView> {
       time: '9:00 AM',
       color: const Color(0xFF5B7FFF),
       type: 'School',
+      status: 'pending',
     ),
     CalendarEvent(
       id: '5',
@@ -68,14 +79,61 @@ class _ScheduleViewState extends State<ScheduleView> {
       time: 'All Day',
       color: AppColors.statusBadge,
       type: 'Custody',
+      status: 'approved',
+    ),
+    CalendarEvent(
+      id: '6',
+      title: 'Expense Paid',
+      titleAr: 'مصروف مدفوع',
+      titleFr: 'Dépense payée',
+      date: DateTime.now(),
+      time: '',
+      color: AppColors.error,
+      type: 'Expense',
+      status: 'approved',
+      expenseAmount: '-299 EGP',
+      expenseCategory: 'Education',
     ),
   ];
 
+  List<String> _filterLabels(BuildContext context) => [
+        context.tr.scheduleFilterAll,
+        context.tr.scheduleFilterParentingTime,
+        context.tr.scheduleFilterSchoolActivities,
+        context.tr.scheduleFilterMedical,
+      ];
+
+  static const List<String> _filterTypes = [
+    'All',
+    'Custody',
+    'School',
+    'Medical',
+  ];
+
   List<CalendarEvent> _eventsForDay(DateTime day) {
-    return _events.where((e) =>
+    final dayEvents = _events.where((e) =>
         e.date.year == day.year &&
         e.date.month == day.month &&
-        e.date.day == day.day).toList();
+        e.date.day == day.day);
+
+    if (_selectedFilterIndex == 0) return dayEvents.toList();
+
+    final filterType = _filterTypes[_selectedFilterIndex];
+    if (filterType == 'School') {
+      return dayEvents
+          .where((e) => e.type == 'School' || e.type == 'Activity')
+          .toList();
+    }
+    return dayEvents.where((e) => e.type == filterType).toList();
+  }
+
+  Color _statusColor(String? status) {
+    return switch (status) {
+      'approved' => AppColors.success,
+      'pending' => AppColors.primary,
+      'rejected' => AppColors.error,
+      _ => AppColors.greyText,
+    };
   }
 
   void _changeMonth(int delta) {
@@ -90,89 +148,376 @@ class _ScheduleViewState extends State<ScheduleView> {
   @override
   Widget build(BuildContext context) {
     final selectedEvents = _eventsForDay(_selectedDay);
+    final filterLabels = _filterLabels(context);
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-      appBar: AppBar(
-        title: Text(
-          context.tr.scheduleSharedCalendarTitle,
-          style: AppTextStyles.navTitle(),
-        ),
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          // Month/Year selector
-          Container(
-            color: AppColors.background,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () => _changeMonth(-1),
-                  icon: const Icon(Iconsax.arrow_left_2, size: 20),
-                ),
-                Text(
-                  _monthYearString(_focusedMonth),
-                  style: AppTextStyles.heading2(),
-                ),
-                IconButton(
-                  onPressed: () => _changeMonth(1),
-                  icon: const Icon(Iconsax.arrow_right_3, size: 20),
-                ),
-              ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Header ──
+            Container(
+              color: AppColors.background,
+              padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.tr.scheduleSharedCalendarTitle,
+                    style: AppTextStyles.heading2(color: AppColors.darkText)
+                        .copyWith(fontSize: 20.sp, fontWeight: FontWeight.w700),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      sl<AppNavigator>()
+                          .push(screen: const AddScheduleView());
+                    },
+                    child: Container(
+                      width: 36.w,
+                      height: 36.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Iconsax.add, size: 20.sp,
+                          color: AppColors.darkText),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          // Calendar Grid
-          Container(
-            color: AppColors.background,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: _buildCalendarGrid(),
-          ),
-
-          const SizedBox(height: 12),
-
-          // Events list
-          Expanded(
-            child: selectedEvents.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Iconsax.calendar, size: 48,
-                            color: AppColors.greyText.withValues(alpha: 0.5)),
-                        const SizedBox(height: 12),
-                        Text(
-                          context.tr.scheduleNoEventsForDay,
-                          style: AppTextStyles.caption(),
+            // ── Filter chips ──
+            Container(
+              color: AppColors.background,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: SizedBox(
+                height: 38.h,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  itemCount: filterLabels.length,
+                  separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                  itemBuilder: (context, index) {
+                    final isSelected = _selectedFilterIndex == index;
+                    return GestureDetector(
+                      onTap: () =>
+                          setState(() => _selectedFilterIndex = index),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.w, vertical: 8.h),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.background,
+                          borderRadius: BorderRadius.circular(999.r),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.border,
+                            width: 1.2,
+                          ),
                         ),
+                        child: Text(
+                          filterLabels[index],
+                          style: AppTextStyles.smallMedium(
+                            color: AppColors.darkText,
+                          ).copyWith(
+                            fontSize: 13.sp,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+
+            // ── Month/Year selector ──
+            Container(
+              color: AppColors.background,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Month dropdown
+                  GestureDetector(
+                    onTap: () => _changeMonth(-1),
+                    child: Row(
+                      children: [
+                        Text(
+                          _monthString(_focusedMonth),
+                          style: AppTextStyles.heading2(
+                                  color: AppColors.darkText)
+                              .copyWith(fontSize: 16.sp),
+                        ),
+                        SizedBox(width: 4.w),
+                        Icon(Iconsax.arrow_down_1,
+                            size: 16.sp, color: AppColors.darkText),
                       ],
                     ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: selectedEvents.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final event = selectedEvents[index];
-                      return _EventCard(event: event);
-                    },
                   ),
+                  // Year dropdown
+                  GestureDetector(
+                    onTap: () => _changeMonth(1),
+                    child: Row(
+                      children: [
+                        Text(
+                          '${_focusedMonth.year}',
+                          style: AppTextStyles.heading2(
+                                  color: AppColors.darkText)
+                              .copyWith(fontSize: 16.sp),
+                        ),
+                        SizedBox(width: 4.w),
+                        Icon(Iconsax.arrow_down_1,
+                            size: 16.sp, color: AppColors.darkText),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Calendar Grid ──
+            Container(
+              color: AppColors.background,
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: _buildCalendarGrid(),
+            ),
+
+            // ── Legend ──
+            Container(
+              color: AppColors.background,
+              padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
+              child: Row(
+                children: [
+                  _LegendDot(
+                      color: AppColors.success,
+                      label: context.tr.scheduleLegendApproved),
+                  SizedBox(width: 16.w),
+                  _LegendDot(
+                      color: AppColors.primary,
+                      label: context.tr.scheduleLegendPending),
+                  SizedBox(width: 16.w),
+                  _LegendDot(
+                      color: AppColors.error,
+                      label: context.tr.scheduleLegendEvent),
+                  SizedBox(width: 16.w),
+                  _LegendDot(
+                      color: const Color(0xFF5B7FFF),
+                      label: context.tr.scheduleLegendCall),
+                ],
+              ),
+            ),
+
+            // ── Events list ──
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                children: [
+                  SizedBox(height: 8.h),
+                  // Section title
+                  Text(
+                    context.tr.scheduleNewScheduleRequest,
+                    style: AppTextStyles.heading2(color: AppColors.darkText)
+                        .copyWith(
+                            fontSize: 18.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(height: 12.h),
+                  if (selectedEvents.isEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(top: 40.h),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(Iconsax.calendar,
+                                size: 48.sp,
+                                color: AppColors.greyText
+                                    .withValues(alpha: 0.5)),
+                            SizedBox(height: 12.h),
+                            Text(
+                              context.tr.scheduleNoEventsForDay,
+                              style: AppTextStyles.caption(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    ...selectedEvents.map((event) => Padding(
+                          padding: EdgeInsets.only(bottom: 16.h),
+                          child: _buildEventCard(context, event),
+                        )),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEventCard(BuildContext context, CalendarEvent event) {
+    final localeCode = Localizations.localeOf(context).languageCode;
+    final title = switch (localeCode) {
+      'ar' => event.titleAr,
+      'fr' => event.titleFr,
+      _ => event.title,
+    };
+    final dateStr = DateFormat('M/dd/yyyy').format(event.date);
+
+    if (event.type == 'Call') {
+      return _CallCard(event: event, title: title);
+    }
+
+    if (event.type == 'Expense') {
+      return _ExpenseCard(event: event, title: title);
+    }
+
+    // Standard event card
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'schedule_fab',
-        onPressed: () {
-          // TODO: Navigate to add event
-        },
-        backgroundColor: AppColors.primary,
-        child: const Icon(Iconsax.add, color: AppColors.darkText),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Date header
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
+            child: Text(
+              dateStr,
+              style: AppTextStyles.caption(color: AppColors.greyText)
+                  .copyWith(fontSize: 12.sp),
+            ),
+          ),
+          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.4)),
+
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon + title
+                Row(
+                  children: [
+                    Container(
+                      width: 40.w,
+                      height: 40.w,
+                      decoration: BoxDecoration(
+                        color: event.color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        _eventIcon(event.type),
+                        size: 20.sp,
+                        color: event.color,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: AppTextStyles.bodyMedium(
+                                color: AppColors.darkText)
+                            .copyWith(
+                                fontSize: 15.sp, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+
+                // Time + location
+                Row(
+                  children: [
+                    Icon(Iconsax.clock, size: 14.sp, color: AppColors.greyText),
+                    SizedBox(width: 6.w),
+                    Text(
+                      event.time == 'All Day'
+                          ? context.tr.scheduleAllDay
+                          : event.time,
+                      style: AppTextStyles.caption(color: AppColors.greyText)
+                          .copyWith(fontSize: 12.sp),
+                    ),
+                    if (event.location != null) ...[
+                      SizedBox(width: 12.w),
+                      Icon(Iconsax.location,
+                          size: 14.sp, color: AppColors.greyText),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: Text(
+                          event.location!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.caption(
+                                  color: AppColors.greyText)
+                              .copyWith(fontSize: 12.sp),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+
+                // Notes
+                if (event.notes != null) ...[
+                  SizedBox(height: 12.h),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.tr.scheduleNotes,
+                          style: AppTextStyles.smallMedium(
+                                  color: AppColors.primaryDark)
+                              .copyWith(
+                                  fontSize: 12.sp, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          event.notes!,
+                          style:
+                              AppTextStyles.caption(color: AppColors.bodyText)
+                                  .copyWith(fontSize: 12.sp, height: 1.4),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  IconData _eventIcon(String type) {
+    return switch (type) {
+      'School' => Iconsax.teacher,
+      'Medical' => Iconsax.health,
+      'Activity' => Iconsax.activity,
+      'Pickup' => Iconsax.car,
+      'Custody' => Iconsax.people,
+      'Call' => Iconsax.call,
+      _ => Iconsax.calendar_1,
+    };
   }
 
   Widget _buildCalendarGrid() {
@@ -194,7 +539,7 @@ class _ScheduleViewState extends State<ScheduleView> {
               .map((d) => Expanded(
                     child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: EdgeInsets.only(bottom: 8.h),
                         child: Text(d,
                             style: AppTextStyles.tiny(
                                 color: AppColors.greyText)),
@@ -209,7 +554,7 @@ class _ScheduleViewState extends State<ScheduleView> {
             children: List.generate(7, (day) {
               final dayIndex = week * 7 + day - startWeekday + 1;
               if (dayIndex < 1 || dayIndex > daysInMonth) {
-                return const Expanded(child: SizedBox(height: 40));
+                return Expanded(child: SizedBox(height: 44.h));
               }
               final date = DateTime(
                   _focusedMonth.year, _focusedMonth.month, dayIndex);
@@ -219,20 +564,22 @@ class _ScheduleViewState extends State<ScheduleView> {
               final isToday = date.year == DateTime.now().year &&
                   date.month == DateTime.now().month &&
                   date.day == DateTime.now().day;
-              final hasEvents = _eventsForDay(date).isNotEmpty;
+              final dayEvents = _eventsForDay(date);
+              final hasEvents = dayEvents.isNotEmpty;
 
               return Expanded(
                 child: GestureDetector(
                   onTap: () => setState(() => _selectedDay = date),
                   child: Container(
-                    height: 40,
+                    height: 44.h,
+                    margin: EdgeInsets.all(1.w),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? AppColors.primary
+                          ? const Color(0xFF5B7FFF)
                           : isToday
                               ? AppColors.primary.withValues(alpha: 0.2)
                               : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -241,20 +588,16 @@ class _ScheduleViewState extends State<ScheduleView> {
                           '$dayIndex',
                           style: AppTextStyles.smallMedium(
                             color: isSelected
-                                ? AppColors.darkText
+                                ? Colors.white
                                 : AppColors.bodyText,
-                          ),
+                          ).copyWith(fontSize: 14.sp),
                         ),
                         if (hasEvents)
-                          Container(
-                            margin: const EdgeInsets.only(top: 2),
-                            width: 5,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? AppColors.darkText
-                                  : AppColors.primaryDark,
-                              shape: BoxShape.circle,
+                          Padding(
+                            padding: EdgeInsets.only(top: 2.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: _buildEventDots(dayEvents),
                             ),
                           ),
                       ],
@@ -265,113 +608,271 @@ class _ScheduleViewState extends State<ScheduleView> {
             }),
           );
         }),
-        const SizedBox(height: 8),
+        SizedBox(height: 4.h),
       ],
     );
   }
 
-  List<String> _weekDayLabels(String localeName) {
-    // Generate labels starting from Sunday to match the current grid behavior.
-    final baseSunday = DateTime.utc(2024, 1, 7); // Sunday
-    final formatter = DateFormat.E(localeName);
-    return List.generate(7, (i) => formatter.format(baseSunday.add(Duration(days: i))));
+  List<Widget> _buildEventDots(List<CalendarEvent> events) {
+    final colors = <Color>{};
+    for (final e in events) {
+      colors.add(_statusColor(e.status));
+      if (colors.length >= 3) break;
+    }
+    return colors
+        .map((c) => Container(
+              margin: EdgeInsets.symmetric(horizontal: 1.w),
+              width: 5.w,
+              height: 5.w,
+              decoration: BoxDecoration(
+                color: c,
+                shape: BoxShape.circle,
+              ),
+            ))
+        .toList();
   }
 
-  String _monthYearString(DateTime date) {
+  List<String> _weekDayLabels(String localeName) {
+    final baseSunday = DateTime.utc(2024, 1, 7); // Sunday
+    final formatter = DateFormat.E(localeName);
+    return List.generate(
+        7, (i) => formatter.format(baseSunday.add(Duration(days: i))));
+  }
+
+  String _monthString(DateTime date) {
     final localeName = Localizations.localeOf(context).toString();
-    return DateFormat.yMMMM(localeName).format(date);
+    return DateFormat.MMMM(localeName).format(date);
   }
 }
 
-class _EventCard extends StatelessWidget {
-  final CalendarEvent event;
-  const _EventCard({required this.event});
+// ── Legend dot ──
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.label});
+  final Color color;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final localeCode = Localizations.localeOf(context).languageCode;
-    final title = switch (localeCode) {
-      'ar' => event.titleAr,
-      'fr' => event.titleFr,
-      _ => event.title,
-    };
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8.w,
+          height: 8.w,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        SizedBox(width: 4.w),
+        Text(
+          label,
+          style: AppTextStyles.tiny(color: AppColors.greyText)
+              .copyWith(fontSize: 10.sp),
+        ),
+      ],
+    );
+  }
+}
 
+// ── Call Card ──
+class _CallCard extends StatelessWidget {
+  const _CallCard({required this.event, required this.title});
+  final CalendarEvent event;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
+            blurRadius: 10,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            Container(
-              width: 4,
-              decoration: BoxDecoration(
-                color: event.color,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
-                ),
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
+            child: Text(
+              'Today, ${event.time}',
+              style: AppTextStyles.caption(color: AppColors.greyText)
+                  .copyWith(fontSize: 12.sp),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 12),
-                child: Row(
+          ),
+          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.4)),
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
+                    Container(
+                      width: 40.w,
+                      height: 40.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryDark.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Iconsax.call,
+                          size: 20.sp, color: AppColors.primaryDark),
+                    ),
+                    SizedBox(width: 12.w),
+                    Text(
+                      context.tr.scheduleVoiceCall,
+                      style: AppTextStyles.bodyMedium(
+                              color: AppColors.darkText)
+                          .copyWith(
+                              fontSize: 15.sp, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 14.h),
+                SizedBox(
+                  width: double.infinity,
+                  height: 44.h,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.darkText,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999.r),
+                      ),
+                    ),
+                    child: Text(
+                      context.tr.scheduleJoin,
+                      style: AppTextStyles.bodyMedium(
+                              color: AppColors.darkText)
+                          .copyWith(
+                              fontSize: 14.sp, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Expense Card ──
+class _ExpenseCard extends StatelessWidget {
+  const _ExpenseCard({required this.event, required this.title});
+  final CalendarEvent event;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final dateStr = DateFormat('M/dd/yyyy').format(event.date);
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
+            child: Text(
+              dateStr,
+              style: AppTextStyles.caption(color: AppColors.greyText)
+                  .copyWith(fontSize: 12.sp),
+            ),
+          ),
+          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.4)),
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 40.w,
+                      height: 40.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Iconsax.money_send,
+                          size: 20.sp, color: AppColors.error),
+                    ),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(title, style: AppTextStyles.button()),
-                          const SizedBox(height: 4),
                           Text(
-                            event.time == 'All Day'
-                                ? context.tr.scheduleAllDay
-                                : event.time,
-                            style: AppTextStyles.caption(),
+                            context.tr.scheduleExpensePaid,
+                            style: AppTextStyles.bodyMedium(
+                                    color: AppColors.darkText)
+                                .copyWith(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600),
                           ),
+                          if (event.expenseCategory != null)
+                            Text(
+                              '${context.tr.scheduleCategory}: ${event.expenseCategory}',
+                              style: AppTextStyles.caption(
+                                      color: AppColors.greyText)
+                                  .copyWith(fontSize: 12.sp),
+                            ),
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: event.color.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
+                    if (event.expenseAmount != null)
+                      Text(
+                        event.expenseAmount!,
+                        style: AppTextStyles.heading2(color: AppColors.darkText)
+                            .copyWith(
+                                fontSize: 16.sp, fontWeight: FontWeight.w700),
                       ),
-                      child: Text(
-                        _localizedType(context, event.type),
-                        style: AppTextStyles.tiny(color: event.color),
-                      ),
-                    ),
                   ],
                 ),
-              ),
+                SizedBox(height: 14.h),
+                SizedBox(
+                  width: double.infinity,
+                  height: 44.h,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.darkText,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999.r),
+                      ),
+                    ),
+                    child: Text(
+                      context.tr.scheduleViewReceipt,
+                      style: AppTextStyles.bodyMedium(
+                              color: AppColors.darkText)
+                          .copyWith(
+                              fontSize: 14.sp, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
-  }
-
-  String _localizedType(BuildContext context, String type) {
-    return switch (type) {
-      'Pickup' => context.tr.scheduleEventTypePickup,
-      'Medical' => context.tr.scheduleEventTypeMedical,
-      'Activity' => context.tr.scheduleEventTypeActivity,
-      'School' => context.tr.scheduleEventTypeSchool,
-      'Custody' => context.tr.scheduleEventTypeCustody,
-      _ => type,
-    };
   }
 }

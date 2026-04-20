@@ -13,50 +13,54 @@ class QuickActionItem {
 }
 
 class AwaitingItem {
-  final String title;
-  final String from;
-  final String status;
-  final String time;
+  final String titleKey;
+  final String subtitle;
+  final String badgeKey;
+  final IconData icon;
 
   const AwaitingItem({
-    required this.title,
-    required this.from,
-    required this.status,
-    required this.time,
+    required this.titleKey,
+    required this.subtitle,
+    required this.badgeKey,
+    required this.icon,
   });
 }
 
 class ActivityItem {
-  final String title;
+  final String titleKey;
   final String subtitle;
-  final String time;
   final IconData icon;
-  final Color iconBgColor;
+  final String? actionKey;
 
   const ActivityItem({
-    required this.title,
+    required this.titleKey,
     required this.subtitle,
-    required this.time,
     required this.icon,
-    required this.iconBgColor,
+    this.actionKey,
   });
 }
 
 class MessageItem {
   final String name;
+  final String role;
   final String avatarUrl;
   final String lastMessage;
   final String time;
   final int unreadCount;
   final bool isOnline;
+  final Color roleColor;
+  final Color avatarRingColor;
 
   const MessageItem({
     required this.name,
+    required this.role,
     required this.avatarUrl,
     required this.lastMessage,
     required this.time,
     this.unreadCount = 0,
     this.isOnline = false,
+    required this.roleColor,
+    required this.avatarRingColor,
   });
 }
 
@@ -85,6 +89,11 @@ class CalendarEvent {
   final String time;
   final Color color;
   final String type;
+  final String? location;
+  final String? notes;
+  final String? status;
+  final String? expenseAmount;
+  final String? expenseCategory;
 
   const CalendarEvent({
     required this.id,
@@ -95,24 +104,35 @@ class CalendarEvent {
     required this.time,
     required this.color,
     required this.type,
+    this.location,
+    this.notes,
+    this.status,
+    this.expenseAmount,
+    this.expenseCategory,
   });
 }
 
+enum ExpenseType { regular, support }
+
 class ExpenseItem {
-  final String title;
+  final String childName;
+  final String submittedBy;
   final String category;
-  final String date;
+  final String referenceNumber;
+  final String paymentPeriod;
   final double amount;
-  final String paidBy;
-  final IconData icon;
+  final ExpenseType type;
+  final String? courtCase;
 
   const ExpenseItem({
-    required this.title,
+    required this.childName,
+    required this.submittedBy,
     required this.category,
-    required this.date,
+    required this.referenceNumber,
+    required this.paymentPeriod,
     required this.amount,
-    required this.paidBy,
-    required this.icon,
+    required this.type,
+    this.courtCase,
   });
 }
 
@@ -152,59 +172,76 @@ abstract class DummyData {
 
   static const List<AwaitingItem> awaitingItems = [
     AwaitingItem(
-      title: 'Change pickup time?',
-      from: 'Alex',
-      status: 'Pending',
-      time: '2h ago',
-    ),
-    AwaitingItem(
-      title: 'Approve school trip',
-      from: 'School Admin',
-      status: 'Action',
-      time: 'Yesterday',
+      titleKey: 'upcomingCall',
+      subtitle: 'Father · Today, 4:00 PM',
+      badgeKey: 'reminder',
+      icon: Icons.phone_outlined,
     ),
   ];
 
   static const List<ActivityItem> recentActivity = [
     ActivityItem(
-      title: 'Expense added',
-      subtitle: 'Groceries • \$62.75',
-      time: 'Today',
-      icon: Icons.shopping_bag_outlined,
-      iconBgColor: Color(0xFFFEDB65),
+      titleKey: 'newEvent',
+      subtitle: 'Lorem ipsum dolor sit amet consectetur. Amet ipsum nunc',
+      icon: Icons.calendar_today_outlined,
     ),
     ActivityItem(
-      title: 'New message',
-      subtitle: 'Pickup time confirmed',
-      time: 'Yesterday',
-      icon: Icons.chat_bubble_outline,
-      iconBgColor: Color(0xFF5B7FFF),
+      titleKey: 'newSession',
+      subtitle: 'Lorem ipsum dolor sit amet consectetur. Amet ipsum nunc',
+      icon: Icons.videocam_outlined,
     ),
     ActivityItem(
-      title: 'Schedule updated',
-      subtitle: 'Doctor appointment added',
-      time: '2 days',
-      icon: Icons.calendar_month_outlined,
-      iconBgColor: Color(0xFFD00416),
+      titleKey: 'pendingCost',
+      subtitle: 'Lorem ipsum dolor sit amet consectetur. Amet ipsum nunc',
+      icon: Icons.receipt_long_outlined,
+      actionKey: 'review',
     ),
   ];
 
   static const List<MessageItem> messages = [
     MessageItem(
-      name: 'Alex',
-      avatarUrl: 'https://i.pravatar.cc/150?img=3',
-      lastMessage: 'See you at 3:30 PM.',
-      time: '10:38 AM',
-      unreadCount: 0,
-      isOnline: true,
-    ),
-    MessageItem(
-      name: 'School Admin',
-      avatarUrl: 'https://i.pravatar.cc/150?img=5',
-      lastMessage: 'Please confirm the trip form.',
-      time: 'Yesterday',
+      name: 'Peter',
+      role: 'Father',
+      avatarUrl: '',
+      lastMessage: 'Lorem ipsum dolor sit amet consectetur. Mi ullamcorper egestas feugiat amet montes',
+      time: '19/5/2025',
       unreadCount: 2,
       isOnline: false,
+      roleColor: Color(0xFF5B7FFF),
+      avatarRingColor: Color(0xFF5B7FFF),
+    ),
+    MessageItem(
+      name: 'Grace',
+      role: 'Mother',
+      avatarUrl: '',
+      lastMessage: 'Lorem ipsum dolor sit amet consectetur. Mi ullamcorper egestas feugiat amet montes',
+      time: '19/5/2025',
+      unreadCount: 2,
+      isOnline: false,
+      roleColor: Color(0xFFE91E8C),
+      avatarRingColor: Color(0xFFE91E8C),
+    ),
+    MessageItem(
+      name: 'Andres',
+      role: 'Children',
+      avatarUrl: '',
+      lastMessage: 'Lorem ipsum dolor sit amet consectetur. Mi ullamcorper egestas feugiat amet montes',
+      time: '19/5/2025',
+      unreadCount: 2,
+      isOnline: false,
+      roleColor: Color(0xFF1FC16B),
+      avatarRingColor: Color(0xFF1FC16B),
+    ),
+    MessageItem(
+      name: 'Chad Ernser',
+      role: 'Lawyer',
+      avatarUrl: '',
+      lastMessage: 'Lorem ipsum dolor sit amet consectetur. Mi ullamcorper egestas feugiat amet montes',
+      time: '19/5/2025',
+      unreadCount: 2,
+      isOnline: false,
+      roleColor: Color(0xFFFEDB65),
+      avatarRingColor: Color(0xFFFEDB65),
     ),
   ];
 
@@ -227,36 +264,42 @@ abstract class DummyData {
 
   static const List<ExpenseItem> expenses = [
     ExpenseItem(
-      title: 'School Fees',
+      childName: 'Andres',
+      submittedBy: 'Leslie Pfeffer',
       category: 'Education',
-      date: 'Apr 02',
-      amount: 150.00,
-      paidBy: 'Parent A',
-      icon: Icons.school_outlined,
+      referenceNumber: 'EXP-2025-001',
+      paymentPeriod: 'Apr 2025',
+      amount: 1500.00,
+      type: ExpenseType.regular,
     ),
     ExpenseItem(
-      title: 'Doctor Visit',
+      childName: 'Andres',
+      submittedBy: 'Peter Parker',
       category: 'Healthcare',
-      date: 'Apr 06',
-      amount: 85.50,
-      paidBy: 'Parent B',
-      icon: Icons.local_hospital_outlined,
+      referenceNumber: 'EXP-2025-002',
+      paymentPeriod: 'Apr 2025',
+      amount: 850.00,
+      type: ExpenseType.regular,
     ),
     ExpenseItem(
-      title: 'Sports Class',
-      category: 'Activities',
-      date: 'Apr 10',
-      amount: 45.00,
-      paidBy: 'Parent A',
-      icon: Icons.sports_soccer,
+      childName: 'Andres',
+      submittedBy: 'Leslie Pfeffer',
+      category: 'Court Case #1234',
+      referenceNumber: 'SUP-2025-001',
+      paymentPeriod: 'Mar 2025',
+      amount: 3000.00,
+      type: ExpenseType.support,
+      courtCase: '#1234',
     ),
     ExpenseItem(
-      title: 'Groceries',
-      category: 'Essentials',
-      date: 'Apr 12',
-      amount: 62.75,
-      paidBy: 'Parent B',
-      icon: Icons.shopping_bag_outlined,
+      childName: 'Andres',
+      submittedBy: 'Peter Parker',
+      category: 'Court Case #5678',
+      referenceNumber: 'SUP-2025-002',
+      paymentPeriod: 'Apr 2025',
+      amount: 3000.00,
+      type: ExpenseType.support,
+      courtCase: '#5678',
     ),
   ];
 }

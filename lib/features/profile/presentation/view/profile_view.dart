@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/account_security_view.dart';
@@ -16,22 +20,97 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
+    return BlocProvider(
+      create: (_) => sl<AuthCubit>(),
+      child: const _ProfileBody(),
+    );
+  }
+}
+
+class _ProfileBody extends StatelessWidget {
+  const _ProfileBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (prev, curr) => prev.action != curr.action,
+      listener: (context, state) {
+        if (state.action == AuthAction.navigateToLogin) {
+          sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppColors.background,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        title: Text(context.tr.profileTitle, style: AppTextStyles.heading2()),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
+        appBar: AppBar(
+          backgroundColor: AppColors.background,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, size: 20),
+            onPressed: () => sl<AppNavigator>().pop(),
+          ),
+          title:
+              Text(context.tr.profileTitle, style: AppTextStyles.heading2()),
+          centerTitle: true,
+        ),
+        body: Column(
           children: [
-            _buildProfileHeader(),
-            const SizedBox(height: 32),
-            _buildMenuList(context),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    _buildProfileHeader(),
+                    const SizedBox(height: 28),
+                    _buildMoreInformation(context),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+            // LOG OUT button at bottom
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: BlocBuilder<AuthCubit, AuthState>(
+                  buildWhen: (prev, curr) =>
+                      prev.isSubmitting != curr.isSubmitting,
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: state.isSubmitting
+                          ? null
+                          : () => _showLogoutDialog(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.error,
+                        foregroundColor: AppColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: state.isSubmitting
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.white,
+                              ),
+                            )
+                          : Text(
+                              context.tr.profileMenuLogout.toUpperCase(),
+                              style:
+                                  AppTextStyles.button(color: AppColors.white),
+                            ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -39,124 +118,147 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget _buildProfileHeader() {
-    return Column(
+    final user = sl<Storage>().getUser();
+    final displayName = (user?.fullName.isNotEmpty ?? false)
+        ? user!.fullName
+        : 'Leslie Pfeffer';
+    final role = sl<Storage>().getSelectedRole() ?? 'Mother';
+
+    return Row(
       children: [
-        const CircleAvatar(
-          radius: 40,
-          backgroundColor: AppColors.inputBg,
-          backgroundImage:
-              NetworkImage('https://picsum.photos/200/200?random=200'),
+        Container(
+          width: 64,
+          height: 64,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.primaryDark, width: 2.5),
+          ),
+          child: const CircleAvatar(
+            radius: 28,
+            backgroundColor: AppColors.inputBg,
+            backgroundImage:
+                NetworkImage('https://picsum.photos/200/200?random=200'),
+          ),
         ),
-        const SizedBox(height: 12),
-        Text('Ahmed Mohamed', style: AppTextStyles.heading2()),
-        const SizedBox(height: 4),
-        Text(
-          'ahmed.mohamed@email.com',
-          style: AppTextStyles.caption(),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(displayName, style: AppTextStyles.heading2()),
+              const SizedBox(height: 2),
+              Text(role,
+                  style: AppTextStyles.caption(color: AppColors.error)),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Clipboard.setData(const ClipboardData(text: 'DKVLRT'));
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('DKVLRT',
+                    style:
+                        AppTextStyles.smallMedium(color: AppColors.darkText)),
+                const SizedBox(width: 6),
+                const Icon(Iconsax.copy, size: 14, color: AppColors.darkText),
+              ],
+            ),
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildMenuList(BuildContext context) {
-    final menuItems = [
-      _MenuItem(
-        icon: Iconsax.shield_tick,
-        title: context.tr.profileMenuAccountSecurity,
-        onTap: () => sl<AppNavigator>().push(
-          screen: const AccountSecurityView(),
+  Widget _buildMoreInformation(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.tr.profileMoreInformation,
+          style: AppTextStyles.heading2().copyWith(fontSize: 18),
         ),
-      ),
-      _MenuItem(
-        icon: Iconsax.people,
-        title: context.tr.profileMenuFamilyInformation,
-        onTap: () => sl<AppNavigator>().push(
-          screen: const FamilyInfoView(),
+        const SizedBox(height: 16),
+        _buildMenuItem(
+          title: context.tr.profileMenuAccount,
+          onTap: () => sl<AppNavigator>().push(
+            screen: const AccountSecurityView(),
+          ),
         ),
-      ),
-      _MenuItem(
-        icon: Iconsax.notification,
-        title: context.tr.profileMenuNotifications,
-        onTap: () => sl<AppNavigator>().push(
-          screen: const NotificationsView(),
+        _buildDivider(),
+        _buildMenuItem(
+          title: context.tr.profileMenuFamilySpace,
+          onTap: () => sl<AppNavigator>().push(
+            screen: const FamilyInfoView(),
+          ),
         ),
-      ),
-      _MenuItem(
-        icon: Iconsax.global,
-        title: context.tr.profileMenuLanguage,
-        onTap: () => sl<AppNavigator>().push(
-          screen: const LanguageSettingsView(),
+        _buildDivider(),
+        _buildMenuItem(
+          title: context.tr.profileMenuPrivacySecurity,
+          onTap: () => sl<AppNavigator>().push(
+            screen: const AccountSecurityView(),
+          ),
         ),
-      ),
-      _MenuItem(
-        icon: Iconsax.document_text,
-        title: context.tr.profileMenuTermsOfUse,
-        onTap: () => _showTermsOfUse(context),
-      ),
-      _MenuItem(
-        icon: Iconsax.send_2,
-        title: context.tr.profileMenuInvitePeople,
-        onTap: () => _showInviteDialog(context),
-      ),
-      _MenuItem(
-        icon: Iconsax.logout,
-        title: context.tr.profileMenuLogout,
-        isDestructive: true,
-        onTap: () => _showLogoutDialog(context),
-      ),
-    ];
+        _buildDivider(),
+        _buildMenuItem(
+          title: context.tr.profileMenuNotification,
+          onTap: () => sl<AppNavigator>().push(
+            screen: const NotificationsView(),
+          ),
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          title: context.tr.profileMenuLanguage,
+          onTap: () => sl<AppNavigator>().push(
+            screen: const LanguageSettingsView(),
+          ),
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          title: context.tr.profileMenuLegalTerms,
+          onTap: () => _showTermsOfUse(context),
+        ),
+        _buildDivider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          child: GestureDetector(
+            onTap: () => _showDeleteAccountDialog(context),
+            child: Text(
+              context.tr.profileMenuDeleteAccount,
+              style: AppTextStyles.body(color: AppColors.error),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: menuItems.length,
-        separatorBuilder: (_, __) => const Divider(
-          color: AppColors.border,
-          height: 1,
-          indent: 56,
+  Widget _buildMenuItem({required String title, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          children: [
+            Expanded(child: Text(title, style: AppTextStyles.body())),
+            const Icon(Icons.arrow_forward_ios_rounded,
+                size: 16, color: AppColors.greyText),
+          ],
         ),
-        itemBuilder: (context, index) {
-          final item = menuItems[index];
-          return ListTile(
-            onTap: item.onTap,
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.greyText.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                item.icon,
-                color: item.isDestructive ? AppColors.error : AppColors.greyText,
-                size: 20,
-              ),
-            ),
-            title: Text(
-              item.title,
-              style: AppTextStyles.bodyMedium(
-                color: item.isDestructive ? AppColors.error : AppColors.darkText,
-              ),
-            ),
-            trailing: item.isDestructive
-                ? null
-                : const Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 16,
-                    color: AppColors.greyText,
-                  ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          );
-        },
       ),
     );
+  }
+
+  Widget _buildDivider() {
+    return const Divider(height: 1, color: AppColors.border);
   }
 
   void _showTermsOfUse(BuildContext context) {
@@ -188,7 +290,8 @@ class ProfileView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(context.tr.profileTermsTitle, style: AppTextStyles.heading1()),
+              Text(context.tr.profileTermsTitle,
+                  style: AppTextStyles.heading1()),
               const SizedBox(height: 16),
               Expanded(
                 child: SingleChildScrollView(
@@ -206,48 +309,28 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  void _showInviteDialog(BuildContext context) {
+  void _showDeleteAccountDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(context.tr.profileInviteTitle, style: AppTextStyles.heading2()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              context.tr.profileInviteDescription,
-              style: AppTextStyles.body(color: AppColors.greyText),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.inputBg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('MASR-2024-XYZ', style: AppTextStyles.bodyMedium()),
-                  const Icon(Iconsax.copy, size: 20, color: AppColors.primaryDark),
-                ],
-              ),
-            ),
-          ],
+        title: Text(context.tr.accountSecurityDeleteAccount,
+            style: AppTextStyles.heading2()),
+        content: Text(
+          context.tr.accountSecurityDeleteConfirm,
+          style: AppTextStyles.body(color: AppColors.greyText),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.tr.commonClose,
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(context.tr.commonCancel,
                 style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.tr.commonShare,
-                style: AppTextStyles.bodyMedium(color: AppColors.primaryDark)),
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(context.tr.commonDelete,
+                style: AppTextStyles.bodyMedium(color: AppColors.error)),
           ),
         ],
       ),
@@ -257,24 +340,25 @@ class ProfileView extends StatelessWidget {
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(context.tr.profileLogoutTitle, style: AppTextStyles.heading2()),
+        title: Text(context.tr.profileLogoutTitle,
+            style: AppTextStyles.heading2()),
         content: Text(
           context.tr.profileLogoutConfirm,
           style: AppTextStyles.body(color: AppColors.greyText),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(ctx),
             child: Text(context.tr.commonCancel,
                 style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
+              Navigator.pop(ctx);
+              context.read<AuthCubit>().logout();
             },
             child: Text(context.tr.profileLogoutTitle,
                 style: AppTextStyles.bodyMedium(color: AppColors.error)),
@@ -283,18 +367,4 @@ class ProfileView extends StatelessWidget {
       ),
     );
   }
-}
-
-class _MenuItem {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final bool isDestructive;
-
-  const _MenuItem({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.isDestructive = false,
-  });
 }

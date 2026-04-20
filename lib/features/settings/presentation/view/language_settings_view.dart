@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/app/app_body.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
-class LanguageSettingsView extends StatelessWidget {
+class LanguageSettingsView extends StatefulWidget {
   const LanguageSettingsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final currentLocale = Localizations.localeOf(context).languageCode;
+  State<LanguageSettingsView> createState() => _LanguageSettingsViewState();
+}
 
-    final languages = [
-      _LanguageOption(code: 'en', name: 'English', flag: '\u{1F1FA}\u{1F1F8}'),
-      _LanguageOption(
-        code: 'ar',
-        name: '\u0627\u0644\u0639\u0631\u0628\u064A\u0647',
-        flag: '\u{1F1EA}\u{1F1EC}',
-      ),
-      _LanguageOption(code: 'fr', name: 'Français', flag: '\u{1F1EB}\u{1F1F7}'),
-    ];
+class _LanguageSettingsViewState extends State<LanguageSettingsView> {
+  // null = device language, otherwise the language code
+  String? _selectedCode;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize with current locale
+    _selectedCode ??= Localizations.localeOf(context).languageCode;
+  }
+
+  void _selectLanguage(String? code) {
+    setState(() => _selectedCode = code);
+    if (code == null) {
+      // Device language - use platform locale
+      final platformLocale = WidgetsBinding.instance.platformDispatcher.locale;
+      MyApp.of(context)?.setLocale(platformLocale);
+    } else {
+      MyApp.of(context)?.setLocale(Locale(code));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDeviceLanguage = _selectedCode == null;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -28,99 +45,120 @@ class LanguageSettingsView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: AppColors.darkText,
-          ),
+          icon: const Icon(Icons.arrow_back_ios, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          context.tr.settingsLanguage,
+          context.tr.profileMenuLanguage,
           style: AppTextStyles.heading2(),
         ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
-          children: languages.map((lang) {
-            final isSelected = currentLocale == lang.code;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: GestureDetector(
-                onTap: () => MyApp.of(context)?.setLocale(Locale(lang.code)),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.cardBg,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isSelected ? AppColors.primaryDark : AppColors.border,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(lang.flag, style: const TextStyle(fontSize: 28)),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Text(
-                          lang.name,
-                          style: AppTextStyles.bodyMedium(
-                            color: isSelected
-                                ? AppColors.darkText
-                                : AppColors.bodyText,
-                          ),
-                        ),
-                      ),
-                      if (isSelected)
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: const BoxDecoration(
-                            color: AppColors.darkText,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: AppColors.white,
-                            size: 16,
-                          ),
-                        )
-                      else
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.border,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+          children: [
+            const SizedBox(height: 8),
+
+            // Search bar
+            Container(
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.inputBg,
+                borderRadius: BorderRadius.circular(12),
               ),
-            );
-          }).toList(),
+              child: Row(
+                children: [
+                  const SizedBox(width: 14),
+                  const Icon(Iconsax.search_normal,
+                      size: 18, color: AppColors.greyText),
+                  const SizedBox(width: 10),
+                  Text(
+                    context.tr.messagesSearch,
+                    style: AppTextStyles.caption(color: AppColors.greyText),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Device Language option
+            _buildLanguageItem(
+              label: context.tr.languageDeviceLanguage,
+              isSelected: isDeviceLanguage,
+              onTap: () => _selectLanguage(null),
+            ),
+            const Divider(height: 1, color: AppColors.border),
+
+            // English
+            _buildLanguageItem(
+              label: 'English',
+              isSelected: !isDeviceLanguage && _selectedCode == 'en',
+              onTap: () => _selectLanguage('en'),
+            ),
+            const Divider(height: 1, color: AppColors.border),
+
+            // Arabic
+            _buildLanguageItem(
+              label: 'العربيه',
+              isSelected: !isDeviceLanguage && _selectedCode == 'ar',
+              onTap: () => _selectLanguage('ar'),
+            ),
+            const Divider(height: 1, color: AppColors.border),
+
+            // French
+            _buildLanguageItem(
+              label: 'French',
+              isSelected: !isDeviceLanguage && _selectedCode == 'fr',
+              onTap: () => _selectLanguage('fr'),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class _LanguageOption {
-  final String code;
-  final String name;
-  final String flag;
-
-  const _LanguageOption({
-    required this.code,
-    required this.name,
-    required this.flag,
-  });
+  Widget _buildLanguageItem({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(label, style: AppTextStyles.body()),
+            ),
+            Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? AppColors.primary : AppColors.border,
+                  width: isSelected ? 2 : 1.5,
+                ),
+              ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

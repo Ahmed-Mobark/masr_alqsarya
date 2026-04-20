@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:masr_al_qsariya/core/data/dummy_data.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
 class QuickActionCard extends StatelessWidget {
   const QuickActionCard({
     super.key,
-    required this.item,
+    required this.icon,
+    required this.label,
     this.onTap,
   });
 
-  final QuickActionItem item;
+  final IconData icon;
+  final String label;
   final VoidCallback? onTap;
 
   @override
@@ -18,34 +20,43 @@ class QuickActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 109,
-        height: 93,
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
+              blurRadius: 10,
               offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              item.icon,
-              size: 24,
-              color: item.iconColor,
+            Container(
+              width: 44.w,
+              height: 44.w,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(icon, size: 22.sp, color: AppColors.yellow),
             ),
-            const SizedBox(height: 8),
-            Text(
-              item.title,
-              style: AppTextStyles.tabLabel(color: AppColors.bodyText),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            SizedBox(height: 10.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
+              child: Text(
+                label,
+                style: AppTextStyles.smallMedium(
+                  color: AppColors.darkText,
+                ).copyWith(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),

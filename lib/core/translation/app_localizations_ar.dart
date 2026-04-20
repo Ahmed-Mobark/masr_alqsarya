@@ -286,6 +286,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileTitle => 'الملف الشخصي';
 
   @override
+  String get profileMoreInformation => 'مزيد من المعلومات';
+
+  @override
+  String get profileMenuAccount => 'الحساب';
+
+  @override
+  String get profileMenuFamilySpace => 'مساحة العائلة';
+
+  @override
+  String get profileMenuPrivacySecurity => 'الخصوصية والأمان';
+
+  @override
+  String get profileMenuNotification => 'الإشعارات';
+
+  @override
   String get profileMenuAccountSecurity => 'الحساب والأمان';
 
   @override
@@ -298,10 +313,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileMenuLanguage => 'اللغة';
 
   @override
+  String get profileMenuLegalTerms => 'الشروط القانونية والاستخدام';
+
+  @override
   String get profileMenuTermsOfUse => 'شروط الاستخدام';
 
   @override
   String get profileMenuInvitePeople => 'دعوة أشخاص';
+
+  @override
+  String get profileMenuDeleteAccount => 'حذف الحساب';
 
   @override
   String get profileMenuLogout => 'تسجيل الخروج';
@@ -330,6 +351,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accountSecurityTitle => 'الحساب والأمان';
 
   @override
+  String get accountSecurityPersonalInfo => 'المعلومات الشخصية';
+
+  @override
+  String get accountSecurityFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get accountSecurityLastNameLabel => 'اسم العائلة';
+
+  @override
+  String get accountSecurityEmailAddressLabel => 'عنوان البريد الإلكتروني';
+
+  @override
+  String get accountSecurityPhoneNumberLabel => 'رقم الهاتف';
+
+  @override
   String get accountSecurityEmailLabel => 'البريد الإلكتروني';
 
   @override
@@ -347,6 +383,9 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get accountSecurityDeleteConfirm =>
       'هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get languageDeviceLanguage => 'لغة الجهاز';
 
   @override
   String get familyInfoTitle => 'معلومات العائلة';
@@ -466,10 +505,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messagesSearch => 'بحث';
 
   @override
+  String get messagesAll => 'الكل';
+
+  @override
+  String get messagesUnread => 'غير مقروءة';
+
+  @override
+  String get messagesMarkAllRead => 'تحديد الكل كمقروء';
+
+  @override
   String get newsTitle => 'الأخبار';
 
   @override
   String get expenseTitle => 'المصروفات';
+
+  @override
+  String get expenseRegularExpense => 'مصروف عادي';
+
+  @override
+  String get expenseSupportPayment => 'دفع نفقة';
+
+  @override
+  String get expenseChildName => 'اسم الطفل';
+
+  @override
+  String get expenseSubmittedBy => 'مقدم من';
+
+  @override
+  String get expenseReferenceNumber => 'رقم المرجع';
+
+  @override
+  String get expensePaymentPeriod => 'فترة الدفع';
+
+  @override
+  String get expenseCourtCase => 'رقم القضية';
+
+  @override
+  String get expenseViewReceipt => 'عرض الإيصال';
 
   @override
   String get expenseTotalThisMonth => 'الإجمالي هذا الشهر';
@@ -746,4 +818,234 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get back => 'عودة';
+
+  @override
+  String get homeQuickActions => 'إجراءات سريعة';
+
+  @override
+  String get homeAwaitingResponse => 'في انتظار ردك';
+
+  @override
+  String get homeRecentActivity => 'النشاط الأخير';
+
+  @override
+  String get homeGuest => 'زائر';
+
+  @override
+  String get homeWelcomeBack => 'مرحبًا بعودتك';
+
+  @override
+  String get homeGoodMorning => 'صباح الخير';
+
+  @override
+  String get homeFrom => 'من: ';
+
+  @override
+  String get newsFilter => 'تصفية';
+
+  @override
+  String get newsResetFilters => 'إعادة تعيين';
+
+  @override
+  String get newsSearchByName => 'البحث بالاسم';
+
+  @override
+  String get newsSearchHint => 'بحث';
+
+  @override
+  String get newsSearchByType => 'البحث بالنوع';
+
+  @override
+  String get newsSortBy => 'ترتيب حسب';
+
+  @override
+  String get newsApplyFilters => 'تطبيق التصفية';
+
+  @override
+  String get newsAllPosts => 'جميع المنشورات';
+
+  @override
+  String get newsUpdates => 'تحديثات';
+
+  @override
+  String get newsAnnouncements => 'إعلانات';
+
+  @override
+  String get newsPhotos => 'صور';
+
+  @override
+  String get newsDocuments => 'مستندات';
+
+  @override
+  String get newsExpenseUpdates => 'تحديثات المصروفات';
+
+  @override
+  String get newsNewest => 'الأحدث';
+
+  @override
+  String get newsOldest => 'الأقدم';
+
+  @override
+  String get newsName => 'الاسم';
+
+  @override
+  String get newsSeeMore => 'عرض المزيد';
+
+  @override
+  String get newsShowLess => 'عرض أقل';
+
+  @override
+  String get newsLike => 'إعجاب';
+
+  @override
+  String get newsHelpful => 'مفيد';
+
+  @override
+  String get expenseCategoryEducation => 'تعليم';
+
+  @override
+  String get expenseCategoryHealthcare => 'رعاية صحية';
+
+  @override
+  String get expenseCategoryActivities => 'أنشطة';
+
+  @override
+  String get expenseCategoryEssentials => 'أساسيات';
+
+  @override
+  String get expenseCategoryClothing => 'ملابس';
+
+  @override
+  String get expenseCategoryFood => 'طعام';
+
+  @override
+  String get expenseCategoryTransportation => 'مواصلات';
+
+  @override
+  String get expenseCategoryOther => 'أخرى';
+
+  @override
+  String get scheduleFilterAll => 'الكل';
+
+  @override
+  String get scheduleFilterParentingTime => 'وقت الأبوة';
+
+  @override
+  String get scheduleFilterSchoolActivities => 'المدرسة والأنشطة';
+
+  @override
+  String get scheduleFilterMedical => 'طبي';
+
+  @override
+  String get scheduleLegendApproved => 'موافق عليه';
+
+  @override
+  String get scheduleLegendPending => 'قيد الانتظار';
+
+  @override
+  String get scheduleLegendEvent => 'حدث';
+
+  @override
+  String get scheduleLegendCall => 'مكالمة';
+
+  @override
+  String get scheduleLegendRejected => 'مرفوض';
+
+  @override
+  String get scheduleNewScheduleRequest => 'طلب جدول جديد';
+
+  @override
+  String get scheduleAddNewSchedule => 'إضافة جدول جديد';
+
+  @override
+  String get scheduleEventType => 'نوع الحدث';
+
+  @override
+  String get scheduleChild => 'الطفل';
+
+  @override
+  String get scheduleDate => 'التاريخ';
+
+  @override
+  String get scheduleTime => 'الوقت';
+
+  @override
+  String get scheduleNotes => 'ملاحظات';
+
+  @override
+  String get scheduleSendRequest => 'إرسال الطلب';
+
+  @override
+  String get scheduleSelect => 'اختر';
+
+  @override
+  String get scheduleVoiceCall => 'مكالمة صوتية';
+
+  @override
+  String get scheduleJoin => 'انضم';
+
+  @override
+  String get scheduleViewReceipt => 'عرض الإيصال';
+
+  @override
+  String get scheduleExpensePaid => 'مصروف مدفوع';
+
+  @override
+  String get scheduleCategory => 'الفئة';
+
+  @override
+  String get homeSendMessage => 'إرسال رسالة';
+
+  @override
+  String get homeAddSchedule => 'إضافة جدول';
+
+  @override
+  String get homeExpense => 'المصروفات';
+
+  @override
+  String get homeSessions => 'الجلسات';
+
+  @override
+  String get homeSessionsLibrary => 'مكتبة الجلسات';
+
+  @override
+  String get homeDocuments => 'المستندات';
+
+  @override
+  String get homeUpcomingCall => 'مكالمة قادمة';
+
+  @override
+  String get homeReminder => 'تذكير';
+
+  @override
+  String get homeConfirm => 'تأكيد';
+
+  @override
+  String get homeRequestReschedule => 'طلب إعادة جدولة';
+
+  @override
+  String get homeNewEvent => 'حدث جديد';
+
+  @override
+  String get homeNewSession => 'جلسة جديدة';
+
+  @override
+  String homePendingCost(Object count) {
+    return '$count تكلفة معلقة';
+  }
+
+  @override
+  String get homeReview => 'مراجعة';
+
+  @override
+  String get rescheduleTitle => 'طلب إعادة جدولة';
+
+  @override
+  String get rescheduleSelectDate => 'اختر تاريخاً جديداً';
+
+  @override
+  String get rescheduleSelectTime => 'اختر الوقت';
+
+  @override
+  String get rescheduleSubmit => 'طلب إعادة جدولة';
 }

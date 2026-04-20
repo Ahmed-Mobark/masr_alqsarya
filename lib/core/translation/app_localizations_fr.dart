@@ -291,6 +291,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileTitle => 'Profil';
 
   @override
+  String get profileMoreInformation => 'Plus d’informations';
+
+  @override
+  String get profileMenuAccount => 'Compte';
+
+  @override
+  String get profileMenuFamilySpace => 'Espace familial';
+
+  @override
+  String get profileMenuPrivacySecurity => 'Confidentialité et sécurité';
+
+  @override
+  String get profileMenuNotification => 'Notification';
+
+  @override
   String get profileMenuAccountSecurity => 'Compte et sécurité';
 
   @override
@@ -303,10 +318,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileMenuLanguage => 'Langue';
 
   @override
+  String get profileMenuLegalTerms => 'Mentions légales et conditions';
+
+  @override
   String get profileMenuTermsOfUse => 'Conditions d’utilisation';
 
   @override
   String get profileMenuInvitePeople => 'Inviter des personnes';
+
+  @override
+  String get profileMenuDeleteAccount => 'Supprimer le compte';
 
   @override
   String get profileMenuLogout => 'Déconnexion';
@@ -336,6 +357,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accountSecurityTitle => 'Compte et sécurité';
 
   @override
+  String get accountSecurityPersonalInfo => 'Informations personnelles';
+
+  @override
+  String get accountSecurityFirstNameLabel => 'Prénom';
+
+  @override
+  String get accountSecurityLastNameLabel => 'Nom de famille';
+
+  @override
+  String get accountSecurityEmailAddressLabel => 'Adresse e-mail';
+
+  @override
+  String get accountSecurityPhoneNumberLabel => 'Numéro de téléphone';
+
+  @override
   String get accountSecurityEmailLabel => 'E-mail';
 
   @override
@@ -354,6 +390,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get accountSecurityDeleteConfirm =>
       'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.';
+
+  @override
+  String get languageDeviceLanguage => 'Langue de l’appareil';
 
   @override
   String get familyInfoTitle => 'Informations familiales';
@@ -476,10 +515,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get messagesSearch => 'Rechercher';
 
   @override
+  String get messagesAll => 'Tous';
+
+  @override
+  String get messagesUnread => 'Non lus';
+
+  @override
+  String get messagesMarkAllRead => 'Tout marquer comme lu';
+
+  @override
   String get newsTitle => 'Actualités';
 
   @override
   String get expenseTitle => 'Dépenses';
+
+  @override
+  String get expenseRegularExpense => 'Dépense régulière';
+
+  @override
+  String get expenseSupportPayment => 'Pension alimentaire';
+
+  @override
+  String get expenseChildName => 'Nom de l\'enfant';
+
+  @override
+  String get expenseSubmittedBy => 'Soumis par';
+
+  @override
+  String get expenseReferenceNumber => 'Numéro de référence';
+
+  @override
+  String get expensePaymentPeriod => 'Période de paiement';
+
+  @override
+  String get expenseCourtCase => 'Dossier judiciaire';
+
+  @override
+  String get expenseViewReceipt => 'VOIR LE REÇU';
 
   @override
   String get expenseTotalThisMonth => 'Total ce mois-ci';
@@ -764,4 +836,234 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get back => 'Retour';
+
+  @override
+  String get homeQuickActions => 'Actions rapides';
+
+  @override
+  String get homeAwaitingResponse => 'En attente de votre réponse';
+
+  @override
+  String get homeRecentActivity => 'Activité récente';
+
+  @override
+  String get homeGuest => 'Invité';
+
+  @override
+  String get homeWelcomeBack => 'Bon retour';
+
+  @override
+  String get homeGoodMorning => 'Bonjour';
+
+  @override
+  String get homeFrom => 'De : ';
+
+  @override
+  String get newsFilter => 'Filtrer';
+
+  @override
+  String get newsResetFilters => 'Réinitialiser';
+
+  @override
+  String get newsSearchByName => 'Rechercher par nom';
+
+  @override
+  String get newsSearchHint => 'Rechercher';
+
+  @override
+  String get newsSearchByType => 'Rechercher par type';
+
+  @override
+  String get newsSortBy => 'Trier par';
+
+  @override
+  String get newsApplyFilters => 'APPLIQUER LES FILTRES';
+
+  @override
+  String get newsAllPosts => 'Toutes les publications';
+
+  @override
+  String get newsUpdates => 'Mises à jour';
+
+  @override
+  String get newsAnnouncements => 'Annonces';
+
+  @override
+  String get newsPhotos => 'Photos';
+
+  @override
+  String get newsDocuments => 'Documents';
+
+  @override
+  String get newsExpenseUpdates => 'Mises à jour des dépenses';
+
+  @override
+  String get newsNewest => 'Plus récent';
+
+  @override
+  String get newsOldest => 'Plus ancien';
+
+  @override
+  String get newsName => 'Nom';
+
+  @override
+  String get newsSeeMore => 'voir plus';
+
+  @override
+  String get newsShowLess => 'voir moins';
+
+  @override
+  String get newsLike => 'J\'aime';
+
+  @override
+  String get newsHelpful => 'Utile';
+
+  @override
+  String get expenseCategoryEducation => 'Éducation';
+
+  @override
+  String get expenseCategoryHealthcare => 'Santé';
+
+  @override
+  String get expenseCategoryActivities => 'Activités';
+
+  @override
+  String get expenseCategoryEssentials => 'Essentiels';
+
+  @override
+  String get expenseCategoryClothing => 'Vêtements';
+
+  @override
+  String get expenseCategoryFood => 'Alimentation';
+
+  @override
+  String get expenseCategoryTransportation => 'Transport';
+
+  @override
+  String get expenseCategoryOther => 'Autre';
+
+  @override
+  String get scheduleFilterAll => 'Tout';
+
+  @override
+  String get scheduleFilterParentingTime => 'Temps parental';
+
+  @override
+  String get scheduleFilterSchoolActivities => 'École et activités';
+
+  @override
+  String get scheduleFilterMedical => 'Médical';
+
+  @override
+  String get scheduleLegendApproved => 'Approuvé';
+
+  @override
+  String get scheduleLegendPending => 'En attente';
+
+  @override
+  String get scheduleLegendEvent => 'Événement';
+
+  @override
+  String get scheduleLegendCall => 'Appel';
+
+  @override
+  String get scheduleLegendRejected => 'Rejeté';
+
+  @override
+  String get scheduleNewScheduleRequest => 'Nouvelle demande de planning';
+
+  @override
+  String get scheduleAddNewSchedule => 'Ajouter un nouveau planning';
+
+  @override
+  String get scheduleEventType => 'Type d\'événement';
+
+  @override
+  String get scheduleChild => 'Enfant';
+
+  @override
+  String get scheduleDate => 'Date';
+
+  @override
+  String get scheduleTime => 'Heure';
+
+  @override
+  String get scheduleNotes => 'Notes';
+
+  @override
+  String get scheduleSendRequest => 'ENVOYER LA DEMANDE';
+
+  @override
+  String get scheduleSelect => 'Sélectionner';
+
+  @override
+  String get scheduleVoiceCall => 'Appel vocal';
+
+  @override
+  String get scheduleJoin => 'REJOINDRE';
+
+  @override
+  String get scheduleViewReceipt => 'VOIR LE REÇU';
+
+  @override
+  String get scheduleExpensePaid => 'Dépense payée';
+
+  @override
+  String get scheduleCategory => 'Catégorie';
+
+  @override
+  String get homeSendMessage => 'Envoyer un message';
+
+  @override
+  String get homeAddSchedule => 'Ajouter un horaire';
+
+  @override
+  String get homeExpense => 'Dépenses';
+
+  @override
+  String get homeSessions => 'Sessions';
+
+  @override
+  String get homeSessionsLibrary => 'Bibliothèque';
+
+  @override
+  String get homeDocuments => 'Documents';
+
+  @override
+  String get homeUpcomingCall => 'Appel à venir';
+
+  @override
+  String get homeReminder => 'Rappel';
+
+  @override
+  String get homeConfirm => 'CONFIRMER';
+
+  @override
+  String get homeRequestReschedule => 'REPROGRAMMER';
+
+  @override
+  String get homeNewEvent => 'Nouvel événement';
+
+  @override
+  String get homeNewSession => 'Nouvelle session';
+
+  @override
+  String homePendingCost(Object count) {
+    return '$count coût en attente';
+  }
+
+  @override
+  String get homeReview => 'EXAMINER';
+
+  @override
+  String get rescheduleTitle => 'Demande de reprogrammation';
+
+  @override
+  String get rescheduleSelectDate => 'Sélectionnez une nouvelle date';
+
+  @override
+  String get rescheduleSelectTime => 'Sélectionner l\'heure';
+
+  @override
+  String get rescheduleSubmit => 'REPROGRAMMER';
 }

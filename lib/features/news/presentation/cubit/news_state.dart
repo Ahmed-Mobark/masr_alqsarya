@@ -12,6 +12,9 @@ class NewsState extends Equatable {
     this.lastPage = 1,
     this.perPage = 5,
     this.reacting = const {},
+    this.search,
+    this.selectedType,
+    this.sortDirection,
   });
 
   final NewsStatus status;
@@ -22,8 +25,16 @@ class NewsState extends Equatable {
   final int perPage;
   /// Map of feedId -> currently running reaction (like/helpful).
   final Map<int, NewsReaction> reacting;
+  final String? search;
+  final String? selectedType;
+  final String? sortDirection;
 
   bool get hasMore => currentPage < lastPage;
+
+  bool get hasActiveFilters =>
+      (search != null && search!.isNotEmpty) ||
+      selectedType != null ||
+      sortDirection != null;
 
   NewsState copyWith({
     NewsStatus? status,
@@ -34,6 +45,12 @@ class NewsState extends Equatable {
     int? perPage,
     Map<int, NewsReaction>? reacting,
     bool clearError = false,
+    String? search,
+    String? selectedType,
+    String? sortDirection,
+    bool clearSearch = false,
+    bool clearType = false,
+    bool clearSort = false,
   }) {
     return NewsState(
       status: status ?? this.status,
@@ -43,6 +60,9 @@ class NewsState extends Equatable {
       lastPage: lastPage ?? this.lastPage,
       perPage: perPage ?? this.perPage,
       reacting: reacting ?? this.reacting,
+      search: clearSearch ? null : search ?? this.search,
+      selectedType: clearType ? null : selectedType ?? this.selectedType,
+      sortDirection: clearSort ? null : sortDirection ?? this.sortDirection,
     );
   }
 
@@ -55,6 +75,9 @@ class NewsState extends Equatable {
         lastPage,
         perPage,
         reacting,
+        search,
+        selectedType,
+        sortDirection,
       ];
 }
 
