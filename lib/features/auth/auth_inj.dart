@@ -75,6 +75,7 @@ Future<void> initAuthInjection(GetIt sl) async {
       verifyEmailUseCase: sl<VerifyEmailUseCase>(),
       resendCodeUseCase: sl<ResendCodeUseCase>(),
       logoutUseCase: sl<LogoutUseCase>(),
+      getProfileUseCase: sl<GetProfileUseCase>(),
       inviteCoPartnerUseCase: sl<InviteCoPartnerUseCase>(),
       addChildUseCase: sl<AddChildUseCase>(),
       forgotPasswordUseCase: sl<ForgotPasswordUseCase>(),

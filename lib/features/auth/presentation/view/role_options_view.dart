@@ -6,6 +6,7 @@ import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/co_parent_details_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
@@ -21,6 +22,11 @@ class RoleOptionsView extends StatefulWidget {
 
 class _RoleOptionsViewState extends State<RoleOptionsView> {
   _RoleType? _selectedRole;
+
+  String _roleToStorageValue(_RoleType role) => switch (role) {
+    _RoleType.familySpace => 'family_space',
+    _RoleType.solo => 'solo',
+  };
 
   @override
   void initState() {
@@ -106,6 +112,9 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
                           child: ElevatedButton(
                             onPressed: _selectedRole != null
                                 ? () {
+                                    sl<Storage>().storeSelectedRole(
+                                      role: _roleToStorageValue(_selectedRole!),
+                                    );
                                     if (_selectedRole == _RoleType.solo) {
                                       sl<AppNavigator>().pushAndRemoveUntil(
                                         screen: const HomeView(),

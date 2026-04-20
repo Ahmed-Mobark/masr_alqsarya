@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/core/storage/models/local_user.dart';
 import 'package:masr_al_qsariya/core/utils/validator.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/get_profile_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/logout_usecase.dart';
@@ -27,6 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
     required VerifyEmailUseCase verifyEmailUseCase,
     required ResendCodeUseCase resendCodeUseCase,
     required LogoutUseCase logoutUseCase,
+    required GetProfileUseCase getProfileUseCase,
     required InviteCoPartnerUseCase inviteCoPartnerUseCase,
     required AddChildUseCase addChildUseCase,
     required ForgotPasswordUseCase forgotPasswordUseCase,
@@ -39,6 +42,7 @@ class AuthCubit extends Cubit<AuthState> {
         _verifyEmailUseCase = verifyEmailUseCase,
         _resendCodeUseCase = resendCodeUseCase,
         _logoutUseCase = logoutUseCase,
+        _getProfileUseCase = getProfileUseCase,
         _inviteCoPartnerUseCase = inviteCoPartnerUseCase,
         _addChildUseCase = addChildUseCase,
         _forgotPasswordUseCase = forgotPasswordUseCase,
@@ -53,6 +57,7 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyEmailUseCase _verifyEmailUseCase;
   final ResendCodeUseCase _resendCodeUseCase;
   final LogoutUseCase _logoutUseCase;
+  final GetProfileUseCase _getProfileUseCase;
   final InviteCoPartnerUseCase _inviteCoPartnerUseCase;
   final AddChildUseCase _addChildUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
@@ -60,6 +65,29 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase _resetPasswordUseCase;
   final GetWorkspaceUseCase _getWorkspaceUseCase;
   final Storage _storage;
+
+  Future<void> _cacheUserProfile() async {
+    final result = await _getProfileUseCase();
+    result.fold(
+      (_) {},
+      (profile) {
+        _storage.storeUser(
+          user: LocalUser(
+            id: profile.id,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            email: profile.email,
+            phone: profile.phone,
+            imageUrl: null,
+            isVerified: profile.isVerified,
+            emailVerifiedAt: profile.emailVerifiedAt,
+            createdAt: profile.createdAt,
+            updatedAt: profile.updatedAt,
+          ),
+        );
+      },
+    );
+  }
 
   final loginFormKey = GlobalKey<FormState>();
   final signUpFormKey = GlobalKey<FormState>();
@@ -151,12 +179,14 @@ class AuthCubit extends Cubit<AuthState> {
         if (data.token != null && data.token!.isNotEmpty) {
           _storage.storeToken(token: data.token!);
         }
-        emit(
-          state.copyWith(
-            isSubmitting: false,
-            action: AuthAction.navigateToHome,
-          ),
-        );
+        _cacheUserProfile().whenComplete(() {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              action: AuthAction.navigateToHome,
+            ),
+          );
+        });
       },
     );
   }
@@ -240,12 +270,14 @@ class AuthCubit extends Cubit<AuthState> {
         if (data.token.isNotEmpty) {
           _storage.storeToken(token: data.token);
         }
-        emit(
-          state.copyWith(
-            isSubmitting: false,
-            action: AuthAction.navigateToRoleOptions,
-          ),
-        );
+        _cacheUserProfile().whenComplete(() {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              action: AuthAction.navigateToRoleOptions,
+            ),
+          );
+        });
       },
     );
   }
@@ -279,6 +311,8 @@ class AuthCubit extends Cubit<AuthState> {
       },
       (_) {
         _storage.deleteToken();
+        _storage.deleteUser();
+        _storage.deleteSelectedRole();
         emit(
           state.copyWith(
             isSubmitting: false,

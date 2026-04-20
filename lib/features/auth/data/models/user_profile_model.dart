@@ -9,6 +9,10 @@ class UserProfileModel {
     this.phone,
     this.type,
     this.dateOfBirth,
+    this.isVerified = false,
+    this.emailVerifiedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   final int id;
@@ -18,6 +22,10 @@ class UserProfileModel {
   final String? phone;
   final String? type;
   final String? dateOfBirth;
+  final bool isVerified;
+  final String? emailVerifiedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'];
@@ -31,6 +39,10 @@ class UserProfileModel {
       phone: dataMap['phone'] as String?,
       type: dataMap['type'] as String?,
       dateOfBirth: dataMap['date_of_birth'] as String?,
+      isVerified: (dataMap['is_verified'] as bool?) ?? false,
+      emailVerifiedAt: dataMap['email_verified_at'] as String?,
+      createdAt: dataMap['created_at'] as String?,
+      updatedAt: dataMap['updated_at'] as String?,
     );
   }
 
@@ -42,5 +54,9 @@ class UserProfileModel {
         phone: phone,
         type: type,
         dateOfBirth: dateOfBirth,
+        isVerified: isVerified,
+        emailVerifiedAt: emailVerifiedAt,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
       );
 }

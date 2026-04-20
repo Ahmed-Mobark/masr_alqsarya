@@ -700,24 +700,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authForgotPasswordTitle => 'نسيت كلمة المرور';
 
   @override
-  String get authForgotPasswordHeading => 'إعادة تعيين كلمة المرور';
+  String get authForgotPasswordHeading => 'هل نسيت كلمة المرور؟';
 
   @override
   String get authForgotPasswordSubtitle =>
-      'أدخل بريدك الإلكتروني وسنرسل لك رمزًا لإعادة تعيين كلمة المرور.';
+      'أدخل بريدك الإلكتروني وسنرسل لك رمز تحقق.';
 
   @override
   String get authForgotPasswordButton => 'إرسال الرمز';
 
   @override
-  String get authForgotPasswordOtpTitle => 'التحقق من الرمز';
+  String get authForgotPasswordOtpTitle => 'رمز التحقق';
 
   @override
-  String get authForgotPasswordOtpHeading => 'أدخل رمز إعادة التعيين';
+  String get authForgotPasswordOtpHeading => 'أدخل رمز التحقق';
 
   @override
   String get authForgotPasswordOtpSubtitle =>
-      'لقد أرسلنا رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.';
+      'لقد أرسلنا رمز تحقق إلى بريدك الإلكتروني. يرجى إدخاله أدناه.';
 
   @override
   String get authResetPasswordTitle => 'إعادة تعيين كلمة المرور';
@@ -727,7 +727,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get authResetPasswordSubtitle =>
-      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.';
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمات المرور المستخدمة سابقًا.';
 
   @override
   String get authNewPasswordLabel => 'كلمة المرور الجديدة';
@@ -739,11 +739,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authConfirmNewPasswordLabel => 'تأكيد كلمة المرور الجديدة';
 
   @override
-  String get authResetPasswordButton => 'إعادة تعيين كلمة المرور';
+  String get authResetPasswordButton => 'إعادة تعيين';
 
   @override
-  String get authPasswordResetSuccess => 'تم إعادة تعيين كلمة المرور بنجاح.';
+  String get authPasswordResetSuccess => 'تمت إعادة تعيين كلمة المرور بنجاح';
 
   @override
-  String get authBackToLogin => 'العودة لتسجيل الدخول';
+  String get back => 'عودة';
 }

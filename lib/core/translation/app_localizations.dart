@@ -1417,37 +1417,37 @@ abstract class AppLocalizations {
   /// No description provided for @authForgotPasswordHeading.
   ///
   /// In en, this message translates to:
-  /// **'Reset your password'**
+  /// **'Forgot your password?'**
   String get authForgotPasswordHeading;
 
   /// No description provided for @authForgotPasswordSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter your email address and we\'ll send you a code to reset your password.'**
+  /// **'Enter your email and we’ll send you a verification code.'**
   String get authForgotPasswordSubtitle;
 
   /// No description provided for @authForgotPasswordButton.
   ///
   /// In en, this message translates to:
-  /// **'SEND CODE'**
+  /// **'Send Code'**
   String get authForgotPasswordButton;
 
   /// No description provided for @authForgotPasswordOtpTitle.
   ///
   /// In en, this message translates to:
-  /// **'Verify Code'**
+  /// **'Verification Code'**
   String get authForgotPasswordOtpTitle;
 
   /// No description provided for @authForgotPasswordOtpHeading.
   ///
   /// In en, this message translates to:
-  /// **'Enter reset code'**
+  /// **'Enter verification code'**
   String get authForgotPasswordOtpHeading;
 
   /// No description provided for @authForgotPasswordOtpSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'We\'ve sent a password reset code to your email.'**
+  /// **'We sent a verification code to your email. Please enter it below.'**
   String get authForgotPasswordOtpSubtitle;
 
   /// No description provided for @authResetPasswordTitle.
@@ -1459,13 +1459,13 @@ abstract class AppLocalizations {
   /// No description provided for @authResetPasswordHeading.
   ///
   /// In en, this message translates to:
-  /// **'Create new password'**
+  /// **'Create a new password'**
   String get authResetPasswordHeading;
 
   /// No description provided for @authResetPasswordSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Your new password must be different from your previous password.'**
+  /// **'Your new password must be different from previously used passwords.'**
   String get authResetPasswordSubtitle;
 
   /// No description provided for @authNewPasswordLabel.
@@ -1489,20 +1489,20 @@ abstract class AppLocalizations {
   /// No description provided for @authResetPasswordButton.
   ///
   /// In en, this message translates to:
-  /// **'RESET PASSWORD'**
+  /// **'Reset Password'**
   String get authResetPasswordButton;
 
   /// No description provided for @authPasswordResetSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Your password has been reset successfully.'**
+  /// **'Password reset successfully'**
   String get authPasswordResetSuccess;
 
-  /// No description provided for @authBackToLogin.
+  /// No description provided for @back.
   ///
   /// In en, this message translates to:
-  /// **'Back to Login'**
-  String get authBackToLogin;
+  /// **'Back'**
+  String get back;
 }
 
 class _AppLocalizationsDelegate

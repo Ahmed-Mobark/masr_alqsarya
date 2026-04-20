@@ -9,6 +9,10 @@ class UserProfile extends Equatable {
     this.phone,
     this.type,
     this.dateOfBirth,
+    this.isVerified = false,
+    this.emailVerifiedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   final int id;
@@ -18,9 +22,25 @@ class UserProfile extends Equatable {
   final String? phone;
   final String? type;
   final String? dateOfBirth;
+  final bool isVerified;
+  final String? emailVerifiedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   String get fullName => '$firstName $lastName';
 
   @override
-  List<Object?> get props => [id, firstName, lastName, email, phone, type, dateOfBirth];
+  List<Object?> get props => [
+        id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        type,
+        dateOfBirth,
+        isVerified,
+        emailVerifiedAt,
+        createdAt,
+        updatedAt,
+      ];
 }

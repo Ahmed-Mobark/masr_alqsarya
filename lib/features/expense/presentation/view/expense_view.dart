@@ -123,6 +123,7 @@ class ExpenseView extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'expense_fab',
         onPressed: () {
           sl<AppNavigator>().push(screen: const AddExpenseView());
         },

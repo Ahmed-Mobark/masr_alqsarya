@@ -717,25 +717,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authForgotPasswordTitle => 'Mot de passe oublié';
 
   @override
-  String get authForgotPasswordHeading => 'Réinitialiser votre mot de passe';
+  String get authForgotPasswordHeading => 'Mot de passe oublié ?';
 
   @override
   String get authForgotPasswordSubtitle =>
-      'Entrez votre adresse e-mail et nous vous enverrons un code pour réinitialiser votre mot de passe.';
+      'Entrez votre e-mail et nous vous enverrons un code de vérification.';
 
   @override
-  String get authForgotPasswordButton => 'ENVOYER LE CODE';
+  String get authForgotPasswordButton => 'Envoyer le code';
 
   @override
-  String get authForgotPasswordOtpTitle => 'Vérifier le code';
+  String get authForgotPasswordOtpTitle => 'Code de vérification';
 
   @override
-  String get authForgotPasswordOtpHeading =>
-      'Entrez le code de réinitialisation';
+  String get authForgotPasswordOtpHeading => 'Entrez le code de vérification';
 
   @override
   String get authForgotPasswordOtpSubtitle =>
-      'Nous avons envoyé un code de réinitialisation à votre adresse e-mail.';
+      'Nous avons envoyé un code de vérification à votre e-mail. Veuillez le saisir ci-dessous.';
 
   @override
   String get authResetPasswordTitle => 'Réinitialiser le mot de passe';
@@ -745,7 +744,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authResetPasswordSubtitle =>
-      'Votre nouveau mot de passe doit être différent de votre mot de passe précédent.';
+      'Votre nouveau mot de passe doit être différent de ceux utilisés auparavant.';
 
   @override
   String get authNewPasswordLabel => 'Nouveau mot de passe';
@@ -757,12 +756,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authConfirmNewPasswordLabel => 'Confirmer le nouveau mot de passe';
 
   @override
-  String get authResetPasswordButton => 'RÉINITIALISER';
+  String get authResetPasswordButton => 'Réinitialiser';
 
   @override
   String get authPasswordResetSuccess =>
-      'Votre mot de passe a été réinitialisé avec succès.';
+      'Mot de passe réinitialisé avec succès';
 
   @override
-  String get authBackToLogin => 'Retour à la connexion';
+  String get back => 'Retour';
 }

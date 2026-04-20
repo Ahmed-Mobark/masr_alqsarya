@@ -709,34 +709,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authForgotPasswordTitle => 'Forgot Password';
 
   @override
-  String get authForgotPasswordHeading => 'Reset your password';
+  String get authForgotPasswordHeading => 'Forgot your password?';
 
   @override
   String get authForgotPasswordSubtitle =>
-      'Enter your email address and we\'ll send you a code to reset your password.';
+      'Enter your email and we’ll send you a verification code.';
 
   @override
-  String get authForgotPasswordButton => 'SEND CODE';
+  String get authForgotPasswordButton => 'Send Code';
 
   @override
-  String get authForgotPasswordOtpTitle => 'Verify Code';
+  String get authForgotPasswordOtpTitle => 'Verification Code';
 
   @override
-  String get authForgotPasswordOtpHeading => 'Enter reset code';
+  String get authForgotPasswordOtpHeading => 'Enter verification code';
 
   @override
   String get authForgotPasswordOtpSubtitle =>
-      'We\'ve sent a password reset code to your email.';
+      'We sent a verification code to your email. Please enter it below.';
 
   @override
   String get authResetPasswordTitle => 'Reset Password';
 
   @override
-  String get authResetPasswordHeading => 'Create new password';
+  String get authResetPasswordHeading => 'Create a new password';
 
   @override
   String get authResetPasswordSubtitle =>
-      'Your new password must be different from your previous password.';
+      'Your new password must be different from previously used passwords.';
 
   @override
   String get authNewPasswordLabel => 'New Password';
@@ -748,12 +748,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authConfirmNewPasswordLabel => 'Confirm New Password';
 
   @override
-  String get authResetPasswordButton => 'RESET PASSWORD';
+  String get authResetPasswordButton => 'Reset Password';
 
   @override
-  String get authPasswordResetSuccess =>
-      'Your password has been reset successfully.';
+  String get authPasswordResetSuccess => 'Password reset successfully';
 
   @override
-  String get authBackToLogin => 'Back to Login';
+  String get back => 'Back';
 }

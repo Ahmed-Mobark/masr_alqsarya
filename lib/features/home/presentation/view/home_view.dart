@@ -8,6 +8,7 @@ import 'package:masr_al_qsariya/features/home/presentation/widgets/awaiting_card
 import 'package:masr_al_qsariya/features/home/presentation/widgets/activity_item_tile.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -68,18 +69,25 @@ class HomeView extends StatelessWidget {
 
   /// Top header: avatar + greeting (left), notification bell (right).
   Widget _buildHeaderRow(BuildContext context) {
+    final user = sl<Storage>().getUser();
+    final displayName = (user?.fullName.isNotEmpty ?? false)
+        ? user!.fullName
+        : 'Guest';
+    final subtitle = (user?.email.isNotEmpty ?? false)
+        ? user!.email
+        : 'Welcome back';
+
     return SizedBox(
       height: 40,
       child: Row(
         children: [
           // Avatar
-          const CircleAvatar(
+          CircleAvatar(
             radius: 20,
             backgroundColor: AppColors.border,
-            child: Icon(
-              Icons.person,
-              size: 22,
-              color: AppColors.greyText,
+            child: Text(
+              displayName.isNotEmpty ? displayName.characters.first : 'G',
+              style: AppTextStyles.bodyMedium(color: AppColors.greyText),
             ),
           ),
           const SizedBox(width: 10),
@@ -89,11 +97,11 @@ class HomeView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Good Morning',
+                subtitle,
                 style: AppTextStyles.small(color: AppColors.lightGreyText),
               ),
               Text(
-                'Leslie Pfeffer',
+                displayName,
                 style: AppTextStyles.bodyMedium(color: AppColors.bodyText),
               ),
             ],

@@ -167,9 +167,7 @@ class _VerificationViewState extends State<VerificationView> {
                                 color: AppColors.greyText,
                               ),
                               children: [
-                                TextSpan(
-                                  text: context.tr.authVerifySubtitle,
-                                ),
+                                TextSpan(text: context.tr.authVerifySubtitle),
                                 if (maskedEmail.isNotEmpty) ...[
                                   const TextSpan(text: ' '),
                                   TextSpan(
@@ -207,22 +205,19 @@ class _VerificationViewState extends State<VerificationView> {
                                       fillColor: AppColors.inputBg,
                                       contentPadding: EdgeInsets.zero,
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(12),
                                         borderSide: const BorderSide(
                                           color: AppColors.border,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(12),
                                         borderSide: const BorderSide(
                                           color: AppColors.border,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(12),
                                         borderSide: const BorderSide(
                                           color: AppColors.primary,
                                           width: 1.5,
@@ -274,20 +269,21 @@ class _VerificationViewState extends State<VerificationView> {
                                         )
                                       : RichText(
                                           text: TextSpan(
-                                            text:
-                                                context.tr.authDidntReceive,
+                                            text: context.tr.authDidntReceive,
                                             style: AppTextStyles.caption(
                                               color: AppColors.greyText,
                                             ),
                                             children: [
                                               TextSpan(
                                                 text: context.tr.authResend,
-                                                style: AppTextStyles.caption(
-                                                  color:
-                                                      AppColors.primaryDark,
-                                                ).copyWith(
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                                style:
+                                                    AppTextStyles.caption(
+                                                      color:
+                                                          AppColors.primaryDark,
+                                                    ).copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
                                               ),
                                             ],
                                           ),
@@ -334,6 +330,27 @@ class _VerificationViewState extends State<VerificationView> {
                                   color: AppColors.darkText,
                                 ),
                               ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          sl<AppNavigator>().pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.darkText,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Text(context.tr.back),
                       ),
                     ),
                   ),

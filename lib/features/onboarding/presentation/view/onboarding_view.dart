@@ -6,6 +6,7 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
 
@@ -38,6 +39,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _onSkip() {
+    sl<Storage>().storeOnboardingCompleted(isOnboardingCompleted: true);
     sl<AppNavigator>().pushReplacement(screen: const LoginView());
   }
 
@@ -51,10 +53,12 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _onLogin() {
+    sl<Storage>().storeOnboardingCompleted(isOnboardingCompleted: true);
     sl<AppNavigator>().pushReplacement(screen: const LoginView());
   }
 
   void _onJoinWithCode() {
+    sl<Storage>().storeOnboardingCompleted(isOnboardingCompleted: true);
     sl<AppNavigator>().push(screen: const VerificationView());
   }
 

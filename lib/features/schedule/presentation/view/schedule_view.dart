@@ -165,6 +165,7 @@ class _ScheduleViewState extends State<ScheduleView> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'schedule_fab',
         onPressed: () {
           // TODO: Navigate to add event
         },

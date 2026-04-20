@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:masr_al_qsariya/core/config/app_images.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/language/presentation/view/language_view.dart';
+import 'package:masr_al_qsariya/features/nav_bar/presentation/view/main_nav_view.dart';
+import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -15,14 +19,22 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    _navigateToLanguage();
+    _navigateNext();
   }
 
-  Future<void> _navigateToLanguage() async {
+  Future<void> _navigateNext() async {
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
+    final storage = sl<Storage>();
+    final nextScreen = !storage.isSelectLang()
+        ? const LanguageView()
+        : !storage.isOnboardingCompleted()
+            ? const OnboardingView()
+            : storage.isAuthorized()
+                ? const MainNavView()
+                : const LoginView();
     sl<AppNavigator>().pushReplacement(
-      screen: const LanguageView(),
+      screen: nextScreen,
     );
   }
 

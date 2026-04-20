@@ -96,7 +96,7 @@ class _CustomToastState extends State<CustomToast> {
                         color: Theme.of(context).colorScheme.onSurface,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(getIcon(), color: getColor(), size: 20.sp),
+                      child: Icon(getIcon(), color: Colors.white, size: 20.sp),
                     ),
                     // getIcon(),
                     Expanded(
