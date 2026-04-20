@@ -10,8 +10,12 @@ import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/resend_code_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/get_workspace_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 
 Future<void> initAuthInjection(GetIt sl) async {
@@ -50,6 +54,18 @@ Future<void> initAuthInjection(GetIt sl) async {
   sl.registerLazySingleton<AddChildUseCase>(
     () => AddChildUseCase(sl<AuthRepository>()),
   );
+  sl.registerLazySingleton<ForgotPasswordUseCase>(
+    () => ForgotPasswordUseCase(sl<AuthRepository>()),
+  );
+  sl.registerLazySingleton<VerifyResetCodeUseCase>(
+    () => VerifyResetCodeUseCase(sl<AuthRepository>()),
+  );
+  sl.registerLazySingleton<ResetPasswordUseCase>(
+    () => ResetPasswordUseCase(sl<AuthRepository>()),
+  );
+  sl.registerLazySingleton<GetWorkspaceUseCase>(
+    () => GetWorkspaceUseCase(sl<AuthRepository>()),
+  );
 
   // Cubit
   sl.registerFactory<AuthCubit>(
@@ -61,6 +77,10 @@ Future<void> initAuthInjection(GetIt sl) async {
       logoutUseCase: sl<LogoutUseCase>(),
       inviteCoPartnerUseCase: sl<InviteCoPartnerUseCase>(),
       addChildUseCase: sl<AddChildUseCase>(),
+      forgotPasswordUseCase: sl<ForgotPasswordUseCase>(),
+      verifyResetCodeUseCase: sl<VerifyResetCodeUseCase>(),
+      resetPasswordUseCase: sl<ResetPasswordUseCase>(),
+      getWorkspaceUseCase: sl<GetWorkspaceUseCase>(),
       storage: sl<Storage>(),
     ),
   );

@@ -265,5 +265,21 @@
   "familyChildPhoneHint": "Entrez le numéro de téléphone",
   "familyChildDateOfBirthLabel": "Date de naissance",
   "familyChildDateOfBirthHint": "JJ-MM-AAAA",
-  "familyChildAddedSuccess": "Enfant ajouté avec succès"
+  "familyChildAddedSuccess": "Enfant ajouté avec succès",
+  "authForgotPasswordTitle": "Mot de passe oublié",
+  "authForgotPasswordHeading": "Réinitialiser votre mot de passe",
+  "authForgotPasswordSubtitle": "Entrez votre adresse e-mail et nous vous enverrons un code pour réinitialiser votre mot de passe.",
+  "authForgotPasswordButton": "ENVOYER LE CODE",
+  "authForgotPasswordOtpTitle": "Vérifier le code",
+  "authForgotPasswordOtpHeading": "Entrez le code de réinitialisation",
+  "authForgotPasswordOtpSubtitle": "Nous avons envoyé un code de réinitialisation à votre adresse e-mail.",
+  "authResetPasswordTitle": "Réinitialiser le mot de passe",
+  "authResetPasswordHeading": "Créer un nouveau mot de passe",
+  "authResetPasswordSubtitle": "Votre nouveau mot de passe doit être différent de votre mot de passe précédent.",
+  "authNewPasswordLabel": "Nouveau mot de passe",
+  "authNewPasswordHint": "********",
+  "authConfirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+  "authResetPasswordButton": "RÉINITIALISER",
+  "authPasswordResetSuccess": "Votre mot de passe a été réinitialisé avec succès.",
+  "authBackToLogin": "Retour à la connexion"
 }

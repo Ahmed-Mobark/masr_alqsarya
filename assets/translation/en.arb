@@ -265,5 +265,21 @@
   "familyChildPhoneHint": "Enter phone number",
   "familyChildDateOfBirthLabel": "Date of Birth",
   "familyChildDateOfBirthHint": "DD-MM-YYYY",
-  "familyChildAddedSuccess": "Child added successfully"
+  "familyChildAddedSuccess": "Child added successfully",
+  "authForgotPasswordTitle": "Forgot Password",
+  "authForgotPasswordHeading": "Reset your password",
+  "authForgotPasswordSubtitle": "Enter your email address and we'll send you a code to reset your password.",
+  "authForgotPasswordButton": "SEND CODE",
+  "authForgotPasswordOtpTitle": "Verify Code",
+  "authForgotPasswordOtpHeading": "Enter reset code",
+  "authForgotPasswordOtpSubtitle": "We've sent a password reset code to your email.",
+  "authResetPasswordTitle": "Reset Password",
+  "authResetPasswordHeading": "Create new password",
+  "authResetPasswordSubtitle": "Your new password must be different from your previous password.",
+  "authNewPasswordLabel": "New Password",
+  "authNewPasswordHint": "********",
+  "authConfirmNewPasswordLabel": "Confirm New Password",
+  "authResetPasswordButton": "RESET PASSWORD",
+  "authPasswordResetSuccess": "Your password has been reset successfully.",
+  "authBackToLogin": "Back to Login"
 }

@@ -263,5 +263,21 @@
   "familyChildPhoneHint": "أدخل رقم الهاتف",
   "familyChildDateOfBirthLabel": "تاريخ الميلاد",
   "familyChildDateOfBirthHint": "يوم-شهر-سنة",
-  "familyChildAddedSuccess": "تمت إضافة الطفل بنجاح"
+  "familyChildAddedSuccess": "تمت إضافة الطفل بنجاح",
+  "authForgotPasswordTitle": "نسيت كلمة المرور",
+  "authForgotPasswordHeading": "إعادة تعيين كلمة المرور",
+  "authForgotPasswordSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رمزًا لإعادة تعيين كلمة المرور.",
+  "authForgotPasswordButton": "إرسال الرمز",
+  "authForgotPasswordOtpTitle": "التحقق من الرمز",
+  "authForgotPasswordOtpHeading": "أدخل رمز إعادة التعيين",
+  "authForgotPasswordOtpSubtitle": "لقد أرسلنا رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
+  "authResetPasswordTitle": "إعادة تعيين كلمة المرور",
+  "authResetPasswordHeading": "إنشاء كلمة مرور جديدة",
+  "authResetPasswordSubtitle": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.",
+  "authNewPasswordLabel": "كلمة المرور الجديدة",
+  "authNewPasswordHint": "********",
+  "authConfirmNewPasswordLabel": "تأكيد كلمة المرور الجديدة",
+  "authResetPasswordButton": "إعادة تعيين كلمة المرور",
+  "authPasswordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح.",
+  "authBackToLogin": "العودة لتسجيل الدخول"
 }

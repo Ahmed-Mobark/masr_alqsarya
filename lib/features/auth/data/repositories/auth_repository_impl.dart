@@ -6,12 +6,15 @@ import 'package:masr_al_qsariya/features/auth/domain/entities/login_response.dar
 import 'package:masr_al_qsariya/features/auth/domain/entities/register_response.dart';
 import 'package:masr_al_qsariya/features/auth/domain/entities/user_profile.dart';
 import 'package:masr_al_qsariya/features/auth/domain/entities/verify_email_response.dart';
+import 'package:masr_al_qsariya/features/auth/domain/entities/workspace.dart';
 import 'package:masr_al_qsariya/features/auth/domain/repositories/auth_repository.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
 
 class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
   const AuthRepositoryImpl(this._remote);
@@ -52,6 +55,27 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> forgotPassword(String email) {
+    return handleEither(() async {
+      await _remote.forgotPassword(email);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> verifyResetCode(VerifyResetCodeParams params) {
+    return handleEither(() async {
+      await _remote.verifyResetCode(params);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> resetPassword(ResetPasswordParams params) {
+    return handleEither(() async {
+      await _remote.resetPassword(params);
+    });
+  }
+
+  @override
   Future<Either<Failure, void>> logout() {
     return handleEither(() async {
       await _remote.logout();
@@ -62,6 +86,14 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
   Future<Either<Failure, UserProfile>> getProfile() {
     return handleEither(() async {
       final model = await _remote.getProfile();
+      return model.toEntity();
+    });
+  }
+
+  @override
+  Future<Either<Failure, Workspace>> getWorkspace() {
+    return handleEither(() async {
+      final model = await _remote.getWorkspace();
       return model.toEntity();
     });
   }

@@ -5,19 +5,26 @@ import 'package:masr_al_qsariya/features/auth/data/models/login_response_model.d
 import 'package:masr_al_qsariya/features/auth/data/models/register_response_model.dart';
 import 'package:masr_al_qsariya/features/auth/data/models/user_profile_model.dart';
 import 'package:masr_al_qsariya/features/auth/data/models/verify_email_response_model.dart';
+import 'package:masr_al_qsariya/features/auth/data/models/workspace_model.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
 
 abstract class AuthRemoteDataSource {
   Future<RegisterResponseModel> register(RegisterParams params);
   Future<LoginResponseModel> login(LoginParams params);
   Future<VerifyEmailResponseModel> verifyEmail(VerifyEmailParams params);
   Future<void> resendVerificationCode(String email);
+  Future<void> forgotPassword(String email);
+  Future<void> verifyResetCode(VerifyResetCodeParams params);
+  Future<void> resetPassword(ResetPasswordParams params);
   Future<void> logout();
   Future<UserProfileModel> getProfile();
+  Future<WorkspaceModel> getWorkspace();
   Future<void> inviteCoPartner(InviteCoPartnerParams params);
   Future<void> addChild(AddChildParams params);
 }
@@ -90,6 +97,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<void> forgotPassword(String email) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.authForgotPassword,
+      formData: FormData.fromMap({'email': email}),
+    );
+  }
+
+  @override
+  Future<void> verifyResetCode(VerifyResetCodeParams params) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.authVerifyResetCode,
+      formData: FormData.fromMap({
+        'email': params.email,
+        'code': params.code,
+      }),
+    );
+  }
+
+  @override
+  Future<void> resetPassword(ResetPasswordParams params) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.authResetPassword,
+      formData: FormData.fromMap({
+        'email': params.email,
+        'code': params.code,
+        'password': params.password,
+        'password_confirmation': params.passwordConfirmation,
+      }),
+    );
+  }
+
+  @override
   Future<void> logout() async {
     await _api.post<Map<String, dynamic>>(url: AppEndpoints.authLogout);
   }
@@ -101,6 +140,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
 
     return UserProfileModel.fromJson(response);
+  }
+
+  @override
+  Future<WorkspaceModel> getWorkspace() async {
+    final response = await _api.get<Map<String, dynamic>>(
+      url: AppEndpoints.workspace,
+    );
+
+    return WorkspaceModel.fromJson(response);
   }
 
   @override

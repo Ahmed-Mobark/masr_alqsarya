@@ -57,16 +57,27 @@ class ApiBaseHelper {
   }
 
   void updateLocaleInHeaders(String locale, {ApiEnvironment? environment}) {
-    if (environment != null) {getDio(environment).options.headers['Accept-Language'] = locale;}
-    else {for (var dio in _dioInstances.values) {dio.options.headers['Accept-Language'] = locale;}}
+    if (environment != null) {
+      getDio(environment).options.headers['Accept-Language'] = locale;
+      getDio(environment).options.headers['X-Locale'] = locale;
+    } else {
+      for (var dio in _dioInstances.values) {
+        dio.options.headers['Accept-Language'] = locale;
+        dio.options.headers['X-Locale'] = locale;
+      }
+    }
   }
 
-  static Map<String, String> _defaultHeaders() => {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'app-type': 'client',
-    'Accept-Language': sl<Storage>().getLang(),
-  };
+  static Map<String, String> _defaultHeaders() {
+    final lang = sl<Storage>().getLang();
+    return {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'app-type': 'client',
+      'Accept-Language': lang,
+      'X-Locale': lang,
+    };
+  }
 
   Future<T> _performRequest<T>(Future<Response<T>> Function() request, {required ApiEnvironment environment}) async {
     try {

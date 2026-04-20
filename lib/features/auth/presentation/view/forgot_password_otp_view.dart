@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
-import 'package:masr_al_qsariya/core/theme/app_colors.dart';
-import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:masr_al_qsariya/core/theme/app_colors.dart';
+import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/view/role_options_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/reset_password_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
 
-class VerificationView extends StatefulWidget {
-  const VerificationView({super.key, this.email});
+class ForgotPasswordOtpView extends StatefulWidget {
+  const ForgotPasswordOtpView({super.key, this.email});
 
   final String? email;
 
   @override
-  State<VerificationView> createState() => _VerificationViewState();
+  State<ForgotPasswordOtpView> createState() => _ForgotPasswordOtpViewState();
 }
 
-class _VerificationViewState extends State<VerificationView> {
+class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
   static const int _codeLength = 6;
 
   final List<TextEditingController> _controllers = List.generate(
@@ -83,7 +83,7 @@ class _VerificationViewState extends State<VerificationView> {
       create: (_) {
         final cubit = sl<AuthCubit>();
         if (widget.email != null) {
-          cubit.setRegisteredEmail(widget.email!);
+          cubit.setForgotPasswordEmail(widget.email!);
         }
         return cubit;
       },
@@ -111,11 +111,11 @@ class _VerificationViewState extends State<VerificationView> {
             );
           }
 
-          if (state.action == AuthAction.navigateToRoleOptions) {
-            sl<AppNavigator>().pushAndRemoveUntil(
-              screen: BlocProvider(
-                create: (_) => sl<AuthCubit>(),
-                child: const RoleOptionsView(),
+          if (state.action == AuthAction.navigateToResetPassword) {
+            sl<AppNavigator>().push(
+              screen: ResetPasswordView(
+                email: state.forgotPasswordEmail,
+                code: state.resetCode,
               ),
             );
             context.read<AuthCubit>().clearAction();
@@ -123,8 +123,8 @@ class _VerificationViewState extends State<VerificationView> {
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
-          final maskedEmail = state.registeredEmail != null
-              ? _maskEmail(state.registeredEmail!)
+          final maskedEmail = state.forgotPasswordEmail != null
+              ? _maskEmail(state.forgotPasswordEmail!)
               : '';
 
           return Scaffold(
@@ -147,7 +147,7 @@ class _VerificationViewState extends State<VerificationView> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    context.tr.authVerifyTitle,
+                                    context.tr.authForgotPasswordOtpTitle,
                                     style: AppTextStyles.heading2(),
                                   ),
                                 ),
@@ -157,7 +157,7 @@ class _VerificationViewState extends State<VerificationView> {
                           ),
                           const SizedBox(height: 32),
                           Text(
-                            context.tr.authVerifyCodeHeading,
+                            context.tr.authForgotPasswordOtpHeading,
                             style: AppTextStyles.heading2(),
                           ),
                           const SizedBox(height: 8),
@@ -168,7 +168,7 @@ class _VerificationViewState extends State<VerificationView> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: context.tr.authVerifySubtitle,
+                                  text: context.tr.authForgotPasswordOtpSubtitle,
                                 ),
                                 if (maskedEmail.isNotEmpty) ...[
                                   const TextSpan(text: ' '),
@@ -263,7 +263,7 @@ class _VerificationViewState extends State<VerificationView> {
                               : GestureDetector(
                                   onTap: state.isResending
                                       ? null
-                                      : cubit.resendVerificationCode,
+                                      : cubit.resendForgotPasswordCode,
                                   child: state.isResending
                                       ? const SizedBox(
                                           width: 20,
@@ -308,7 +308,7 @@ class _VerificationViewState extends State<VerificationView> {
                             : () {
                                 final code = _otpCode;
                                 if (code.length == _codeLength) {
-                                  cubit.verifyEmail(code);
+                                  cubit.verifyResetCode(code);
                                 }
                               },
                         style: ElevatedButton.styleFrom(

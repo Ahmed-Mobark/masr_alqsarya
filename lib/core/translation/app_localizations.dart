@@ -1407,6 +1407,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Child added successfully'**
   String get familyChildAddedSuccess;
+
+  /// No description provided for @authForgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get authForgotPasswordTitle;
+
+  /// No description provided for @authForgotPasswordHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get authForgotPasswordHeading;
+
+  /// No description provided for @authForgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we\'ll send you a code to reset your password.'**
+  String get authForgotPasswordSubtitle;
+
+  /// No description provided for @authForgotPasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'SEND CODE'**
+  String get authForgotPasswordButton;
+
+  /// No description provided for @authForgotPasswordOtpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Code'**
+  String get authForgotPasswordOtpTitle;
+
+  /// No description provided for @authForgotPasswordOtpHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter reset code'**
+  String get authForgotPasswordOtpHeading;
+
+  /// No description provided for @authForgotPasswordOtpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent a password reset code to your email.'**
+  String get authForgotPasswordOtpSubtitle;
+
+  /// No description provided for @authResetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get authResetPasswordTitle;
+
+  /// No description provided for @authResetPasswordHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new password'**
+  String get authResetPasswordHeading;
+
+  /// No description provided for @authResetPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your new password must be different from your previous password.'**
+  String get authResetPasswordSubtitle;
+
+  /// No description provided for @authNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get authNewPasswordLabel;
+
+  /// No description provided for @authNewPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'********'**
+  String get authNewPasswordHint;
+
+  /// No description provided for @authConfirmNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm New Password'**
+  String get authConfirmNewPasswordLabel;
+
+  /// No description provided for @authResetPasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'RESET PASSWORD'**
+  String get authResetPasswordButton;
+
+  /// No description provided for @authPasswordResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been reset successfully.'**
+  String get authPasswordResetSuccess;
+
+  /// No description provided for @authBackToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get authBackToLogin;
 }
 
 class _AppLocalizationsDelegate

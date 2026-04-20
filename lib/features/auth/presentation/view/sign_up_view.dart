@@ -57,6 +57,10 @@ class SignUpView extends StatelessWidget {
             case AuthAction.navigateToHome:
             case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToSignUp:
+            case AuthAction.navigateToForgotPassword:
+            case AuthAction.navigateToForgotPasswordOtp:
+            case AuthAction.navigateToResetPassword:
+            case AuthAction.passwordResetSuccess:
             case AuthAction.coPartnerInvited:
             case AuthAction.childAdded:
               return;

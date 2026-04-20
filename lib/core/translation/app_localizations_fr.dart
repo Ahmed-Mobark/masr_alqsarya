@@ -712,4 +712,57 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get familyChildAddedSuccess => 'Enfant ajouté avec succès';
+
+  @override
+  String get authForgotPasswordTitle => 'Mot de passe oublié';
+
+  @override
+  String get authForgotPasswordHeading => 'Réinitialiser votre mot de passe';
+
+  @override
+  String get authForgotPasswordSubtitle =>
+      'Entrez votre adresse e-mail et nous vous enverrons un code pour réinitialiser votre mot de passe.';
+
+  @override
+  String get authForgotPasswordButton => 'ENVOYER LE CODE';
+
+  @override
+  String get authForgotPasswordOtpTitle => 'Vérifier le code';
+
+  @override
+  String get authForgotPasswordOtpHeading =>
+      'Entrez le code de réinitialisation';
+
+  @override
+  String get authForgotPasswordOtpSubtitle =>
+      'Nous avons envoyé un code de réinitialisation à votre adresse e-mail.';
+
+  @override
+  String get authResetPasswordTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get authResetPasswordHeading => 'Créer un nouveau mot de passe';
+
+  @override
+  String get authResetPasswordSubtitle =>
+      'Votre nouveau mot de passe doit être différent de votre mot de passe précédent.';
+
+  @override
+  String get authNewPasswordLabel => 'Nouveau mot de passe';
+
+  @override
+  String get authNewPasswordHint => '********';
+
+  @override
+  String get authConfirmNewPasswordLabel => 'Confirmer le nouveau mot de passe';
+
+  @override
+  String get authResetPasswordButton => 'RÉINITIALISER';
+
+  @override
+  String get authPasswordResetSuccess =>
+      'Votre mot de passe a été réinitialisé avec succès.';
+
+  @override
+  String get authBackToLogin => 'Retour à la connexion';
 }

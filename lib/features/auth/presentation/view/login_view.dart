@@ -9,6 +9,7 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/forgot_password_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/sign_up_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_bottom_link.dart';
@@ -49,10 +50,17 @@ class LoginView extends StatelessWidget {
               sl<AppNavigator>().push(screen: const SignUpView());
               context.read<AuthCubit>().clearAction();
               return;
+            case AuthAction.navigateToForgotPassword:
+              sl<AppNavigator>().push(screen: const ForgotPasswordView());
+              context.read<AuthCubit>().clearAction();
+              return;
             case null:
             case AuthAction.navigateToVerification:
             case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToLogin:
+            case AuthAction.navigateToForgotPasswordOtp:
+            case AuthAction.navigateToResetPassword:
+            case AuthAction.passwordResetSuccess:
             case AuthAction.coPartnerInvited:
             case AuthAction.childAdded:
               return;
@@ -130,7 +138,7 @@ class LoginView extends StatelessWidget {
                       Align(
                         alignment: AlignmentDirectional.centerEnd,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: cubit.goToForgotPassword,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 2.w,

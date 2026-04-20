@@ -695,4 +695,55 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get familyChildAddedSuccess => 'تمت إضافة الطفل بنجاح';
+
+  @override
+  String get authForgotPasswordTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get authForgotPasswordHeading => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get authForgotPasswordSubtitle =>
+      'أدخل بريدك الإلكتروني وسنرسل لك رمزًا لإعادة تعيين كلمة المرور.';
+
+  @override
+  String get authForgotPasswordButton => 'إرسال الرمز';
+
+  @override
+  String get authForgotPasswordOtpTitle => 'التحقق من الرمز';
+
+  @override
+  String get authForgotPasswordOtpHeading => 'أدخل رمز إعادة التعيين';
+
+  @override
+  String get authForgotPasswordOtpSubtitle =>
+      'لقد أرسلنا رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.';
+
+  @override
+  String get authResetPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get authResetPasswordHeading => 'إنشاء كلمة مرور جديدة';
+
+  @override
+  String get authResetPasswordSubtitle =>
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.';
+
+  @override
+  String get authNewPasswordLabel => 'كلمة المرور الجديدة';
+
+  @override
+  String get authNewPasswordHint => '********';
+
+  @override
+  String get authConfirmNewPasswordLabel => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get authResetPasswordButton => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get authPasswordResetSuccess => 'تم إعادة تعيين كلمة المرور بنجاح.';
+
+  @override
+  String get authBackToLogin => 'العودة لتسجيل الدخول';
 }

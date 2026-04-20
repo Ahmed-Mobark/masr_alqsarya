@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:masr_al_qsariya/features/auth/domain/entities/workspace.dart';
 
 enum AuthAction {
   navigateToHome,
@@ -6,6 +7,10 @@ enum AuthAction {
   navigateToRoleOptions,
   navigateToLogin,
   navigateToSignUp,
+  navigateToForgotPassword,
+  navigateToForgotPasswordOtp,
+  navigateToResetPassword,
+  passwordResetSuccess,
   coPartnerInvited,
   childAdded,
 }
@@ -15,6 +20,8 @@ class AuthState extends Equatable {
     this.isLoginPasswordObscured = true,
     this.isSignUpPasswordObscured = true,
     this.isSignUpConfirmPasswordObscured = true,
+    this.isResetPasswordObscured = true,
+    this.isResetConfirmPasswordObscured = true,
     this.hasAcceptedTerms = false,
     this.showTermsError = false,
     this.selectedDialCode = '+20',
@@ -25,12 +32,18 @@ class AuthState extends Equatable {
     this.registeredEmail,
     this.registerMessage,
     this.resendSuccess = false,
+    this.forgotPasswordEmail,
+    this.resetCode,
+    this.workspace,
+    this.isLoadingWorkspace = false,
     this.action,
   });
 
   final bool isLoginPasswordObscured;
   final bool isSignUpPasswordObscured;
   final bool isSignUpConfirmPasswordObscured;
+  final bool isResetPasswordObscured;
+  final bool isResetConfirmPasswordObscured;
   final bool hasAcceptedTerms;
   final bool showTermsError;
   final String selectedDialCode;
@@ -41,12 +54,18 @@ class AuthState extends Equatable {
   final String? registeredEmail;
   final String? registerMessage;
   final bool resendSuccess;
+  final String? forgotPasswordEmail;
+  final String? resetCode;
+  final Workspace? workspace;
+  final bool isLoadingWorkspace;
   final AuthAction? action;
 
   AuthState copyWith({
     bool? isLoginPasswordObscured,
     bool? isSignUpPasswordObscured,
     bool? isSignUpConfirmPasswordObscured,
+    bool? isResetPasswordObscured,
+    bool? isResetConfirmPasswordObscured,
     bool? hasAcceptedTerms,
     bool? showTermsError,
     String? selectedDialCode,
@@ -57,6 +76,10 @@ class AuthState extends Equatable {
     String? registeredEmail,
     String? registerMessage,
     bool? resendSuccess,
+    String? forgotPasswordEmail,
+    String? resetCode,
+    Workspace? workspace,
+    bool? isLoadingWorkspace,
     AuthAction? action,
     bool clearSubmitError = false,
     bool clearAction = false,
@@ -69,6 +92,10 @@ class AuthState extends Equatable {
       isSignUpConfirmPasswordObscured:
           isSignUpConfirmPasswordObscured ??
           this.isSignUpConfirmPasswordObscured,
+      isResetPasswordObscured:
+          isResetPasswordObscured ?? this.isResetPasswordObscured,
+      isResetConfirmPasswordObscured:
+          isResetConfirmPasswordObscured ?? this.isResetConfirmPasswordObscured,
       hasAcceptedTerms: hasAcceptedTerms ?? this.hasAcceptedTerms,
       showTermsError: showTermsError ?? this.showTermsError,
       selectedDialCode: selectedDialCode ?? this.selectedDialCode,
@@ -79,6 +106,10 @@ class AuthState extends Equatable {
       registeredEmail: registeredEmail ?? this.registeredEmail,
       registerMessage: registerMessage ?? this.registerMessage,
       resendSuccess: resendSuccess ?? false,
+      forgotPasswordEmail: forgotPasswordEmail ?? this.forgotPasswordEmail,
+      resetCode: resetCode ?? this.resetCode,
+      workspace: workspace ?? this.workspace,
+      isLoadingWorkspace: isLoadingWorkspace ?? this.isLoadingWorkspace,
       action: clearAction ? null : action ?? this.action,
     );
   }
@@ -88,6 +119,8 @@ class AuthState extends Equatable {
     isLoginPasswordObscured,
     isSignUpPasswordObscured,
     isSignUpConfirmPasswordObscured,
+    isResetPasswordObscured,
+    isResetConfirmPasswordObscured,
     hasAcceptedTerms,
     showTermsError,
     selectedDialCode,
@@ -98,6 +131,10 @@ class AuthState extends Equatable {
     registeredEmail,
     registerMessage,
     resendSuccess,
+    forgotPasswordEmail,
+    resetCode,
+    workspace,
+    isLoadingWorkspace,
     action,
   ];
 }

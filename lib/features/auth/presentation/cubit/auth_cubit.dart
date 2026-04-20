@@ -10,8 +10,12 @@ import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/resend_code_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/get_workspace_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
 
 export 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
@@ -25,6 +29,10 @@ class AuthCubit extends Cubit<AuthState> {
     required LogoutUseCase logoutUseCase,
     required InviteCoPartnerUseCase inviteCoPartnerUseCase,
     required AddChildUseCase addChildUseCase,
+    required ForgotPasswordUseCase forgotPasswordUseCase,
+    required VerifyResetCodeUseCase verifyResetCodeUseCase,
+    required ResetPasswordUseCase resetPasswordUseCase,
+    required GetWorkspaceUseCase getWorkspaceUseCase,
     required Storage storage,
   })  : _registerUseCase = registerUseCase,
         _loginUseCase = loginUseCase,
@@ -33,6 +41,10 @@ class AuthCubit extends Cubit<AuthState> {
         _logoutUseCase = logoutUseCase,
         _inviteCoPartnerUseCase = inviteCoPartnerUseCase,
         _addChildUseCase = addChildUseCase,
+        _forgotPasswordUseCase = forgotPasswordUseCase,
+        _verifyResetCodeUseCase = verifyResetCodeUseCase,
+        _resetPasswordUseCase = resetPasswordUseCase,
+        _getWorkspaceUseCase = getWorkspaceUseCase,
         _storage = storage,
         super(const AuthState());
 
@@ -43,10 +55,16 @@ class AuthCubit extends Cubit<AuthState> {
   final LogoutUseCase _logoutUseCase;
   final InviteCoPartnerUseCase _inviteCoPartnerUseCase;
   final AddChildUseCase _addChildUseCase;
+  final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final VerifyResetCodeUseCase _verifyResetCodeUseCase;
+  final ResetPasswordUseCase _resetPasswordUseCase;
+  final GetWorkspaceUseCase _getWorkspaceUseCase;
   final Storage _storage;
 
   final loginFormKey = GlobalKey<FormState>();
   final signUpFormKey = GlobalKey<FormState>();
+  final forgotPasswordFormKey = GlobalKey<FormState>();
+  final resetPasswordFormKey = GlobalKey<FormState>();
   final coPartnerFormKey = GlobalKey<FormState>();
   final addChildFormKey = GlobalKey<FormState>();
 
@@ -58,6 +76,10 @@ class AuthCubit extends Cubit<AuthState> {
   final signUpPhoneController = TextEditingController();
   final signUpPasswordController = TextEditingController();
   final signUpConfirmPasswordController = TextEditingController();
+
+  final forgotPasswordEmailController = TextEditingController();
+  final resetPasswordController = TextEditingController();
+  final resetConfirmPasswordController = TextEditingController();
 
   final coPartnerFirstNameController = TextEditingController();
   final coPartnerLastNameController = TextEditingController();
@@ -332,6 +354,161 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<void> fetchWorkspace() async {
+    emit(state.copyWith(isLoadingWorkspace: true, clearSubmitError: true));
+
+    final result = await _getWorkspaceUseCase();
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(
+          isLoadingWorkspace: false,
+          submitError: failure.message,
+        ));
+      },
+      (workspace) {
+        emit(state.copyWith(
+          isLoadingWorkspace: false,
+          workspace: workspace,
+        ));
+      },
+    );
+  }
+
+  void goToForgotPassword() {
+    emit(state.copyWith(action: AuthAction.navigateToForgotPassword));
+  }
+
+  Future<void> submitForgotPassword() async {
+    final isFormValid = forgotPasswordFormKey.currentState?.validate() ?? false;
+    if (!isFormValid) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final email = forgotPasswordEmailController.text.trim();
+
+    final result = await _forgotPasswordUseCase(email);
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (_) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            forgotPasswordEmail: email,
+            action: AuthAction.navigateToForgotPasswordOtp,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> verifyResetCode(String code) async {
+    final email = state.forgotPasswordEmail;
+    if (email == null || email.isEmpty) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final result = await _verifyResetCodeUseCase(
+      VerifyResetCodeParams(email: email, code: code),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (_) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            resetCode: code,
+            action: AuthAction.navigateToResetPassword,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> resendForgotPasswordCode() async {
+    final email = state.forgotPasswordEmail;
+    if (email == null || email.isEmpty) return;
+
+    emit(state.copyWith(isResending: true, clearSubmitError: true));
+
+    final result = await _forgotPasswordUseCase(email);
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isResending: false, submitError: failure.message));
+      },
+      (_) {
+        emit(state.copyWith(isResending: false, resendSuccess: true));
+      },
+    );
+  }
+
+  Future<void> submitResetPassword() async {
+    final isFormValid = resetPasswordFormKey.currentState?.validate() ?? false;
+    if (!isFormValid) return;
+
+    final email = state.forgotPasswordEmail;
+    final code = state.resetCode;
+    if (email == null || code == null) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final result = await _resetPasswordUseCase(
+      ResetPasswordParams(
+        email: email,
+        code: code,
+        password: resetPasswordController.text,
+        passwordConfirmation: resetConfirmPasswordController.text,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      },
+      (_) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            action: AuthAction.passwordResetSuccess,
+          ),
+        );
+      },
+    );
+  }
+
+  void toggleResetPasswordVisibility() {
+    emit(
+      state.copyWith(isResetPasswordObscured: !state.isResetPasswordObscured),
+    );
+  }
+
+  void toggleResetConfirmPasswordVisibility() {
+    emit(
+      state.copyWith(
+        isResetConfirmPasswordObscured: !state.isResetConfirmPasswordObscured,
+      ),
+    );
+  }
+
+  String? validateResetConfirmPassword(String? value) {
+    return Validator.confirmPassword(value, resetPasswordController.text);
+  }
+
+  void setForgotPasswordEmail(String email) {
+    emit(state.copyWith(forgotPasswordEmail: email));
+  }
+
+  void setResetCode(String code) {
+    emit(state.copyWith(resetCode: code));
+  }
+
   void goToSignUp() {
     emit(state.copyWith(action: AuthAction.navigateToSignUp));
   }
@@ -373,6 +550,9 @@ class AuthCubit extends Cubit<AuthState> {
     signUpPhoneController.dispose();
     signUpPasswordController.dispose();
     signUpConfirmPasswordController.dispose();
+    forgotPasswordEmailController.dispose();
+    resetPasswordController.dispose();
+    resetConfirmPasswordController.dispose();
     coPartnerFirstNameController.dispose();
     coPartnerLastNameController.dispose();
     coPartnerEmailController.dispose();

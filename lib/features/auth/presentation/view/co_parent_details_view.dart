@@ -49,6 +49,10 @@ class CoParentDetailsView extends StatelessWidget {
             case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToLogin:
             case AuthAction.navigateToSignUp:
+            case AuthAction.navigateToForgotPassword:
+            case AuthAction.navigateToForgotPasswordOtp:
+            case AuthAction.navigateToResetPassword:
+            case AuthAction.passwordResetSuccess:
             case AuthAction.childAdded:
               return;
           }
