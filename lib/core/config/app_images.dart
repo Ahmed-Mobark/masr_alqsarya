@@ -2,7 +2,7 @@ class AppImages {
   static const String _path = 'assets/images/';
 
   // Image paths
-  static const String logo = "${_path}logo.jpg";
+  static const String logo = "${_path}logo.png";
   static const String logoApp = "${_path}logoapp.png";
   static const String logoSmall = "${_path}logo_small.png";
   static const String splashLogo = "${_path}splash.png";

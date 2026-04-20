@@ -1,15 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/rendering.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/core/data/dummy_data.dart';
+import 'package:masr_al_qsariya/features/news/presentation/cubit/news_cubit.dart';
+import 'package:masr_al_qsariya/features/news/presentation/cubit/news_state.dart';
+import 'package:masr_al_qsariya/features/news/presentation/widgets/news_feed_card.dart';
+import 'package:masr_al_qsariya/features/news/domain/entities/news_feed.dart';
 
 class NewsView extends StatelessWidget {
   const NewsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<NewsCubit>()..loadInitial(),
+      child: const _NewsViewBody(),
+    );
+  }
+}
+
+class _NewsViewBody extends StatelessWidget {
+  const _NewsViewBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _NewsViewBodyStateful();
+  }
+}
+
+class _NewsViewBodyStateful extends StatefulWidget {
+  const _NewsViewBodyStateful();
+
+  @override
+  State<_NewsViewBodyStateful> createState() => _NewsViewBodyStatefulState();
+}
+
+class _NewsViewBodyStatefulState extends State<_NewsViewBodyStateful> {
+  final ScrollController _controller = ScrollController();
+  static const double _loadMoreThresholdPx = 220;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_controller.hasClients) return;
+    final position = _controller.position;
+    final scrollingDown =
+        position.userScrollDirection == ScrollDirection.reverse;
+    if (!scrollingDown) return;
+
+    // Trigger when user is near the bottom.
+    final nearBottom =
+        position.pixels >= (position.maxScrollExtent - _loadMoreThresholdPx);
+    if (nearBottom) {
+      context.read<NewsCubit>().loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onScroll);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<NewsCubit>();
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
@@ -18,116 +81,93 @@ class NewsView extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: DummyData.newsFeed.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 16),
-        itemBuilder: (context, index) {
-          final news = DummyData.newsFeed[index];
-          return _NewsCard(news: news);
-        },
-      ),
-    );
-  }
-}
+      body: BlocBuilder<NewsCubit, NewsState>(
+        builder: (context, state) {
+          if (state.status == NewsStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryDark),
+            );
+          }
 
-class _NewsCard extends StatelessWidget {
-  final NewsItem news;
-  const _NewsCard({required this.news});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: news.imageUrl,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              placeholder: (_, __) => Container(
-                height: 200,
-                color: AppColors.inputBg,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primaryDark,
-                  ),
-                ),
-              ),
-              errorWidget: (_, __, ___) => Container(
-                height: 200,
-                color: AppColors.inputBg,
-                child: const Icon(Icons.image_not_supported,
-                    color: AppColors.greyText),
-              ),
-            ),
-          ),
-
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  news.title,
-                  style: AppTextStyles.button(),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  news.body,
-                  style: AppTextStyles.caption(),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Row(
+          if (state.status == NewsStatus.failure && state.items.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      news.source,
-                      style: AppTextStyles.tiny(color: AppColors.greyText),
+                      state.error ?? context.tr.sorryMessage,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.body(color: AppColors.greyText),
                     ),
-                    const SizedBox(width: 8),
-                    Container(
-                      width: 3,
-                      height: 3,
-                      decoration: const BoxDecoration(
-                        color: AppColors.greyText,
-                        shape: BoxShape.circle,
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: cubit.loadInitial,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.darkText,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(999),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      news.date,
-                      style: AppTextStyles.tiny(color: AppColors.greyText),
+                      child: Text(context.tr.commonStart),
                     ),
                   ],
                 ),
-              ],
+              ),
+            );
+          }
+
+          if (state.items.isEmpty) {
+            return Center(
+              child: Text(
+                context.tr.nothingFound,
+                style: AppTextStyles.body(color: AppColors.greyText),
+              ),
+            );
+          }
+
+          final showBottomLoader = state.status == NewsStatus.loadingMore;
+
+          return RefreshIndicator(
+            color: AppColors.primaryDark,
+            onRefresh: cubit.refresh,
+            child: ListView.separated(
+              controller: _controller,
+              padding: const EdgeInsets.all(16),
+              itemCount: state.items.length + (showBottomLoader ? 1 : 0),
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                if (index >= state.items.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.primaryDark,
+                      ),
+                    ),
+                  );
+                }
+                final item = state.items[index];
+                final reactingType = state.reacting[item.id];
+                return NewsFeedCard(
+                  item: item,
+                  isLikeLoading: reactingType == NewsReaction.like,
+                  isHelpfulLoading: reactingType == NewsReaction.helpful,
+                  onLike: () => context
+                      .read<NewsCubit>()
+                      .react(feedId: item.id, reaction: NewsReaction.like),
+                  onHelpful: () => context
+                      .read<NewsCubit>()
+                      .react(feedId: item.id, reaction: NewsReaction.helpful),
+                );
+              },
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

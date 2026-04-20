@@ -18,7 +18,7 @@ import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_field.da
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_social_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_text_input.dart';
-import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
+import 'package:masr_al_qsariya/features/nav_bar/presentation/view/main_nav_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -43,7 +43,7 @@ class LoginView extends StatelessWidget {
 
           switch (state.action) {
             case AuthAction.navigateToHome:
-              sl<AppNavigator>().pushAndRemoveUntil(screen: const HomeView());
+              sl<AppNavigator>().pushReplacement(screen: const MainNavView());
               context.read<AuthCubit>().clearAction();
               return;
             case AuthAction.navigateToSignUp:

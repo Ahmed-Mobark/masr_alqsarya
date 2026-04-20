@@ -14,6 +14,10 @@ class AppEndpoints {
   static const String authVerifyResetCode = "auth/verify-reset-code";
   static const String authResetPassword = "auth/reset-password";
 
+  // News
+  static const String newsFeeds = "news-feeds";
+  static String newsFeedReactions(int feedId) => "news-feeds/$feedId/reactions";
+
   // Family Workspace
   static const String workspace = "workspace";
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
