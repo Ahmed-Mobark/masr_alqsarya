@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/auth/domain/entities/workspace.dart';
@@ -15,4 +18,5 @@ Future<void> syncWorkspaceAndPrefetchChats() async {
   if (id == null) return;
 
   await sl<WorkspaceIdStorage>().store(id);
+  unawaited(sl<RealtimeService>().ensureConnected());
 }

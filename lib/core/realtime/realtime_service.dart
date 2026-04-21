@@ -4,6 +4,9 @@ import 'dart:developer' as developer;
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter/foundation.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
+import 'package:masr_al_qsariya/core/realtime/laravel_broadcasting_auth_delegate.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 
 class _ChatListen {
@@ -28,14 +31,6 @@ class RealtimeService {
         key: AppEndpoints.soketiAppKey,
         port: AppEndpoints.soketiPort,
       );
-
-  Map<String, String> get _authHeaders {
-    final token = _storage.getToken();
-    return {
-      'Accept': 'application/json',
-      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-    };
-  }
 
   void _log(String message, [Object? error, StackTrace? stack]) {
     if (kDebugMode) {
@@ -89,10 +84,10 @@ class RealtimeService {
 
     final channelName = AppEndpoints.privateChatChannelName(chatId);
     final authUri = Uri.parse(AppEndpoints.broadcastingAuthUrl);
-    final delegate = EndpointAuthorizableChannelTokenAuthorizationDelegate
-        .forPrivateChannel(
+    final delegate = LaravelBroadcastingAuthDelegate(
+      dio: sl<ApiBaseHelper>().getDio(ApiEnvironment.primary),
+      storage: _storage,
       authorizationEndpoint: authUri,
-      headers: _authHeaders,
     );
 
     _log('Subscribing $channelName (auth: $authUri)');
@@ -102,7 +97,8 @@ class RealtimeService {
       authorizationDelegate: delegate,
     );
     try {
-      channel.subscribe();
+      // [PrivateChannel.subscribe] is `async void` — awaiting outcome via events.
+      await _awaitPrivateChannelSubscription(channel, channelName);
     } catch (e, st) {
       _log('subscribePrivateChat failed for $channelName', e, st);
       rethrow;
@@ -120,6 +116,44 @@ class RealtimeService {
     );
 
     _chatListeners[chatId] = _ChatListen(subscription: sub, channel: channel);
+  }
+
+  /// Waits until the private channel is subscribed or a subscription/auth error is emitted.
+  Future<void> _awaitPrivateChannelSubscription(
+    PrivateChannel channel,
+    String channelName,
+  ) async {
+    final completer = Completer<void>();
+    late final StreamSubscription<ChannelReadEvent> subOk;
+    late final StreamSubscription<ChannelReadEvent> subErr;
+
+    subOk = channel.whenSubscriptionSucceeded().listen((_) {
+      if (!completer.isCompleted) completer.complete();
+    });
+    subErr = channel.onSubscriptionError().listen((event) {
+      if (completer.isCompleted) return;
+      final map = event.tryGetDataAsMap();
+      final msg = map?[PusherChannelsEvent.errorKey]?.toString() ??
+          map?['message']?.toString() ??
+          'Subscription error on $channelName';
+      completer.completeError(StateError(msg));
+    });
+
+    channel.subscribe();
+
+    try {
+      await completer.future.timeout(
+        const Duration(seconds: 25),
+        onTimeout: () => throw TimeoutException(
+          'Timed out waiting for $channelName subscription '
+          '(check /broadcasting/auth JSON and Soketi WebSocket).',
+        ),
+      );
+      _log('Subscribed $channelName');
+    } finally {
+      await subOk.cancel();
+      await subErr.cancel();
+    }
   }
 
   Future<void> unsubscribeChat(int chatId) async {

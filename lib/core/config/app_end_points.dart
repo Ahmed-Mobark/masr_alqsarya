@@ -19,7 +19,10 @@ class AppEndpoints {
   static int? realtimeWebSocketPort;
 
   /// Path for Laravel `Broadcast::routes()` auth endpoint (POST).
-  /// Change if your server mounts it under `/api/...` instead of site root.
+  ///
+  /// For mobile Bearer tokens, routes must use Sanctum, e.g.
+  /// `Broadcast::routes(['middleware' => ['auth:sanctum']]);`
+  /// and return JSON `{"auth":"..."}` (not an empty HTML response).
   static const String broadcastingAuthPath = '/broadcasting/auth';
 
   /// WebSocket host (same host as the API unless [realtimeWebSocketHost] set).

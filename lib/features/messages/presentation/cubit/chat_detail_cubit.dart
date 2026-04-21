@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
@@ -37,6 +38,9 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   final int chatId;
 
   bool _soketiSubscribed = false;
+  Timer? _pollTimer;
+
+  static const _pollInterval = Duration(seconds: 8);
 
   void clearSendError() {
     emit(state.copyWith(clearSendError: true));
@@ -120,25 +124,33 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
-  Future<void> loadMessages() async {
-    emit(state.copyWith(status: ChatDetailStatus.loading, clearError: true));
+  /// [silentRefresh]: no loading shimmer; failures keep the last successful list
+  /// (used for push refreshes and HTTP polling when realtime is unavailable).
+  Future<void> loadMessages({bool silentRefresh = false}) async {
+    if (!silentRefresh) {
+      emit(state.copyWith(status: ChatDetailStatus.loading, clearError: true));
+    }
 
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {
-      emit(state.copyWith(
-        status: ChatDetailStatus.failure,
-        workspaceMissing: true,
-      ));
+      if (!silentRefresh) {
+        emit(state.copyWith(
+          status: ChatDetailStatus.failure,
+          workspaceMissing: true,
+        ));
+      }
       return;
     }
 
     final result = await _getMessages(workspaceId, chatId);
     final failure = result.fold<Failure?>((f) => f, (_) => null);
     if (failure != null) {
-      emit(state.copyWith(
-        status: ChatDetailStatus.failure,
-        errorMessage: failure.message,
-      ));
+      if (!silentRefresh) {
+        emit(state.copyWith(
+          status: ChatDetailStatus.failure,
+          errorMessage: failure.message,
+        ));
+      }
       return;
     }
 
@@ -173,7 +185,23 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       messages: rows,
     ));
 
-    unawaited(_ensureSoketiSubscription());
+    if (!silentRefresh) {
+      unawaited(_ensureSoketiSubscription());
+    }
+  }
+
+  void _startPollFallback() {
+    if (_pollTimer != null) return;
+    if (kDebugMode) {
+      developer.log(
+        'Using HTTP polling ($_pollInterval) for chat $chatId — '
+        'fix /broadcasting/auth to return {"auth":"..."} for live updates',
+        name: 'ChatDetailCubit',
+      );
+    }
+    _pollTimer = Timer.periodic(_pollInterval, (_) {
+      if (!isClosed) unawaited(loadMessages(silentRefresh: true));
+    });
   }
 
   Future<void> _ensureSoketiSubscription() async {
@@ -182,10 +210,22 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     try {
       await _realtime.subscribePrivateChat(
         chatId: chatId,
-        onNewActivity: loadMessages,
+        onNewActivity: () => loadMessages(silentRefresh: true),
       );
-    } catch (_) {
+      _pollTimer?.cancel();
+      _pollTimer = null;
+    } catch (e, st) {
       _soketiSubscribed = false;
+      if (kDebugMode) {
+        developer.log(
+          'Realtime (Soketi/Pusher) subscribe failed — check WebSocket host/port '
+          'and Laravel /broadcasting/auth with auth:sanctum + JSON {"auth":"..."}',
+          name: 'ChatDetailCubit',
+          error: e,
+          stackTrace: st,
+        );
+      }
+      _startPollFallback();
     }
   }
 
@@ -231,6 +271,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   @override
   Future<void> close() {
+    _pollTimer?.cancel();
     unawaited(_realtime.unsubscribeChat(chatId));
     return super.close();
   }
