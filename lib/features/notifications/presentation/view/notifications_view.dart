@@ -54,8 +54,7 @@ class NotificationsView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: AppColors.darkText),
+          icon: const Icon(Icons.arrow_back, color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.tr.notificationsTitle, style: AppTextStyles.heading2()),

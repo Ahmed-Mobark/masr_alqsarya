@@ -524,6 +524,59 @@ class AppLocalizationsFr extends AppLocalizations {
   String get messagesMarkAllRead => 'Tout marquer comme lu';
 
   @override
+  String get messagesLoadError => 'Impossible de charger les conversations.';
+
+  @override
+  String get messagesWorkspaceMissing =>
+      'L’espace de travail n’est pas prêt. Reconnectez-vous.';
+
+  @override
+  String get messagesEmptyTitle => 'Aucune conversation';
+
+  @override
+  String get messagesEmptySubtitle =>
+      'Vos fils de discussion apparaîtront ici.';
+
+  @override
+  String get messagesRetry => 'Réessayer';
+
+  @override
+  String get chatLoadError => 'Impossible de charger les messages.';
+
+  @override
+  String get chatEmptyTitle => 'Aucun message';
+
+  @override
+  String get chatEmptySubtitle => 'Envoyez un message pour démarrer.';
+
+  @override
+  String get messagesRoleOwner => 'Titulaire';
+
+  @override
+  String get messagesRoleCoPartner => 'Co-parent';
+
+  @override
+  String get messagesRoleChild => 'Enfant';
+
+  @override
+  String get messagesNoPreview => 'Aucun message';
+
+  @override
+  String get chatAttachmentFallback => 'Pièce jointe';
+
+  @override
+  String get chatAttachmentDownloadAction => 'Télécharger';
+
+  @override
+  String get chatAttachmentDownloadFailed =>
+      'Impossible de télécharger le fichier.';
+
+  @override
+  String chatAttachmentDownloadSuccess(String fileName) {
+    return 'Enregistré : $fileName';
+  }
+
+  @override
   String get newsTitle => 'Actualités';
 
   @override

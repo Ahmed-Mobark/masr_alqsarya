@@ -46,7 +46,7 @@ class _ProfileBody extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, size: 20),
+            icon: const Icon(Icons.arrow_back, color: AppColors.darkText),
             onPressed: () => sl<AppNavigator>().pop(),
           ),
           title:

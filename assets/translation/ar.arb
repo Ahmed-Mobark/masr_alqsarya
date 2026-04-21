@@ -201,6 +201,29 @@
   "messagesAll": "الكل",
   "messagesUnread": "غير مقروءة",
   "messagesMarkAllRead": "تحديد الكل كمقروء",
+  "messagesLoadError": "تعذر تحميل المحادثات.",
+  "messagesWorkspaceMissing": "مساحة العمل غير جاهزة بعد. حاول تسجيل الدخول مرة أخرى.",
+  "messagesEmptyTitle": "لا محادثات بعد",
+  "messagesEmptySubtitle": "عند بدء المراسلة ستظهر المحادثات هنا.",
+  "messagesRetry": "إعادة المحاولة",
+  "chatLoadError": "تعذر تحميل الرسائل.",
+  "chatEmptyTitle": "لا رسائل بعد",
+  "chatEmptySubtitle": "أرسل رسالة لبدء المحادثة.",
+  "messagesRoleOwner": "مالك",
+  "messagesRoleCoPartner": "شريك تربية",
+  "messagesRoleChild": "طفل",
+  "messagesNoPreview": "لا رسائل بعد",
+  "chatAttachmentFallback": "مرفق",
+  "chatAttachmentDownloadAction": "تحميل",
+  "chatAttachmentDownloadFailed": "تعذر تنزيل الملف.",
+  "chatAttachmentDownloadSuccess": "تم الحفظ: {fileName}",
+  "@chatAttachmentDownloadSuccess": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
 
   "newsTitle": "الأخبار",
 

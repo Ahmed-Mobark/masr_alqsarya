@@ -1,28 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-
-class _ChatMessage {
-  final String text;
-  final bool isSent;
-  final String time;
-
-  const _ChatMessage({
-    required this.text,
-    required this.isSent,
-    required this.time,
-  });
-}
+import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_cubit.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_state.dart';
 
 class ChatView extends StatefulWidget {
+  final int chatId;
   final String name;
   final String avatarUrl;
 
   const ChatView({
     super.key,
+    required this.chatId,
     required this.name,
     required this.avatarUrl,
   });
@@ -35,39 +28,6 @@ class _ChatViewState extends State<ChatView> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  final List<_ChatMessage> _messages = const [
-    _ChatMessage(
-      text: 'Hi, can we discuss the pickup time for tomorrow?',
-      isSent: false,
-      time: '10:30 AM',
-    ),
-    _ChatMessage(
-      text: 'Sure, what time works for you?',
-      isSent: true,
-      time: '10:32 AM',
-    ),
-    _ChatMessage(
-      text: 'I was thinking around 3:30 PM after school.',
-      isSent: false,
-      time: '10:33 AM',
-    ),
-    _ChatMessage(
-      text: 'That works for me. I\'ll be there at 3:30.',
-      isSent: true,
-      time: '10:35 AM',
-    ),
-    _ChatMessage(
-      text: 'Great, thank you! Also, don\'t forget the doctor appointment on Friday.',
-      isSent: false,
-      time: '10:36 AM',
-    ),
-    _ChatMessage(
-      text: 'Yes, I have it in the calendar. I\'ll take care of it.',
-      isSent: true,
-      time: '10:38 AM',
-    ),
-  ];
-
   @override
   void dispose() {
     _messageController.dispose();
@@ -77,168 +37,425 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Iconsax.arrow_left, color: AppColors.darkText),
-          onPressed: () => Navigator.pop(context),
-        ),
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: widget.avatarUrl,
-                width: 36,
-                height: 36,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  width: 36,
-                  height: 36,
-                  color: AppColors.inputBg,
-                ),
-                errorWidget: (_, __, ___) => Container(
-                  width: 36,
-                  height: 36,
-                  color: AppColors.inputBg,
-                  child: const Icon(Iconsax.user, size: 18, color: AppColors.greyText),
+    return BlocConsumer<ChatDetailCubit, ChatDetailState>(
+      listenWhen: (prev, curr) =>
+          (prev.sendError != curr.sendError && curr.sendError != null) ||
+          (prev.isSending && !curr.isSending && curr.sendError == null) ||
+          (prev.attachmentFeedback != curr.attachmentFeedback &&
+              curr.attachmentFeedback != null),
+      listener: (context, state) {
+        if (state.attachmentFeedback != null) {
+          final messenger = ScaffoldMessenger.of(context);
+          if (state.attachmentFeedback == '__workspace_missing__') {
+            messenger.showSnackBar(
+              SnackBar(content: Text(context.tr.messagesWorkspaceMissing)),
+            );
+          } else if (state.attachmentFeedback == '__download_ok__' &&
+              state.attachmentSavedLabel != null) {
+            messenger.showSnackBar(
+              SnackBar(
+                content: Text(
+                  context.tr.chatAttachmentDownloadSuccess(
+                    state.attachmentSavedLabel!,
+                  ),
                 ),
               ),
+            );
+          } else if (state.attachmentFeedback == '__download_fail__') {
+            messenger.showSnackBar(
+              SnackBar(content: Text(context.tr.chatAttachmentDownloadFailed)),
+            );
+          }
+          context.read<ChatDetailCubit>().clearAttachmentFeedback();
+          return;
+        }
+        if (state.sendError != null) {
+          final msg = state.sendError == '__workspace_missing__'
+              ? context.tr.messagesWorkspaceMissing
+              : state.sendError!;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(msg)));
+          context.read<ChatDetailCubit>().clearSendError();
+          return;
+        }
+        _messageController.clear();
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppColors.scaffoldBg,
+          appBar: AppBar(
+            backgroundColor: AppColors.background,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.darkText),
+              onPressed: () => Navigator.pop(context),
             ),
-            const SizedBox(width: 10),
-            Text(widget.name, style: AppTextStyles.heading2()),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          // Chat bubbles
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final msg = _messages[index];
-                return _ChatBubble(message: msg);
-              },
-            ),
-          ),
-
-          // Message input bar
-          Container(
-            padding: EdgeInsets.only(
-              left: 16,
-              right: 8,
-              top: 10,
-              bottom: MediaQuery.of(context).padding.bottom + 10,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-            child: Row(
+            titleSpacing: 0,
+            title: Row(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: AppColors.inputBg,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: TextField(
-                      controller: _messageController,
-                      decoration: InputDecoration(
-                        hintText: context.tr.chatTypeMessageHint,
-                        hintStyle: AppTextStyles.caption(color: AppColors.greyText),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                      ),
-                      style: AppTextStyles.bodyMedium(),
-                    ),
-                  ),
+                ClipOval(
+                  child: widget.avatarUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: widget.avatarUrl,
+                          width: 36,
+                          height: 36,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => Container(
+                            width: 36,
+                            height: 36,
+                            color: AppColors.inputBg,
+                          ),
+                          errorWidget: (_, __, ___) => Container(
+                            width: 36,
+                            height: 36,
+                            color: AppColors.inputBg,
+                            child: const Icon(
+                              Iconsax.user,
+                              size: 18,
+                              color: AppColors.greyText,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: 36,
+                          height: 36,
+                          color: AppColors.inputBg,
+                          child: const Icon(
+                            Iconsax.user,
+                            size: 18,
+                            color: AppColors.greyText,
+                          ),
+                        ),
                 ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      // TODO: Send message
-                      _messageController.clear();
-                    },
-                    icon: const Icon(Iconsax.send_1, size: 20, color: AppColors.darkText),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    widget.name,
+                    style: AppTextStyles.heading2(),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+          body: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<ChatDetailCubit, ChatDetailState>(
+                  builder: (context, state) {
+                    if (state.status == ChatDetailStatus.loading &&
+                        state.messages.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+
+                    if (state.status == ChatDetailStatus.failure) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                state.workspaceMissing
+                                    ? context.tr.messagesWorkspaceMissing
+                                    : (state.errorMessage ??
+                                          context.tr.chatLoadError),
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.body(
+                                  color: AppColors.greyText,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              TextButton(
+                                onPressed: () => context
+                                    .read<ChatDetailCubit>()
+                                    .loadMessages(),
+                                child: Text(context.tr.messagesRetry),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (state.messages.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                context.tr.chatEmptyTitle,
+                                style: AppTextStyles.heading2(),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                context.tr.chatEmptySubtitle,
+                                style: AppTextStyles.caption(
+                                  color: AppColors.greyText,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      itemCount: state.messages.length,
+                      itemBuilder: (context, index) {
+                        return _ChatBubble(
+                          message: state.messages[index],
+                          downloadingAttachmentId:
+                              state.downloadingAttachmentId,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              BlocBuilder<ChatDetailCubit, ChatDetailState>(
+                buildWhen: (p, c) => p.isSending != c.isSending,
+                builder: (context, state) {
+                  return Container(
+                    padding: EdgeInsetsDirectional.only(
+                      start: 16,
+                      end: 8,
+                      top: 10,
+                      bottom: MediaQuery.of(context).padding.bottom + 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _messageController,
+                            readOnly: state.isSending,
+                            textAlign: TextAlign.start,
+                            decoration: InputDecoration(
+                              hintText: context.tr.chatTypeMessageHint,
+                              hintStyle: AppTextStyles.caption(
+                                color: AppColors.greyText,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 16,
+                              ),
+                            ),
+                            style: AppTextStyles.bodyMedium(),
+                            onSubmitted: state.isSending
+                                ? null
+                                : (_) => _submitMessage(context),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: state.isSending
+                              ? const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.darkText,
+                                  ),
+                                )
+                              : IconButton(
+                                  onPressed: () => _submitMessage(context),
+                                  icon: const Icon(
+                                    Icons.send_rounded,
+                                    size: 20,
+                                    color: AppColors.darkText,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  void _submitMessage(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    context.read<ChatDetailCubit>().sendMessage(_messageController.text);
   }
 }
 
 class _ChatBubble extends StatelessWidget {
-  final _ChatMessage message;
-  const _ChatBubble({required this.message});
+  final ChatBubbleRow message;
+  final int? downloadingAttachmentId;
+
+  const _ChatBubble({
+    required this.message,
+    required this.downloadingAttachmentId,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Outgoing on physical right, incoming on physical left (same in ar/en/fr).
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Align(
-        alignment: message.isSent ? Alignment.centerRight : Alignment.centerLeft,
-        child: Column(
-          crossAxisAlignment:
-              message.isSent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.72,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: message.isSent
-                    ? AppColors.primary
-                    : AppColors.background,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(16),
-                  topRight: const Radius.circular(16),
-                  bottomLeft: Radius.circular(message.isSent ? 16 : 4),
-                  bottomRight: Radius.circular(message.isSent ? 4 : 16),
+        alignment: message.isSent
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
+        child: IntrinsicWidth(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.72,
                 ),
-                boxShadow: message.isSent
-                    ? null
-                    : [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: message.isSent
+                      ? AppColors.primary
+                      : AppColors.background,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(16),
+                    topRight: const Radius.circular(16),
+                    bottomLeft: Radius.circular(message.isSent ? 16 : 4),
+                    bottomRight: Radius.circular(message.isSent ? 4 : 16),
+                  ),
+                  boxShadow: message.isSent
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (message.text.isNotEmpty)
+                      Text(
+                        message.text,
+                        textAlign: TextAlign.start,
+                        style: AppTextStyles.body(color: AppColors.darkText),
+                      ),
+                    if (message.attachments.isNotEmpty) ...[
+                      if (message.text.isNotEmpty) const SizedBox(height: 8),
+                      ...message.attachments.map((a) {
+                        final label = a.displayName.isNotEmpty
+                            ? a.displayName
+                            : context.tr.chatAttachmentFallback;
+                        final loading = downloadingAttachmentId == a.id;
+                        return Padding(
+                          padding: const EdgeInsetsDirectional.only(bottom: 6),
+                          child: Material(
+                            color: AppColors.darkText.withValues(alpha: 0.06),
+                            borderRadius: BorderRadius.circular(10),
+                            child: InkWell(
+                              onTap: loading
+                                  ? null
+                                  : () => context
+                                        .read<ChatDetailCubit>()
+                                        .downloadAttachment(a),
+                              borderRadius: BorderRadius.circular(10),
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (loading)
+                                      const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: AppColors.primary,
+                                        ),
+                                      )
+                                    else
+                                      const Icon(
+                                        Iconsax.document,
+                                        size: 18,
+                                        color: AppColors.darkText,
+                                      ),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        label,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        style: AppTextStyles.caption(
+                                          color: AppColors.darkText,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      context.tr.chatAttachmentDownloadAction,
+                                      textAlign: TextAlign.start,
+                                      style: AppTextStyles.extraSmall(
+                                        color: AppColors.primaryDark,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ],
+                ),
               ),
-              child: Text(
-                message.text,
-                style: AppTextStyles.body(color: AppColors.darkText),
+              const SizedBox(height: 4),
+              Align(
+                alignment: message.isSent
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                child: Text(message.time, style: AppTextStyles.extraSmall()),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(message.time, style: AppTextStyles.extraSmall()),
-          ],
+            ],
+          ),
         ),
       ),
     );

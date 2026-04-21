@@ -514,6 +514,57 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messagesMarkAllRead => 'تحديد الكل كمقروء';
 
   @override
+  String get messagesLoadError => 'تعذر تحميل المحادثات.';
+
+  @override
+  String get messagesWorkspaceMissing =>
+      'مساحة العمل غير جاهزة بعد. حاول تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get messagesEmptyTitle => 'لا محادثات بعد';
+
+  @override
+  String get messagesEmptySubtitle => 'عند بدء المراسلة ستظهر المحادثات هنا.';
+
+  @override
+  String get messagesRetry => 'إعادة المحاولة';
+
+  @override
+  String get chatLoadError => 'تعذر تحميل الرسائل.';
+
+  @override
+  String get chatEmptyTitle => 'لا رسائل بعد';
+
+  @override
+  String get chatEmptySubtitle => 'أرسل رسالة لبدء المحادثة.';
+
+  @override
+  String get messagesRoleOwner => 'مالك';
+
+  @override
+  String get messagesRoleCoPartner => 'شريك تربية';
+
+  @override
+  String get messagesRoleChild => 'طفل';
+
+  @override
+  String get messagesNoPreview => 'لا رسائل بعد';
+
+  @override
+  String get chatAttachmentFallback => 'مرفق';
+
+  @override
+  String get chatAttachmentDownloadAction => 'تحميل';
+
+  @override
+  String get chatAttachmentDownloadFailed => 'تعذر تنزيل الملف.';
+
+  @override
+  String chatAttachmentDownloadSuccess(String fileName) {
+    return 'تم الحفظ: $fileName';
+  }
+
+  @override
   String get newsTitle => 'الأخبار';
 
   @override

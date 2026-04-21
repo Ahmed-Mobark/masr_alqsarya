@@ -201,6 +201,29 @@
   "messagesAll": "All",
   "messagesUnread": "Unread",
   "messagesMarkAllRead": "Mark all as read",
+  "messagesLoadError": "Could not load conversations.",
+  "messagesWorkspaceMissing": "Workspace is not ready yet. Try signing in again.",
+  "messagesEmptyTitle": "No conversations yet",
+  "messagesEmptySubtitle": "When you start messaging, threads will appear here.",
+  "messagesRetry": "Retry",
+  "chatLoadError": "Could not load messages.",
+  "chatEmptyTitle": "No messages yet",
+  "chatEmptySubtitle": "Send a message to start the conversation.",
+  "messagesRoleOwner": "Owner",
+  "messagesRoleCoPartner": "Co-parent",
+  "messagesRoleChild": "Child",
+  "messagesNoPreview": "No messages yet",
+  "chatAttachmentFallback": "Attachment",
+  "chatAttachmentDownloadAction": "Download",
+  "chatAttachmentDownloadFailed": "Could not download the file.",
+  "chatAttachmentDownloadSuccess": "Saved: {fileName}",
+  "@chatAttachmentDownloadSuccess": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
 
   "newsTitle": "News",
 

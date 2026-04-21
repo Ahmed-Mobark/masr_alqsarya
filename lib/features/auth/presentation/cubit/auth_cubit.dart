@@ -3,8 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
+import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/core/storage/models/local_user.dart';
+import 'package:masr_al_qsariya/features/auth/domain/entities/login_response.dart';
+import 'package:masr_al_qsariya/features/auth/domain/entities/workspace.dart';
 import 'package:masr_al_qsariya/core/utils/validator.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/get_profile_usecase.dart';
@@ -37,6 +42,8 @@ class AuthCubit extends Cubit<AuthState> {
     required ResetPasswordUseCase resetPasswordUseCase,
     required GetWorkspaceUseCase getWorkspaceUseCase,
     required Storage storage,
+    required WorkspaceIdStorage workspaceIdStorage,
+    required RealtimeService realtimeService,
   })  : _registerUseCase = registerUseCase,
         _loginUseCase = loginUseCase,
         _verifyEmailUseCase = verifyEmailUseCase,
@@ -50,6 +57,8 @@ class AuthCubit extends Cubit<AuthState> {
         _resetPasswordUseCase = resetPasswordUseCase,
         _getWorkspaceUseCase = getWorkspaceUseCase,
         _storage = storage,
+        _workspaceIdStorage = workspaceIdStorage,
+        _realtimeService = realtimeService,
         super(const AuthState());
 
   final RegisterUseCase _registerUseCase;
@@ -65,6 +74,8 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase _resetPasswordUseCase;
   final GetWorkspaceUseCase _getWorkspaceUseCase;
   final Storage _storage;
+  final WorkspaceIdStorage _workspaceIdStorage;
+  final RealtimeService _realtimeService;
 
   Future<void> _cacheUserProfile() async {
     final result = await _getProfileUseCase();
@@ -171,24 +182,34 @@ class AuthCubit extends Cubit<AuthState> {
       ),
     );
 
-    result.fold(
-      (failure) {
-        emit(state.copyWith(isSubmitting: false, submitError: failure.message));
-      },
-      (data) {
-        if (data.token != null && data.token!.isNotEmpty) {
-          _storage.storeToken(token: data.token!);
-        }
-        _cacheUserProfile().whenComplete(() {
-          emit(
-            state.copyWith(
-              isSubmitting: false,
-              action: AuthAction.navigateToHome,
-            ),
-          );
-        });
-      },
+    final failure = result.fold<Failure?>((f) => f, (_) => null);
+    if (failure != null) {
+      emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      return;
+    }
+
+    final data = result.fold<LoginResponse?>((_) => null, (d) => d)!;
+
+    if (data.token != null && data.token!.isNotEmpty) {
+      await _storage.storeToken(token: data.token!);
+    }
+    await _cacheUserProfile();
+    await _persistFirstWorkspaceAfterAuth();
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        action: AuthAction.navigateToHome,
+      ),
     );
+  }
+
+  Future<void> _persistFirstWorkspaceAfterAuth() async {
+    final result = await _getWorkspaceUseCase();
+    final workspace = result.fold<Workspace?>((_) => null, (w) => w);
+    final id = workspace?.id;
+    if (id != null) {
+      await _workspaceIdStorage.store(id);
+    }
   }
 
   Future<void> submitSignUp() async {
@@ -309,6 +330,8 @@ class AuthCubit extends Cubit<AuthState> {
     await _storage.deleteToken();
     await _storage.deleteUser();
     await _storage.deleteSelectedRole();
+    await _workspaceIdStorage.delete();
+    await _realtimeService.disconnect();
 
     emit(
       state.copyWith(
@@ -388,20 +411,24 @@ class AuthCubit extends Cubit<AuthState> {
 
     final result = await _getWorkspaceUseCase();
 
-    result.fold(
-      (failure) {
-        emit(state.copyWith(
-          isLoadingWorkspace: false,
-          submitError: failure.message,
-        ));
-      },
-      (workspace) {
-        emit(state.copyWith(
-          isLoadingWorkspace: false,
-          workspace: workspace,
-        ));
-      },
-    );
+    final failure = result.fold<Failure?>((f) => f, (_) => null);
+    if (failure != null) {
+      emit(state.copyWith(
+        isLoadingWorkspace: false,
+        submitError: failure.message,
+      ));
+      return;
+    }
+
+    final workspace = result.fold<Workspace?>((_) => null, (w) => w)!;
+    final id = workspace.id;
+    if (id != null) {
+      await _workspaceIdStorage.store(id);
+    }
+    emit(state.copyWith(
+      isLoadingWorkspace: false,
+      workspace: workspace,
+    ));
   }
 
   void goToForgotPassword() {

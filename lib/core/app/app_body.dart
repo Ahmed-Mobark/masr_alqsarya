@@ -53,6 +53,15 @@ class MyAppState extends State<MyApp> {
           navigatorObservers: [ObserverUtils.routeObserver],
           locale: _locale,
           navigatorKey: sl<AppNavigator>().navigatorKey,
+          builder: (context, child) {
+            final textDirection = _locale.languageCode == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr;
+            return Directionality(
+              textDirection: textDirection,
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
           home: const SplashView(),
         ),
       ),

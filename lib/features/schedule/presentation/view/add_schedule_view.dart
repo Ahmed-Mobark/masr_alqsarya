@@ -111,7 +111,7 @@ class _AddScheduleViewState extends State<AddScheduleView> {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Iconsax.arrow_left, color: AppColors.primaryDark, size: 22.sp),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryDark, size: 22.sp),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(

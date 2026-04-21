@@ -86,7 +86,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_left, color: AppColors.darkText),
+          icon: const Icon(Icons.arrow_back, color: AppColors.darkText),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.tr.addExpenseTitle, style: AppTextStyles.navTitle()),

@@ -13,15 +13,32 @@ class WorkspaceModel {
   final String? type;
   final Map<String, dynamic>? data;
 
+  static int? _parseId(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is int) return raw;
+    if (raw is num) return raw.toInt();
+    if (raw is String) return int.tryParse(raw);
+    return null;
+  }
+
   factory WorkspaceModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
-    final dataMap = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    final payload = json['data'];
+    final Map<String, dynamic> dataMap;
+
+    if (payload is List && payload.isNotEmpty) {
+      final first = payload.first;
+      dataMap = first is Map<String, dynamic> ? first : <String, dynamic>{};
+    } else if (payload is Map<String, dynamic>) {
+      dataMap = payload;
+    } else {
+      dataMap = <String, dynamic>{};
+    }
 
     return WorkspaceModel(
-      id: dataMap['id'] as int?,
+      id: _parseId(dataMap['id']),
       name: dataMap['name'] as String?,
       type: dataMap['type'] as String?,
-      data: dataMap,
+      data: dataMap.isEmpty ? null : dataMap,
     );
   }
 

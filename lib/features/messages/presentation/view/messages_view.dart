@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
-import 'package:masr_al_qsariya/core/theme/app_colors.dart';
-import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/core/data/dummy_data.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
-import 'package:masr_al_qsariya/features/messages/presentation/view/chat_view.dart';
+import 'package:masr_al_qsariya/core/theme/app_colors.dart';
+import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/features/messages/domain/entities/chat_thread.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/cubit/messages_cubit.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/cubit/messages_state.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/view/chat_detail_page.dart';
 
 class MessagesView extends StatefulWidget {
   const MessagesView({super.key});
@@ -18,11 +21,18 @@ class MessagesView extends StatefulWidget {
 class _MessagesViewState extends State<MessagesView> {
   int _selectedTab = 0;
 
-  List<MessageItem> get _filteredMessages {
+  List<ChatThread> _filtered(List<ChatThread> threads) {
     if (_selectedTab == 1) {
-      return DummyData.messages.where((m) => m.unreadCount > 0).toList();
+      return threads.where((m) => m.unreadCount > 0).toList();
     }
-    return DummyData.messages;
+    return threads;
+  }
+
+  String _errorLabel(String? raw, BuildContext context) {
+    if (raw == '__workspace_missing__') {
+      return context.tr.messagesWorkspaceMissing;
+    }
+    return raw ?? context.tr.messagesLoadError;
   }
 
   @override
@@ -37,10 +47,9 @@ class _MessagesViewState extends State<MessagesView> {
       ),
       body: Column(
         children: [
-          // Search bar
           Container(
             color: AppColors.background,
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 12),
             child: Container(
               height: 40,
               decoration: BoxDecoration(
@@ -53,18 +62,17 @@ class _MessagesViewState extends State<MessagesView> {
                   const Icon(Iconsax.search_normal,
                       size: 18, color: AppColors.greyText),
                   const SizedBox(width: 8),
-                  Text(context.tr.messagesSearch,
-                      style:
-                          AppTextStyles.caption(color: AppColors.greyText)),
+                  Text(
+                    context.tr.messagesSearch,
+                    style: AppTextStyles.caption(color: AppColors.greyText),
+                  ),
                 ],
               ),
             ),
           ),
-
-          // Tabs: All | Unread | Mark all as read
           Container(
             color: AppColors.background,
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
             child: Row(
               children: [
                 _TabButton(
@@ -89,25 +97,92 @@ class _MessagesViewState extends State<MessagesView> {
               ],
             ),
           ),
-
-          // Messages list
           Expanded(
-            child: Container(
-              color: AppColors.background,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                itemCount: _filteredMessages.length,
-                separatorBuilder: (_, __) => Divider(
-                  height: 1,
-                  indent: 80,
-                  endIndent: 16,
-                  color: AppColors.border.withValues(alpha: 0.5),
-                ),
-                itemBuilder: (context, index) {
-                  final msg = _filteredMessages[index];
-                  return _MessageTile(message: msg);
-                },
-              ),
+            child: BlocBuilder<MessagesCubit, MessagesState>(
+              builder: (context, state) {
+                if (state.status == MessagesStatus.loading &&
+                    state.threads.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  );
+                }
+
+                if (state.status == MessagesStatus.failure) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _errorLabel(state.errorMessage, context),
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.body(color: AppColors.greyText),
+                          ),
+                          const SizedBox(height: 16),
+                          TextButton(
+                            onPressed: () =>
+                                context.read<MessagesCubit>().loadThreads(),
+                            child: Text(context.tr.messagesRetry),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final list = _filtered(state.threads);
+                if (list.isEmpty) {
+                  return RefreshIndicator(
+                    color: AppColors.primary,
+                    onRefresh: () =>
+                        context.read<MessagesCubit>().loadThreads(),
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.35,
+                        ),
+                        Text(
+                          context.tr.messagesEmptyTitle,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.heading2(),
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Text(
+                            context.tr.messagesEmptySubtitle,
+                            textAlign: TextAlign.center,
+                            style:
+                                AppTextStyles.caption(color: AppColors.greyText),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  color: AppColors.primary,
+                  onRefresh: () =>
+                      context.read<MessagesCubit>().loadThreads(),
+                  child: ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    itemCount: list.length,
+                    separatorBuilder: (_, __) => Divider(
+                      height: 1,
+                      indent: 80,
+                      endIndent: 16,
+                      color: AppColors.border.withValues(alpha: 0.5),
+                    ),
+                    itemBuilder: (context, index) {
+                      return _MessageTile(message: list[index]);
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -153,16 +228,36 @@ class _TabButton extends StatelessWidget {
 }
 
 class _MessageTile extends StatelessWidget {
-  final MessageItem message;
+  final ChatThread message;
   const _MessageTile({required this.message});
+
+  String _localizedRole(BuildContext context, String raw) {
+    switch (raw) {
+      case 'owner':
+        return context.tr.messagesRoleOwner;
+      case 'co_partner':
+        return context.tr.messagesRoleCoPartner;
+      case 'child':
+        return context.tr.messagesRoleChild;
+      default:
+        return raw;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final ringColor = message.unreadCount > 0
+        ? AppColors.primaryDark
+        : AppColors.border;
+    final roleColor =
+        message.roleLabel.isNotEmpty ? AppColors.primaryDark : AppColors.greyText;
+
     return InkWell(
       onTap: () {
         sl<AppNavigator>().push(
-          screen: ChatView(
-            name: message.name,
+          screen: ChatDetailPage(
+            chatId: message.id,
+            name: message.displayName,
             avatarUrl: message.avatarUrl,
           ),
         );
@@ -172,14 +267,13 @@ class _MessageTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            // Avatar with colored ring
             Container(
               width: 52,
               height: 52,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: message.avatarRingColor,
+                  color: ringColor,
                   width: 2.5,
                 ),
               ),
@@ -189,38 +283,49 @@ class _MessageTile extends StatelessWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: message.avatarRingColor.withValues(alpha: 0.1),
+                    color: ringColor.withValues(alpha: 0.1),
                   ),
                   child: Icon(
                     Iconsax.user,
                     size: 22,
-                    color: message.avatarRingColor,
+                    color: ringColor,
                   ),
                 ),
               ),
             ),
             const SizedBox(width: 12),
-
-            // Name + role + message preview
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Text(message.name, style: AppTextStyles.button()),
-                      const SizedBox(width: 4),
-                      Text(
-                        '( ${message.role} )',
-                        style: AppTextStyles.button(
-                          color: message.roleColor,
+                      Flexible(
+                        child: Text(
+                          message.displayName,
+                          style: AppTextStyles.button(),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      if (message.roleLabel.isNotEmpty) ...[
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            '( ${_localizedRole(context, message.roleLabel)} )',
+                            style: AppTextStyles.button(
+                              color: roleColor,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    message.lastMessage,
+                    message.lastPreview.isEmpty
+                        ? context.tr.messagesNoPreview
+                        : message.lastPreview,
                     style: AppTextStyles.caption(color: AppColors.greyText),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -229,20 +334,20 @@ class _MessageTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-
-            // Date + unread badge
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(message.time,
-                    style: AppTextStyles.small(color: AppColors.greyText)),
+                Text(
+                  message.timeLabel,
+                  style: AppTextStyles.small(color: AppColors.greyText),
+                ),
                 if (message.unreadCount > 0) ...[
                   const SizedBox(height: 8),
                   Container(
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
-                      color: message.roleColor,
+                      color: roleColor,
                       shape: BoxShape.circle,
                     ),
                     child: Center(

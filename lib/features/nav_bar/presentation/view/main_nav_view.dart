@@ -9,8 +9,10 @@ import 'package:masr_al_qsariya/features/nav_bar/presentation/cubit/nav_bar_cubi
 import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/view/schedule_view.dart';
 import 'package:masr_al_qsariya/features/news/presentation/view/news_view.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/cubit/messages_cubit.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/view/messages_view.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/view/expense_view.dart';
+import 'package:masr_al_qsariya/features/nav_bar/session/shell_session_sync.dart';
 
 class MainNavView extends StatelessWidget {
   const MainNavView({super.key});
@@ -24,16 +26,32 @@ class MainNavView extends StatelessWidget {
   }
 }
 
-class _MainNavContent extends StatelessWidget {
+class _MainNavContent extends StatefulWidget {
   const _MainNavContent();
 
-  static const List<Widget> _screens = [
-    HomeView(),
-    ScheduleView(),
-    NewsView(),
-    MessagesView(),
-    ExpenseView(),
+  @override
+  State<_MainNavContent> createState() => _MainNavContentState();
+}
+
+class _MainNavContentState extends State<_MainNavContent> {
+  late final List<Widget> _screens = [
+    const HomeView(),
+    const ScheduleView(),
+    const NewsView(),
+    BlocProvider(
+      create: (_) => sl<MessagesCubit>()..loadThreads(),
+      child: const MessagesView(),
+    ),
+    const ExpenseView(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      syncWorkspaceAndPrefetchChats();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +164,7 @@ class _NavBarItem extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               height: 3,
               width: isActive ? 3 : 0,
-              margin: const EdgeInsets.only(bottom: 4),
+              margin: const EdgeInsetsDirectional.only(bottom: 4),
               decoration: BoxDecoration(
                 color: isActive ? AppColors.tabActive : Colors.transparent,
                 shape: BoxShape.circle,
@@ -162,9 +180,9 @@ class _NavBarItem extends StatelessWidget {
                   color: color,
                 ),
                 if (showBadge)
-                  Positioned(
+                  PositionedDirectional(
                     top: -2,
-                    right: -4,
+                    end: -4,
                     child: Container(
                       width: 8,
                       height: 8,

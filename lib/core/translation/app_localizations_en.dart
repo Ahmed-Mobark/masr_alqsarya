@@ -520,6 +520,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesMarkAllRead => 'Mark all as read';
 
   @override
+  String get messagesLoadError => 'Could not load conversations.';
+
+  @override
+  String get messagesWorkspaceMissing =>
+      'Workspace is not ready yet. Try signing in again.';
+
+  @override
+  String get messagesEmptyTitle => 'No conversations yet';
+
+  @override
+  String get messagesEmptySubtitle =>
+      'When you start messaging, threads will appear here.';
+
+  @override
+  String get messagesRetry => 'Retry';
+
+  @override
+  String get chatLoadError => 'Could not load messages.';
+
+  @override
+  String get chatEmptyTitle => 'No messages yet';
+
+  @override
+  String get chatEmptySubtitle => 'Send a message to start the conversation.';
+
+  @override
+  String get messagesRoleOwner => 'Owner';
+
+  @override
+  String get messagesRoleCoPartner => 'Co-parent';
+
+  @override
+  String get messagesRoleChild => 'Child';
+
+  @override
+  String get messagesNoPreview => 'No messages yet';
+
+  @override
+  String get chatAttachmentFallback => 'Attachment';
+
+  @override
+  String get chatAttachmentDownloadAction => 'Download';
+
+  @override
+  String get chatAttachmentDownloadFailed => 'Could not download the file.';
+
+  @override
+  String chatAttachmentDownloadSuccess(String fileName) {
+    return 'Saved: $fileName';
+  }
+
+  @override
   String get newsTitle => 'News';
 
   @override

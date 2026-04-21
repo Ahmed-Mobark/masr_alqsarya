@@ -201,6 +201,29 @@
   "messagesAll": "Tous",
   "messagesUnread": "Non lus",
   "messagesMarkAllRead": "Tout marquer comme lu",
+  "messagesLoadError": "Impossible de charger les conversations.",
+  "messagesWorkspaceMissing": "L’espace de travail n’est pas prêt. Reconnectez-vous.",
+  "messagesEmptyTitle": "Aucune conversation",
+  "messagesEmptySubtitle": "Vos fils de discussion apparaîtront ici.",
+  "messagesRetry": "Réessayer",
+  "chatLoadError": "Impossible de charger les messages.",
+  "chatEmptyTitle": "Aucun message",
+  "chatEmptySubtitle": "Envoyez un message pour démarrer.",
+  "messagesRoleOwner": "Titulaire",
+  "messagesRoleCoPartner": "Co-parent",
+  "messagesRoleChild": "Enfant",
+  "messagesNoPreview": "Aucun message",
+  "chatAttachmentFallback": "Pièce jointe",
+  "chatAttachmentDownloadAction": "Télécharger",
+  "chatAttachmentDownloadFailed": "Impossible de télécharger le fichier.",
+  "chatAttachmentDownloadSuccess": "Enregistré : {fileName}",
+  "@chatAttachmentDownloadSuccess": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
 
   "newsTitle": "Actualités",
 

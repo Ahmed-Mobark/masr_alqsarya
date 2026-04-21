@@ -102,6 +102,50 @@ class ApiBaseHelper {
     return _performRequest<T>(() => getDio(environment).get<T>(url, queryParameters: queryParameters, data: body), environment: environment);
   }
 
+  /// Authenticated GET returning raw bytes (e.g. chat attachment download).
+  Future<Uint8List> getBytes({
+    required String url,
+    ApiEnvironment environment = ApiEnvironment.primary,
+  }) async {
+    try {
+      final dio = getDio(environment);
+      final token = sl<Storage>().getToken();
+      if (token != null) {
+        dio.options.headers['Authorization'] = 'Bearer $token';
+      }
+      final response = await dio.get<List<int>>(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          headers: {'Accept': '*/*'},
+        ),
+      );
+      final code = response.statusCode;
+      if (code == null || code < 200 || code >= 300) {
+        throw ServerException(message: 'Download failed (${code ?? 'unknown'})');
+      }
+      final data = response.data;
+      if (data == null) {
+        throw AppException('Empty download response');
+      }
+      return data is Uint8List ? data : Uint8List.fromList(data);
+    } on DioException catch (e) {
+      log('DioException error: ${e.type} - ${e.message}');
+      throw ErrorHelper.handleDioError(e);
+    } on SocketException {
+      throw NetworkException('No internet connection');
+    } catch (e) {
+      log('Unexpected error: $e');
+      if (e is ServerException ||
+          e is NetworkException ||
+          e is AppException) {
+        rethrow;
+      }
+      throw AppException('Unexpected error occurred');
+    }
+  }
+
   Future<T> post<T>({required String url, Map<String, dynamic>? body, FormData? formData, Options? options, ApiEnvironment environment = ApiEnvironment.primary}) async {
     return _performRequest<T>(() => getDio(environment).post<T>(url, data: formData ?? body, options: options),environment: environment,);
   }

@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
+import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:masr_al_qsariya/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:masr_al_qsariya/features/auth/domain/repositories/auth_repository.dart';
@@ -83,6 +85,8 @@ Future<void> initAuthInjection(GetIt sl) async {
       resetPasswordUseCase: sl<ResetPasswordUseCase>(),
       getWorkspaceUseCase: sl<GetWorkspaceUseCase>(),
       storage: sl<Storage>(),
+      workspaceIdStorage: sl<WorkspaceIdStorage>(),
+      realtimeService: sl<RealtimeService>(),
     ),
   );
 }

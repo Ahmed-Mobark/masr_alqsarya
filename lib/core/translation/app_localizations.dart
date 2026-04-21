@@ -1060,6 +1060,102 @@ abstract class AppLocalizations {
   /// **'Mark all as read'**
   String get messagesMarkAllRead;
 
+  /// No description provided for @messagesLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load conversations.'**
+  String get messagesLoadError;
+
+  /// No description provided for @messagesWorkspaceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace is not ready yet. Try signing in again.'**
+  String get messagesWorkspaceMissing;
+
+  /// No description provided for @messagesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet'**
+  String get messagesEmptyTitle;
+
+  /// No description provided for @messagesEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When you start messaging, threads will appear here.'**
+  String get messagesEmptySubtitle;
+
+  /// No description provided for @messagesRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get messagesRetry;
+
+  /// No description provided for @chatLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load messages.'**
+  String get chatLoadError;
+
+  /// No description provided for @chatEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get chatEmptyTitle;
+
+  /// No description provided for @chatEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message to start the conversation.'**
+  String get chatEmptySubtitle;
+
+  /// No description provided for @messagesRoleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get messagesRoleOwner;
+
+  /// No description provided for @messagesRoleCoPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-parent'**
+  String get messagesRoleCoPartner;
+
+  /// No description provided for @messagesRoleChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get messagesRoleChild;
+
+  /// No description provided for @messagesNoPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get messagesNoPreview;
+
+  /// No description provided for @chatAttachmentFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment'**
+  String get chatAttachmentFallback;
+
+  /// No description provided for @chatAttachmentDownloadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get chatAttachmentDownloadAction;
+
+  /// No description provided for @chatAttachmentDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not download the file.'**
+  String get chatAttachmentDownloadFailed;
+
+  /// No description provided for @chatAttachmentDownloadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {fileName}'**
+  String chatAttachmentDownloadSuccess(String fileName);
+
   /// No description provided for @newsTitle.
   ///
   /// In en, this message translates to:
