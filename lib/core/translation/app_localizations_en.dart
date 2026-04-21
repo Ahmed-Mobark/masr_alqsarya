@@ -791,6 +791,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your co-parent will receive an email invitation to join the family workspace.';
 
   @override
+  String get authOnboardingAddChildTitle => 'Add children';
+
+  @override
+  String get authOnboardingAddChildHeading => 'Child details';
+
+  @override
+  String get authOnboardingAddChildSubtitle =>
+      'Add each child’s information. Tap “Add another” to save and enter another child, or “Next” to finish and go to the app.';
+
+  @override
+  String get authAddAnotherChild => 'Add another';
+
+  @override
   String get familyChildDisplayNameLabel => 'Display Name';
 
   @override

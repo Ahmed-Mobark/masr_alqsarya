@@ -781,6 +781,19 @@ class AppLocalizationsAr extends AppLocalizations {
       'سيتلقى شريكك في التربية دعوة عبر البريد الإلكتروني للانضمام إلى مساحة العائلة.';
 
   @override
+  String get authOnboardingAddChildTitle => 'إضافة الأطفال';
+
+  @override
+  String get authOnboardingAddChildHeading => 'بيانات الطفل';
+
+  @override
+  String get authOnboardingAddChildSubtitle =>
+      'أدخل بيانات كل طفل. اضغط «إضافة آخر» للحفظ وإدخال طفل آخر، أو «التالي» للإنهاء والانتقال للتطبيق.';
+
+  @override
+  String get authAddAnotherChild => 'إضافة آخر';
+
+  @override
   String get familyChildDisplayNameLabel => 'الاسم المعروض';
 
   @override

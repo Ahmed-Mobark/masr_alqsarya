@@ -5,11 +5,30 @@ class AppEndpoints {
   /// Soketi app key (same as `/app/{key}` in the Soketi dashboard URL).
   static const String soketiAppKey = 'cihrywvayxv8nguraxqy';
 
-  /// WebSocket host (same host as the API, no path).
-  static String get soketiHost => Uri.parse(baseUrl).host;
+  /// If Soketi WebSocket is **not** on the same host as [baseUrl], set this
+  /// (e.g. a dedicated `ws.` subdomain or server IP).
+  ///
+  /// `null` → use API host from [baseUrl] (only works if a reverse proxy
+  /// forwards `wss://api-host/app/{key}` to Soketi).
+  static String? realtimeWebSocketHost;
 
-  /// Optional explicit WSS port; `null` = default (443 for `wss`).
+  /// Soketi default is often `6001`. If TLS terminates on 443 and nginx
+  /// proxies WebSocket, leave `null` to use default port for `wss` (443).
+  ///
+  /// Set when clients connect directly to Soketi, e.g. `6001`.
+  static int? realtimeWebSocketPort;
+
+  /// Path for Laravel `Broadcast::routes()` auth endpoint (POST).
+  /// Change if your server mounts it under `/api/...` instead of site root.
+  static const String broadcastingAuthPath = '/broadcasting/auth';
+
+  /// WebSocket host (same host as the API unless [realtimeWebSocketHost] set).
+  static String get soketiHost =>
+      realtimeWebSocketHost ?? Uri.parse(baseUrl).host;
+
+  /// Port for WebSocket; [realtimeWebSocketPort] wins, else infer from API URL.
   static int? get soketiPort {
+    if (realtimeWebSocketPort != null) return realtimeWebSocketPort;
     final p = Uri.parse(baseUrl).port;
     if (p == 0 || p == 443 || p == 80) return null;
     return p;
@@ -22,7 +41,7 @@ class AppEndpoints {
       scheme: u.scheme,
       host: u.host,
       port: u.hasPort ? u.port : null,
-      path: '/broadcasting/auth',
+      path: broadcastingAuthPath,
     ).toString();
   }
 
@@ -47,6 +66,7 @@ class AppEndpoints {
 
   // Family Workspace
   static const String workspace = "workspace";
+  static const String workspaceUpgradeToFamily = "workspace/upgrade-to-family";
   static String workspaceChats(int workspaceId) =>
       "workspaces/$workspaceId/chats";
   static String workspaceChatMessages(int workspaceId, int chatId) =>

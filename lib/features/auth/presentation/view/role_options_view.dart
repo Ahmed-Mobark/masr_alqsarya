@@ -5,8 +5,9 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/co_parent_details_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
@@ -24,9 +25,9 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
   _RoleType? _selectedRole;
 
   String _roleToStorageValue(_RoleType role) => switch (role) {
-    _RoleType.familySpace => 'family_space',
-    _RoleType.solo => 'solo',
-  };
+        _RoleType.familySpace => 'family_space',
+        _RoleType.solo => 'solo',
+      };
 
   @override
   void initState() {
@@ -36,7 +37,30 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
+      listenWhen: (previous, current) =>
+          previous.action != current.action ||
+          previous.submitError != current.submitError,
+      listener: (context, state) {
+        if (state.submitError != null && state.submitError!.isNotEmpty) {
+          appToast(
+            context: context,
+            type: ToastType.error,
+            message: state.submitError!,
+          );
+          context.read<AuthCubit>().clearSubmitError();
+        }
+
+        if (state.action == AuthAction.familyWorkspaceUpgraded) {
+          context.read<AuthCubit>().clearAction();
+          sl<AppNavigator>().pushAndRemoveUntil(
+            screen: BlocProvider(
+              create: (_) => sl<AuthCubit>(),
+              child: const CoParentDetailsView(),
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -110,19 +134,20 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
                           width: double.infinity,
                           height: 48,
                           child: ElevatedButton(
-                            onPressed: _selectedRole != null
+                            onPressed: _selectedRole != null && !state.isSubmitting
                                 ? () {
-                                    sl<Storage>().storeSelectedRole(
-                                      role: _roleToStorageValue(_selectedRole!),
-                                    );
                                     if (_selectedRole == _RoleType.solo) {
+                                      sl<Storage>().storeSelectedRole(
+                                        role: _roleToStorageValue(
+                                            _selectedRole!),
+                                      );
                                       sl<AppNavigator>().pushAndRemoveUntil(
                                         screen: const HomeView(),
                                       );
                                     } else {
-                                      sl<AppNavigator>().push(
-                                        screen: const CoParentDetailsView(),
-                                      );
+                                      context
+                                          .read<AuthCubit>()
+                                          .submitUpgradeToFamily();
                                     }
                                   }
                                 : null,
@@ -136,14 +161,24 @@ class _RoleOptionsViewState extends State<RoleOptionsView> {
                                 borderRadius: BorderRadius.circular(24),
                               ),
                             ),
-                            child: Text(
-                              context.tr.authNext.toUpperCase(),
-                              style: AppTextStyles.button(
-                                color: _selectedRole != null
-                                    ? AppColors.darkText
-                                    : AppColors.greyText,
-                              ),
-                            ),
+                            child: state.isSubmitting &&
+                                    _selectedRole == _RoleType.familySpace
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.darkText,
+                                    ),
+                                  )
+                                : Text(
+                                    context.tr.authNext.toUpperCase(),
+                                    style: AppTextStyles.button(
+                                      color: _selectedRole != null
+                                          ? AppColors.darkText
+                                          : AppColors.greyText,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

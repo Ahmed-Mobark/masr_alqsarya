@@ -1570,6 +1570,30 @@ abstract class AppLocalizations {
   /// **'Your co-parent will receive an email invitation to join the family workspace.'**
   String get authCoParentNote;
 
+  /// No description provided for @authOnboardingAddChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add children'**
+  String get authOnboardingAddChildTitle;
+
+  /// No description provided for @authOnboardingAddChildHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Child details'**
+  String get authOnboardingAddChildHeading;
+
+  /// No description provided for @authOnboardingAddChildSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add each child’s information. Tap “Add another” to save and enter another child, or “Next” to finish and go to the app.'**
+  String get authOnboardingAddChildSubtitle;
+
+  /// No description provided for @authAddAnotherChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another'**
+  String get authAddAnotherChild;
+
   /// No description provided for @familyChildDisplayNameLabel.
   ///
   /// In en, this message translates to:

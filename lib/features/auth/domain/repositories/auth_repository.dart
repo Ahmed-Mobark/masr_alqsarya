@@ -26,4 +26,5 @@ abstract class AuthRepository {
   Future<Either<Failure, Workspace>> getWorkspace();
   Future<Either<Failure, void>> inviteCoPartner(InviteCoPartnerParams params);
   Future<Either<Failure, void>> addChild(AddChildParams params);
+  Future<Either<Failure, void>> upgradeWorkspaceToFamily();
 }

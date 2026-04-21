@@ -299,6 +299,11 @@
   "authCoParentDate": "تاريخ الميلاد",
   "authCoParentNote": "سيتلقى شريكك في التربية دعوة عبر البريد الإلكتروني للانضمام إلى مساحة العائلة.",
 
+  "authOnboardingAddChildTitle": "إضافة الأطفال",
+  "authOnboardingAddChildHeading": "بيانات الطفل",
+  "authOnboardingAddChildSubtitle": "أدخل بيانات كل طفل. اضغط «إضافة آخر» للحفظ وإدخال طفل آخر، أو «التالي» للإنهاء والانتقال للتطبيق.",
+  "authAddAnotherChild": "إضافة آخر",
+
   "familyChildDisplayNameLabel": "الاسم المعروض",
   "familyChildDisplayNameHint": "أدخل الاسم المعروض",
   "familyChildFirstNameLabel": "الاسم الأول",

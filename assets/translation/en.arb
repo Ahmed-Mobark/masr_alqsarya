@@ -301,6 +301,11 @@
   "authCoParentDate": "Date of Birth",
   "authCoParentNote": "Your co-parent will receive an email invitation to join the family workspace.",
 
+  "authOnboardingAddChildTitle": "Add children",
+  "authOnboardingAddChildHeading": "Child details",
+  "authOnboardingAddChildSubtitle": "Add each child’s information. Tap “Add another” to save and enter another child, or “Next” to finish and go to the app.",
+  "authAddAnotherChild": "Add another",
+
   "familyChildDisplayNameLabel": "Display Name",
   "familyChildDisplayNameHint": "Enter display name",
   "familyChildFirstNameLabel": "First Name",

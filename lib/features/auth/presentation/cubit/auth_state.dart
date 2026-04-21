@@ -13,6 +13,7 @@ enum AuthAction {
   passwordResetSuccess,
   coPartnerInvited,
   childAdded,
+  familyWorkspaceUpgraded,
 }
 
 class AuthState extends Equatable {
@@ -26,6 +27,7 @@ class AuthState extends Equatable {
     this.showTermsError = false,
     this.selectedDialCode = '+20',
     this.coPartnerDialCode = '+20',
+    this.childDialCode = '+20',
     this.isSubmitting = false,
     this.isResending = false,
     this.submitError,
@@ -48,6 +50,7 @@ class AuthState extends Equatable {
   final bool showTermsError;
   final String selectedDialCode;
   final String coPartnerDialCode;
+  final String childDialCode;
   final bool isSubmitting;
   final bool isResending;
   final String? submitError;
@@ -70,6 +73,7 @@ class AuthState extends Equatable {
     bool? showTermsError,
     String? selectedDialCode,
     String? coPartnerDialCode,
+    String? childDialCode,
     bool? isSubmitting,
     bool? isResending,
     String? submitError,
@@ -100,6 +104,7 @@ class AuthState extends Equatable {
       showTermsError: showTermsError ?? this.showTermsError,
       selectedDialCode: selectedDialCode ?? this.selectedDialCode,
       coPartnerDialCode: coPartnerDialCode ?? this.coPartnerDialCode,
+      childDialCode: childDialCode ?? this.childDialCode,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isResending: isResending ?? this.isResending,
       submitError: clearSubmitError ? null : submitError ?? this.submitError,
@@ -125,6 +130,7 @@ class AuthState extends Equatable {
     showTermsError,
     selectedDialCode,
     coPartnerDialCode,
+    childDialCode,
     isSubmitting,
     isResending,
     submitError,

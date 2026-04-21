@@ -27,6 +27,7 @@ abstract class AuthRemoteDataSource {
   Future<WorkspaceModel> getWorkspace();
   Future<void> inviteCoPartner(InviteCoPartnerParams params);
   Future<void> addChild(AddChildParams params);
+  Future<void> upgradeWorkspaceToFamily();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -149,6 +150,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
 
     return WorkspaceModel.fromJson(response);
+  }
+
+  @override
+  Future<void> upgradeWorkspaceToFamily() async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceUpgradeToFamily,
+      formData: FormData(),
+    );
   }
 
   @override

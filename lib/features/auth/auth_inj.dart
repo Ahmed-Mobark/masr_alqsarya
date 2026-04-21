@@ -18,6 +18,7 @@ import 'package:masr_al_qsariya/features/auth/domain/usecases/get_workspace_usec
 import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/upgrade_workspace_to_family_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 
 Future<void> initAuthInjection(GetIt sl) async {
@@ -68,6 +69,9 @@ Future<void> initAuthInjection(GetIt sl) async {
   sl.registerLazySingleton<GetWorkspaceUseCase>(
     () => GetWorkspaceUseCase(sl<AuthRepository>()),
   );
+  sl.registerLazySingleton<UpgradeWorkspaceToFamilyUseCase>(
+    () => UpgradeWorkspaceToFamilyUseCase(sl<AuthRepository>()),
+  );
 
   // Cubit
   sl.registerFactory<AuthCubit>(
@@ -84,6 +88,7 @@ Future<void> initAuthInjection(GetIt sl) async {
       verifyResetCodeUseCase: sl<VerifyResetCodeUseCase>(),
       resetPasswordUseCase: sl<ResetPasswordUseCase>(),
       getWorkspaceUseCase: sl<GetWorkspaceUseCase>(),
+      upgradeWorkspaceToFamilyUseCase: sl<UpgradeWorkspaceToFamilyUseCase>(),
       storage: sl<Storage>(),
       workspaceIdStorage: sl<WorkspaceIdStorage>(),
       realtimeService: sl<RealtimeService>(),

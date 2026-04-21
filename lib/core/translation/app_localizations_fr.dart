@@ -800,6 +800,19 @@ class AppLocalizationsFr extends AppLocalizations {
       'Votre co-parent recevra une invitation par e-mail pour rejoindre l\'espace familial.';
 
   @override
+  String get authOnboardingAddChildTitle => 'Ajouter des enfants';
+
+  @override
+  String get authOnboardingAddChildHeading => 'Informations sur l’enfant';
+
+  @override
+  String get authOnboardingAddChildSubtitle =>
+      'Saisissez les informations de chaque enfant. Appuyez sur « Ajouter un autre » pour enregistrer et saisir un autre enfant, ou sur « Suivant » pour terminer et accéder à l’application.';
+
+  @override
+  String get authAddAnotherChild => 'Ajouter un autre';
+
+  @override
   String get familyChildDisplayNameLabel => 'Nom d\'affichage';
 
   @override

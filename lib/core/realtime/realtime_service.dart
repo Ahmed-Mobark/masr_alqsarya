@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
+import 'package:flutter/foundation.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 
@@ -35,6 +37,17 @@ class RealtimeService {
     };
   }
 
+  void _log(String message, [Object? error, StackTrace? stack]) {
+    if (kDebugMode) {
+      developer.log(
+        message,
+        name: 'RealtimeService',
+        error: error,
+        stackTrace: stack,
+      );
+    }
+  }
+
   Future<void> ensureConnected() async {
     if (_storage.getToken() == null) return;
 
@@ -45,10 +58,19 @@ class RealtimeService {
 
     _client = PusherChannelsClient.websocket(
       options: _options,
-      connectionErrorHandler: (_, __, refresh) => refresh(),
+      connectionErrorHandler: (exception, trace, refresh) {
+        _log('WebSocket connection error', exception, trace);
+        refresh();
+      },
       minimumReconnectDelayDuration: const Duration(seconds: 2),
     );
-    await _client!.connect();
+    try {
+      await _client!.connect();
+      _log('WebSocket connected: ${_options.uri}');
+    } catch (e, st) {
+      _log('WebSocket connect failed', e, st);
+      rethrow;
+    }
   }
 
   /// Subscribe to the workspace chat private channel; [onNewActivity] runs when a non-system event arrives.
@@ -66,22 +88,36 @@ class RealtimeService {
     if (client == null || client.isDisposed) return;
 
     final channelName = AppEndpoints.privateChatChannelName(chatId);
+    final authUri = Uri.parse(AppEndpoints.broadcastingAuthUrl);
     final delegate = EndpointAuthorizableChannelTokenAuthorizationDelegate
         .forPrivateChannel(
-      authorizationEndpoint: Uri.parse(AppEndpoints.broadcastingAuthUrl),
+      authorizationEndpoint: authUri,
       headers: _authHeaders,
     );
+
+    _log('Subscribing $channelName (auth: $authUri)');
 
     final channel = client.privateChannel(
       channelName,
       authorizationDelegate: delegate,
     );
-    channel.subscribe();
+    try {
+      channel.subscribe();
+    } catch (e, st) {
+      _log('subscribePrivateChat failed for $channelName', e, st);
+      rethrow;
+    }
 
-    final sub = channel.bindToAll().listen((event) {
-      if (event.name.startsWith('pusher:')) return;
-      onNewActivity();
-    });
+    final sub = channel.bindToAll().listen(
+      (event) {
+        if (event.name.startsWith('pusher:')) return;
+        _log('Realtime event: ${event.name}');
+        onNewActivity();
+      },
+      onError: (Object e, StackTrace st) {
+        _log('Channel stream error ($channelName)', e, st);
+      },
+    );
 
     _chatListeners[chatId] = _ChatListen(subscription: sub, channel: channel);
   }

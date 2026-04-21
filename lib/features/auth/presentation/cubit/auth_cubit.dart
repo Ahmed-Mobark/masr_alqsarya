@@ -23,6 +23,7 @@ import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_use
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/get_workspace_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/upgrade_workspace_to_family_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
 
 export 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_state.dart';
@@ -41,6 +42,7 @@ class AuthCubit extends Cubit<AuthState> {
     required VerifyResetCodeUseCase verifyResetCodeUseCase,
     required ResetPasswordUseCase resetPasswordUseCase,
     required GetWorkspaceUseCase getWorkspaceUseCase,
+    required UpgradeWorkspaceToFamilyUseCase upgradeWorkspaceToFamilyUseCase,
     required Storage storage,
     required WorkspaceIdStorage workspaceIdStorage,
     required RealtimeService realtimeService,
@@ -56,6 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
         _verifyResetCodeUseCase = verifyResetCodeUseCase,
         _resetPasswordUseCase = resetPasswordUseCase,
         _getWorkspaceUseCase = getWorkspaceUseCase,
+        _upgradeWorkspaceToFamilyUseCase = upgradeWorkspaceToFamilyUseCase,
         _storage = storage,
         _workspaceIdStorage = workspaceIdStorage,
         _realtimeService = realtimeService,
@@ -73,6 +76,7 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyResetCodeUseCase _verifyResetCodeUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final GetWorkspaceUseCase _getWorkspaceUseCase;
+  final UpgradeWorkspaceToFamilyUseCase _upgradeWorkspaceToFamilyUseCase;
   final Storage _storage;
   final WorkspaceIdStorage _workspaceIdStorage;
   final RealtimeService _realtimeService;
@@ -164,6 +168,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   void setCoPartnerDialCode(String dialCode) {
     emit(state.copyWith(coPartnerDialCode: dialCode));
+  }
+
+  void setChildDialCode(String dialCode) {
+    emit(state.copyWith(childDialCode: dialCode));
   }
 
   Future<void> submitLogin() async {
@@ -341,6 +349,37 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<void> submitUpgradeToFamily() async {
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final upgrade = await _upgradeWorkspaceToFamilyUseCase();
+    final fail = upgrade.fold<Failure?>((f) => f, (_) => null);
+    if (fail != null) {
+      emit(state.copyWith(isSubmitting: false, submitError: fail.message));
+      return;
+    }
+
+    await _storage.storeSelectedRole(role: 'family_space');
+
+    final wsResult = await _getWorkspaceUseCase();
+    await wsResult.fold<Future<void>>(
+      (_) async {},
+      (workspace) async {
+        final id = workspace.id;
+        if (id != null) {
+          await _workspaceIdStorage.store(id);
+        }
+      },
+    );
+
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        action: AuthAction.familyWorkspaceUpgraded,
+      ),
+    );
+  }
+
   Future<void> submitInviteCoPartner() async {
     final isFormValid = coPartnerFormKey.currentState?.validate() ?? false;
     if (!isFormValid) return;
@@ -375,10 +414,21 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> submitAddChild() async {
+    await _submitAddChildInternal(finishOnboarding: true);
+  }
+
+  Future<void> submitAddChildAddAnother() async {
+    await _submitAddChildInternal(finishOnboarding: false);
+  }
+
+  Future<void> _submitAddChildInternal({required bool finishOnboarding}) async {
     final isFormValid = addChildFormKey.currentState?.validate() ?? false;
     if (!isFormValid) return;
 
     emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final phoneDigits = childPhoneController.text.trim();
+    final fullPhone = '${state.childDialCode}$phoneDigits';
 
     final result = await _addChildUseCase(
       AddChildParams(
@@ -386,7 +436,7 @@ class AuthCubit extends Cubit<AuthState> {
         firstName: childFirstNameController.text.trim(),
         lastName: childLastNameController.text.trim(),
         email: childEmailController.text.trim(),
-        phone: childPhoneController.text.trim(),
+        phone: fullPhone,
         dateOfBirth: childDateOfBirthController.text.trim(),
       ),
     );
@@ -396,14 +446,29 @@ class AuthCubit extends Cubit<AuthState> {
         emit(state.copyWith(isSubmitting: false, submitError: failure.message));
       },
       (_) {
-        emit(
-          state.copyWith(
-            isSubmitting: false,
-            action: AuthAction.childAdded,
-          ),
-        );
+        if (finishOnboarding) {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              action: AuthAction.childAdded,
+            ),
+          );
+        } else {
+          _clearAddChildForm();
+          emit(state.copyWith(isSubmitting: false));
+        }
       },
     );
+  }
+
+  void _clearAddChildForm() {
+    childDisplayNameController.clear();
+    childFirstNameController.clear();
+    childLastNameController.clear();
+    childEmailController.clear();
+    childPhoneController.clear();
+    childDateOfBirthController.clear();
+    addChildFormKey.currentState?.reset();
   }
 
   Future<void> fetchWorkspace() async {

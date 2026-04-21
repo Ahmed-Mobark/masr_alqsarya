@@ -8,12 +8,11 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/add_child_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_field.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_phone_number_field.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_text_input.dart';
-import 'package:masr_al_qsariya/features/home/presentation/view/home_view.dart';
 
 class CoParentDetailsView extends StatelessWidget {
   const CoParentDetailsView({super.key});
@@ -38,10 +37,13 @@ class CoParentDetailsView extends StatelessWidget {
 
           switch (state.action) {
             case AuthAction.coPartnerInvited:
-              sl<AppNavigator>().pushAndRemoveUntil(
-                screen: const HomeView(),
-              );
               context.read<AuthCubit>().clearAction();
+              sl<AppNavigator>().pushAndRemoveUntil(
+                screen: BlocProvider(
+                  create: (_) => sl<AuthCubit>(),
+                  child: const AddChildView(),
+                ),
+              );
               return;
             case null:
             case AuthAction.navigateToHome:
@@ -54,6 +56,7 @@ class CoParentDetailsView extends StatelessWidget {
             case AuthAction.navigateToResetPassword:
             case AuthAction.passwordResetSuccess:
             case AuthAction.childAdded:
+            case AuthAction.familyWorkspaceUpgraded:
               return;
           }
         },
@@ -76,9 +79,7 @@ class CoParentDetailsView extends StatelessWidget {
                             SizedBox(height: 16.h),
                             Row(
                               children: [
-                                AuthBackButton(
-                                  onTap: () => Navigator.pop(context),
-                                ),
+                                SizedBox(width: 36.w),
                                 Expanded(
                                   child: Center(
                                     child: Text(

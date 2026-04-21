@@ -63,6 +63,7 @@ class SignUpView extends StatelessWidget {
             case AuthAction.passwordResetSuccess:
             case AuthAction.coPartnerInvited:
             case AuthAction.childAdded:
+            case AuthAction.familyWorkspaceUpgraded:
               return;
           }
         },

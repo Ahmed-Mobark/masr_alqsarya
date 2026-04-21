@@ -301,6 +301,11 @@
   "authCoParentDate": "Date de naissance",
   "authCoParentNote": "Votre co-parent recevra une invitation par e-mail pour rejoindre l'espace familial.",
 
+  "authOnboardingAddChildTitle": "Ajouter des enfants",
+  "authOnboardingAddChildHeading": "Informations sur l’enfant",
+  "authOnboardingAddChildSubtitle": "Saisissez les informations de chaque enfant. Appuyez sur « Ajouter un autre » pour enregistrer et saisir un autre enfant, ou sur « Suivant » pour terminer et accéder à l’application.",
+  "authAddAnotherChild": "Ajouter un autre",
+
   "familyChildDisplayNameLabel": "Nom d'affichage",
   "familyChildDisplayNameHint": "Entrez le nom d'affichage",
   "familyChildFirstNameLabel": "Prénom",

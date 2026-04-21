@@ -111,4 +111,11 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
       await _remote.addChild(params);
     });
   }
+
+  @override
+  Future<Either<Failure, void>> upgradeWorkspaceToFamily() {
+    return handleEither(() async {
+      await _remote.upgradeWorkspaceToFamily();
+    });
+  }
 }
