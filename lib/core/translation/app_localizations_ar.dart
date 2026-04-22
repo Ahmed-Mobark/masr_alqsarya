@@ -375,6 +375,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accountSecurityChangePassword => 'تغيير كلمة المرور';
 
   @override
+  String get accountSecurityEmailMissingForPassword =>
+      'لا يوجد بريد إلكتروني مرتبط بحسابك. أضف بريدًا إلكترونيًا قبل تغيير كلمة المرور.';
+
+  @override
   String get accountSecurityEnableTwoFactor => 'تفعيل المصادقة الثنائية';
 
   @override

@@ -381,6 +381,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accountSecurityChangePassword => 'Changer le mot de passe';
 
   @override
+  String get accountSecurityEmailMissingForPassword =>
+      'Aucune adresse e-mail n’est associée à votre compte. Ajoutez-en une avant de changer le mot de passe.';
+
+  @override
   String get accountSecurityEnableTwoFactor =>
       'Activer l’authentification à deux facteurs';
 

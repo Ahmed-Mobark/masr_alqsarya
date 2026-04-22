@@ -814,6 +814,12 @@ abstract class AppLocalizations {
   /// **'Change Password'**
   String get accountSecurityChangePassword;
 
+  /// No description provided for @accountSecurityEmailMissingForPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has no email address. Add one before changing your password.'**
+  String get accountSecurityEmailMissingForPassword;
+
   /// No description provided for @accountSecurityEnableTwoFactor.
   ///
   /// In en, this message translates to:

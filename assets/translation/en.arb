@@ -128,6 +128,7 @@
   "accountSecurityEmailLabel": "Email",
   "accountSecurityPhoneLabel": "Phone",
   "accountSecurityChangePassword": "Change Password",
+  "accountSecurityEmailMissingForPassword": "Your account has no email address. Add one before changing your password.",
   "accountSecurityEnableTwoFactor": "Enable Two-Factor Authentication",
   "accountSecurityDeleteAccount": "Delete Account",
   "accountSecurityDeleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",

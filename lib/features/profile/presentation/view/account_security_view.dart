@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/core/injection/injection_container.dart';
-import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/forgot_password_view.dart';
 
 class AccountSecurityView extends StatelessWidget {
   const AccountSecurityView({super.key});
@@ -24,7 +26,7 @@ class AccountSecurityView extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.darkText),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => sl<AppNavigator>().pop(),
         ),
         title: Text(context.tr.accountSecurityTitle,
             style: AppTextStyles.heading2()),
@@ -99,6 +101,56 @@ class AccountSecurityView extends StatelessWidget {
                     child: Text(phone, style: AppTextStyles.body()),
                   ),
                 ],
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            Text(
+              context.tr.accountSecurityChangePassword,
+              style: AppTextStyles.heading2().copyWith(fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: () {
+                final email = user?.email.trim();
+                if (email == null || email.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          Text(context.tr.accountSecurityEmailMissingForPassword),
+                    ),
+                  );
+                  return;
+                }
+                sl<AppNavigator>().push(
+                  screen: ForgotPasswordView(prefilledEmail: email),
+                );
+              },
+              borderRadius: BorderRadius.circular(25),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        context.tr.accountSecurityChangePassword,
+                        style: AppTextStyles.body(),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.greyText,
+                    ),
+                  ],
+                ),
               ),
             ),
 

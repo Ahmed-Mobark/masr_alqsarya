@@ -122,7 +122,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       url: AppEndpoints.authResetPassword,
       formData: FormData.fromMap({
         'email': params.email,
-        'code': params.code,
+        'otp': params.code,
         'password': params.password,
         'password_confirmation': params.passwordConfirmation,
       }),

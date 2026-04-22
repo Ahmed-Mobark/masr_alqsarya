@@ -15,12 +15,23 @@ import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_primary_
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_text_input.dart';
 
 class ForgotPasswordView extends StatelessWidget {
-  const ForgotPasswordView({super.key});
+  const ForgotPasswordView({super.key, this.prefilledEmail});
+
+  /// When set (e.g. from Account & Security), the email field is prefilled.
+  final String? prefilledEmail;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<AuthCubit>(),
+      create: (_) {
+        final cubit = sl<AuthCubit>();
+        final email = prefilledEmail?.trim();
+        if (email != null && email.isNotEmpty) {
+          cubit.forgotPasswordEmailController.text = email;
+          cubit.setForgotPasswordEmail(email);
+        }
+        return cubit;
+      },
       child: BlocConsumer<AuthCubit, AuthState>(
         listenWhen: (previous, current) =>
             previous.action != current.action ||

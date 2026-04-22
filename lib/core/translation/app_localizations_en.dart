@@ -378,6 +378,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountSecurityChangePassword => 'Change Password';
 
   @override
+  String get accountSecurityEmailMissingForPassword =>
+      'Your account has no email address. Add one before changing your password.';
+
+  @override
   String get accountSecurityEnableTwoFactor =>
       'Enable Two-Factor Authentication';
 

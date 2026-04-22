@@ -128,6 +128,7 @@
   "accountSecurityEmailLabel": "E-mail",
   "accountSecurityPhoneLabel": "Téléphone",
   "accountSecurityChangePassword": "Changer le mot de passe",
+  "accountSecurityEmailMissingForPassword": "Aucune adresse e-mail n’est associée à votre compte. Ajoutez-en une avant de changer le mot de passe.",
   "accountSecurityEnableTwoFactor": "Activer l’authentification à deux facteurs",
   "accountSecurityDeleteAccount": "Supprimer le compte",
   "accountSecurityDeleteConfirm": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",

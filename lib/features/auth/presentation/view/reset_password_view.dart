@@ -49,9 +49,7 @@ class ResetPasswordView extends StatelessWidget {
               type: ToastType.success,
               message: context.tr.authPasswordResetSuccess,
             );
-            sl<AppNavigator>().pushAndRemoveUntil(
-              screen: const LoginView(),
-            );
+            sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
             context.read<AuthCubit>().clearAction();
           }
         },
