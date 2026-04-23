@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachment.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_cubit.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_state.dart';
@@ -63,11 +63,41 @@ class _ChatViewState extends State<ChatView> {
   Widget build(BuildContext context) {
     return BlocConsumer<ChatDetailCubit, ChatDetailState>(
       listenWhen: (prev, curr) =>
+          ((prev.toneWarning != curr.toneWarning ||
+                      prev.toneSuggestedAlternative !=
+                          curr.toneSuggestedAlternative) &&
+                  curr.toneWarning != null &&
+                  curr.toneSuggestedAlternative != null) ||
           (prev.sendError != curr.sendError && curr.sendError != null) ||
           (prev.isSending && !curr.isSending && curr.sendError == null) ||
           (prev.attachmentFeedback != curr.attachmentFeedback &&
               curr.attachmentFeedback != null),
       listener: (context, state) {
+        if (state.toneWarning != null &&
+            state.toneSuggestedAlternative != null) {
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => _ToneAssistantSheet(
+              warning: state.toneWarning!,
+              suggestedAlternative: state.toneSuggestedAlternative!,
+              onRephrase: (suggested) {
+                _messageController.text = suggested;
+                _messageController.selection = TextSelection.fromPosition(
+                  TextPosition(offset: suggested.length),
+                );
+                Navigator.pop(context);
+                context.read<ChatDetailCubit>().clearToneIntervention();
+              },
+              onClose: () {
+                Navigator.pop(context);
+                context.read<ChatDetailCubit>().clearToneIntervention();
+              },
+            ),
+          );
+          return;
+        }
         if (state.attachmentFeedback != null) {
           final messenger = ScaffoldMessenger.of(context);
           if (state.attachmentFeedback == '__workspace_missing__') {
@@ -100,7 +130,7 @@ class _ChatViewState extends State<ChatView> {
               builder: (_) => AlertDialog(
                 title: const Text('تنبيه'),
                 content: Text(
-                  'ممنوع إرسال رسائل تحتوي على ألفاظ غير لائقة.\n'
+                  '${state.moderationBlockReason ?? 'ممنوع إرسال محتوى غير لائق.'}\n'
                   'عدد التحذيرات: ${state.warningCount}',
                 ),
                 actions: [
@@ -320,7 +350,9 @@ class _ChatViewState extends State<ChatView> {
                               color: AppColors.scaffoldBg,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: AppColors.darkText.withValues(alpha: 0.06),
+                                color: AppColors.darkText.withValues(
+                                  alpha: 0.06,
+                                ),
                               ),
                             ),
                             child: Row(
@@ -330,21 +362,26 @@ class _ChatViewState extends State<ChatView> {
                                     height: 34,
                                     child: ListView.separated(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: state.pendingAttachmentNames.length,
+                                      itemCount:
+                                          state.pendingAttachmentNames.length,
                                       separatorBuilder: (_, __) =>
                                           const SizedBox(width: 8),
                                       itemBuilder: (context, i) {
-                                        final name = state.pendingAttachmentNames[i];
+                                        final name =
+                                            state.pendingAttachmentNames[i];
                                         return Container(
-                                          padding: const EdgeInsetsDirectional.only(
-                                            start: 10,
-                                            end: 6,
-                                            top: 6,
-                                            bottom: 6,
-                                          ),
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                                start: 10,
+                                                end: 6,
+                                                top: 6,
+                                                bottom: 6,
+                                              ),
                                           decoration: BoxDecoration(
                                             color: AppColors.background,
-                                            borderRadius: BorderRadius.circular(999),
+                                            borderRadius: BorderRadius.circular(
+                                              999,
+                                            ),
                                             border: Border.all(
                                               color: AppColors.darkText
                                                   .withValues(alpha: 0.06),
@@ -360,13 +397,15 @@ class _ChatViewState extends State<ChatView> {
                                               ),
                                               const SizedBox(width: 6),
                                               ConstrainedBox(
-                                                constraints: const BoxConstraints(
-                                                  maxWidth: 170,
-                                                ),
+                                                constraints:
+                                                    const BoxConstraints(
+                                                      maxWidth: 170,
+                                                    ),
                                                 child: Text(
                                                   name,
                                                   maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: AppTextStyles.caption(
                                                     color: AppColors.darkText,
                                                   ),
@@ -377,10 +416,12 @@ class _ChatViewState extends State<ChatView> {
                                                 onTap: state.isSending
                                                     ? null
                                                     : () => context
-                                                        .read<ChatDetailCubit>()
-                                                        .removePendingAttachmentAt(
-                                                          i,
-                                                        ),
+                                                          .read<
+                                                            ChatDetailCubit
+                                                          >()
+                                                          .removePendingAttachmentAt(
+                                                            i,
+                                                          ),
                                                 borderRadius:
                                                     BorderRadius.circular(999),
                                                 child: const Padding(
@@ -404,12 +445,13 @@ class _ChatViewState extends State<ChatView> {
                                   onPressed: state.isSending
                                       ? null
                                       : () => context
-                                          .read<ChatDetailCubit>()
-                                          .clearPendingAttachments(),
+                                            .read<ChatDetailCubit>()
+                                            .clearPendingAttachments(),
                                   style: TextButton.styleFrom(
                                     foregroundColor: AppColors.greyText,
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
                                     minimumSize: const Size(0, 34),
                                   ),
                                   child: Text(
@@ -427,7 +469,9 @@ class _ChatViewState extends State<ChatView> {
                             IconButton(
                               onPressed: state.isSending
                                   ? null
-                                  : () => context.read<ChatDetailCubit>().pickFiles(),
+                                  : () => context
+                                        .read<ChatDetailCubit>()
+                                        .pickFiles(),
                               icon: const Icon(
                                 Iconsax.paperclip,
                                 color: AppColors.darkText,
@@ -436,8 +480,9 @@ class _ChatViewState extends State<ChatView> {
                             IconButton(
                               onPressed: state.isSending
                                   ? null
-                                  : () =>
-                                      context.read<ChatDetailCubit>().pickImages(),
+                                  : () => context
+                                        .read<ChatDetailCubit>()
+                                        .pickImages(),
                               icon: const Icon(
                                 Iconsax.gallery,
                                 color: AppColors.darkText,
@@ -449,8 +494,9 @@ class _ChatViewState extends State<ChatView> {
                                   color: AppColors.scaffoldBg,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color:
-                                        AppColors.darkText.withValues(alpha: 0.05),
+                                    color: AppColors.darkText.withValues(
+                                      alpha: 0.05,
+                                    ),
                                   ),
                                 ),
                                 child: TextField(
@@ -517,6 +563,132 @@ class _ChatViewState extends State<ChatView> {
   void _submitMessage(BuildContext context) {
     FocusScope.of(context).unfocus();
     context.read<ChatDetailCubit>().sendMessage(_messageController.text);
+  }
+}
+
+class _ToneAssistantSheet extends StatelessWidget {
+  const _ToneAssistantSheet({
+    required this.warning,
+    required this.suggestedAlternative,
+    required this.onRephrase,
+    required this.onClose,
+  });
+
+  final String warning;
+  final String suggestedAlternative;
+  final void Function(String suggested) onRephrase;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = MediaQuery.of(context).viewInsets.bottom;
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: padding),
+        child: Container(
+          margin: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF2E0),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.warning_amber_rounded,
+                      color: Color(0xFFE07A00),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Tone Assistant Intervention',
+                      style: AppTextStyles.heading2(),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: onClose,
+                    icon: const Icon(Icons.close, color: AppColors.greyText),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '"$warning"',
+                style: AppTextStyles.body().copyWith(
+                  color: const Color(0xFFE07A00),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Suggested Alternative',
+                style: AppTextStyles.body().copyWith(
+                  color: AppColors.greyText,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7EA),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFFFD9A6)),
+                ),
+                child: Text(
+                  suggestedAlternative,
+                  style: AppTextStyles.body().copyWith(
+                    color: AppColors.darkText,
+                    height: 1.35,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFD54D),
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
+                  onPressed: () => onRephrase(suggestedAlternative),
+                  child: const Text(
+                    'REPHRASE MESSAGE',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -587,8 +759,9 @@ class _ChatBubble extends StatelessWidget {
                             ? a.displayName
                             : context.tr.chatAttachmentFallback;
                         final loading = downloadingAttachmentId == a.id;
-                        final isImage =
-                            (a.mimeType ?? '').toLowerCase().startsWith('image/');
+                        final isImage = (a.mimeType ?? '')
+                            .toLowerCase()
+                            .startsWith('image/');
                         return Padding(
                           padding: const EdgeInsetsDirectional.only(bottom: 6),
                           child: Material(
@@ -598,12 +771,12 @@ class _ChatBubble extends StatelessWidget {
                               onTap: loading
                                   ? null
                                   : (a.id < 0)
-                                      ? null
-                                      : isImage && (a.url ?? '').isNotEmpty
-                                          ? () => _showImagePreview(context, a)
-                                          : () => context
-                                                .read<ChatDetailCubit>()
-                                                .downloadAttachment(a),
+                                  ? null
+                                  : isImage && (a.url ?? '').isNotEmpty
+                                  ? () => _showImagePreview(context, a)
+                                  : () => context
+                                        .read<ChatDetailCubit>()
+                                        .downloadAttachment(a),
                               borderRadius: BorderRadius.circular(10),
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.symmetric(
@@ -624,7 +797,9 @@ class _ChatBubble extends StatelessWidget {
                                       )
                                     else
                                       Icon(
-                                        isImage ? Iconsax.image : Iconsax.document,
+                                        isImage
+                                            ? Iconsax.image
+                                            : Iconsax.document,
                                         size: 18,
                                         color: AppColors.darkText,
                                       ),
@@ -642,7 +817,11 @@ class _ChatBubble extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
-                                      isImage ? 'عرض' : context.tr.chatAttachmentDownloadAction,
+                                      isImage
+                                          ? 'عرض'
+                                          : context
+                                                .tr
+                                                .chatAttachmentDownloadAction,
                                       textAlign: TextAlign.start,
                                       style: AppTextStyles.extraSmall(
                                         color: AppColors.primaryDark,

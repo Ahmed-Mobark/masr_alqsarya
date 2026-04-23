@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/moderation/chat_moderation_service.dart';
+import 'package:masr_al_qsariya/core/moderation/tone_assistant_service.dart';
 import 'package:masr_al_qsariya/core/network/reverb/reverb_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
@@ -33,6 +35,8 @@ class ChatDetailPage extends StatelessWidget {
         sl<WorkspaceIdStorage>(),
         sl<Storage>(),
         ReverbService(),
+        sl<ChatModerationService>(),
+        sl<ToneAssistantService>(),
         chatId,
       )..loadMessages(),
       child: ChatView(chatId: chatId, name: name, avatarUrl: avatarUrl),

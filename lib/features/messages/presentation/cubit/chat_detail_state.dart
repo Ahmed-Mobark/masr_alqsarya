@@ -28,6 +28,9 @@ class ChatDetailState extends Equatable {
     this.messages = const [],
     this.pendingAttachmentNames = const [],
     this.warningCount = 0,
+    this.moderationBlockReason,
+    this.toneWarning,
+    this.toneSuggestedAlternative,
     this.errorMessage,
     this.workspaceMissing = false,
     this.isSending = false,
@@ -41,6 +44,9 @@ class ChatDetailState extends Equatable {
   final List<ChatBubbleRow> messages;
   final List<String> pendingAttachmentNames;
   final int warningCount;
+  final String? moderationBlockReason;
+  final String? toneWarning;
+  final String? toneSuggestedAlternative;
   final String? errorMessage;
   final bool workspaceMissing;
   final bool isSending;
@@ -56,12 +62,16 @@ class ChatDetailState extends Equatable {
     List<ChatBubbleRow>? messages,
     List<String>? pendingAttachmentNames,
     int? warningCount,
+    String? moderationBlockReason,
+    String? toneWarning,
+    String? toneSuggestedAlternative,
     String? errorMessage,
     bool? workspaceMissing,
     bool clearError = false,
     bool? isSending,
     String? sendError,
     bool clearSendError = false,
+    bool clearToneIntervention = false,
     int? downloadingAttachmentId,
     bool clearDownloadingAttachment = false,
     String? attachmentFeedback,
@@ -74,6 +84,13 @@ class ChatDetailState extends Equatable {
       pendingAttachmentNames:
           pendingAttachmentNames ?? this.pendingAttachmentNames,
       warningCount: warningCount ?? this.warningCount,
+      moderationBlockReason: clearSendError
+          ? null
+          : (moderationBlockReason ?? this.moderationBlockReason),
+      toneWarning: clearToneIntervention ? null : (toneWarning ?? this.toneWarning),
+      toneSuggestedAlternative: clearToneIntervention
+          ? null
+          : (toneSuggestedAlternative ?? this.toneSuggestedAlternative),
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       workspaceMissing: workspaceMissing ?? this.workspaceMissing,
       isSending: isSending ?? this.isSending,
@@ -96,6 +113,9 @@ class ChatDetailState extends Equatable {
         messages,
         pendingAttachmentNames,
         warningCount,
+        moderationBlockReason,
+        toneWarning,
+        toneSuggestedAlternative,
         errorMessage,
         workspaceMissing,
         isSending,

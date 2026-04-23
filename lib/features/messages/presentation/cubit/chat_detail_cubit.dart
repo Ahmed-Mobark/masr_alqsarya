@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:masr_al_qsariya/core/moderation/chat_moderation_service.dart';
+import 'package:masr_al_qsariya/core/moderation/tone_assistant_service.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
@@ -30,6 +31,8 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     this._workspaceIdStorage,
     this._storage,
     this._reverb,
+    this._moderation,
+    this._toneAssistant,
     this.chatId,
   ) : super(const ChatDetailState());
 
@@ -39,13 +42,14 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   final WorkspaceIdStorage _workspaceIdStorage;
   final Storage _storage;
   final ReverbService _reverb;
+  final ChatModerationService _moderation;
+  final ToneAssistantService _toneAssistant;
   final int chatId;
 
   bool _soketiSubscribed = false;
   int _optimisticId = -1;
   int _optimisticAttachmentId = -1;
   final List<_LocalAttachment> _pendingAttachments = [];
-  final ChatModerationService _moderation = const ChatModerationService();
 
   void removePendingAttachmentAt(int index) {
     if (index < 0 || index >= _pendingAttachments.length) return;
@@ -89,6 +93,10 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   void clearSendError() {
     emit(state.copyWith(clearSendError: true));
+  }
+
+  void clearToneIntervention() {
+    emit(state.copyWith(clearToneIntervention: true));
   }
 
   void clearAttachmentFeedback() {
@@ -339,19 +347,34 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       return;
     }
 
-    // Moderate only text; attachments-only messages are allowed.
+    // Free tone assistant intervention (UI suggestion) before moderation/send.
     if (text.isNotEmpty) {
-      final decision = _moderation.review(text);
-      if (!decision.allowed) {
+      final tone = _toneAssistant.review(text);
+      if (tone.shouldIntervene) {
         emit(
           state.copyWith(
-            clearSendError: true,
-            sendError: '__blocked__',
-            warningCount: state.warningCount + 1,
+            toneWarning: tone.warning,
+            toneSuggestedAlternative: tone.suggestedAlternative,
           ),
         );
         return;
       }
+    }
+
+    final decision = await _moderation.review(
+      text: text.isEmpty ? null : text,
+      attachmentPaths: _pendingAttachments.map((e) => e.path).toList(),
+    );
+    if (!decision.allowed) {
+      emit(
+        state.copyWith(
+          clearSendError: true,
+          sendError: '__blocked__',
+          moderationBlockReason: decision.reason,
+          warningCount: state.warningCount + 1,
+        ),
+      );
+      return;
     }
 
     emit(state.copyWith(isSending: true, clearSendError: true));
