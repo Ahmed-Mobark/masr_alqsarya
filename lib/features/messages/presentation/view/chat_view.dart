@@ -31,6 +31,27 @@ class _ChatViewState extends State<ChatView> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
+  void _scrollToBottom({bool animated = true}) {
+    if (!_scrollController.hasClients) return;
+    final target = _scrollController.position.maxScrollExtent;
+    if (animated) {
+      _scrollController.animateTo(
+        target,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
+    } else {
+      _scrollController.jumpTo(target);
+    }
+  }
+
+  void _scrollToBottomAfterFrame({bool animated = true}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _scrollToBottom(animated: animated);
+    });
+  }
+
   @override
   void dispose() {
     _messageController.dispose();
@@ -83,6 +104,7 @@ class _ChatViewState extends State<ChatView> {
           return;
         }
         _messageController.clear();
+        _scrollToBottomAfterFrame();
       },
       builder: (context, state) {
         return Scaffold(
@@ -145,7 +167,13 @@ class _ChatViewState extends State<ChatView> {
           body: Column(
             children: [
               Expanded(
-                child: BlocBuilder<ChatDetailCubit, ChatDetailState>(
+                child: BlocConsumer<ChatDetailCubit, ChatDetailState>(
+                  listenWhen: (prev, curr) =>
+                      prev.messages.length != curr.messages.length,
+                  listener: (context, state) {
+                    // Ensure the newest message is visible.
+                    _scrollToBottomAfterFrame();
+                  },
                   builder: (context, state) {
                     if (state.status == ChatDetailStatus.loading &&
                         state.messages.isEmpty) {
