@@ -94,12 +94,31 @@ class _ChatViewState extends State<ChatView> {
           return;
         }
         if (state.sendError != null) {
-          final msg = state.sendError == '__workspace_missing__'
-              ? context.tr.messagesWorkspaceMissing
-              : state.sendError!;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(msg)));
+          if (state.sendError == '__blocked__') {
+            showDialog<void>(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('تنبيه'),
+                content: Text(
+                  'ممنوع إرسال رسائل تحتوي على ألفاظ غير لائقة.\n'
+                  'عدد التحذيرات: ${state.warningCount}',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('حسنًا'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            final msg = state.sendError == '__workspace_missing__'
+                ? context.tr.messagesWorkspaceMissing
+                : state.sendError!;
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(msg)));
+          }
           context.read<ChatDetailCubit>().clearSendError();
           return;
         }

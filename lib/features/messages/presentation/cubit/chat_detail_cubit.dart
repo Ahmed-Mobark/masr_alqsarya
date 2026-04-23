@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:masr_al_qsariya/core/moderation/chat_moderation_service.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
@@ -44,6 +45,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   int _optimisticId = -1;
   int _optimisticAttachmentId = -1;
   final List<_LocalAttachment> _pendingAttachments = [];
+  final ChatModerationService _moderation = const ChatModerationService();
 
   void removePendingAttachmentAt(int index) {
     if (index < 0 || index >= _pendingAttachments.length) return;
@@ -335,6 +337,21 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     if (workspaceId == null) {
       emit(state.copyWith(sendError: '__workspace_missing__'));
       return;
+    }
+
+    // Moderate only text; attachments-only messages are allowed.
+    if (text.isNotEmpty) {
+      final decision = _moderation.review(text);
+      if (!decision.allowed) {
+        emit(
+          state.copyWith(
+            clearSendError: true,
+            sendError: '__blocked__',
+            warningCount: state.warningCount + 1,
+          ),
+        );
+        return;
+      }
     }
 
     emit(state.copyWith(isSending: true, clearSendError: true));

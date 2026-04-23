@@ -75,22 +75,21 @@ class MessagesRemoteDataSourceImpl implements MessagesRemoteDataSource {
     String? body,
     List<String> attachmentPaths,
   ) async {
-    final files = <MultipartFile>[];
-    for (final path in attachmentPaths) {
-      final mime = lookupMimeType(path);
-      files.add(
-        await MultipartFile.fromFile(
-          path,
-          contentType: mime != null ? DioMediaType.parse(mime) : null,
-        ),
-      );
+    final formData = FormData();
+    if (body != null && body.trim().isNotEmpty) {
+      formData.fields.add(MapEntry('body', body.trim()));
     }
 
-    final formData = FormData.fromMap({
-      if (body != null && body.trim().isNotEmpty) 'body': body.trim(),
-      // Laravel عادة يتوقع `attachments` كـ array of files.
-      if (files.isNotEmpty) 'attachments': files,
-    });
+    // Backend validation expects `attachments` as an array.
+    // Send as repeated `attachments[]` parts.
+    for (final path in attachmentPaths) {
+      final mime = lookupMimeType(path);
+      final file = await MultipartFile.fromFile(
+        path,
+        contentType: mime != null ? DioMediaType.parse(mime) : null,
+      );
+      formData.files.add(MapEntry('attachments[]', file));
+    }
 
     await _api.post<Map<String, dynamic>>(
       url: AppEndpoints.workspaceChatMessages(workspaceId, chatId),

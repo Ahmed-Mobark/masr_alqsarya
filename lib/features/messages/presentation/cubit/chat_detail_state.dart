@@ -27,6 +27,7 @@ class ChatDetailState extends Equatable {
     this.status = ChatDetailStatus.initial,
     this.messages = const [],
     this.pendingAttachmentNames = const [],
+    this.warningCount = 0,
     this.errorMessage,
     this.workspaceMissing = false,
     this.isSending = false,
@@ -39,6 +40,7 @@ class ChatDetailState extends Equatable {
   final ChatDetailStatus status;
   final List<ChatBubbleRow> messages;
   final List<String> pendingAttachmentNames;
+  final int warningCount;
   final String? errorMessage;
   final bool workspaceMissing;
   final bool isSending;
@@ -53,6 +55,7 @@ class ChatDetailState extends Equatable {
     ChatDetailStatus? status,
     List<ChatBubbleRow>? messages,
     List<String>? pendingAttachmentNames,
+    int? warningCount,
     String? errorMessage,
     bool? workspaceMissing,
     bool clearError = false,
@@ -70,6 +73,7 @@ class ChatDetailState extends Equatable {
       messages: messages ?? this.messages,
       pendingAttachmentNames:
           pendingAttachmentNames ?? this.pendingAttachmentNames,
+      warningCount: warningCount ?? this.warningCount,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       workspaceMissing: workspaceMissing ?? this.workspaceMissing,
       isSending: isSending ?? this.isSending,
@@ -91,6 +95,7 @@ class ChatDetailState extends Equatable {
         status,
         messages,
         pendingAttachmentNames,
+        warningCount,
         errorMessage,
         workspaceMissing,
         isSending,

@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:livekit_client/livekit_client.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CallRoomView extends StatefulWidget {
   const CallRoomView({
@@ -74,10 +74,7 @@ class _CallRoomViewState extends State<CallRoomView> {
   Future<void> _connect() async {
     setState(() => _connecting = true);
     final room = Room(
-      roomOptions: const RoomOptions(
-        adaptiveStream: true,
-        dynacast: true,
-      ),
+      roomOptions: const RoomOptions(adaptiveStream: true, dynacast: true),
     );
 
     _listener = room.createListener();
@@ -100,15 +97,15 @@ class _CallRoomViewState extends State<CallRoomView> {
       await room.connect(
         url,
         widget.token,
-        connectOptions: const ConnectOptions(
-          autoSubscribe: true,
-        ),
+        connectOptions: const ConnectOptions(autoSubscribe: true),
       );
 
       // Request runtime permissions before creating media tracks.
       // On Android, missing runtime permission commonly throws TrackCreateException.
       final micStatus = await Permission.microphone.request();
-      final camStatus = widget.isVideo ? await Permission.camera.request() : PermissionStatus.denied;
+      final camStatus = widget.isVideo
+          ? await Permission.camera.request()
+          : PermissionStatus.denied;
 
       // Enabling sources can throw (e.g. no permission, no camera device, etc).
       // Never let it crash the whole call; degrade gracefully.
@@ -195,18 +192,19 @@ class _CallRoomViewState extends State<CallRoomView> {
       _room = room;
     } catch (e, st) {
       if (kDebugMode) {
-        developer.log('LiveKit connect failed', name: 'CallRoomView', error: e, stackTrace: st);
+        developer.log(
+          'LiveKit connect failed',
+          name: 'CallRoomView',
+          error: e,
+          stackTrace: st,
+        );
       }
       if (mounted) {
         final raw = e.toString().toLowerCase();
         final msg = raw.contains('no internet')
             ? context.tr.callNoInternet
             : context.tr.callConnectFailed;
-        appToast(
-          context: context,
-          type: ToastType.error,
-          message: msg,
-        );
+        appToast(context: context, type: ToastType.error, message: msg);
         _exiting = true;
         sl<AppNavigator>().pop();
       }
@@ -333,10 +331,9 @@ class _CallRoomViewState extends State<CallRoomView> {
                       widget.roomName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.bodyMedium(color: Colors.white).copyWith(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: AppTextStyles.bodyMedium(
+                        color: Colors.white,
+                      ).copyWith(fontSize: 14.sp, fontWeight: FontWeight.w600),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -351,7 +348,9 @@ class _CallRoomViewState extends State<CallRoomView> {
             ),
             Expanded(
               child: _connecting || room == null
-                  ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
                   : _VideoStage(room: room),
             ),
             Padding(
@@ -407,7 +406,9 @@ class _VideoStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remoteParticipants = room.remoteParticipants.values.toList();
-    final remote = remoteParticipants.isNotEmpty ? remoteParticipants.first : null;
+    final remote = remoteParticipants.isNotEmpty
+        ? remoteParticipants.first
+        : null;
     final remoteVideo = remote == null ? null : _firstSubscribedVideo(remote);
     final local = room.localParticipant;
     final localVideo = local == null ? null : _firstSubscribedVideo(local);
@@ -422,10 +423,7 @@ class _VideoStage extends StatelessWidget {
                     style: AppTextStyles.bodyMedium(color: Colors.white70),
                   ),
                 )
-              : VideoTrackRenderer(
-                  remoteVideo,
-                  fit: VideoViewFit.cover,
-                ),
+              : VideoTrackRenderer(remoteVideo, fit: VideoViewFit.cover),
         ),
         Positioned(
           right: 12.w,
@@ -469,8 +467,8 @@ class _RoundControlButton extends StatelessWidget {
     final bg = danger
         ? Colors.red
         : isActive
-            ? Colors.white
-            : Colors.white24;
+        ? Colors.white
+        : Colors.white24;
     final fg = danger ? Colors.white : (isActive ? Colors.black : Colors.white);
 
     return InkWell(
@@ -481,16 +479,15 @@ class _RoundControlButton extends StatelessWidget {
           Container(
             width: 54.r,
             height: 54.r,
-            decoration: BoxDecoration(
-              color: bg,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
             child: Icon(icon, color: fg, size: 24.sp),
           ),
           SizedBox(height: 6.h),
           Text(
             label,
-            style: AppTextStyles.tiny(color: Colors.white70).copyWith(fontSize: 11.sp),
+            style: AppTextStyles.tiny(
+              color: Colors.white70,
+            ).copyWith(fontSize: 11.sp),
           ),
         ],
       ),
@@ -514,9 +511,10 @@ class _Pill extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: AppTextStyles.tiny(color: Colors.white).copyWith(fontSize: 11.sp),
+        style: AppTextStyles.tiny(
+          color: Colors.white,
+        ).copyWith(fontSize: 11.sp),
       ),
     );
   }
 }
-
