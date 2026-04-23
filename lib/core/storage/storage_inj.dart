@@ -1,5 +1,6 @@
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage_impl.dart';
+import 'package:masr_al_qsariya/core/storage/call_join_storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -15,6 +16,9 @@ Future<void> initStorageInjection(GetIt sl) async {
   sl.registerSingleton<SharedPreferences>(sharedPreferences);
   sl.registerLazySingleton<WorkspaceIdStorage>(
     () => WorkspaceIdStorageImpl(sl<SharedPreferences>()),
+  );
+  sl.registerLazySingleton<CallJoinStorage>(
+    () => CallJoinStorageImpl(sl<SharedPreferences>()),
   );
 
   //! Register Models

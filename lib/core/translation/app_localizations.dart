@@ -2182,6 +2182,84 @@ abstract class AppLocalizations {
   /// **'JOIN'**
   String get scheduleJoin;
 
+  /// No description provided for @scheduleJoinCallSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined call successfully.'**
+  String get scheduleJoinCallSuccess;
+
+  /// No description provided for @scheduleJoinCallFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not join the call. Please try again.'**
+  String get scheduleJoinCallFailed;
+
+  /// No description provided for @callConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…'**
+  String get callConnecting;
+
+  /// No description provided for @callLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get callLive;
+
+  /// No description provided for @callMic.
+  ///
+  /// In en, this message translates to:
+  /// **'Mic'**
+  String get callMic;
+
+  /// No description provided for @callCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get callCamera;
+
+  /// No description provided for @callLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get callLeave;
+
+  /// No description provided for @callWaitingForOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the other participant…'**
+  String get callWaitingForOther;
+
+  /// No description provided for @callConnectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to the call.'**
+  String get callConnectFailed;
+
+  /// No description provided for @callNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get callNoInternet;
+
+  /// No description provided for @callMicPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required to join the call.'**
+  String get callMicPermissionRequired;
+
+  /// No description provided for @callCameraPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required for video calls.'**
+  String get callCameraPermissionRequired;
+
+  /// No description provided for @callUnsupportedPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Live calls are supported on Android/iOS only. Please run the mobile app.'**
+  String get callUnsupportedPlatform;
+
   /// No description provided for @scheduleViewReceipt.
   ///
   /// In en, this message translates to:

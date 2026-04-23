@@ -9,7 +9,11 @@ import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/view/add_schedule_view.dart';
+import 'package:masr_al_qsariya/features/schedule/presentation/view/call_room_view.dart';
+import 'package:masr_al_qsariya/features/schedule/presentation/cubit/join_call_cubit.dart';
+import 'package:masr_al_qsariya/features/schedule/presentation/cubit/join_call_state.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/cubit/schedule_calls_cubit.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/cubit/schedule_calls_state.dart';
 
@@ -18,8 +22,11 @@ class ScheduleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ScheduleCallsCubit>()..load(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<ScheduleCallsCubit>()..load()),
+        BlocProvider(create: (_) => sl<JoinCallCubit>()),
+      ],
       child: const _ScheduleBody(),
     );
   }
@@ -36,6 +43,7 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
   DateTime _focusedMonth = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   int _selectedFilterIndex = 0;
+  int? _lastOpenedCallId;
 
   List<String> _filterLabels(BuildContext context) => [
         context.tr.scheduleFilterAll,
@@ -116,8 +124,52 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
-        child: BlocBuilder<ScheduleCallsCubit, ScheduleCallsState>(
-          builder: (context, callsState) {
+        child: BlocListener<JoinCallCubit, JoinCallState>(
+          listenWhen: (prev, next) => prev.status != next.status,
+          listener: (context, state) {
+            if (state.status == JoinCallStatus.success) {
+              appToast(
+                context: context,
+                type: ToastType.success,
+                message: context.tr.scheduleJoinCallSuccess,
+              );
+              final callId = state.activeCallId;
+              final joined = state.joined;
+              if (callId == null || joined == null) return;
+              if (_lastOpenedCallId == callId) return;
+              _lastOpenedCallId = callId;
+
+              String? mode;
+              for (final c in context.read<ScheduleCallsCubit>().state.calls) {
+                if (c.id == callId) {
+                  mode = c.mode;
+                  break;
+                }
+              }
+              final isVideo = (mode ?? 'video') == 'video';
+
+              sl<AppNavigator>().push(
+                screen: CallRoomView(
+                  livekitUrl: joined.livekitUrl,
+                  token: joined.token,
+                  roomName: joined.roomName,
+                  isVideo: isVideo,
+                ),
+              );
+            }
+            if (state.status == JoinCallStatus.failure) {
+              final msg = state.error == 'workspace_missing'
+                  ? context.tr.scheduleErrorWorkspaceMissing
+                  : context.tr.scheduleJoinCallFailed;
+              appToast(
+                context: context,
+                type: ToastType.error,
+                message: msg,
+              );
+            }
+          },
+          child: BlocBuilder<ScheduleCallsCubit, ScheduleCallsState>(
+            builder: (context, callsState) {
             final isLoading = callsState.status == ScheduleCallsStatus.loading;
             final isFailure = callsState.status == ScheduleCallsStatus.failure;
             final hasCalls = callsState.calls.isNotEmpty;
@@ -451,6 +503,7 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
             );
           },
         ),
+      ),
       ),
     );
   }
@@ -883,23 +936,44 @@ class _CallCard extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   height: 44.h,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.darkText,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999.r),
-                      ),
-                    ),
-                    child: Text(
-                      context.tr.scheduleJoin,
-                      style: AppTextStyles.bodyMedium(
-                              color: AppColors.darkText)
-                          .copyWith(
-                              fontSize: 14.sp, fontWeight: FontWeight.w700),
-                    ),
+                  child: BlocBuilder<JoinCallCubit, JoinCallState>(
+                    builder: (context, joinState) {
+                      final callId =
+                          int.tryParse(event.id.replaceFirst('call_', ''));
+                      final isJoining = joinState.status == JoinCallStatus.loading &&
+                          joinState.activeCallId == callId;
+                      return ElevatedButton(
+                        onPressed: isJoining || callId == null
+                            ? null
+                            : () =>
+                                context.read<JoinCallCubit>().join(callId),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.darkText,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(999.r),
+                          ),
+                        ),
+                        child: isJoining
+                            ? SizedBox(
+                                width: 18.r,
+                                height: 18.r,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.darkText,
+                                ),
+                              )
+                            : Text(
+                                context.tr.scheduleJoin,
+                                style: AppTextStyles.bodyMedium(
+                                        color: AppColors.darkText)
+                                    .copyWith(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w700),
+                              ),
+                      );
+                    },
                   ),
                 ),
               ],

@@ -4,6 +4,7 @@ import 'package:masr_al_qsariya/core/network/network_service/repository_helper.d
 import 'package:masr_al_qsariya/features/schedule/data/datasources/calls_remote_data_source.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/repositories/calls_repository.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/entities/call.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/entities/call_join.dart';
 
 class CallsRepositoryImpl with RepositoryHelper implements CallsRepository {
   const CallsRepositoryImpl(this._remote);
@@ -31,6 +32,17 @@ class CallsRepositoryImpl with RepositoryHelper implements CallsRepository {
     return handleEither(() async {
       final models = await _remote.getCalls(workspaceId: workspaceId);
       return models.map((m) => m.toEntity()).toList();
+    });
+  }
+
+  @override
+  Future<Either<Failure, CallJoinEntity>> joinCall({
+    required int workspaceId,
+    required int callId,
+  }) {
+    return handleEither(() async {
+      final model = await _remote.joinCall(workspaceId: workspaceId, callId: callId);
+      return model.toEntity();
     });
   }
 }
