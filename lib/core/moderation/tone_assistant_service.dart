@@ -65,6 +65,12 @@ class ToneAssistantService {
 
 String _normalize(String input) {
   var s = input.toLowerCase();
+  // Arabizi digits → Arabic-ish letters (best effort).
+  s = s
+      .replaceAll('7', 'ح')
+      .replaceAll('3', 'ع')
+      .replaceAll('5', 'خ')
+      .replaceAll('2', 'ء');
   s = s
       .replaceAll('أ', 'ا')
       .replaceAll('إ', 'ا')
@@ -79,6 +85,7 @@ String _normalize(String input) {
 const List<String> _profanity = [
   // Arabic
   'احا',
+  'aحa', // catches a7a → aحa after mapping
   'كس',
   'كسم',
   'شرمو',

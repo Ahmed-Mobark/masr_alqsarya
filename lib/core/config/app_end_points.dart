@@ -89,9 +89,6 @@ class AppEndpoints {
   ) =>
       "workspaces/$workspaceId/chats/$chatId/attachments/$attachmentId/download";
 
-  // Moderation (AI)
-  static const String chatModerationReview = "moderation/review";
-
   // Calls
   static String workspaceCalls(int workspaceId) => "workspaces/$workspaceId/calls";
   static String workspaceCallJoin(int workspaceId, int callId) =>

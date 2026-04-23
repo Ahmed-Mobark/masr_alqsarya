@@ -30,6 +30,10 @@ class ChatModerationService {
     String? text,
     List<String> attachmentPaths = const [],
   }) async {
+    if (kDebugMode) {
+      // ignore: avoid_print
+      print('ChatModerationService remote: ${_remote.runtimeType}');
+    }
     // OpenAI-only moderation (text + images/files).
     if (_remote != null) {
       try {

@@ -3,7 +3,6 @@ import 'package:masr_al_qsariya/core/moderation/chat_moderation_remote_data_sour
 import 'package:masr_al_qsariya/core/moderation/chat_moderation_service.dart';
 import 'package:masr_al_qsariya/core/moderation/openai_moderation_remote_data_source.dart';
 import 'package:masr_al_qsariya/core/moderation/tone_assistant_service.dart';
-import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
 
 void initModerationInjection(GetIt sl) {
   // WARNING: Putting OpenAI keys in the client is insecure.
@@ -19,9 +18,10 @@ void initModerationInjection(GetIt sl) {
       () => _ChatModerationRemoteFromOpenAi(sl<OpenAiModerationRemoteDataSource>()),
     );
   } else {
-    // Fallback: use app backend endpoint if it exists, otherwise local filter only.
+    // Free mode: DON'T call backend moderation endpoint (often not available).
+    // We'll rely on ToneAssistantService (on-device) for pre-send filtering/UX.
     sl.registerLazySingleton<ChatModerationRemoteDataSource>(
-      () => ChatModerationRemoteDataSourceImpl(sl<ApiBaseHelper>()),
+      () => const _AllowAllModerationRemote(),
     );
   }
 
@@ -30,6 +30,18 @@ void initModerationInjection(GetIt sl) {
   );
 
   sl.registerLazySingleton<ToneAssistantService>(() => const ToneAssistantService());
+}
+
+class _AllowAllModerationRemote implements ChatModerationRemoteDataSource {
+  const _AllowAllModerationRemote();
+
+  @override
+  Future<Map<String, dynamic>> review({
+    String? text,
+    List<String> attachmentPaths = const [],
+  }) async {
+    return const {'allowed': true};
+  }
 }
 
 class _ChatModerationRemoteFromOpenAi implements ChatModerationRemoteDataSource {
