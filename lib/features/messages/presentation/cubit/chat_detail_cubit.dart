@@ -264,7 +264,8 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   }
 
   void _handleRealtimeEvent(String eventName, Map<String, dynamic> data) {
-    if (eventName == 'message.sent') {
+    final normalized = _normalizeEventName(eventName);
+    if (normalized == 'message.sent' || normalized == 'message_sent') {
       final incoming = _parseMessageSent(data);
       if (incoming == null) return;
 
@@ -310,6 +311,20 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
     // For other events (e.g. messages.read), safest is a silent refresh.
     unawaited(loadMessages(silentRefresh: true));
+  }
+
+  String _normalizeEventName(String raw) {
+    var name = raw.trim();
+    if (name.startsWith('.')) name = name.substring(1);
+    // Some backends send fully-qualified class names, e.g. "App\\Events\\MessageSent".
+    if (name.contains(r'\')) {
+      name = name.split(r'\').last;
+    }
+    name = name.toLowerCase();
+    if (name == 'messagesent') return 'message.sent';
+    if (name == 'message.sent') return 'message.sent';
+    if (name == 'message_sent') return 'message_sent';
+    return name;
   }
 
   Future<void> sendMessage(String rawText) async {
@@ -372,11 +387,19 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   }
 
   _IncomingMessage? _parseMessageSent(Map<String, dynamic> data) {
-    final id = data['id'];
-    final bodyRaw = data['body'];
-    final createdAt = data['created_at'];
+    // Laravel broadcasting payloads vary between setups:
+    // - flat fields {id, body, created_at, sender, attachments}
+    // - nested under {message: {...}} or {data: {...}}
+    final dynamic nested = data['message'] ?? data['data'];
+    final Map<String, dynamic> payload = nested is Map
+        ? Map<String, dynamic>.from(nested)
+        : data;
+
+    final id = payload['id'];
+    final bodyRaw = payload['body'];
+    final createdAt = payload['created_at'];
     if (id is! int) return null;
-    final sender = data['sender'];
+    final sender = payload['sender'];
     int? senderUserId;
     if (sender is Map) {
       final su = sender['user_id'];
@@ -384,7 +407,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
 
     final body = (bodyRaw is String) ? bodyRaw : '';
-    final attachments = _attachmentsFromMap(data);
+    final attachments = _attachmentsFromMap(payload);
     if (body.trim().isEmpty && attachments.isEmpty) return null;
     return _IncomingMessage(
       id: id,
