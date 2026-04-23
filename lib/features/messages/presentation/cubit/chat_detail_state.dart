@@ -26,6 +26,7 @@ class ChatDetailState extends Equatable {
   const ChatDetailState({
     this.status = ChatDetailStatus.initial,
     this.messages = const [],
+    this.pendingAttachmentNames = const [],
     this.errorMessage,
     this.workspaceMissing = false,
     this.isSending = false,
@@ -37,6 +38,7 @@ class ChatDetailState extends Equatable {
 
   final ChatDetailStatus status;
   final List<ChatBubbleRow> messages;
+  final List<String> pendingAttachmentNames;
   final String? errorMessage;
   final bool workspaceMissing;
   final bool isSending;
@@ -50,6 +52,7 @@ class ChatDetailState extends Equatable {
   ChatDetailState copyWith({
     ChatDetailStatus? status,
     List<ChatBubbleRow>? messages,
+    List<String>? pendingAttachmentNames,
     String? errorMessage,
     bool? workspaceMissing,
     bool clearError = false,
@@ -65,6 +68,8 @@ class ChatDetailState extends Equatable {
     return ChatDetailState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
+      pendingAttachmentNames:
+          pendingAttachmentNames ?? this.pendingAttachmentNames,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       workspaceMissing: workspaceMissing ?? this.workspaceMissing,
       isSending: isSending ?? this.isSending,
@@ -85,6 +90,7 @@ class ChatDetailState extends Equatable {
   List<Object?> get props => [
         status,
         messages,
+        pendingAttachmentNames,
         errorMessage,
         workspaceMissing,
         isSending,

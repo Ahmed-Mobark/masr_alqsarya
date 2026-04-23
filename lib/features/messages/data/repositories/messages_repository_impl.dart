@@ -47,10 +47,16 @@ class MessagesRepositoryImpl with RepositoryHelper implements MessagesRepository
   Future<Either<Failure, void>> sendChatMessage(
     int workspaceId,
     int chatId,
-    String body,
+    String? body,
+    List<String> attachmentPaths,
   ) {
     return handleEither(() async {
-      await _remote.sendChatMessage(workspaceId, chatId, body);
+      await _remote.sendChatMessage(
+        workspaceId,
+        chatId,
+        body,
+        attachmentPaths,
+      );
     });
   }
 

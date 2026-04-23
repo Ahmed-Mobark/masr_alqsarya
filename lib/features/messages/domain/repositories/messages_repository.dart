@@ -16,7 +16,8 @@ abstract class MessagesRepository {
   Future<Either<Failure, void>> sendChatMessage(
     int workspaceId,
     int chatId,
-    String body,
+    String? body,
+    List<String> attachmentPaths,
   );
 
   Future<Either<Failure, Uint8List>> downloadChatAttachment(

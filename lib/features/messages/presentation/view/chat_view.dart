@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachment.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_cubit.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_state.dart';
 
@@ -228,7 +231,9 @@ class _ChatViewState extends State<ChatView> {
                 ),
               ),
               BlocBuilder<ChatDetailCubit, ChatDetailState>(
-                buildWhen: (p, c) => p.isSending != c.isSending,
+                buildWhen: (p, c) =>
+                    p.isSending != c.isSending ||
+                    p.pendingAttachmentNames != c.pendingAttachmentNames,
                 builder: (context, state) {
                   return Container(
                     padding: EdgeInsetsDirectional.only(
@@ -247,54 +252,208 @@ class _ChatViewState extends State<ChatView> {
                         ),
                       ],
                     ),
-                    child: Row(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _messageController,
-                            readOnly: state.isSending,
-                            textAlign: TextAlign.start,
-                            decoration: InputDecoration(
-                              hintText: context.tr.chatTypeMessageHint,
-                              hintStyle: AppTextStyles.caption(
-                                color: AppColors.greyText,
-                              ),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 16,
+                        if (state.pendingAttachmentNames.isNotEmpty)
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsetsDirectional.only(
+                              start: 6,
+                              end: 6,
+                              bottom: 8,
+                            ),
+                            padding: const EdgeInsetsDirectional.only(
+                              start: 10,
+                              end: 10,
+                              top: 8,
+                              bottom: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.scaffoldBg,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: AppColors.darkText.withValues(alpha: 0.06),
                               ),
                             ),
-                            style: AppTextStyles.bodyMedium(),
-                            onSubmitted: state.isSending
-                                ? null
-                                : (_) => _submitMessage(context),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: state.isSending
-                              ? const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: AppColors.darkText,
-                                  ),
-                                )
-                              : IconButton(
-                                  onPressed: () => _submitMessage(context),
-                                  icon: const Icon(
-                                    Icons.send_rounded,
-                                    size: 20,
-                                    color: AppColors.darkText,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 34,
+                                    child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: state.pendingAttachmentNames.length,
+                                      separatorBuilder: (_, __) =>
+                                          const SizedBox(width: 8),
+                                      itemBuilder: (context, i) {
+                                        final name = state.pendingAttachmentNames[i];
+                                        return Container(
+                                          padding: const EdgeInsetsDirectional.only(
+                                            start: 10,
+                                            end: 6,
+                                            top: 6,
+                                            bottom: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.background,
+                                            borderRadius: BorderRadius.circular(999),
+                                            border: Border.all(
+                                              color: AppColors.darkText
+                                                  .withValues(alpha: 0.06),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Iconsax.document,
+                                                size: 16,
+                                                color: AppColors.greyText,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              ConstrainedBox(
+                                                constraints: const BoxConstraints(
+                                                  maxWidth: 170,
+                                                ),
+                                                child: Text(
+                                                  name,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppTextStyles.caption(
+                                                    color: AppColors.darkText,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 6),
+                                              InkWell(
+                                                onTap: state.isSending
+                                                    ? null
+                                                    : () => context
+                                                        .read<ChatDetailCubit>()
+                                                        .removePendingAttachmentAt(
+                                                          i,
+                                                        ),
+                                                borderRadius:
+                                                    BorderRadius.circular(999),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(2),
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    size: 16,
+                                                    color: AppColors.greyText,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: state.isSending
+                                      ? null
+                                      : () => context
+                                          .read<ChatDetailCubit>()
+                                          .clearPendingAttachments(),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.greyText,
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 8),
+                                    minimumSize: const Size(0, 34),
+                                  ),
+                                  child: Text(
+                                    'مسح',
+                                    style: AppTextStyles.caption(
+                                      color: AppColors.greyText,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: state.isSending
+                                  ? null
+                                  : () => context.read<ChatDetailCubit>().pickFiles(),
+                              icon: const Icon(
+                                Iconsax.paperclip,
+                                color: AppColors.darkText,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: state.isSending
+                                  ? null
+                                  : () =>
+                                      context.read<ChatDetailCubit>().pickImages(),
+                              icon: const Icon(
+                                Iconsax.gallery,
+                                color: AppColors.darkText,
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.scaffoldBg,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color:
+                                        AppColors.darkText.withValues(alpha: 0.05),
+                                  ),
+                                ),
+                                child: TextField(
+                                  controller: _messageController,
+                                  readOnly: state.isSending,
+                                  textAlign: TextAlign.start,
+                                  decoration: InputDecoration(
+                                    hintText: context.tr.chatTypeMessageHint,
+                                    hintStyle: AppTextStyles.caption(
+                                      color: AppColors.greyText,
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 14,
+                                    ),
+                                  ),
+                                  style: AppTextStyles.bodyMedium(),
+                                  onSubmitted: state.isSending
+                                      ? null
+                                      : (_) => _submitMessage(context),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: state.isSending
+                                  ? const Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.darkText,
+                                      ),
+                                    )
+                                  : IconButton(
+                                      onPressed: () => _submitMessage(context),
+                                      icon: const Icon(
+                                        Icons.send_rounded,
+                                        size: 20,
+                                        color: AppColors.darkText,
+                                      ),
+                                    ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -381,6 +540,8 @@ class _ChatBubble extends StatelessWidget {
                             ? a.displayName
                             : context.tr.chatAttachmentFallback;
                         final loading = downloadingAttachmentId == a.id;
+                        final isImage =
+                            (a.mimeType ?? '').toLowerCase().startsWith('image/');
                         return Padding(
                           padding: const EdgeInsetsDirectional.only(bottom: 6),
                           child: Material(
@@ -389,9 +550,13 @@ class _ChatBubble extends StatelessWidget {
                             child: InkWell(
                               onTap: loading
                                   ? null
-                                  : () => context
-                                        .read<ChatDetailCubit>()
-                                        .downloadAttachment(a),
+                                  : (a.id < 0)
+                                      ? null
+                                      : isImage && (a.url ?? '').isNotEmpty
+                                          ? () => _showImagePreview(context, a)
+                                          : () => context
+                                                .read<ChatDetailCubit>()
+                                                .downloadAttachment(a),
                               borderRadius: BorderRadius.circular(10),
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.symmetric(
@@ -411,8 +576,8 @@ class _ChatBubble extends StatelessWidget {
                                         ),
                                       )
                                     else
-                                      const Icon(
-                                        Iconsax.document,
+                                      Icon(
+                                        isImage ? Iconsax.image : Iconsax.document,
                                         size: 18,
                                         color: AppColors.darkText,
                                       ),
@@ -430,7 +595,7 @@ class _ChatBubble extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
-                                      context.tr.chatAttachmentDownloadAction,
+                                      isImage ? 'عرض' : context.tr.chatAttachmentDownloadAction,
                                       textAlign: TextAlign.start,
                                       style: AppTextStyles.extraSmall(
                                         color: AppColors.primaryDark,
@@ -460,4 +625,50 @@ class _ChatBubble extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showImagePreview(BuildContext context, ChatAttachment attachment) {
+  final token = sl<Storage>().getToken();
+  final url = attachment.url ?? '';
+  if (url.isEmpty) return;
+  showDialog<void>(
+    context: context,
+    builder: (_) {
+      return Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        backgroundColor: Colors.black,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: InteractiveViewer(
+                child: Image.network(
+                  url,
+                  fit: BoxFit.contain,
+                  headers: {
+                    if (token != null && token.isNotEmpty)
+                      'Authorization': 'Bearer $token',
+                    'Accept': '*/*',
+                  },
+                  errorBuilder: (_, __, ___) => Center(
+                    child: Text(
+                      'تعذر عرض الصورة',
+                      style: AppTextStyles.body(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            PositionedDirectional(
+              top: 8,
+              end: 8,
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

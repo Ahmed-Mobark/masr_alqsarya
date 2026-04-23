@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
@@ -40,6 +42,48 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   bool _soketiSubscribed = false;
   int _optimisticId = -1;
+  int _optimisticAttachmentId = -1;
+  final List<_LocalAttachment> _pendingAttachments = [];
+
+  void removePendingAttachmentAt(int index) {
+    if (index < 0 || index >= _pendingAttachments.length) return;
+    _pendingAttachments.removeAt(index);
+    emit(state.copyWith(
+      pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+    ));
+  }
+
+  void clearPendingAttachments() {
+    _pendingAttachments.clear();
+    emit(state.copyWith(pendingAttachmentNames: const []));
+  }
+
+  Future<void> pickFiles() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result == null) return;
+    for (final f in result.files) {
+      final path = f.path;
+      if (path == null || path.trim().isEmpty) continue;
+      _pendingAttachments.add(_LocalAttachment(path: path, name: f.name));
+    }
+    emit(state.copyWith(
+      pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+    ));
+  }
+
+  Future<void> pickImages({ImageSource source = ImageSource.gallery}) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickMultiImage();
+    if (picked.isEmpty) return;
+    for (final x in picked) {
+      _pendingAttachments.add(
+        _LocalAttachment(path: x.path, name: x.name),
+      );
+    }
+    emit(state.copyWith(
+      pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+    ));
+  }
 
   void clearSendError() {
     emit(state.copyWith(clearSendError: true));
@@ -226,7 +270,24 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
       final myUserId = _storage.getUser()?.id;
       if (myUserId != null && incoming.senderUserId == myUserId) {
-        // We already show an optimistic bubble; avoid a duplicate refresh.
+        // Reconcile optimistic bubble with server id/attachments.
+        final idx = state.messages.lastIndexWhere(
+          (m) => (m.messageId ?? 0) < 0 && m.text == incoming.body,
+        );
+        if (idx != -1) {
+          final updated = List<ChatBubbleRow>.from(state.messages);
+          final current = updated[idx];
+          updated[idx] = ChatBubbleRow(
+            messageId: incoming.id,
+            text: current.text,
+            time: current.time,
+            isSent: true,
+            attachments: incoming.attachments.isNotEmpty
+                ? incoming.attachments
+                : current.attachments,
+          );
+          emit(state.copyWith(messages: updated));
+        }
         return;
       }
 
@@ -253,7 +314,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   Future<void> sendMessage(String rawText) async {
     final text = rawText.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty && _pendingAttachments.isEmpty) return;
 
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {
@@ -263,24 +324,36 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
     emit(state.copyWith(isSending: true, clearSendError: true));
 
+    final optimisticAttachments = _pendingAttachments
+        .map(
+          (a) => ChatAttachment(
+            id: _optimisticAttachmentId--,
+            displayName: a.name,
+          ),
+        )
+        .toList();
+
     final optimistic = ChatBubbleRow(
       messageId: _optimisticId--,
       text: text,
       time: _formatTime(DateTime.now().toIso8601String()),
       isSent: true,
-      attachments: const [],
+      attachments: optimisticAttachments,
     );
     emit(state.copyWith(
       messages: List<ChatBubbleRow>.from(state.messages)..add(optimistic),
+      pendingAttachmentNames: const [],
     ));
 
     final result = await _sendMessage(
       SendChatMessageParams(
         workspaceId: workspaceId,
         chatId: chatId,
-        body: text,
+        body: text.isEmpty ? null : text,
+        attachmentPaths: _pendingAttachments.map((e) => e.path).toList(),
       ),
     );
+    _pendingAttachments.clear();
 
     final failure = result.fold<Failure?>((f) => f, (_) => null);
     if (failure != null) {
@@ -300,9 +373,9 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   _IncomingMessage? _parseMessageSent(Map<String, dynamic> data) {
     final id = data['id'];
-    final body = data['body'];
+    final bodyRaw = data['body'];
     final createdAt = data['created_at'];
-    if (id is! int || body is! String) return null;
+    if (id is! int) return null;
     final sender = data['sender'];
     int? senderUserId;
     if (sender is Map) {
@@ -310,15 +383,9 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       if (su is int) senderUserId = su;
     }
 
-    final attachmentsRaw = data['attachments'];
-    final attachments = <ChatAttachment>[];
-    if (attachmentsRaw is List) {
-      for (final a in attachmentsRaw) {
-        if (a is ChatAttachment) {
-          attachments.add(a);
-        }
-      }
-    }
+    final body = (bodyRaw is String) ? bodyRaw : '';
+    final attachments = _attachmentsFromMap(data);
+    if (body.trim().isEmpty && attachments.isEmpty) return null;
     return _IncomingMessage(
       id: id,
       body: body,
@@ -348,6 +415,41 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
     return super.close();
   }
+}
+
+List<ChatAttachment> _attachmentsFromMap(Map<String, dynamic> map) {
+  final raw = map['attachments'];
+  if (raw is! List) return const [];
+  final out = <ChatAttachment>[];
+  for (final item in raw) {
+    if (item is! Map) continue;
+    final m = Map<String, dynamic>.from(item);
+    final id = (m['id'] as num?)?.toInt();
+    if (id == null) continue;
+    final name = (m['original_name'] as String?)?.trim() ??
+        (m['original_filename'] as String?)?.trim() ??
+        (m['file_name'] as String?)?.trim() ??
+        (m['name'] as String?)?.trim() ??
+        '';
+    final url = (m['url'] as String?)?.trim();
+    final mimeType = (m['mime_type'] as String?)?.trim() ??
+        (m['mimeType'] as String?)?.trim();
+    out.add(
+      ChatAttachment(
+        id: id,
+        displayName: name,
+        url: url,
+        mimeType: mimeType,
+      ),
+    );
+  }
+  return out;
+}
+
+class _LocalAttachment {
+  const _LocalAttachment({required this.path, required this.name});
+  final String path;
+  final String name;
 }
 
 class _IncomingMessage {

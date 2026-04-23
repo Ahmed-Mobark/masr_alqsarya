@@ -29,7 +29,17 @@ class ChatMessageModel {
           (item['file_name'] as String?)?.trim() ??
           (item['name'] as String?)?.trim() ??
           '';
-      out.add(ChatAttachment(id: id, displayName: name));
+      final url = (item['url'] as String?)?.trim();
+      final mimeType = (item['mime_type'] as String?)?.trim() ??
+          (item['mimeType'] as String?)?.trim();
+      out.add(
+        ChatAttachment(
+          id: id,
+          displayName: name,
+          url: url,
+          mimeType: mimeType,
+        ),
+      );
     }
     return out;
   }

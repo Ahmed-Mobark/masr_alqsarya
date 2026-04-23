@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
 import 'package:masr_al_qsariya/features/messages/data/models/chat_message_model.dart';
+import 'package:mime/mime.dart';
 
 abstract class MessagesRemoteDataSource {
   Future<List<Map<String, dynamic>>> fetchChatThreads(int workspaceId);
@@ -15,7 +17,8 @@ abstract class MessagesRemoteDataSource {
   Future<void> sendChatMessage(
     int workspaceId,
     int chatId,
-    String body,
+    String? body,
+    List<String> attachmentPaths,
   );
 
   Future<Uint8List> downloadChatAttachment(
@@ -69,11 +72,30 @@ class MessagesRemoteDataSourceImpl implements MessagesRemoteDataSource {
   Future<void> sendChatMessage(
     int workspaceId,
     int chatId,
-    String body,
+    String? body,
+    List<String> attachmentPaths,
   ) async {
+    final files = <MultipartFile>[];
+    for (final path in attachmentPaths) {
+      final mime = lookupMimeType(path);
+      files.add(
+        await MultipartFile.fromFile(
+          path,
+          contentType: mime != null ? DioMediaType.parse(mime) : null,
+        ),
+      );
+    }
+
+    final formData = FormData.fromMap({
+      if (body != null && body.trim().isNotEmpty) 'body': body.trim(),
+      // Laravel عادة يتوقع `attachments` كـ array of files.
+      if (files.isNotEmpty) 'attachments': files,
+    });
+
     await _api.post<Map<String, dynamic>>(
       url: AppEndpoints.workspaceChatMessages(workspaceId, chatId),
-      body: {'body': body},
+      formData: formData,
+      options: Options(contentType: 'multipart/form-data'),
     );
   }
 

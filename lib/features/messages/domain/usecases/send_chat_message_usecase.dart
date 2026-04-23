@@ -6,12 +6,14 @@ class SendChatMessageParams {
   const SendChatMessageParams({
     required this.workspaceId,
     required this.chatId,
-    required this.body,
+    this.body,
+    this.attachmentPaths = const [],
   });
 
   final int workspaceId;
   final int chatId;
-  final String body;
+  final String? body;
+  final List<String> attachmentPaths;
 }
 
 class SendChatMessageUseCase {
@@ -24,6 +26,7 @@ class SendChatMessageUseCase {
       params.workspaceId,
       params.chatId,
       params.body,
+      params.attachmentPaths,
     );
   }
 }

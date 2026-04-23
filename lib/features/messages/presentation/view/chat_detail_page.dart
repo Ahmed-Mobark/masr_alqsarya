@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/network/reverb/reverb_service.dart';
-import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/download_chat_attachment_usecase.dart';
@@ -33,15 +32,10 @@ class ChatDetailPage extends StatelessWidget {
         sl<DownloadChatAttachmentUseCase>(),
         sl<WorkspaceIdStorage>(),
         sl<Storage>(),
-        sl<RealtimeService>(),
         ReverbService(),
         chatId,
       )..loadMessages(),
-      child: ChatView(
-        chatId: chatId,
-        name: name,
-        avatarUrl: avatarUrl,
-      ),
+      child: ChatView(chatId: chatId, name: name, avatarUrl: avatarUrl),
     );
   }
 }
