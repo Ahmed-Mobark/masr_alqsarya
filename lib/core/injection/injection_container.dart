@@ -8,6 +8,7 @@ import 'package:masr_al_qsariya/features/auth/auth_inj.dart';
 import 'package:masr_al_qsariya/features/news/news_inj.dart';
 import 'package:masr_al_qsariya/features/messages/messages_inj.dart';
 import 'package:masr_al_qsariya/features/nav_bar/nav_bar_inj.dart';
+import 'package:masr_al_qsariya/features/schedule/schedule_inj.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt sl = GetIt.instance;
@@ -20,6 +21,7 @@ Future<void> init() async {
   await initAuthInjection(sl);
   await initNewsInjection(sl);
   await initMessagesInjection(sl);
+  await initScheduleInjection(sl);
   await initNavBarInjection(sl);
   initNavigationInjection(sl);
   initNetworkServiceInjection(sl);

@@ -1005,6 +1005,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scheduleFilterMedical => 'طبي';
 
   @override
+  String get scheduleFilterCalls => 'المكالمات';
+
+  @override
   String get scheduleLegendApproved => 'موافق عليه';
 
   @override
@@ -1017,10 +1020,48 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scheduleLegendCall => 'مكالمة';
 
   @override
+  String get scheduleCallMode => 'وضع المكالمة';
+
+  @override
+  String get scheduleCallModeAudio => 'صوتية';
+
+  @override
+  String get scheduleCallModeVideo => 'فيديو';
+
+  @override
+  String get scheduleCreateCall => 'إنشاء مكالمة';
+
+  @override
+  String get scheduleErrorWorkspaceMissing =>
+      'مساحة العمل غير جاهزة بعد. حاول تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get scheduleErrorScheduledStartsAtAfterNow =>
+      'يرجى اختيار تاريخ في المستقبل.';
+
+  @override
+  String get scheduleCallCreatedSuccess => 'تم إنشاء المكالمة بنجاح.';
+
+  @override
+  String get scheduleRoomName => 'الغرفة';
+
+  @override
+  String get scheduleVideoCall => 'مكالمة فيديو';
+
+  @override
+  String get scheduleAudioCall => 'مكالمة صوتية';
+
+  @override
   String get scheduleLegendRejected => 'مرفوض';
 
   @override
   String get scheduleNewScheduleRequest => 'طلب جدول جديد';
+
+  @override
+  String get scheduleAllCalls => 'كل المكالمات';
+
+  @override
+  String get scheduleNoCalls => 'لا توجد مكالمات بعد';
 
   @override
   String get scheduleAddNewSchedule => 'إضافة جدول جديد';

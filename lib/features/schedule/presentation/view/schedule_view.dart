@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -9,109 +10,45 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/data/dummy_data.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/view/add_schedule_view.dart';
+import 'package:masr_al_qsariya/features/schedule/presentation/cubit/schedule_calls_cubit.dart';
+import 'package:masr_al_qsariya/features/schedule/presentation/cubit/schedule_calls_state.dart';
 
-class ScheduleView extends StatefulWidget {
+class ScheduleView extends StatelessWidget {
   const ScheduleView({super.key});
 
   @override
-  State<ScheduleView> createState() => _ScheduleViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ScheduleCallsCubit>()..load(),
+      child: const _ScheduleBody(),
+    );
+  }
 }
 
-class _ScheduleViewState extends State<ScheduleView> {
+class _ScheduleBody extends StatefulWidget {
+  const _ScheduleBody();
+
+  @override
+  State<_ScheduleBody> createState() => _ScheduleBodyState();
+}
+
+class _ScheduleBodyState extends State<_ScheduleBody> {
   DateTime _focusedMonth = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   int _selectedFilterIndex = 0;
 
-  // Dummy calendar events
-  final List<CalendarEvent> _events = [
-    CalendarEvent(
-      id: '1',
-      title: 'School Event, Kelli',
-      titleAr: 'حدث مدرسي، كيلي',
-      titleFr: 'Événement scolaire, Kelli',
-      date: DateTime.now(),
-      time: '3:00 PM',
-      color: const Color(0xFF5B7FFF),
-      type: 'School',
-      location: '620 E Walnut Street, Colton 81233',
-      notes: 'Lorem ipsum dolor sit amet consectetur. Lorem ipsum dolor sit amet consectetur.',
-      status: 'approved',
-    ),
-    CalendarEvent(
-      id: '2',
-      title: 'Voice Call',
-      titleAr: 'مكالمة صوتية',
-      titleFr: 'Appel vocal',
-      date: DateTime.now(),
-      time: '2:00 PM',
-      color: AppColors.primaryDark,
-      type: 'Call',
-      status: 'pending',
-    ),
-    CalendarEvent(
-      id: '3',
-      title: 'Soccer Practice',
-      titleAr: 'تمرين كرة القدم',
-      titleFr: 'Entraînement de football',
-      date: DateTime.now().add(const Duration(days: 1)),
-      time: '5:00 PM',
-      color: AppColors.success,
-      type: 'Activity',
-      status: 'approved',
-    ),
-    CalendarEvent(
-      id: '4',
-      title: 'Parent-Teacher Meeting',
-      titleAr: 'اجتماع أولياء الأمور',
-      titleFr: 'Réunion parents-professeurs',
-      date: DateTime.now().add(const Duration(days: 2)),
-      time: '9:00 AM',
-      color: const Color(0xFF5B7FFF),
-      type: 'School',
-      status: 'pending',
-    ),
-    CalendarEvent(
-      id: '5',
-      title: 'Weekend with Co-parent',
-      titleAr: 'عطلة نهاية الأسبوع',
-      titleFr: 'Week-end avec coparent',
-      date: DateTime.now().add(const Duration(days: 3)),
-      time: 'All Day',
-      color: AppColors.statusBadge,
-      type: 'Custody',
-      status: 'approved',
-    ),
-    CalendarEvent(
-      id: '6',
-      title: 'Expense Paid',
-      titleAr: 'مصروف مدفوع',
-      titleFr: 'Dépense payée',
-      date: DateTime.now(),
-      time: '',
-      color: AppColors.error,
-      type: 'Expense',
-      status: 'approved',
-      expenseAmount: '-299 EGP',
-      expenseCategory: 'Education',
-    ),
-  ];
-
   List<String> _filterLabels(BuildContext context) => [
         context.tr.scheduleFilterAll,
-        context.tr.scheduleFilterParentingTime,
-        context.tr.scheduleFilterSchoolActivities,
-        context.tr.scheduleFilterMedical,
+        context.tr.scheduleFilterCalls,
       ];
 
   static const List<String> _filterTypes = [
     'All',
-    'Custody',
-    'School',
-    'Medical',
+    'Call',
   ];
 
   List<CalendarEvent> _eventsForDay(DateTime day) {
-    final dayEvents = _events.where((e) =>
+    final dayEvents = _callEventsForDay(day).where((e) =>
         e.date.year == day.year &&
         e.date.month == day.month &&
         e.date.day == day.day);
@@ -119,12 +56,39 @@ class _ScheduleViewState extends State<ScheduleView> {
     if (_selectedFilterIndex == 0) return dayEvents.toList();
 
     final filterType = _filterTypes[_selectedFilterIndex];
-    if (filterType == 'School') {
-      return dayEvents
-          .where((e) => e.type == 'School' || e.type == 'Activity')
-          .toList();
-    }
     return dayEvents.where((e) => e.type == filterType).toList();
+  }
+
+  List<CalendarEvent> _callEventsForDay(DateTime day) {
+    final callsState = context.read<ScheduleCallsCubit>().state;
+    if (callsState.calls.isEmpty) return const [];
+
+    return callsState.calls
+        .map((c) {
+          final d = c.scheduledStartsAt.toLocal();
+          final isSameDay =
+              d.year == day.year && d.month == day.month && d.day == day.day;
+          if (!isSameDay) return null;
+
+          final titleLocalized = c.mode == 'audio'
+              ? context.tr.scheduleAudioCall
+              : context.tr.scheduleVideoCall;
+
+          return CalendarEvent(
+            id: 'call_${c.id}',
+            title: titleLocalized,
+            titleAr: titleLocalized,
+            titleFr: titleLocalized,
+            date: DateTime(d.year, d.month, d.day),
+            time: DateFormat("M/d/yyyy'T'HH:mm:ss").format(d),
+            color: AppColors.primaryDark,
+            type: 'Call',
+            status: c.status == 'scheduled' ? 'pending' : c.status,
+            notes: c.livekitRoomName,
+          );
+        })
+        .whereType<CalendarEvent>()
+        .toList();
   }
 
   Color _statusColor(String? status) {
@@ -147,213 +111,345 @@ class _ScheduleViewState extends State<ScheduleView> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedEvents = _eventsForDay(_selectedDay);
     final filterLabels = _filterLabels(context);
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
-        child: Column(
-          children: [
+        child: BlocBuilder<ScheduleCallsCubit, ScheduleCallsState>(
+          builder: (context, callsState) {
+            final isLoading = callsState.status == ScheduleCallsStatus.loading;
+            final isFailure = callsState.status == ScheduleCallsStatus.failure;
+            final hasCalls = callsState.calls.isNotEmpty;
+            final sortedCalls = [...callsState.calls]
+              ..sort((a, b) {
+                final created = b.createdAt.compareTo(a.createdAt);
+                if (created != 0) return created;
+                final scheduled = b.scheduledStartsAt.compareTo(a.scheduledStartsAt);
+                if (scheduled != 0) return scheduled;
+                return b.id.compareTo(a.id);
+              });
+
+            return RefreshIndicator(
+              onRefresh: () => context.read<ScheduleCallsCubit>().load(),
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
             // ── Header ──
-            Container(
-              color: AppColors.background,
-              padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    context.tr.scheduleSharedCalendarTitle,
-                    style: AppTextStyles.heading2(color: AppColors.darkText)
-                        .copyWith(fontSize: 20.sp, fontWeight: FontWeight.w700),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      sl<AppNavigator>()
-                          .push(screen: const AddScheduleView());
-                    },
-                    child: Container(
-                      width: 36.w,
-                      height: 36.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      child: Icon(Iconsax.add, size: 20.sp,
-                          color: AppColors.darkText),
+            SliverToBoxAdapter(
+              child: Container(
+                color: AppColors.background,
+                padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr.scheduleSharedCalendarTitle,
+                      style: AppTextStyles.heading2(color: AppColors.darkText)
+                          .copyWith(
+                              fontSize: 20.sp, fontWeight: FontWeight.w700),
                     ),
-                  ),
-                ],
+                    GestureDetector(
+                      onTap: () async {
+                        await sl<AppNavigator>()
+                            .push(screen: const AddScheduleView());
+                        if (!context.mounted) return;
+                        context.read<ScheduleCallsCubit>().load();
+                      },
+                      child: Container(
+                        width: 36.w,
+                        height: 36.w,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Icon(
+                          Iconsax.add,
+                          size: 20.sp,
+                          color: AppColors.darkText,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 
             // ── Filter chips ──
-            Container(
-              color: AppColors.background,
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              child: SizedBox(
-                height: 38.h,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  itemCount: filterLabels.length,
-                  separatorBuilder: (_, __) => SizedBox(width: 8.w),
-                  itemBuilder: (context, index) {
-                    final isSelected = _selectedFilterIndex == index;
-                    return GestureDetector(
-                      onTap: () =>
-                          setState(() => _selectedFilterIndex = index),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 8.h),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColors.primary
-                              : AppColors.background,
-                          borderRadius: BorderRadius.circular(999.r),
-                          border: Border.all(
+            SliverToBoxAdapter(
+              child: Container(
+                color: AppColors.background,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                child: SizedBox(
+                  height: 38.h,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    itemCount: filterLabels.length,
+                    separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                    itemBuilder: (context, index) {
+                      final isSelected = _selectedFilterIndex == index;
+                      return GestureDetector(
+                        onTap: () =>
+                            setState(() => _selectedFilterIndex = index),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 8.h),
+                          decoration: BoxDecoration(
                             color: isSelected
                                 ? AppColors.primary
-                                : AppColors.border,
-                            width: 1.2,
+                                : AppColors.background,
+                            borderRadius: BorderRadius.circular(999.r),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.border,
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Text(
+                            filterLabels[index],
+                            style: AppTextStyles.smallMedium(
+                              color: AppColors.darkText,
+                            ).copyWith(
+                              fontSize: 13.sp,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
                           ),
                         ),
-                        child: Text(
-                          filterLabels[index],
-                          style: AppTextStyles.smallMedium(
-                            color: AppColors.darkText,
-                          ).copyWith(
-                            fontSize: 13.sp,
-                            fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
 
             // ── Month/Year selector ──
-            Container(
-              color: AppColors.background,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Month dropdown
-                  GestureDetector(
-                    onTap: () => _changeMonth(-1),
-                    child: Row(
-                      children: [
-                        Text(
-                          _monthString(_focusedMonth),
-                          style: AppTextStyles.heading2(
-                                  color: AppColors.darkText)
-                              .copyWith(fontSize: 16.sp),
-                        ),
-                        SizedBox(width: 4.w),
-                        Icon(Iconsax.arrow_down_1,
-                            size: 16.sp, color: AppColors.darkText),
-                      ],
+            SliverToBoxAdapter(
+              child: Container(
+                color: AppColors.background,
+                padding:
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Month dropdown
+                    GestureDetector(
+                      onTap: () => _changeMonth(-1),
+                      child: Row(
+                        children: [
+                          Text(
+                            _monthString(_focusedMonth),
+                            style: AppTextStyles.heading2(
+                                    color: AppColors.darkText)
+                                .copyWith(fontSize: 16.sp),
+                          ),
+                          SizedBox(width: 4.w),
+                          Icon(
+                            Iconsax.arrow_down_1,
+                            size: 16.sp,
+                            color: AppColors.darkText,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // Year dropdown
-                  GestureDetector(
-                    onTap: () => _changeMonth(1),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${_focusedMonth.year}',
-                          style: AppTextStyles.heading2(
-                                  color: AppColors.darkText)
-                              .copyWith(fontSize: 16.sp),
-                        ),
-                        SizedBox(width: 4.w),
-                        Icon(Iconsax.arrow_down_1,
-                            size: 16.sp, color: AppColors.darkText),
-                      ],
+                    // Year dropdown
+                    GestureDetector(
+                      onTap: () => _changeMonth(1),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${_focusedMonth.year}',
+                            style: AppTextStyles.heading2(
+                                    color: AppColors.darkText)
+                                .copyWith(fontSize: 16.sp),
+                          ),
+                          SizedBox(width: 4.w),
+                          Icon(
+                            Iconsax.arrow_down_1,
+                            size: 16.sp,
+                            color: AppColors.darkText,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
             // ── Calendar Grid ──
-            Container(
-              color: AppColors.background,
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: _buildCalendarGrid(),
+            SliverToBoxAdapter(
+              child: Container(
+                color: AppColors.background,
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: _buildCalendarGrid(),
+              ),
             ),
 
             // ── Legend ──
-            Container(
-              color: AppColors.background,
-              padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
-              child: Row(
-                children: [
-                  _LegendDot(
-                      color: AppColors.success,
-                      label: context.tr.scheduleLegendApproved),
-                  SizedBox(width: 16.w),
-                  _LegendDot(
-                      color: AppColors.primary,
-                      label: context.tr.scheduleLegendPending),
-                  SizedBox(width: 16.w),
-                  _LegendDot(
-                      color: AppColors.error,
-                      label: context.tr.scheduleLegendEvent),
-                  SizedBox(width: 16.w),
-                  _LegendDot(
-                      color: const Color(0xFF5B7FFF),
-                      label: context.tr.scheduleLegendCall),
-                ],
+            SliverToBoxAdapter(
+              child: Container(
+                color: AppColors.background,
+                padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
+                child: Row(
+                  children: [
+                    _LegendDot(
+                        color: AppColors.success,
+                        label: context.tr.scheduleLegendApproved),
+                    SizedBox(width: 16.w),
+                    _LegendDot(
+                        color: AppColors.primary,
+                        label: context.tr.scheduleLegendPending),
+                    SizedBox(width: 16.w),
+                    _LegendDot(
+                        color: AppColors.error,
+                        label: context.tr.scheduleLegendEvent),
+                    SizedBox(width: 16.w),
+                    _LegendDot(
+                        color: const Color(0xFF5B7FFF),
+                        label: context.tr.scheduleLegendCall),
+                  ],
+                ),
               ),
             ),
 
-            // ── Events list ──
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                children: [
-                  SizedBox(height: 8.h),
-                  // Section title
-                  Text(
-                    context.tr.scheduleNewScheduleRequest,
-                    style: AppTextStyles.heading2(color: AppColors.darkText)
-                        .copyWith(
-                            fontSize: 18.sp, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(height: 12.h),
-                  if (selectedEvents.isEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(top: 40.h),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Icon(Iconsax.calendar,
+            // ── Events ──
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    SizedBox(height: 8.h),
+                    Text(
+                      context.tr.scheduleAllCalls,
+                      style: AppTextStyles.heading2(color: AppColors.darkText)
+                          .copyWith(
+                              fontSize: 18.sp, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(height: 12.h),
+                    if (isLoading)
+                      Padding(
+                        padding: EdgeInsets.only(top: 28.h),
+                        child: Center(
+                          child: SizedBox(
+                            width: 22.w,
+                            height: 22.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.4,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primaryDark,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    else if (isFailure)
+                      Padding(
+                        padding: EdgeInsets.only(top: 28.h),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Iconsax.warning_2,
+                                size: 40.sp,
+                                color: AppColors.error.withValues(alpha: 0.8),
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                callsState.error ?? context.tr.sorryMessage,
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.caption(
+                                  color: AppColors.greyText,
+                                ),
+                              ),
+                              SizedBox(height: 14.h),
+                              SizedBox(
+                                height: 44.h,
+                                child: ElevatedButton(
+                                  onPressed: () => context
+                                      .read<ScheduleCallsCubit>()
+                                      .load(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    foregroundColor: AppColors.darkText,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(999.r),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    context.tr.messagesRetry,
+                                    style: AppTextStyles.bodyMedium(
+                                      color: AppColors.darkText,
+                                    ).copyWith(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else if (!hasCalls)
+                      Padding(
+                        padding: EdgeInsets.only(top: 40.h, bottom: 24.h),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Iconsax.calendar,
                                 size: 48.sp,
                                 color: AppColors.greyText
-                                    .withValues(alpha: 0.5)),
-                            SizedBox(height: 12.h),
-                            Text(
-                              context.tr.scheduleNoEventsForDay,
-                              style: AppTextStyles.caption(),
-                            ),
-                          ],
+                                    .withValues(alpha: 0.5),
+                              ),
+                              SizedBox(height: 12.h),
+                              Text(
+                                context.tr.scheduleNoCalls,
+                                style: AppTextStyles.caption(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  else
-                    ...selectedEvents.map((event) => Padding(
+                      )
+                    else
+                      ...sortedCalls.map((c) {
+                        final d = c.scheduledStartsAt.toLocal();
+                        final day = DateTime(d.year, d.month, d.day);
+                        final titleLocalized = c.mode == 'audio'
+                            ? context.tr.scheduleAudioCall
+                            : context.tr.scheduleVideoCall;
+                        final event = CalendarEvent(
+                          id: 'call_${c.id}',
+                          title: titleLocalized,
+                          titleAr: titleLocalized,
+                          titleFr: titleLocalized,
+                          date: day,
+                          time: DateFormat("M/d/yyyy'T'HH:mm:ss").format(d),
+                          color: AppColors.primaryDark,
+                          type: 'Call',
+                          status: c.status == 'scheduled' ? 'pending' : c.status,
+                          notes: c.livekitRoomName,
+                        );
+                        return Padding(
                           padding: EdgeInsets.only(bottom: 16.h),
                           child: _buildEventCard(context, event),
-                        )),
-                ],
+                        );
+                      }),
+                    SizedBox(height: 16.h),
+                  ],
+                ),
               ),
             ),
-          ],
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -680,6 +776,19 @@ class _CallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusLabel = switch (event.status) {
+      'approved' => context.tr.scheduleLegendApproved,
+      'pending' => context.tr.scheduleLegendPending,
+      'rejected' => context.tr.scheduleLegendRejected,
+      _ => context.tr.scheduleLegendPending,
+    };
+    final statusColor = switch (event.status) {
+      'approved' => AppColors.success,
+      'pending' => AppColors.primary,
+      'rejected' => AppColors.error,
+      _ => AppColors.primary,
+    };
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.background,
@@ -698,7 +807,7 @@ class _CallCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
             child: Text(
-              'Today, ${event.time}',
+              event.time,
               style: AppTextStyles.caption(color: AppColors.greyText)
                   .copyWith(fontSize: 12.sp),
             ),
@@ -722,15 +831,54 @@ class _CallCard extends StatelessWidget {
                           size: 20.sp, color: AppColors.primaryDark),
                     ),
                     SizedBox(width: 12.w),
-                    Text(
-                      context.tr.scheduleVoiceCall,
-                      style: AppTextStyles.bodyMedium(
-                              color: AppColors.darkText)
-                          .copyWith(
-                              fontSize: 15.sp, fontWeight: FontWeight.w600),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: AppTextStyles.bodyMedium(
+                                    color: AppColors.darkText)
+                                .copyWith(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(height: 4.h),
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w,
+                                  vertical: 4.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: statusColor.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(999.r),
+                                ),
+                                child: Text(
+                                  statusLabel,
+                                  style: AppTextStyles.tiny(
+                                          color: statusColor)
+                                      .copyWith(fontSize: 10.sp),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
+                if (event.notes != null && event.notes!.isNotEmpty) ...[
+                  SizedBox(height: 12.h),
+                  Text(
+                    '${context.tr.scheduleRoomName}: ${event.notes}',
+                    style: AppTextStyles.caption(color: AppColors.greyText)
+                        .copyWith(fontSize: 12.sp),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
                 SizedBox(height: 14.h),
                 SizedBox(
                   width: double.infinity,

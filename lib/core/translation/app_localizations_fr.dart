@@ -1025,6 +1025,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get scheduleFilterMedical => 'Médical';
 
   @override
+  String get scheduleFilterCalls => 'Appels';
+
+  @override
   String get scheduleLegendApproved => 'Approuvé';
 
   @override
@@ -1037,10 +1040,48 @@ class AppLocalizationsFr extends AppLocalizations {
   String get scheduleLegendCall => 'Appel';
 
   @override
+  String get scheduleCallMode => 'Mode d\'appel';
+
+  @override
+  String get scheduleCallModeAudio => 'Audio';
+
+  @override
+  String get scheduleCallModeVideo => 'Vidéo';
+
+  @override
+  String get scheduleCreateCall => 'CRÉER UN APPEL';
+
+  @override
+  String get scheduleErrorWorkspaceMissing =>
+      'L’espace de travail n’est pas prêt. Reconnectez-vous.';
+
+  @override
+  String get scheduleErrorScheduledStartsAtAfterNow =>
+      'Veuillez choisir une date ultérieure.';
+
+  @override
+  String get scheduleCallCreatedSuccess => 'Appel créé avec succès.';
+
+  @override
+  String get scheduleRoomName => 'Salle';
+
+  @override
+  String get scheduleVideoCall => 'Appel vidéo';
+
+  @override
+  String get scheduleAudioCall => 'Appel audio';
+
+  @override
   String get scheduleLegendRejected => 'Rejeté';
 
   @override
   String get scheduleNewScheduleRequest => 'Nouvelle demande de planning';
+
+  @override
+  String get scheduleAllCalls => 'Tous les appels';
+
+  @override
+  String get scheduleNoCalls => 'Aucun appel pour le moment';
 
   @override
   String get scheduleAddNewSchedule => 'Ajouter un nouveau planning';

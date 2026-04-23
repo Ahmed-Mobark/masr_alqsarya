@@ -2008,6 +2008,12 @@ abstract class AppLocalizations {
   /// **'Medical'**
   String get scheduleFilterMedical;
 
+  /// No description provided for @scheduleFilterCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls'**
+  String get scheduleFilterCalls;
+
   /// No description provided for @scheduleLegendApproved.
   ///
   /// In en, this message translates to:
@@ -2032,6 +2038,66 @@ abstract class AppLocalizations {
   /// **'Call'**
   String get scheduleLegendCall;
 
+  /// No description provided for @scheduleCallMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Call mode'**
+  String get scheduleCallMode;
+
+  /// No description provided for @scheduleCallModeAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get scheduleCallModeAudio;
+
+  /// No description provided for @scheduleCallModeVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get scheduleCallModeVideo;
+
+  /// No description provided for @scheduleCreateCall.
+  ///
+  /// In en, this message translates to:
+  /// **'CREATE CALL'**
+  String get scheduleCreateCall;
+
+  /// No description provided for @scheduleErrorWorkspaceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace is not ready yet. Try signing in again.'**
+  String get scheduleErrorWorkspaceMissing;
+
+  /// No description provided for @scheduleErrorScheduledStartsAtAfterNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a future date.'**
+  String get scheduleErrorScheduledStartsAtAfterNow;
+
+  /// No description provided for @scheduleCallCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Call created successfully.'**
+  String get scheduleCallCreatedSuccess;
+
+  /// No description provided for @scheduleRoomName.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get scheduleRoomName;
+
+  /// No description provided for @scheduleVideoCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Call'**
+  String get scheduleVideoCall;
+
+  /// No description provided for @scheduleAudioCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio Call'**
+  String get scheduleAudioCall;
+
   /// No description provided for @scheduleLegendRejected.
   ///
   /// In en, this message translates to:
@@ -2043,6 +2109,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Schedule Request'**
   String get scheduleNewScheduleRequest;
+
+  /// No description provided for @scheduleAllCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'All Calls'**
+  String get scheduleAllCalls;
+
+  /// No description provided for @scheduleNoCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'No calls yet'**
+  String get scheduleNoCalls;
 
   /// No description provided for @scheduleAddNewSchedule.
   ///

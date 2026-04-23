@@ -80,6 +80,9 @@ class AppEndpoints {
     int attachmentId,
   ) =>
       "workspaces/$workspaceId/chats/$chatId/attachments/$attachmentId/download";
+
+  // Calls
+  static String workspaceCalls(int workspaceId) => "workspaces/$workspaceId/calls";
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
   static const String addChild = "family-workspace/add-child";
 }
