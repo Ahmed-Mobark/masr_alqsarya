@@ -5,8 +5,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
+import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
-import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
+import 'package:masr_al_qsariya/core/network/reverb/reverb_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachment.dart';
@@ -25,7 +26,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     this._downloadAttachment,
     this._workspaceIdStorage,
     this._storage,
-    this._realtime,
+    this._reverb,
     this.chatId,
   ) : super(const ChatDetailState());
 
@@ -34,7 +35,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   final DownloadChatAttachmentUseCase _downloadAttachment;
   final WorkspaceIdStorage _workspaceIdStorage;
   final Storage _storage;
-  final RealtimeService _realtime;
+  final ReverbService _reverb;
   final int chatId;
 
   bool _soketiSubscribed = false;
@@ -208,9 +209,15 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     if (_soketiSubscribed) return;
     _soketiSubscribed = true;
     try {
-      await _realtime.subscribePrivateChat(
+      final workspaceId = _workspaceIdStorage.get();
+      if (workspaceId == null) {
+        _soketiSubscribed = false;
+        return;
+      }
+      await _reverb.subscribePrivateChat(
+        workspaceId: workspaceId,
         chatId: chatId,
-        onNewActivity: () => loadMessages(silentRefresh: true),
+        onEvent: (_, __) => loadMessages(silentRefresh: true),
       );
       _pollTimer?.cancel();
       _pollTimer = null;
@@ -272,7 +279,15 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   @override
   Future<void> close() {
     _pollTimer?.cancel();
-    unawaited(_realtime.unsubscribeChat(chatId));
+    final workspaceId = _workspaceIdStorage.get();
+    if (workspaceId != null) {
+      _reverb.unsubscribe(
+        AppEndpoints.privateChatChannelName(
+          workspaceId: workspaceId,
+          chatId: chatId,
+        ),
+      );
+    }
     return super.close();
   }
 }

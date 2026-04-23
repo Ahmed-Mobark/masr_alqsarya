@@ -48,8 +48,16 @@ class AppEndpoints {
     ).toString();
   }
 
-  /// Must match the server-side private channel name (e.g. `PrivateChannel('chat.'.$id)` → `private-chat.$id`).
-  static String privateChatChannelName(int chatId) => 'private-chat.$chatId';
+  /// Chat private channel name (Pusher protocol).
+  ///
+  /// Backend doc:
+  /// - Server channel: `workspace.{workspaceId}.chat.{chatId}`
+  /// - Client subscribes to: `private-workspace.{workspaceId}.chat.{chatId}`
+  static String privateChatChannelName({
+    required int workspaceId,
+    required int chatId,
+  }) =>
+      'private-workspace.$workspaceId.chat.$chatId';
 
   // Auth
   static const String authRegister = "auth/register";

@@ -21,7 +21,7 @@ class ReverbService {
   // --dart-define=REVERB_APP_KEY=...
   static const String _host = String.fromEnvironment(
     'REVERB_HOST',
-    defaultValue: 'shajareteldor-back-qr30eq11.on-forge.com',
+    defaultValue: 'misr-alosariya_back-uqudc3ap.on-forge.com',
   );
   static const int _port = int.fromEnvironment(
     'REVERB_PORT',
@@ -33,7 +33,7 @@ class ReverbService {
   );
   static const String _appKey = String.fromEnvironment(
     'REVERB_APP_KEY',
-    defaultValue: 'aIeU091R1bcTmXSB102i',
+    defaultValue: 'cihrywvayxv8nguraxqy',
   );
   static const String _authPath = String.fromEnvironment(
     'REVERB_AUTH_PATH',
@@ -111,12 +111,16 @@ class ReverbService {
   }
 
   Future<void> subscribePrivateChat({
+    required int workspaceId,
     required int chatId,
     required void Function(String eventName, Map<String, dynamic> data) onEvent,
   }) async {
-    unsubscribe(AppEndpoints.privateChatChannelName(chatId));
+    final channelName = AppEndpoints.privateChatChannelName(
+      workspaceId: workspaceId,
+      chatId: chatId,
+    );
+    unsubscribe(channelName);
     await ensureConnected();
-    final channelName = AppEndpoints.privateChatChannelName(chatId);
 
     await subscribeToAllEvents(
       channelName: channelName,

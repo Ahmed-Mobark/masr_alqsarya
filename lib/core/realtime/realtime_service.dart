@@ -70,6 +70,7 @@ class RealtimeService {
 
   /// Subscribe to the workspace chat private channel; [onNewActivity] runs when a non-system event arrives.
   Future<void> subscribePrivateChat({
+    required int workspaceId,
     required int chatId,
     required void Function() onNewActivity,
   }) async {
@@ -82,7 +83,10 @@ class RealtimeService {
     final client = _client;
     if (client == null || client.isDisposed) return;
 
-    final channelName = AppEndpoints.privateChatChannelName(chatId);
+    final channelName = AppEndpoints.privateChatChannelName(
+      workspaceId: workspaceId,
+      chatId: chatId,
+    );
     final authUri = Uri.parse(AppEndpoints.broadcastingAuthUrl);
     final delegate = LaravelBroadcastingAuthDelegate(
       dio: sl<ApiBaseHelper>().getDio(ApiEnvironment.primary),
