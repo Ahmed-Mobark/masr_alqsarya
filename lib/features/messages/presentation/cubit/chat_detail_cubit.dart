@@ -8,7 +8,6 @@ import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
 import 'package:masr_al_qsariya/core/network/reverb/reverb_service.dart';
-import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachment.dart';
@@ -27,7 +26,6 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     this._downloadAttachment,
     this._workspaceIdStorage,
     this._storage,
-    this._realtime,
     this._reverb,
     this.chatId,
   ) : super(const ChatDetailState());
@@ -37,12 +35,11 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   final DownloadChatAttachmentUseCase _downloadAttachment;
   final WorkspaceIdStorage _workspaceIdStorage;
   final Storage _storage;
-  final RealtimeService _realtime;
   final ReverbService _reverb;
   final int chatId;
 
   bool _soketiSubscribed = false;
-  bool _reverbSubscribed = false;
+  int _optimisticId = -1;
 
   void clearSendError() {
     emit(state.copyWith(clearSendError: true));
@@ -175,7 +172,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       final isMine = m.senderId != null && myId != null && m.senderId == myId;
       final time = _formatTime(m.createdAtIso);
       return ChatBubbleRow(
-        id: m.id,
+        messageId: m.id,
         text: m.body,
         time: time,
         isSent: isMine,
@@ -193,89 +190,22 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
-  void _applyRealtimeMessage(Map<String, dynamic> data) {
-    // Try common shapes:
-    // - { message: {...} }
-    // - { data: { message: {...} } }
-    // - { ...message fields... }
-    Map<String, dynamic>? msg;
-    final direct = data['message'];
-    if (direct is Map) msg = Map<String, dynamic>.from(direct);
-    final nestedData = data['data'];
-    if (msg == null && nestedData is Map) {
-      final nestedMsg = nestedData['message'];
-      if (nestedMsg is Map) msg = Map<String, dynamic>.from(nestedMsg);
-    }
-    msg ??= data;
-
-    final body = (msg['body'] ?? msg['message'] ?? '').toString().trim();
-    if (body.isEmpty) return;
-
-    final createdAtIso = (msg['created_at'] ??
-            msg['createdAt'] ??
-            msg['created_at_iso'] ??
-            '')
-        .toString();
-    final time = _formatTime(createdAtIso);
-    final myId = _storage.getUser()?.id;
-    final senderMap = msg['sender'];
-    final senderUserId = senderMap is Map ? senderMap['user_id'] : null;
-    final senderIdRaw = senderUserId ??
-        msg['sender_id'] ??
-        msg['senderId'] ??
-        msg['user_id'] ??
-        msg['userId'];
-    final senderId = senderIdRaw is num ? senderIdRaw.toInt() : int.tryParse('$senderIdRaw');
-    final isMine = senderId != null && myId != null && senderId == myId;
-
-    final idRaw = msg['id'];
-    final id = idRaw is num ? idRaw.toInt() : int.tryParse('$idRaw') ?? -1;
-    if (id != -1 && state.messages.any((m) => m.id == id)) return;
-
-    final next = ChatBubbleRow(id: id, text: body, time: time, isSent: isMine);
-    final current = state.messages;
-    emit(state.copyWith(messages: [...current, next]));
-  }
-
   Future<void> _ensureSoketiSubscription() async {
     if (_soketiSubscribed) return;
     _soketiSubscribed = true;
     try {
-      // Prefer Reverb (native Laravel Reverb / Pusher protocol).
-      if (!_reverbSubscribed) {
-        final workspaceId = _workspaceIdStorage.get();
-        if (workspaceId == null) {
-          throw StateError('workspace_missing');
-        }
-        await _reverb.subscribePrivateChat(
-          chatId: chatId,
-          workspaceId: workspaceId,
-          onEvent: (eventName, data) {
-            // Prefer applying realtime payloads instead of polling/HTTP refresh.
-            if (isClosed) return;
-            // Backend spec: message events are `message.sent`.
-            if (eventName == 'message.sent') {
-              _applyRealtimeMessage(data);
-              return;
-            }
-            // For other events (e.g. read receipts), fall back to a silent refresh.
-            unawaited(loadMessages(silentRefresh: true));
-          },
-        );
-        _reverbSubscribed = true;
+      final workspaceId = _workspaceIdStorage.get();
+      if (workspaceId == null) {
+        _soketiSubscribed = false;
         return;
       }
-
-      // Fallback to Soketi (legacy) if needed.
-      final ws = _workspaceIdStorage.get();
-      await _realtime.subscribePrivateChat(
-        workspaceId: ws ?? 0,
+      await _reverb.subscribePrivateChat(
+        workspaceId: workspaceId,
         chatId: chatId,
-        onNewActivity: () => loadMessages(silentRefresh: true),
+        onEvent: _handleRealtimeEvent,
       );
     } catch (e, st) {
       _soketiSubscribed = false;
-      _reverbSubscribed = false;
       if (kDebugMode) {
         developer.log(
           'Realtime (Soketi/Pusher) subscribe failed — check WebSocket host/port '
@@ -287,6 +217,38 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       }
       // No polling fallback: rely on realtime only (per product requirement).
     }
+  }
+
+  void _handleRealtimeEvent(String eventName, Map<String, dynamic> data) {
+    if (eventName == 'message.sent') {
+      final incoming = _parseMessageSent(data);
+      if (incoming == null) return;
+
+      final myUserId = _storage.getUser()?.id;
+      if (myUserId != null && incoming.senderUserId == myUserId) {
+        // We already show an optimistic bubble; avoid a duplicate refresh.
+        return;
+      }
+
+      final already = state.messages.any((m) => m.messageId == incoming.id);
+      if (already) return;
+
+      final updated = List<ChatBubbleRow>.from(state.messages)
+        ..add(
+          ChatBubbleRow(
+            messageId: incoming.id,
+            text: incoming.body,
+            time: _formatTime(incoming.createdAtIso),
+            isSent: false,
+            attachments: incoming.attachments,
+          ),
+        );
+      emit(state.copyWith(messages: updated));
+      return;
+    }
+
+    // For other events (e.g. messages.read), safest is a silent refresh.
+    unawaited(loadMessages(silentRefresh: true));
   }
 
   Future<void> sendMessage(String rawText) async {
@@ -301,6 +263,17 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
     emit(state.copyWith(isSending: true, clearSendError: true));
 
+    final optimistic = ChatBubbleRow(
+      messageId: _optimisticId--,
+      text: text,
+      time: _formatTime(DateTime.now().toIso8601String()),
+      isSent: true,
+      attachments: const [],
+    );
+    emit(state.copyWith(
+      messages: List<ChatBubbleRow>.from(state.messages)..add(optimistic),
+    ));
+
     final result = await _sendMessage(
       SendChatMessageParams(
         workspaceId: workspaceId,
@@ -311,12 +284,48 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
     final failure = result.fold<Failure?>((f) => f, (_) => null);
     if (failure != null) {
-      emit(state.copyWith(isSending: false, sendError: failure.message));
+      // Remove optimistic bubble on failure.
+      final updated = List<ChatBubbleRow>.from(state.messages)
+        ..removeWhere((m) => m.messageId == optimistic.messageId);
+      emit(state.copyWith(
+        isSending: false,
+        sendError: failure.message,
+        messages: updated,
+      ));
       return;
     }
 
     emit(state.copyWith(isSending: false));
-    await loadMessages();
+  }
+
+  _IncomingMessage? _parseMessageSent(Map<String, dynamic> data) {
+    final id = data['id'];
+    final body = data['body'];
+    final createdAt = data['created_at'];
+    if (id is! int || body is! String) return null;
+    final sender = data['sender'];
+    int? senderUserId;
+    if (sender is Map) {
+      final su = sender['user_id'];
+      if (su is int) senderUserId = su;
+    }
+
+    final attachmentsRaw = data['attachments'];
+    final attachments = <ChatAttachment>[];
+    if (attachmentsRaw is List) {
+      for (final a in attachmentsRaw) {
+        if (a is ChatAttachment) {
+          attachments.add(a);
+        }
+      }
+    }
+    return _IncomingMessage(
+      id: id,
+      body: body,
+      createdAtIso: createdAt is String ? createdAt : null,
+      senderUserId: senderUserId,
+      attachments: attachments,
+    );
   }
 
   String _formatTime(String? iso) {
@@ -331,7 +340,6 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   @override
   Future<void> close() {
-    unawaited(_realtime.unsubscribeChat(chatId));
     final ws = _workspaceIdStorage.get();
     if (ws != null) {
       _reverb.unsubscribe(
@@ -340,4 +348,20 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
     return super.close();
   }
+}
+
+class _IncomingMessage {
+  const _IncomingMessage({
+    required this.id,
+    required this.body,
+    required this.senderUserId,
+    required this.attachments,
+    required this.createdAtIso,
+  });
+
+  final int id;
+  final String body;
+  final int? senderUserId;
+  final List<ChatAttachment> attachments;
+  final String? createdAtIso;
 }

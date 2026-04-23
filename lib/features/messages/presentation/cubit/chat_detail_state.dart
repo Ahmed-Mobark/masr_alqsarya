@@ -5,21 +5,21 @@ enum ChatDetailStatus { initial, loading, success, failure }
 
 class ChatBubbleRow extends Equatable {
   const ChatBubbleRow({
-    required this.id,
+    this.messageId,
     required this.text,
     required this.time,
     required this.isSent,
     this.attachments = const [],
   });
 
-  final int id;
+  final int? messageId;
   final String text;
   final String time;
   final bool isSent;
   final List<ChatAttachment> attachments;
 
   @override
-  List<Object?> get props => [id, text, time, isSent, attachments];
+  List<Object?> get props => [messageId, text, time, isSent, attachments];
 }
 
 class ChatDetailState extends Equatable {
