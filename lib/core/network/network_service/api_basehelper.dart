@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:flutter/foundation.dart';
 import 'package:masr_al_qsariya/core/config/map_end_points.dart';
@@ -17,6 +18,13 @@ class ApiBaseHelper {
   static String secondaryBaseUrl = AppEndpoints.baseUrl;
   static String mapBaseUrl = MapEndpoints.baseUrl;
 
+  /// Debug-only escape hatch for misconfigured HTTPS certificates.
+  ///
+  /// Enable ONLY for local dev:
+  /// `--dart-define=ALLOW_BAD_CERTS=true`
+  static const bool _allowBadCerts =
+      bool.fromEnvironment('ALLOW_BAD_CERTS', defaultValue: false);
+
   
   static final ApiBaseHelper _instance = ApiBaseHelper._internal();
   final Map<ApiEnvironment, Dio> _dioInstances = {};
@@ -31,7 +39,7 @@ class ApiBaseHelper {
 
   void _initializeDio(ApiEnvironment environment) {
     final baseUrl = _getBaseUrl(environment);
-    _dioInstances[environment] = Dio(
+    final dio = Dio(
       BaseOptions(baseUrl: baseUrl, headers: _defaultHeaders()),
     )..interceptors.add(PrettyDioLogger(
       requestHeader: true,
@@ -43,6 +51,20 @@ class ApiBaseHelper {
         maxWidth: 90,
         enabled: kDebugMode,
     ));
+
+    // If your backend certificate is broken (e.g. hostname mismatch), this
+    // allows development to continue. Never enable in release builds.
+    if (kDebugMode && _allowBadCerts) {
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          final client = HttpClient();
+          client.badCertificateCallback = (cert, host, port) => true;
+          return client;
+        },
+      );
+    }
+
+    _dioInstances[environment] = dio;
   }
 
   String _getBaseUrl(ApiEnvironment environment) => switch(environment) {
@@ -87,7 +109,11 @@ class ApiBaseHelper {
       final response = await request();
       return response.data!;
     } on DioException catch (e) {
-      log('DioException error: ${e.type} - ${e.message}');
+      log(
+        'DioException error: ${e.type} - ${e.message} '
+        '(uri=${e.requestOptions.uri}, method=${e.requestOptions.method}, '
+        'underlying=${e.error})',
+      );
       throw ErrorHelper.handleDioError(e);
     } on SocketException {
       throw NetworkException('No internet connection');

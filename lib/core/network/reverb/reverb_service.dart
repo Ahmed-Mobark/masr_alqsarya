@@ -3,69 +3,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
-import 'package:http/http.dart' as http;
+import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
+import 'package:masr_al_qsariya/core/realtime/laravel_broadcasting_auth_delegate.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
-
-
-class _JsonPrivateChannelAuthDelegate
-    implements EndpointAuthorizableChannelAuthorizationDelegate<
-        PrivateChannelAuthorizationData> {
-  const _JsonPrivateChannelAuthDelegate({
-    required this.authorizationEndpoint,
-    required this.headers,
-    required this.onAuthFailed,
-  });
-
-  final Uri authorizationEndpoint;
-  final Map<String, String> headers;
-
-  @override
-  final EndpointAuthFailedCallback? onAuthFailed;
-
-  @override
-  Future<PrivateChannelAuthorizationData> authorizationData(
-    String socketId,
-    String channelName,
-  ) async {
-    try {
-      log(
-        'ReverbService: auth request socket_id=$socketId channel_name=$channelName',
-      );
-      final response = await http.post(
-        authorizationEndpoint,
-        headers: <String, String>{
-          ...headers,
-          'content-type': 'application/json',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'socket_id': socketId,
-          'channel_name': channelName,
-        }),
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception(
-          'Auth failed (${response.statusCode}) at $authorizationEndpoint: ${response.body}',
-        );
-      }
-
-      final decoded = jsonDecode(response.body);
-      if (decoded is! Map) {
-        throw const FormatException('Invalid auth response');
-      }
-      final auth = decoded['auth'];
-      if (auth is! String || auth.isEmpty) {
-        throw const FormatException('Missing auth key');
-      }
-      log('ReverbService: auth ok (prefix=${auth.split(':').first})');
-      return PrivateChannelAuthorizationData(authKey: auth);
-    } catch (e, st) {
-      onAuthFailed?.call(e, st);
-      rethrow;
-    }
-  }
-}
 
 class ReverbService {
   ReverbService._();
@@ -81,16 +23,21 @@ class ReverbService {
     'REVERB_HOST',
     defaultValue: 'shajareteldor-back-qr30eq11.on-forge.com',
   );
-  static const int _port = int.fromEnvironment('REVERB_PORT', defaultValue: 443);
-  static const String _httpScheme =
-      String.fromEnvironment('REVERB_SCHEME', defaultValue: 'https');
+  static const int _port = int.fromEnvironment(
+    'REVERB_PORT',
+    defaultValue: 443,
+  );
+  static const String _httpScheme = String.fromEnvironment(
+    'REVERB_SCHEME',
+    defaultValue: 'https',
+  );
   static const String _appKey = String.fromEnvironment(
     'REVERB_APP_KEY',
     defaultValue: 'aIeU091R1bcTmXSB102i',
   );
   static const String _authPath = String.fromEnvironment(
     'REVERB_AUTH_PATH',
-    defaultValue: '/api/broadcasting/auth',
+    defaultValue: AppEndpoints.broadcastingAuthPath,
   );
 
   static String get _wsScheme => _httpScheme == 'https' ? 'wss' : 'ws';
@@ -122,8 +69,9 @@ class ReverbService {
       options: options,
       connectionErrorHandler: (exception, trace, refresh) {
         log('ReverbService: connection error — $exception');
-        Future.delayed(const Duration(seconds: 5), refresh);
+        Future.delayed(const Duration(seconds: 2), refresh);
       },
+      minimumReconnectDelayDuration: const Duration(seconds: 2),
     );
 
     final completer = Completer<void>();
@@ -152,53 +100,106 @@ class ReverbService {
     await completer.future.timeout(const Duration(seconds: 12));
   }
 
+  Future<void> ensureConnected() async {
+    final token = sl<Storage>().getToken();
+    if (token == null || token.trim().isEmpty) return;
+    if (_client != null && !_client!.isDisposed) {
+      await _client!.connect();
+      return;
+    }
+    await connect();
+  }
+
+  Future<void> subscribePrivateChat({
+    required int chatId,
+    required void Function(String eventName, Map<String, dynamic> data) onEvent,
+  }) async {
+    unsubscribe(AppEndpoints.privateChatChannelName(chatId));
+    await ensureConnected();
+    final channelName = AppEndpoints.privateChatChannelName(chatId);
+
+    await subscribeToAllEvents(
+      channelName: channelName,
+      onEvent: (eventName, data) => onEvent(eventName, data),
+    );
+  }
+
   Future<StreamSubscription?> subscribe({
     required String channelName,
     required String eventName,
     required void Function(Map<String, dynamic> data) onEvent,
   }) async {
-    if (_client == null) return null;
-    if (!_isConnected) {
-      log('ReverbService: subscribe called while not connected');
-    }
+    await ensureConnected();
+    final client = _client;
+    if (client == null || client.isDisposed) return null;
 
-   
-
-    if (sl<Storage>().getToken() == null || sl<Storage>().getToken()!.trim().isEmpty) {
+    final token = sl<Storage>().getToken();
+    if (token == null || token.trim().isEmpty) {
       log('ReverbService: subscribe blocked (missing Bearer token)');
       return null;
     }
 
-    log(
-      'ReverbService: subscribing channel="$channelName" event="$eventName" token=${sl<Storage>().getToken()?.substring(0, 10)}...',
+    final authUri = Uri.parse(_authEndpoint);
+    final delegate = LaravelBroadcastingAuthDelegate(
+      dio: sl<ApiBaseHelper>().getDio(ApiEnvironment.primary),
+      storage: sl<Storage>(),
+      authorizationEndpoint: authUri,
     );
 
-    final authDelegate = _JsonPrivateChannelAuthDelegate(
-      authorizationEndpoint: Uri.parse(_authEndpoint),
-      headers: {
-        'Authorization': 'Bearer ${sl<Storage>().getToken()}',
-        'Accept': 'application/json',
-      },
-      onAuthFailed: (exception, trace) {
-        if (exception
-            is EndpointAuthorizableChannelTokenAuthorizationException) {
-          log('ReverbService: auth ${exception.response.statusCode} — ${exception.response.body}');
-        } else {
-          log('ReverbService: auth failed — $exception');
-        }
-      },
-    );
+    log('ReverbService: subscribing channel="$channelName" event="$eventName"');
 
-    final channel = _client!.privateChannel(
+    final channel = client.privateChannel(
       channelName,
-      authorizationDelegate: authDelegate,
+      authorizationDelegate: delegate,
     );
     _channels[channelName] = channel;
 
-    channel.subscribe();
+    await _awaitPrivateChannelSubscription(channel, channelName);
 
     final sub = channel.bind(eventName).listen((event) {
       _dispatchEvent(event, onEvent);
+    });
+
+    _channelSubs[channelName] = sub;
+    return sub;
+  }
+
+  Future<StreamSubscription?> subscribeToAllEvents({
+    required String channelName,
+    required void Function(String eventName, Map<String, dynamic> data) onEvent,
+  }) async {
+    await ensureConnected();
+    final client = _client;
+    if (client == null || client.isDisposed) return null;
+
+    final token = sl<Storage>().getToken();
+    if (token == null || token.trim().isEmpty) {
+      log('ReverbService: subscribe blocked (missing Bearer token)');
+      return null;
+    }
+
+    final authUri = Uri.parse(_authEndpoint);
+    final delegate = LaravelBroadcastingAuthDelegate(
+      dio: sl<ApiBaseHelper>().getDio(ApiEnvironment.primary),
+      storage: sl<Storage>(),
+      authorizationEndpoint: authUri,
+    );
+
+    log('ReverbService: subscribing channel="$channelName" (bindToAll)');
+
+    final channel = client.privateChannel(
+      channelName,
+      authorizationDelegate: delegate,
+    );
+    _channels[channelName] = channel;
+
+    await _awaitPrivateChannelSubscription(channel, channelName);
+
+    final sub = channel.bindToAll().listen((event) {
+      if (event.name.startsWith('pusher:')) return;
+      final data = _eventToMap(event);
+      if (data == null) return;
+      onEvent(event.name, data);
     });
 
     _channelSubs[channelName] = sub;
@@ -220,6 +221,44 @@ class ReverbService {
     _channelSubs.clear();
     _channels.clear();
     _disposeClient();
+  }
+
+  Future<void> _awaitPrivateChannelSubscription(
+    PrivateChannel channel,
+    String channelName,
+  ) async {
+    final completer = Completer<void>();
+    late final StreamSubscription<ChannelReadEvent> subOk;
+    late final StreamSubscription<ChannelReadEvent> subErr;
+
+    subOk = channel.whenSubscriptionSucceeded().listen((_) {
+      if (!completer.isCompleted) completer.complete();
+    });
+    subErr = channel.onSubscriptionError().listen((event) {
+      if (completer.isCompleted) return;
+      final map = event.tryGetDataAsMap();
+      final msg =
+          map?[PusherChannelsEvent.errorKey]?.toString() ??
+          map?['message']?.toString() ??
+          'Subscription error on $channelName';
+      completer.completeError(StateError(msg));
+    });
+
+    channel.subscribe();
+
+    try {
+      await completer.future.timeout(
+        const Duration(seconds: 25),
+        onTimeout: () => throw TimeoutException(
+          'Timed out waiting for $channelName subscription '
+          '(check /broadcasting/auth JSON and WebSocket).',
+        ),
+      );
+      log('ReverbService: subscribed $channelName');
+    } finally {
+      await subOk.cancel();
+      await subErr.cancel();
+    }
   }
 
   void _dispatchEvent(
@@ -246,6 +285,24 @@ class ReverbService {
         log('ReverbService: decode error — $e');
       }
     }
+  }
+
+  Map<String, dynamic>? _eventToMap(ChannelReadEvent event) {
+    final payload = event.tryGetDataAsMap();
+    if (payload != null) return payload;
+    final raw = event.data;
+    if (raw is String) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is Map<String, dynamic>) return decoded;
+        if (decoded is Map) return Map<String, dynamic>.from(decoded);
+      } catch (_) {
+        return null;
+      }
+    }
+    if (raw is Map<String, dynamic>) return raw;
+    if (raw is Map) return Map<String, dynamic>.from(raw);
+    return null;
   }
 
   void _disposeClient() {

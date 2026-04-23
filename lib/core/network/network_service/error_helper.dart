@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:masr_al_qsariya/core/network/network_service/exceptions.dart';
+import 'dart:io';
 
 class ErrorHelper {
   /// Extracts user-facing message from API error response.
@@ -35,6 +36,23 @@ class ErrorHelper {
     switch (e.type) {
       case DioExceptionType.connectionError:
         return NetworkException('No internet connection');
+      case DioExceptionType.unknown:
+        final underlying = e.error;
+        if (underlying is SocketException) {
+          return NetworkException('No internet connection');
+        }
+        if (underlying is HandshakeException) {
+          return NetworkException(
+            'SSL handshake failed (check device date/time and certificate).',
+          );
+        }
+        if (underlying is HttpException) {
+          return NetworkException(underlying.message);
+        }
+        return ServerException(
+          message: underlying?.toString() ?? 'Unexpected error occurred',
+          response: e.response,
+        );
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.sendTimeout:
         return NetworkException('Connection timed out');
