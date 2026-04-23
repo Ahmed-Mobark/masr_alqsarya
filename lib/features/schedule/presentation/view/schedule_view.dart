@@ -155,7 +155,11 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                   roomName: joined.roomName,
                   isVideo: isVideo,
                 ),
-              );
+              ).then((_) {
+                if (!mounted) return;
+                _lastOpenedCallId = null;
+                context.read<JoinCallCubit>().reset();
+              });
             }
             if (state.status == JoinCallStatus.failure) {
               final msg = state.error == 'workspace_missing'

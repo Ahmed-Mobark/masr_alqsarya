@@ -2254,6 +2254,24 @@ abstract class AppLocalizations {
   /// **'Camera permission is required for video calls.'**
   String get callCameraPermissionRequired;
 
+  /// No description provided for @callDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'You were disconnected from the call.'**
+  String get callDisconnected;
+
+  /// No description provided for @callReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection lost. Reconnecting…'**
+  String get callReconnecting;
+
+  /// No description provided for @callConnectionReplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Call ended because you joined from another device.'**
+  String get callConnectionReplaced;
+
   /// No description provided for @callUnsupportedPlatform.
   ///
   /// In en, this message translates to:

@@ -15,6 +15,10 @@ class JoinCallCubit extends Cubit<JoinCallState> {
   final WorkspaceIdStorage _workspaceIdStorage;
   final CallJoinStorage _callJoinStorage;
 
+  void reset() {
+    emit(const JoinCallState());
+  }
+
   Future<void> join(int callId) async {
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {

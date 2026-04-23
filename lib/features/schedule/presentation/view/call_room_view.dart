@@ -38,6 +38,9 @@ class _CallRoomViewState extends State<CallRoomView> {
   bool _micEnabled = true;
   bool _camEnabled = true;
   bool _exiting = false;
+  String? _bannerMessage;
+  bool _reconnecting = false;
+  int _reconnectAttempts = 0;
 
   @override
   void initState() {
@@ -58,6 +61,39 @@ class _CallRoomViewState extends State<CallRoomView> {
       return;
     }
     _connect();
+  }
+
+  void _showBanner(String message) {
+    if (!mounted) return;
+    setState(() => _bannerMessage = message);
+  }
+
+  Future<void> _attemptReconnect() async {
+    if (_reconnecting || _exiting) return;
+    if (_reconnectAttempts >= 3) {
+      _showBanner(context.tr.callDisconnected);
+      return;
+    }
+    _reconnecting = true;
+    _reconnectAttempts += 1;
+    _showBanner(context.tr.callReconnecting);
+    setState(() => _connecting = true);
+
+    // Tear down current room/listener before re-connecting.
+    try {
+      _listener?.dispose();
+    } catch (_) {}
+    _listener = null;
+    try {
+      await _room?.disconnect();
+    } catch (_) {}
+    _room = null;
+
+    // Small backoff.
+    await Future<void>.delayed(Duration(milliseconds: 350 * _reconnectAttempts));
+    if (!mounted || _exiting) return;
+    _reconnecting = false;
+    await _connect();
   }
 
   String _sanitizeLiveKitUrl(String raw) {
@@ -86,10 +122,42 @@ class _CallRoomViewState extends State<CallRoomView> {
         );
       }
       if (!mounted || _exiting) return;
-      // If disconnect happens during initial join, let _connect() handle it.
-      if (_connecting) return;
-      _exiting = true;
-      sl<AppNavigator>().pop();
+
+      final reason = (event.reason ?? '').toString().toLowerCase();
+      final replaced = reason.contains('duplicate') ||
+          reason.contains('replaced') ||
+          reason.contains('identity');
+      final networkLike = reason.contains('network') ||
+          reason.contains('transport') ||
+          reason.contains('timeout') ||
+          reason.contains('server') ||
+          reason.contains('unknown') ||
+          reason.isEmpty;
+
+      if (replaced) {
+        _showBanner(context.tr.callConnectionReplaced);
+        // Give the user a moment to read, then exit.
+        Future<void>.delayed(const Duration(milliseconds: 900), () {
+          if (!mounted || _exiting) return;
+          _exiting = true;
+          sl<AppNavigator>().pop();
+        });
+        return;
+      }
+
+      if (networkLike) {
+        // Try reconnect without throwing user out.
+        _attemptReconnect();
+        return;
+      }
+
+      // Fallback: show a message then exit.
+      _showBanner(context.tr.callDisconnected);
+      Future<void>.delayed(const Duration(milliseconds: 900), () {
+        if (!mounted || _exiting) return;
+        _exiting = true;
+        sl<AppNavigator>().pop();
+      });
     });
 
     try {
@@ -99,6 +167,9 @@ class _CallRoomViewState extends State<CallRoomView> {
         widget.token,
         connectOptions: const ConnectOptions(autoSubscribe: true),
       );
+      if (!mounted) return;
+      // Clear any previous banner after successful connection.
+      setState(() => _bannerMessage = null);
 
       // Request runtime permissions before creating media tracks.
       // On Android, missing runtime permission commonly throws TrackCreateException.
@@ -216,6 +287,7 @@ class _CallRoomViewState extends State<CallRoomView> {
   }
 
   Future<void> _leave() async {
+    _exiting = true;
     try {
       await _room?.disconnect();
     } catch (_) {}
@@ -322,10 +394,41 @@ class _CallRoomViewState extends State<CallRoomView> {
       body: SafeArea(
         child: Column(
           children: [
+            if (_bannerMessage != null)
+              Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: 16.w,
+                  end: 16.w,
+                  top: 8.h,
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                  ),
+                  child: Text(
+                    _bannerMessage!,
+                    style: AppTextStyles.bodyMedium(color: Colors.white70)
+                        .copyWith(fontSize: 12.sp),
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               child: Row(
                 children: [
+                  IconButton(
+                    onPressed: _exiting ? null : _leave,
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                    ),
+                    tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  ),
+                  SizedBox(width: 6.w),
                   Expanded(
                     child: Text(
                       widget.roomName,

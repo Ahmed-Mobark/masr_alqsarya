@@ -1133,6 +1133,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'يلزم السماح بالوصول إلى الكاميرا لإجراء مكالمة فيديو.';
 
   @override
+  String get callDisconnected => 'تم قطع الاتصال بالمكالمة.';
+
+  @override
+  String get callReconnecting => 'انقطع الاتصال. جارٍ إعادة الاتصال…';
+
+  @override
+  String get callConnectionReplaced =>
+      'انتهت المكالمة لأنك انضممت من جهاز آخر.';
+
+  @override
   String get callUnsupportedPlatform =>
       'المكالمات المباشرة متاحة على Android وiOS فقط. شغّل التطبيق على الهاتف.';
 

@@ -1154,6 +1154,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'L’autorisation de la caméra est requise pour les appels vidéo.';
 
   @override
+  String get callDisconnected => 'Vous avez été déconnecté de l’appel.';
+
+  @override
+  String get callReconnecting => 'Connexion perdue. Reconnexion…';
+
+  @override
+  String get callConnectionReplaced =>
+      'Appel terminé car vous vous êtes connecté depuis un autre appareil.';
+
+  @override
   String get callUnsupportedPlatform =>
       'Les appels en direct sont disponibles uniquement sur Android/iOS. Lancez l’app mobile.';
 

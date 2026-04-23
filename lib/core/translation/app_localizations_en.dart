@@ -1144,6 +1144,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Camera permission is required for video calls.';
 
   @override
+  String get callDisconnected => 'You were disconnected from the call.';
+
+  @override
+  String get callReconnecting => 'Connection lost. Reconnecting…';
+
+  @override
+  String get callConnectionReplaced =>
+      'Call ended because you joined from another device.';
+
+  @override
   String get callUnsupportedPlatform =>
       'Live calls are supported on Android/iOS only. Please run the mobile app.';
 
