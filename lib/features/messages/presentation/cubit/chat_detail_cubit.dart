@@ -4,10 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
+import 'package:masr_al_qsariya/core/methods/covert_datetime_to_string.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
 import 'package:masr_al_qsariya/core/network/reverb/reverb_service.dart';
+import 'package:masr_al_qsariya/core/realtime/realtime_service.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachment.dart';
@@ -26,6 +27,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     this._downloadAttachment,
     this._workspaceIdStorage,
     this._storage,
+    this._realtime,
     this._reverb,
     this.chatId,
   ) : super(const ChatDetailState());
@@ -35,13 +37,12 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   final DownloadChatAttachmentUseCase _downloadAttachment;
   final WorkspaceIdStorage _workspaceIdStorage;
   final Storage _storage;
+  final RealtimeService _realtime;
   final ReverbService _reverb;
   final int chatId;
 
   bool _soketiSubscribed = false;
-  Timer? _pollTimer;
-
-  static const _pollInterval = Duration(seconds: 8);
+  bool _reverbSubscribed = false;
 
   void clearSendError() {
     emit(state.copyWith(clearSendError: true));
@@ -174,6 +175,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       final isMine = m.senderId != null && myId != null && m.senderId == myId;
       final time = _formatTime(m.createdAtIso);
       return ChatBubbleRow(
+        id: m.id,
         text: m.body,
         time: time,
         isSent: isMine,
@@ -191,38 +193,89 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
-  void _startPollFallback() {
-    if (_pollTimer != null) return;
-    if (kDebugMode) {
-      developer.log(
-        'Using HTTP polling ($_pollInterval) for chat $chatId — '
-        'fix /broadcasting/auth to return {"auth":"..."} for live updates',
-        name: 'ChatDetailCubit',
-      );
+  void _applyRealtimeMessage(Map<String, dynamic> data) {
+    // Try common shapes:
+    // - { message: {...} }
+    // - { data: { message: {...} } }
+    // - { ...message fields... }
+    Map<String, dynamic>? msg;
+    final direct = data['message'];
+    if (direct is Map) msg = Map<String, dynamic>.from(direct);
+    final nestedData = data['data'];
+    if (msg == null && nestedData is Map) {
+      final nestedMsg = nestedData['message'];
+      if (nestedMsg is Map) msg = Map<String, dynamic>.from(nestedMsg);
     }
-    _pollTimer = Timer.periodic(_pollInterval, (_) {
-      if (!isClosed) unawaited(loadMessages(silentRefresh: true));
-    });
+    msg ??= data;
+
+    final body = (msg['body'] ?? msg['message'] ?? '').toString().trim();
+    if (body.isEmpty) return;
+
+    final createdAtIso = (msg['created_at'] ??
+            msg['createdAt'] ??
+            msg['created_at_iso'] ??
+            '')
+        .toString();
+    final time = _formatTime(createdAtIso);
+    final myId = _storage.getUser()?.id;
+    final senderMap = msg['sender'];
+    final senderUserId = senderMap is Map ? senderMap['user_id'] : null;
+    final senderIdRaw = senderUserId ??
+        msg['sender_id'] ??
+        msg['senderId'] ??
+        msg['user_id'] ??
+        msg['userId'];
+    final senderId = senderIdRaw is num ? senderIdRaw.toInt() : int.tryParse('$senderIdRaw');
+    final isMine = senderId != null && myId != null && senderId == myId;
+
+    final idRaw = msg['id'];
+    final id = idRaw is num ? idRaw.toInt() : int.tryParse('$idRaw') ?? -1;
+    if (id != -1 && state.messages.any((m) => m.id == id)) return;
+
+    final next = ChatBubbleRow(id: id, text: body, time: time, isSent: isMine);
+    final current = state.messages;
+    emit(state.copyWith(messages: [...current, next]));
   }
 
   Future<void> _ensureSoketiSubscription() async {
     if (_soketiSubscribed) return;
     _soketiSubscribed = true;
     try {
-      final workspaceId = _workspaceIdStorage.get();
-      if (workspaceId == null) {
-        _soketiSubscribed = false;
+      // Prefer Reverb (native Laravel Reverb / Pusher protocol).
+      if (!_reverbSubscribed) {
+        final workspaceId = _workspaceIdStorage.get();
+        if (workspaceId == null) {
+          throw StateError('workspace_missing');
+        }
+        await _reverb.subscribePrivateChat(
+          chatId: chatId,
+          workspaceId: workspaceId,
+          onEvent: (eventName, data) {
+            // Prefer applying realtime payloads instead of polling/HTTP refresh.
+            if (isClosed) return;
+            // Backend spec: message events are `message.sent`.
+            if (eventName == 'message.sent') {
+              _applyRealtimeMessage(data);
+              return;
+            }
+            // For other events (e.g. read receipts), fall back to a silent refresh.
+            unawaited(loadMessages(silentRefresh: true));
+          },
+        );
+        _reverbSubscribed = true;
         return;
       }
-      await _reverb.subscribePrivateChat(
-        workspaceId: workspaceId,
+
+      // Fallback to Soketi (legacy) if needed.
+      final ws = _workspaceIdStorage.get();
+      await _realtime.subscribePrivateChat(
+        workspaceId: ws ?? 0,
         chatId: chatId,
-        onEvent: (_, __) => loadMessages(silentRefresh: true),
+        onNewActivity: () => loadMessages(silentRefresh: true),
       );
-      _pollTimer?.cancel();
-      _pollTimer = null;
     } catch (e, st) {
       _soketiSubscribed = false;
+      _reverbSubscribed = false;
       if (kDebugMode) {
         developer.log(
           'Realtime (Soketi/Pusher) subscribe failed — check WebSocket host/port '
@@ -232,7 +285,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
           stackTrace: st,
         );
       }
-      _startPollFallback();
+      // No polling fallback: rely on realtime only (per product requirement).
     }
   }
 
@@ -278,14 +331,11 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   @override
   Future<void> close() {
-    _pollTimer?.cancel();
-    final workspaceId = _workspaceIdStorage.get();
-    if (workspaceId != null) {
+    unawaited(_realtime.unsubscribeChat(chatId));
+    final ws = _workspaceIdStorage.get();
+    if (ws != null) {
       _reverb.unsubscribe(
-        AppEndpoints.privateChatChannelName(
-          workspaceId: workspaceId,
-          chatId: chatId,
-        ),
+        AppEndpoints.privateChatChannelName(workspaceId: ws, chatId: chatId),
       );
     }
     return super.close();

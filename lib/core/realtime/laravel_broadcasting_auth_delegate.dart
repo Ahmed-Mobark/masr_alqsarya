@@ -42,6 +42,8 @@ class LaravelBroadcastingAuthDelegate
       },
       options: Options(
         contentType: Headers.formUrlEncodedContentType,
+        // Don't let Dio throw on non-2xx; we want to surface server body.
+        validateStatus: (_) => true,
         headers: {
           'Accept': 'application/json',
           if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
@@ -57,7 +59,7 @@ class LaravelBroadcastingAuthDelegate
       throw DioException(
         requestOptions: response.requestOptions,
         response: response,
-        message: 'Broadcasting auth HTTP $status',
+        message: 'Broadcasting auth HTTP $status — body: ${response.data}',
       );
     }
 

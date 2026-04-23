@@ -35,14 +35,20 @@ class ReverbService {
     'REVERB_APP_KEY',
     defaultValue: 'cihrywvayxv8nguraxqy',
   );
-  static const String _authPath = String.fromEnvironment(
-    'REVERB_AUTH_PATH',
-    defaultValue: AppEndpoints.broadcastingAuthPath,
+  static const String _authUrlOverride = String.fromEnvironment(
+    'REVERB_AUTH_URL',
+    defaultValue: '',
   );
 
   static String get _wsScheme => _httpScheme == 'https' ? 'wss' : 'ws';
-  static String get _authEndpoint =>
-      '$_httpScheme://$_host:${_port.toString()}$_authPath';
+  static Uri get _authEndpoint {
+    // Important: Laravel broadcasting auth is served by the API host, not the
+    // Reverb websocket host. Using the ws host here commonly causes 404.
+    if (_authUrlOverride.trim().isNotEmpty) {
+      return Uri.parse(_authUrlOverride);
+    }
+    return Uri.parse(AppEndpoints.broadcastingAuthUrl);
+  }
 
   PusherChannelsClient? _client;
   StreamSubscription? _lifecycleSub;
@@ -52,6 +58,27 @@ class ReverbService {
   final Map<String, PrivateChannel> _channels = {};
 
   bool get isConnected => _isConnected;
+
+  Future<void> _awaitEstablishedConnection({
+    Duration timeout = const Duration(seconds: 12),
+  }) async {
+    final client = _client;
+    if (client == null || client.isDisposed) return;
+    if (_isConnected) return;
+
+    final completer = Completer<void>();
+    late final StreamSubscription sub;
+    sub = client.lifecycleStream.listen((state) {
+      if (state == PusherChannelsClientLifeCycleState.establishedConnection) {
+        if (!completer.isCompleted) completer.complete();
+      }
+    });
+    try {
+      await completer.future.timeout(timeout);
+    } finally {
+      await sub.cancel();
+    }
+  }
 
   Future<void> connect() async {
     if (_client != null && _isConnected) return;
@@ -74,17 +101,12 @@ class ReverbService {
       minimumReconnectDelayDuration: const Duration(seconds: 2),
     );
 
-    final completer = Completer<void>();
-
     _lifecycleSub = _client!.lifecycleStream.listen((state) {
       final connected =
           state == PusherChannelsClientLifeCycleState.establishedConnection;
       if (_isConnected != connected) {
         _isConnected = connected;
         log('ReverbService: connected=$_isConnected ($state)');
-      }
-      if (connected && !completer.isCompleted) {
-        completer.complete();
       }
     });
 
@@ -97,7 +119,7 @@ class ReverbService {
     await _client!.connect();
 
     // Don't silently succeed on timeout; callers rely on an actual socket.
-    await completer.future.timeout(const Duration(seconds: 12));
+    await _awaitEstablishedConnection();
   }
 
   Future<void> ensureConnected() async {
@@ -105,6 +127,7 @@ class ReverbService {
     if (token == null || token.trim().isEmpty) return;
     if (_client != null && !_client!.isDisposed) {
       await _client!.connect();
+      await _awaitEstablishedConnection();
       return;
     }
     await connect();
@@ -121,7 +144,6 @@ class ReverbService {
     );
     unsubscribe(channelName);
     await ensureConnected();
-
     await subscribeToAllEvents(
       channelName: channelName,
       onEvent: (eventName, data) => onEvent(eventName, data),
@@ -143,7 +165,7 @@ class ReverbService {
       return null;
     }
 
-    final authUri = Uri.parse(_authEndpoint);
+    final authUri = _authEndpoint;
     final delegate = LaravelBroadcastingAuthDelegate(
       dio: sl<ApiBaseHelper>().getDio(ApiEnvironment.primary),
       storage: sl<Storage>(),
@@ -182,7 +204,7 @@ class ReverbService {
       return null;
     }
 
-    final authUri = Uri.parse(_authEndpoint);
+    final authUri = _authEndpoint;
     final delegate = LaravelBroadcastingAuthDelegate(
       dio: sl<ApiBaseHelper>().getDio(ApiEnvironment.primary),
       storage: sl<Storage>(),
