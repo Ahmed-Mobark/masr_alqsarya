@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
 import 'package:masr_al_qsariya/features/schedule/data/models/call_model.dart';
+import 'package:masr_al_qsariya/features/schedule/data/models/call_join_model.dart';
 
 abstract class CallsRemoteDataSource {
   Future<CallModel> createCall({
@@ -12,6 +13,11 @@ abstract class CallsRemoteDataSource {
 
   Future<List<CallModel>> getCalls({
     required int workspaceId,
+  });
+
+  Future<CallJoinModel> joinCall({
+    required int workspaceId,
+    required int callId,
   });
 }
 
@@ -52,6 +58,22 @@ class CallsRemoteDataSourceImpl implements CallsRemoteDataSource {
     if (data is! List) return const [];
 
     return data.whereType<Map<String, dynamic>>().map(CallModel.fromJson).toList();
+  }
+
+  @override
+  Future<CallJoinModel> joinCall({
+    required int workspaceId,
+    required int callId,
+  }) async {
+    final response = await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallJoin(workspaceId, callId),
+    );
+
+    final data = response['data'];
+    if (data is! Map<String, dynamic>) {
+      throw const FormatException('Invalid call join response');
+    }
+    return CallJoinModel.fromJson(data);
   }
 }
 

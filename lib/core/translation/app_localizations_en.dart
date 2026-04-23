@@ -1104,6 +1104,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleJoin => 'JOIN';
 
   @override
+  String get scheduleJoinCallSuccess => 'Joined call successfully.';
+
+  @override
+  String get scheduleJoinCallFailed =>
+      'Could not join the call. Please try again.';
+
+  @override
+  String get callConnecting => 'Connecting…';
+
+  @override
+  String get callLive => 'Live';
+
+  @override
+  String get callMic => 'Mic';
+
+  @override
+  String get callCamera => 'Camera';
+
+  @override
+  String get callLeave => 'Leave';
+
+  @override
+  String get callWaitingForOther => 'Waiting for the other participant…';
+
+  @override
+  String get callConnectFailed => 'Could not connect to the call.';
+
+  @override
+  String get callNoInternet =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String get callMicPermissionRequired =>
+      'Microphone permission is required to join the call.';
+
+  @override
+  String get callCameraPermissionRequired =>
+      'Camera permission is required for video calls.';
+
+  @override
+  String get callUnsupportedPlatform =>
+      'Live calls are supported on Android/iOS only. Please run the mobile app.';
+
+  @override
   String get scheduleViewReceipt => 'VIEW RECEIPT';
 
   @override

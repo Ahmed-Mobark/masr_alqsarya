@@ -1094,6 +1094,49 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scheduleJoin => 'انضم';
 
   @override
+  String get scheduleJoinCallSuccess => 'تم الانضمام للمكالمة بنجاح.';
+
+  @override
+  String get scheduleJoinCallFailed => 'تعذر الانضمام للمكالمة. حاول مرة أخرى.';
+
+  @override
+  String get callConnecting => 'جارٍ الاتصال…';
+
+  @override
+  String get callLive => 'مباشر';
+
+  @override
+  String get callMic => 'الميكروفون';
+
+  @override
+  String get callCamera => 'الكاميرا';
+
+  @override
+  String get callLeave => 'إنهاء';
+
+  @override
+  String get callWaitingForOther => 'في انتظار الطرف الآخر…';
+
+  @override
+  String get callConnectFailed => 'تعذر الاتصال بالمكالمة.';
+
+  @override
+  String get callNoInternet =>
+      'لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.';
+
+  @override
+  String get callMicPermissionRequired =>
+      'يلزم السماح بالوصول إلى الميكروفون للانضمام إلى المكالمة.';
+
+  @override
+  String get callCameraPermissionRequired =>
+      'يلزم السماح بالوصول إلى الكاميرا لإجراء مكالمة فيديو.';
+
+  @override
+  String get callUnsupportedPlatform =>
+      'المكالمات المباشرة متاحة على Android وiOS فقط. شغّل التطبيق على الهاتف.';
+
+  @override
   String get scheduleViewReceipt => 'عرض الإيصال';
 
   @override

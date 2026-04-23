@@ -1114,6 +1114,50 @@ class AppLocalizationsFr extends AppLocalizations {
   String get scheduleJoin => 'REJOINDRE';
 
   @override
+  String get scheduleJoinCallSuccess => 'Connexion à l’appel réussie.';
+
+  @override
+  String get scheduleJoinCallFailed =>
+      'Impossible de rejoindre l’appel. Veuillez réessayer.';
+
+  @override
+  String get callConnecting => 'Connexion…';
+
+  @override
+  String get callLive => 'En direct';
+
+  @override
+  String get callMic => 'Micro';
+
+  @override
+  String get callCamera => 'Caméra';
+
+  @override
+  String get callLeave => 'Quitter';
+
+  @override
+  String get callWaitingForOther => 'En attente de l’autre participant…';
+
+  @override
+  String get callConnectFailed => 'Impossible de se connecter à l’appel.';
+
+  @override
+  String get callNoInternet =>
+      'Pas de connexion Internet. Vérifiez votre réseau et réessayez.';
+
+  @override
+  String get callMicPermissionRequired =>
+      'L’autorisation du micro est requise pour rejoindre l’appel.';
+
+  @override
+  String get callCameraPermissionRequired =>
+      'L’autorisation de la caméra est requise pour les appels vidéo.';
+
+  @override
+  String get callUnsupportedPlatform =>
+      'Les appels en direct sont disponibles uniquement sur Android/iOS. Lancez l’app mobile.';
+
+  @override
   String get scheduleViewReceipt => 'VOIR LE REÇU';
 
   @override
