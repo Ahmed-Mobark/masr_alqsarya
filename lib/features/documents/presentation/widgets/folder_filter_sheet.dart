@@ -110,6 +110,37 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
       initialDate: _startDate ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2035),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.darkText,
+              surface: AppColors.background,
+              onSurface: AppColors.darkText,
+            ),
+            dialogBackgroundColor: AppColors.background,
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: AppColors.background,
+              headerBackgroundColor: AppColors.background,
+              headerForegroundColor: AppColors.darkText,
+              dayForegroundColor: WidgetStateProperty.all(AppColors.darkText),
+              todayForegroundColor: WidgetStateProperty.all(AppColors.yellow),
+              todayBorder: const BorderSide(color: AppColors.primary, width: 1),
+              yearForegroundColor: WidgetStateProperty.all(AppColors.darkText),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.r),
+              ),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.yellow,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) setState(() => _startDate = picked);
   }
@@ -120,6 +151,37 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
       initialDate: _endDate ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2035),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.darkText,
+              surface: AppColors.background,
+              onSurface: AppColors.darkText,
+            ),
+            dialogBackgroundColor: AppColors.background,
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: AppColors.background,
+              headerBackgroundColor: AppColors.background,
+              headerForegroundColor: AppColors.darkText,
+              dayForegroundColor: WidgetStateProperty.all(AppColors.darkText),
+              todayForegroundColor: WidgetStateProperty.all(AppColors.yellow),
+              todayBorder: const BorderSide(color: AppColors.primary, width: 1),
+              yearForegroundColor: WidgetStateProperty.all(AppColors.darkText),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.r),
+              ),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.yellow,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) setState(() => _endDate = picked);
   }
