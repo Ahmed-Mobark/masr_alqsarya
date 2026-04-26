@@ -390,6 +390,7 @@
   "scheduleCreateCall": "CRÉER UN APPEL",
   "scheduleErrorWorkspaceMissing": "L’espace de travail n’est pas prêt. Reconnectez-vous.",
   "scheduleErrorScheduledStartsAtAfterNow": "Veuillez choisir une date ultérieure.",
+  "scheduleErrorStartDateRequired": "Veuillez sélectionner une date de début.",
   "scheduleCallCreatedSuccess": "Appel créé avec succès.",
   "scheduleRoomName": "Salle",
   "scheduleVideoCall": "Appel vidéo",

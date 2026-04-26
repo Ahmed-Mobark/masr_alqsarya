@@ -2074,6 +2074,12 @@ abstract class AppLocalizations {
   /// **'Please choose a future date.'**
   String get scheduleErrorScheduledStartsAtAfterNow;
 
+  /// No description provided for @scheduleErrorStartDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a start date.'**
+  String get scheduleErrorStartDateRequired;
+
   /// No description provided for @scheduleCallCreatedSuccess.
   ///
   /// In en, this message translates to:

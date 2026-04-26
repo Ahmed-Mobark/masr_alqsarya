@@ -2,19 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
-import 'package:masr_al_qsariya/features/schedule/domain/usecases/create_call_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/create_calendar_item_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/get_calendar_item_types_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/presentation/cubit/add_schedule_state.dart';
 
 class AddScheduleCubit extends Cubit<AddScheduleState> {
   AddScheduleCubit({
-    required CreateCallUseCase createCall,
+    required CreateCalendarItemUseCase createCalendarItem,
+    required GetCalendarItemTypesUseCase getCalendarItemTypes,
     required WorkspaceIdStorage workspaceIdStorage,
-  })  : _createCall = createCall,
+  })  : _createCalendarItem = createCalendarItem,
+        _getCalendarItemTypes = getCalendarItemTypes,
         _workspaceIdStorage = workspaceIdStorage,
         super(AddScheduleState.initial());
 
-  final CreateCallUseCase _createCall;
+  final CreateCalendarItemUseCase _createCalendarItem;
+  final GetCalendarItemTypesUseCase _getCalendarItemTypes;
   final WorkspaceIdStorage _workspaceIdStorage;
+
+  Future<void> loadTypes() async {
+    final workspaceId = _workspaceIdStorage.get();
+    if (workspaceId == null) return;
+
+    final result = await _getCalendarItemTypes(
+      GetCalendarItemTypesParams(workspaceId: workspaceId),
+    );
+    result.fold(
+      (_) {},
+      (types) => emit(state.copyWith(eventTypes: types)),
+    );
+  }
 
   void changeMonth(int delta) {
     emit(
@@ -34,13 +51,34 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
   }
 
   void setEventType(String? value) {
-    final next = state.copyWith(selectedEventType: value);
+    if (value == null || value.isEmpty) {
+      emit(state.copyWith(clearSelectedEventType: true));
+      return;
+    }
 
-    if (value == 'Call') {
+    final matched = state.eventTypes.where((e) => e.value == value).toList();
+    final categoryId = matched.isNotEmpty ? matched.first.categoryId : null;
+    final next = state.copyWith(
+      selectedEventType: value,
+      selectedCategoryId: categoryId,
+      clearNote: true,
+    );
+    if (value == 'audio_call') {
       emit(
         next.copyWith(
+          selectedCallMode: 'audio',
           clearSelectedChild: true,
-          clearSelectedTime: true,
+          clearSelectedCategoryId: true,
+        ),
+      );
+      return;
+    }
+    if (value == 'video_call') {
+      emit(
+        next.copyWith(
+          selectedCallMode: 'video',
+          clearSelectedChild: true,
+          clearSelectedCategoryId: true,
         ),
       );
       return;
@@ -55,15 +93,32 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
 
   void setTime(TimeOfDay? value) => emit(state.copyWith(selectedTime: value));
 
+  void setEndDate(DateTime? value) => emit(state.copyWith(selectedEndDate: value));
+
+  void setEndTime(TimeOfDay? value) => emit(state.copyWith(selectedEndTime: value));
+
+  void setNote(String? value) => emit(state.copyWith(note: value));
+
   void setCallMode(String? value) {
     final v = value;
     if (v == null || (v != 'audio' && v != 'video')) return;
     emit(state.copyWith(selectedCallMode: v));
   }
 
-  DateTime scheduledStartsAt() {
-    final baseDate = state.selectedDate ?? state.selectedDay;
+  DateTime? scheduledStartsAt() {
+    final baseDate = state.selectedDate;
+    if (baseDate == null) return null;
     final t = state.selectedTime;
+    if (t == null) {
+      return DateTime(baseDate.year, baseDate.month, baseDate.day);
+    }
+    return DateTime(baseDate.year, baseDate.month, baseDate.day, t.hour, t.minute);
+  }
+
+  DateTime? scheduledEndsAt() {
+    final baseDate = state.selectedEndDate;
+    if (baseDate == null) return null;
+    final t = state.selectedEndTime;
     if (t == null) {
       return DateTime(baseDate.year, baseDate.month, baseDate.day);
     }
@@ -73,6 +128,7 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
   Map<String, dynamic>? buildCallPayload() {
     if (!state.isCall) return null;
     final scheduled = scheduledStartsAt();
+    if (scheduled == null) return null;
     return <String, dynamic>{
       'mode': state.selectedCallMode,
       'scheduled_starts_at':
@@ -87,8 +143,8 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
       emit(state.copyWith(status: AddScheduleStatus.failure, error: 'missing_type'));
       return;
     }
-
-    if (!state.isCall) {
+    if (state.selectedDate == null) {
+      emit(state.copyWith(status: AddScheduleStatus.failure, error: 'missing_start_date'));
       return;
     }
 
@@ -109,14 +165,23 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
       clearCreatedCall: true,
     ));
 
-    final scheduled = DateFormat("M/d/yyyy'T'HH:mm:ss").format(
-      scheduledStartsAt(),
+    final startsAt = DateFormat("M/d/yyyy'T'HH:mm:ss").format(
+      scheduledStartsAt()!,
     );
-    final result = await _createCall(
-      CreateCallParams(
+    final endsDt = scheduledEndsAt();
+    final endsAt = endsDt != null
+        ? DateFormat("M/d/yyyy'T'HH:mm:ss").format(endsDt)
+        : null;
+
+    final result = await _createCalendarItem(
+      CreateCalendarItemParams(
         workspaceId: workspaceId,
-        mode: state.selectedCallMode,
-        scheduledStartsAt: scheduled,
+        type: state.selectedEventType!,
+        startsAt: startsAt,
+        endsAt: endsAt,
+        note: state.note,
+        categoryId: state.isSimpleEvent ? state.selectedCategoryId : null,
+        childWorkspaceMemberId: null,
       ),
     );
 
@@ -127,12 +192,7 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
           error: failure.message,
         ),
       ),
-      (call) => emit(
-        state.copyWith(
-          status: AddScheduleStatus.success,
-          createdCall: call,
-        ),
-      ),
+      (_) => emit(state.copyWith(status: AddScheduleStatus.success)),
     );
   }
 }

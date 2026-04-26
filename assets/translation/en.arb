@@ -390,6 +390,7 @@
   "scheduleCreateCall": "CREATE CALL",
   "scheduleErrorWorkspaceMissing": "Workspace is not ready yet. Try signing in again.",
   "scheduleErrorScheduledStartsAtAfterNow": "Please choose a future date.",
+  "scheduleErrorStartDateRequired": "Please select a start date.",
   "scheduleCallCreatedSuccess": "Call created successfully.",
   "scheduleRoomName": "Room",
   "scheduleVideoCall": "Video Call",

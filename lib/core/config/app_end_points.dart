@@ -90,9 +90,16 @@ class AppEndpoints {
       "workspaces/$workspaceId/chats/$chatId/attachments/$attachmentId/download";
 
   // Calls
-  static String workspaceCalls(int workspaceId) => "workspaces/$workspaceId/calls";
+  static String workspaceCalls(int workspaceId) =>
+      "workspaces/$workspaceId/calls";
   static String workspaceCallJoin(int workspaceId, int callId) =>
       "workspaces/$workspaceId/calls/$callId/join";
+
+  // Calendar
+  static String workspaceCalendarItems(int workspaceId) =>
+      "workspaces/$workspaceId/calendar-items";
+  static String workspaceCalendarItemTypes(int workspaceId) =>
+      "workspaces/$workspaceId/calendar-items/types";
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
   static const String addChild = "family-workspace/add-child";
 }

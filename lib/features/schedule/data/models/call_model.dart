@@ -40,6 +40,32 @@ class CallModel {
     );
   }
 
+  factory CallModel.fromCalendarItemJson(
+    Map<String, dynamic> json, {
+    required int workspaceId,
+  }) {
+    final detail = json['detail'];
+    final detailMap = detail is Map<String, dynamic> ? detail : const <String, dynamic>{};
+
+    final startsAt = DateTime.tryParse((json['starts_at'] as String?) ?? '') ??
+        DateTime.tryParse((detailMap['scheduled_starts_at'] as String?) ?? '') ??
+        DateTime.now();
+
+    return CallModel(
+      id: (detailMap['id'] as num?)?.toInt() ?? (json['id'] as num?)?.toInt() ?? 0,
+      workspaceId: workspaceId,
+      mode: (detailMap['mode'] as String?) ?? '',
+      status: (detailMap['status'] as String?) ?? '',
+      livekitRoomName: '',
+      scheduledStartsAt: DateTime.tryParse(
+            (detailMap['scheduled_starts_at'] as String?) ?? '',
+          ) ??
+          startsAt,
+      createdAt: startsAt,
+      updatedAt: startsAt,
+    );
+  }
+
   CallEntity toEntity() {
     return CallEntity(
       id: id,
