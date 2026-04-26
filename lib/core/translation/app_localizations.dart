@@ -1216,6 +1216,12 @@ abstract class AppLocalizations {
   /// **'Court Case'**
   String get expenseCourtCase;
 
+  /// No description provided for @expensePaidBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PAID'**
+  String get expensePaidBadge;
+
   /// No description provided for @expenseViewReceipt.
   ///
   /// In en, this message translates to:
@@ -1246,11 +1252,203 @@ abstract class AppLocalizations {
   /// **'Add Expense'**
   String get expenseAddExpense;
 
+  /// No description provided for @invoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice'**
+  String get invoiceTitle;
+
+  /// No description provided for @invoiceNumberPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice #'**
+  String get invoiceNumberPrefix;
+
+  /// No description provided for @invoiceExpenseInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Information'**
+  String get invoiceExpenseInformation;
+
+  /// No description provided for @invoiceCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get invoiceCategory;
+
+  /// No description provided for @invoiceDateOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Service'**
+  String get invoiceDateOfService;
+
+  /// No description provided for @invoiceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get invoiceDescription;
+
+  /// No description provided for @invoicePaymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Details'**
+  String get invoicePaymentDetails;
+
+  /// No description provided for @invoiceReferenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference Number'**
+  String get invoiceReferenceNumber;
+
+  /// No description provided for @invoicePaidOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid On'**
+  String get invoicePaidOn;
+
+  /// No description provided for @invoicePaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get invoicePaymentMethod;
+
+  /// No description provided for @invoiceVerifiedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified By'**
+  String get invoiceVerifiedBy;
+
+  /// No description provided for @invoiceAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get invoiceAttachments;
+
   /// No description provided for @addExpenseTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Expense'**
   String get addExpenseTitle;
+
+  /// No description provided for @addExpenseChildLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get addExpenseChildLabel;
+
+  /// No description provided for @addExpenseChildBothChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'Both Children'**
+  String get addExpenseChildBothChildren;
+
+  /// No description provided for @addExpensePayerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Payer Name'**
+  String get addExpensePayerName;
+
+  /// No description provided for @addExpensePayerId.
+  ///
+  /// In en, this message translates to:
+  /// **'Payer ID'**
+  String get addExpensePayerId;
+
+  /// No description provided for @addExpensePayeeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Payee Name'**
+  String get addExpensePayeeName;
+
+  /// No description provided for @addExpensePayeeId.
+  ///
+  /// In en, this message translates to:
+  /// **'Payee ID'**
+  String get addExpensePayeeId;
+
+  /// No description provided for @addExpenseFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Title'**
+  String get addExpenseFieldHint;
+
+  /// No description provided for @addExpenseCurrencyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency is required'**
+  String get addExpenseCurrencyRequired;
+
+  /// No description provided for @addExpenseExpenseTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Title'**
+  String get addExpenseExpenseTitleLabel;
+
+  /// No description provided for @addExpenseCategoryMedical.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical'**
+  String get addExpenseCategoryMedical;
+
+  /// No description provided for @addExpenseCategoryGroceries.
+  ///
+  /// In en, this message translates to:
+  /// **'groceries'**
+  String get addExpenseCategoryGroceries;
+
+  /// No description provided for @addExpenseDatePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get addExpenseDatePlaceholder;
+
+  /// No description provided for @addExpenseNotesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes ( Optional )'**
+  String get addExpenseNotesOptional;
+
+  /// No description provided for @addExpenseNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'note'**
+  String get addExpenseNotesHint;
+
+  /// No description provided for @addExpenseYesIPaidIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, I paid it'**
+  String get addExpenseYesIPaidIt;
+
+  /// No description provided for @addExpenseNotPaidYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No, it has not been paid yet'**
+  String get addExpenseNotPaidYet;
+
+  /// No description provided for @addExpenseUploadReceiptOrInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload receipt or invoice'**
+  String get addExpenseUploadReceiptOrInvoice;
+
+  /// No description provided for @addExpenseProofTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'File is too large (max 5 MB).'**
+  String get addExpenseProofTooLarge;
+
+  /// No description provided for @addExpenseProofPickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not pick the file.'**
+  String get addExpenseProofPickFailed;
+
+  /// No description provided for @addExpenseSubmitExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Expense'**
+  String get addExpenseSubmitExpense;
 
   /// No description provided for @addExpenseCategoryLabel.
   ///

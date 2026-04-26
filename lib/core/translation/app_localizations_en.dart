@@ -603,6 +603,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseCourtCase => 'Court Case';
 
   @override
+  String get expensePaidBadge => 'PAID';
+
+  @override
   String get expenseViewReceipt => 'VIEW RECEIPT';
 
   @override
@@ -618,7 +621,103 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseAddExpense => 'Add Expense';
 
   @override
+  String get invoiceTitle => 'Invoice';
+
+  @override
+  String get invoiceNumberPrefix => 'Invoice #';
+
+  @override
+  String get invoiceExpenseInformation => 'Expense Information';
+
+  @override
+  String get invoiceCategory => 'Category';
+
+  @override
+  String get invoiceDateOfService => 'Date of Service';
+
+  @override
+  String get invoiceDescription => 'Description';
+
+  @override
+  String get invoicePaymentDetails => 'Payment Details';
+
+  @override
+  String get invoiceReferenceNumber => 'Reference Number';
+
+  @override
+  String get invoicePaidOn => 'Paid On';
+
+  @override
+  String get invoicePaymentMethod => 'Payment Method';
+
+  @override
+  String get invoiceVerifiedBy => 'Verified By';
+
+  @override
+  String get invoiceAttachments => 'Attachments';
+
+  @override
   String get addExpenseTitle => 'Add Expense';
+
+  @override
+  String get addExpenseChildLabel => 'Child';
+
+  @override
+  String get addExpenseChildBothChildren => 'Both Children';
+
+  @override
+  String get addExpensePayerName => 'Payer Name';
+
+  @override
+  String get addExpensePayerId => 'Payer ID';
+
+  @override
+  String get addExpensePayeeName => 'Payee Name';
+
+  @override
+  String get addExpensePayeeId => 'Payee ID';
+
+  @override
+  String get addExpenseFieldHint => 'Expense Title';
+
+  @override
+  String get addExpenseCurrencyRequired => 'Currency is required';
+
+  @override
+  String get addExpenseExpenseTitleLabel => 'Expense Title';
+
+  @override
+  String get addExpenseCategoryMedical => 'Medical';
+
+  @override
+  String get addExpenseCategoryGroceries => 'groceries';
+
+  @override
+  String get addExpenseDatePlaceholder => 'Date';
+
+  @override
+  String get addExpenseNotesOptional => 'Notes ( Optional )';
+
+  @override
+  String get addExpenseNotesHint => 'note';
+
+  @override
+  String get addExpenseYesIPaidIt => 'Yes, I paid it';
+
+  @override
+  String get addExpenseNotPaidYet => 'No, it has not been paid yet';
+
+  @override
+  String get addExpenseUploadReceiptOrInvoice => 'Upload receipt or invoice';
+
+  @override
+  String get addExpenseProofTooLarge => 'File is too large (max 5 MB).';
+
+  @override
+  String get addExpenseProofPickFailed => 'Could not pick the file.';
+
+  @override
+  String get addExpenseSubmitExpense => 'Submit Expense';
 
   @override
   String get addExpenseCategoryLabel => 'Category';

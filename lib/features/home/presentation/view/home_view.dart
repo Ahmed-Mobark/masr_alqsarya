@@ -13,6 +13,8 @@ import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/profile_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:masr_al_qsariya/features/nav_bar/presentation/cubit/nav_bar_cubit.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -153,12 +155,14 @@ class HomeView extends StatelessWidget {
 
   /// 3x2 grid of quick action cards matching Figma design.
   Widget _buildQuickActionsGrid(BuildContext context) {
+    void goToTab(int index) => context.read<NavBarCubit>().setIndex(index);
+
     final actions = [
-      _QuickAction(Iconsax.message, context.tr.homeSendMessage, () {}),
-      _QuickAction(Iconsax.calendar_add, context.tr.homeAddSchedule, () {}),
-      _QuickAction(Iconsax.receipt_item, context.tr.homeExpense, () {}),
-      _QuickAction(Iconsax.calendar_1, context.tr.homeSessions, () {}),
-      _QuickAction(Iconsax.video_play, context.tr.homeSessionsLibrary, () {}),
+      _QuickAction(Iconsax.message, context.tr.homeSendMessage, () => goToTab(3)),
+      _QuickAction(Iconsax.calendar_add, context.tr.homeAddSchedule, () => goToTab(1)),
+      _QuickAction(Iconsax.receipt_item, context.tr.homeExpense, () => goToTab(4)),
+      _QuickAction(Iconsax.calendar_1, context.tr.homeSessions, () => goToTab(1)),
+      _QuickAction(Iconsax.video_play, context.tr.homeSessionsLibrary, () => goToTab(1)),
       _QuickAction(Iconsax.user, context.tr.profileTitle, () {
         sl<AppNavigator>().push(screen: const ProfileView());
       }),

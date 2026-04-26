@@ -608,6 +608,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get expenseCourtCase => 'Dossier judiciaire';
 
   @override
+  String get expensePaidBadge => 'PAYÉ';
+
+  @override
   String get expenseViewReceipt => 'VOIR LE REÇU';
 
   @override
@@ -623,7 +626,106 @@ class AppLocalizationsFr extends AppLocalizations {
   String get expenseAddExpense => 'Ajouter une dépense';
 
   @override
+  String get invoiceTitle => 'Facture';
+
+  @override
+  String get invoiceNumberPrefix => 'Facture #';
+
+  @override
+  String get invoiceExpenseInformation => 'Informations sur la dépense';
+
+  @override
+  String get invoiceCategory => 'Catégorie';
+
+  @override
+  String get invoiceDateOfService => 'Date de service';
+
+  @override
+  String get invoiceDescription => 'Description';
+
+  @override
+  String get invoicePaymentDetails => 'Détails du paiement';
+
+  @override
+  String get invoiceReferenceNumber => 'Numéro de référence';
+
+  @override
+  String get invoicePaidOn => 'Payé le';
+
+  @override
+  String get invoicePaymentMethod => 'Méthode de paiement';
+
+  @override
+  String get invoiceVerifiedBy => 'Vérifié par';
+
+  @override
+  String get invoiceAttachments => 'Pièces jointes';
+
+  @override
   String get addExpenseTitle => 'Ajouter une dépense';
+
+  @override
+  String get addExpenseChildLabel => 'Enfant';
+
+  @override
+  String get addExpenseChildBothChildren => 'Les deux enfants';
+
+  @override
+  String get addExpensePayerName => 'Nom du payeur';
+
+  @override
+  String get addExpensePayerId => 'ID du payeur';
+
+  @override
+  String get addExpensePayeeName => 'Nom du bénéficiaire';
+
+  @override
+  String get addExpensePayeeId => 'ID du bénéficiaire';
+
+  @override
+  String get addExpenseFieldHint => 'Titre de la dépense';
+
+  @override
+  String get addExpenseCurrencyRequired => 'La devise est obligatoire';
+
+  @override
+  String get addExpenseExpenseTitleLabel => 'Titre de la dépense';
+
+  @override
+  String get addExpenseCategoryMedical => 'Médical';
+
+  @override
+  String get addExpenseCategoryGroceries => 'épicerie';
+
+  @override
+  String get addExpenseDatePlaceholder => 'Date';
+
+  @override
+  String get addExpenseNotesOptional => 'Notes ( Optionnel )';
+
+  @override
+  String get addExpenseNotesHint => 'note';
+
+  @override
+  String get addExpenseYesIPaidIt => 'Oui, je l’ai payée';
+
+  @override
+  String get addExpenseNotPaidYet => 'Non, elle n’a pas encore été payée';
+
+  @override
+  String get addExpenseUploadReceiptOrInvoice =>
+      'Téléverser le reçu ou la facture';
+
+  @override
+  String get addExpenseProofTooLarge =>
+      'Le fichier est trop volumineux (max 5 Mo).';
+
+  @override
+  String get addExpenseProofPickFailed =>
+      'Impossible de sélectionner le fichier.';
+
+  @override
+  String get addExpenseSubmitExpense => 'Soumettre la dépense';
 
   @override
   String get addExpenseCategoryLabel => 'Catégorie';

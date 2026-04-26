@@ -596,6 +596,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get expenseCourtCase => 'رقم القضية';
 
   @override
+  String get expensePaidBadge => 'مدفوع';
+
+  @override
   String get expenseViewReceipt => 'عرض الإيصال';
 
   @override
@@ -611,7 +614,104 @@ class AppLocalizationsAr extends AppLocalizations {
   String get expenseAddExpense => 'إضافة مصروف';
 
   @override
+  String get invoiceTitle => 'الفاتورة';
+
+  @override
+  String get invoiceNumberPrefix => 'فاتورة رقم ';
+
+  @override
+  String get invoiceExpenseInformation => 'معلومات المصروف';
+
+  @override
+  String get invoiceCategory => 'الفئة';
+
+  @override
+  String get invoiceDateOfService => 'تاريخ الخدمة';
+
+  @override
+  String get invoiceDescription => 'الوصف';
+
+  @override
+  String get invoicePaymentDetails => 'تفاصيل الدفع';
+
+  @override
+  String get invoiceReferenceNumber => 'رقم المرجع';
+
+  @override
+  String get invoicePaidOn => 'تاريخ الدفع';
+
+  @override
+  String get invoicePaymentMethod => 'طريقة الدفع';
+
+  @override
+  String get invoiceVerifiedBy => 'تم التحقق بواسطة';
+
+  @override
+  String get invoiceAttachments => 'المرفقات';
+
+  @override
   String get addExpenseTitle => 'إضافة مصروف';
+
+  @override
+  String get addExpenseChildLabel => 'الطفل';
+
+  @override
+  String get addExpenseChildBothChildren => 'كلا الطفلين';
+
+  @override
+  String get addExpensePayerName => 'اسم الدافع';
+
+  @override
+  String get addExpensePayerId => 'معرّف الدافع';
+
+  @override
+  String get addExpensePayeeName => 'اسم المستلم';
+
+  @override
+  String get addExpensePayeeId => 'معرّف المستلم';
+
+  @override
+  String get addExpenseFieldHint => 'عنوان المصروف';
+
+  @override
+  String get addExpenseCurrencyRequired => 'العملة مطلوبة';
+
+  @override
+  String get addExpenseExpenseTitleLabel => 'عنوان المصروف';
+
+  @override
+  String get addExpenseCategoryMedical => 'طبي';
+
+  @override
+  String get addExpenseCategoryGroceries => 'بقالة';
+
+  @override
+  String get addExpenseDatePlaceholder => 'التاريخ';
+
+  @override
+  String get addExpenseNotesOptional => 'ملاحظات ( اختياري )';
+
+  @override
+  String get addExpenseNotesHint => 'ملاحظة';
+
+  @override
+  String get addExpenseYesIPaidIt => 'نعم، قمت بالدفع';
+
+  @override
+  String get addExpenseNotPaidYet => 'لا، لم يتم الدفع بعد';
+
+  @override
+  String get addExpenseUploadReceiptOrInvoice => 'ارفع إيصالاً أو فاتورة';
+
+  @override
+  String get addExpenseProofTooLarge =>
+      'الملف كبير جدًا (الحد الأقصى 5 ميجابايت).';
+
+  @override
+  String get addExpenseProofPickFailed => 'تعذر اختيار الملف.';
+
+  @override
+  String get addExpenseSubmitExpense => 'إرسال المصروف';
 
   @override
   String get addExpenseCategoryLabel => 'الفئة';

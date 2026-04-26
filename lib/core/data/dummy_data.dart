@@ -115,6 +115,7 @@ class CalendarEvent {
 enum ExpenseType { regular, support }
 
 class ExpenseItem {
+  final String? title;
   final String childName;
   final String submittedBy;
   final String category;
@@ -123,8 +124,15 @@ class ExpenseItem {
   final double amount;
   final ExpenseType type;
   final String? courtCase;
+  final String? dateOfService;
+  final String? paidOn;
+  final String? description;
+  final String? paymentMethod;
+  final String? verifiedBy;
+  final String? attachmentName;
 
   const ExpenseItem({
+    this.title,
     required this.childName,
     required this.submittedBy,
     required this.category,
@@ -133,6 +141,12 @@ class ExpenseItem {
     required this.amount,
     required this.type,
     this.courtCase,
+    this.dateOfService,
+    this.paidOn,
+    this.description,
+    this.paymentMethod,
+    this.verifiedBy,
+    this.attachmentName,
   });
 }
 
@@ -264,6 +278,7 @@ abstract class DummyData {
 
   static const List<ExpenseItem> expenses = [
     ExpenseItem(
+      title: 'School Books Purchase',
       childName: 'Andres',
       submittedBy: 'Leslie Pfeffer',
       category: 'Education',
@@ -271,8 +286,16 @@ abstract class DummyData {
       paymentPeriod: 'Apr 2025',
       amount: 1500.00,
       type: ExpenseType.regular,
+      dateOfService: '12 Feb 2026',
+      paidOn: '12 Feb 2026',
+      paymentMethod: 'Card Transfer',
+      verifiedBy: 'System Audit',
+      description:
+          'Routine learning materials purchase for the new school term. Includes books and stationery.',
+      attachmentName: 'receipt_books.pdf',
     ),
     ExpenseItem(
+      title: 'Clinic Visit',
       childName: 'Andres',
       submittedBy: 'Peter Parker',
       category: 'Healthcare',
@@ -280,8 +303,16 @@ abstract class DummyData {
       paymentPeriod: 'Apr 2025',
       amount: 850.00,
       type: ExpenseType.regular,
+      dateOfService: '12 Feb 2026',
+      paidOn: '12 Feb 2026',
+      paymentMethod: 'Card Transfer',
+      verifiedBy: 'System Audit',
+      description:
+          'Routine wellness check-up. Includes vaccination boosters and standard assessment.',
+      attachmentName: 'receipt_emma_clinic.pdf',
     ),
     ExpenseItem(
+      title: 'Monthly Child Support',
       childName: 'Andres',
       submittedBy: 'Leslie Pfeffer',
       category: 'Court Case #1234',
@@ -290,8 +321,16 @@ abstract class DummyData {
       amount: 3000.00,
       type: ExpenseType.support,
       courtCase: '#1234',
+      dateOfService: '12 Feb 2026',
+      paidOn: '12 Feb 2026',
+      paymentMethod: 'Card Transfer',
+      verifiedBy: 'System Audit',
+      description:
+          'Monthly child support payment as per the court agreement and the specified payment period.',
+      attachmentName: 'support_receipt_mar.pdf',
     ),
     ExpenseItem(
+      title: 'Monthly Child Support',
       childName: 'Andres',
       submittedBy: 'Peter Parker',
       category: 'Court Case #5678',
@@ -300,6 +339,13 @@ abstract class DummyData {
       amount: 3000.00,
       type: ExpenseType.support,
       courtCase: '#5678',
+      dateOfService: '12 Feb 2026',
+      paidOn: '12 Feb 2026',
+      paymentMethod: 'Card Transfer',
+      verifiedBy: 'System Audit',
+      description:
+          'Monthly child support payment as per the court agreement and the specified payment period.',
+      attachmentName: 'support_receipt_apr.pdf',
     ),
   ];
 }
