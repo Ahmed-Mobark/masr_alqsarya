@@ -15,6 +15,7 @@ import 'package:masr_al_qsariya/features/notifications/presentation/view/notific
 import 'package:masr_al_qsariya/features/profile/presentation/view/profile_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:masr_al_qsariya/features/nav_bar/presentation/cubit/nav_bar_cubit.dart';
+import 'package:masr_al_qsariya/features/documents/presentation/view/documents_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -162,7 +163,9 @@ class HomeView extends StatelessWidget {
       _QuickAction(Iconsax.calendar_add, context.tr.homeAddSchedule, () => goToTab(1)),
       _QuickAction(Iconsax.receipt_item, context.tr.homeExpense, () => goToTab(4)),
       _QuickAction(Iconsax.calendar_1, context.tr.homeSessions, () => goToTab(1)),
-      _QuickAction(Iconsax.video_play, context.tr.homeSessionsLibrary, () => goToTab(1)),
+      _QuickAction(Iconsax.folder, context.tr.homeDocuments, () {
+        sl<AppNavigator>().push(screen: const DocumentsView());
+      }),
       _QuickAction(Iconsax.user, context.tr.profileTitle, () {
         sl<AppNavigator>().push(screen: const ProfileView());
       }),

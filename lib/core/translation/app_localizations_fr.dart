@@ -1301,6 +1301,110 @@ class AppLocalizationsFr extends AppLocalizations {
   String get homeDocuments => 'Documents';
 
   @override
+  String get documentsTitle => 'Documents';
+
+  @override
+  String get documentsFolders => 'Dossiers';
+
+  @override
+  String get documentsFolderSchool => 'School';
+
+  @override
+  String get documentsFolderCalls => 'Calls';
+
+  @override
+  String get documentsFolderInvoices => 'Invoices';
+
+  @override
+  String get documentsFolderLegal => 'Legal';
+
+  @override
+  String get documentsAddedByParentAMother => 'Ajouté par : Parent A (Mother)';
+
+  @override
+  String get documentsAccessBothParents => 'Accès : Les deux parents';
+
+  @override
+  String get documentsLastUpdatedByParentAMother =>
+      'Dernière mise à jour par : Parent A (Mother)';
+
+  @override
+  String get documentsLastUpdatedAtParentAMother =>
+      'Dernière mise à jour le : Parent A (Mother)';
+
+  @override
+  String get documentsWhoCanView => 'Qui peut voir';
+
+  @override
+  String get documentsWhoCanEdit => 'Qui peut modifier';
+
+  @override
+  String get documentsBothParents => 'Les deux parents';
+
+  @override
+  String get documentsCustom => 'Personnalisé';
+
+  @override
+  String get documentsNoOne => 'Personne';
+
+  @override
+  String get documentsTabAll => 'Tout';
+
+  @override
+  String get documentsTabVideos => 'Vidéos';
+
+  @override
+  String get documentsTabPhotos => 'Photos';
+
+  @override
+  String get documentsTabDocuments => 'Documents';
+
+  @override
+  String get documentsTypePdf => 'PDF';
+
+  @override
+  String get documentsTypeCourtDocument => 'Document judiciaire';
+
+  @override
+  String get documentsTypeInvoice => 'Facture';
+
+  @override
+  String get documentsTypeImage => 'Image';
+
+  @override
+  String get documentsEvidenceStatus => 'Statut de preuve';
+
+  @override
+  String get documentsAllRecords => 'Tous les enregistrements';
+
+  @override
+  String get documentsMarkedAsEvidence => 'Marqué comme preuve';
+
+  @override
+  String get documentsAddedBy => 'Ajouté par';
+
+  @override
+  String get documentsAddedByParentA => 'Parent A';
+
+  @override
+  String get documentsAddedByParentB => 'Parent B';
+
+  @override
+  String get documentsAddedByLawyer => 'Avocat';
+
+  @override
+  String get documentsAddedByMediator => 'Médiateur';
+
+  @override
+  String get documentsDateRange => 'Période';
+
+  @override
+  String get documentsStartDate => 'Date de début';
+
+  @override
+  String get documentsEndDate => 'Date de fin';
+
+  @override
   String get homeUpcomingCall => 'Appel à venir';
 
   @override

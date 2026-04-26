@@ -1277,6 +1277,110 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeDocuments => 'المستندات';
 
   @override
+  String get documentsTitle => 'المستندات';
+
+  @override
+  String get documentsFolders => 'المجلدات';
+
+  @override
+  String get documentsFolderSchool => 'School';
+
+  @override
+  String get documentsFolderCalls => 'Calls';
+
+  @override
+  String get documentsFolderInvoices => 'Invoices';
+
+  @override
+  String get documentsFolderLegal => 'Legal';
+
+  @override
+  String get documentsAddedByParentAMother => 'أضيف بواسطة: Parent A (Mother)';
+
+  @override
+  String get documentsAccessBothParents => 'إتاحة الوصول: كلا الوالدين';
+
+  @override
+  String get documentsLastUpdatedByParentAMother =>
+      'آخر تحديث بواسطة: Parent A (Mother)';
+
+  @override
+  String get documentsLastUpdatedAtParentAMother =>
+      'آخر تحديث في: Parent A (Mother)';
+
+  @override
+  String get documentsWhoCanView => 'من يمكنه العرض';
+
+  @override
+  String get documentsWhoCanEdit => 'من يمكنه التعديل';
+
+  @override
+  String get documentsBothParents => 'كلا الوالدين';
+
+  @override
+  String get documentsCustom => 'مخصص';
+
+  @override
+  String get documentsNoOne => 'لا أحد';
+
+  @override
+  String get documentsTabAll => 'الكل';
+
+  @override
+  String get documentsTabVideos => 'فيديوهات';
+
+  @override
+  String get documentsTabPhotos => 'صور';
+
+  @override
+  String get documentsTabDocuments => 'مستندات';
+
+  @override
+  String get documentsTypePdf => 'PDF';
+
+  @override
+  String get documentsTypeCourtDocument => 'مستند محكمة';
+
+  @override
+  String get documentsTypeInvoice => 'فاتورة';
+
+  @override
+  String get documentsTypeImage => 'صورة';
+
+  @override
+  String get documentsEvidenceStatus => 'حالة الإثبات';
+
+  @override
+  String get documentsAllRecords => 'كل السجلات';
+
+  @override
+  String get documentsMarkedAsEvidence => 'مُعلّم كدليل';
+
+  @override
+  String get documentsAddedBy => 'أضيف بواسطة';
+
+  @override
+  String get documentsAddedByParentA => 'الوالد A';
+
+  @override
+  String get documentsAddedByParentB => 'الوالد B';
+
+  @override
+  String get documentsAddedByLawyer => 'محامي';
+
+  @override
+  String get documentsAddedByMediator => 'وسيط';
+
+  @override
+  String get documentsDateRange => 'النطاق الزمني';
+
+  @override
+  String get documentsStartDate => 'تاريخ البداية';
+
+  @override
+  String get documentsEndDate => 'تاريخ النهاية';
+
+  @override
   String get homeUpcomingCall => 'مكالمة قادمة';
 
   @override

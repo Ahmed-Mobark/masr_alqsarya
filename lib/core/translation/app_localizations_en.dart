@@ -1287,6 +1287,110 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeDocuments => 'Documents';
 
   @override
+  String get documentsTitle => 'Documents';
+
+  @override
+  String get documentsFolders => 'Folders';
+
+  @override
+  String get documentsFolderSchool => 'School';
+
+  @override
+  String get documentsFolderCalls => 'Calls';
+
+  @override
+  String get documentsFolderInvoices => 'Invoices';
+
+  @override
+  String get documentsFolderLegal => 'Legal';
+
+  @override
+  String get documentsAddedByParentAMother => 'Added by: Parent A (Mother)';
+
+  @override
+  String get documentsAccessBothParents => 'Access: Both Parents';
+
+  @override
+  String get documentsLastUpdatedByParentAMother =>
+      'Last Updated by: Parent A (Mother)';
+
+  @override
+  String get documentsLastUpdatedAtParentAMother =>
+      'Last Updated at : Parent A (Mother)';
+
+  @override
+  String get documentsWhoCanView => 'Who Can View';
+
+  @override
+  String get documentsWhoCanEdit => 'Who Can Edit';
+
+  @override
+  String get documentsBothParents => 'Both Parents';
+
+  @override
+  String get documentsCustom => 'Custom';
+
+  @override
+  String get documentsNoOne => 'No one';
+
+  @override
+  String get documentsTabAll => 'All';
+
+  @override
+  String get documentsTabVideos => 'Videos';
+
+  @override
+  String get documentsTabPhotos => 'Photos';
+
+  @override
+  String get documentsTabDocuments => 'Documents';
+
+  @override
+  String get documentsTypePdf => 'PDF';
+
+  @override
+  String get documentsTypeCourtDocument => 'Court Document';
+
+  @override
+  String get documentsTypeInvoice => 'Invoice';
+
+  @override
+  String get documentsTypeImage => 'Image';
+
+  @override
+  String get documentsEvidenceStatus => 'Evidence Status';
+
+  @override
+  String get documentsAllRecords => 'All Records';
+
+  @override
+  String get documentsMarkedAsEvidence => 'Marked as Evidence';
+
+  @override
+  String get documentsAddedBy => 'Added By';
+
+  @override
+  String get documentsAddedByParentA => 'Parent A';
+
+  @override
+  String get documentsAddedByParentB => 'Parent B';
+
+  @override
+  String get documentsAddedByLawyer => 'Lawyer';
+
+  @override
+  String get documentsAddedByMediator => 'Mediator';
+
+  @override
+  String get documentsDateRange => 'Date Range';
+
+  @override
+  String get documentsStartDate => 'Start Date';
+
+  @override
+  String get documentsEndDate => 'End Date';
+
+  @override
   String get homeUpcomingCall => 'Upcoming Call';
 
   @override

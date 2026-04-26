@@ -2536,6 +2536,210 @@ abstract class AppLocalizations {
   /// **'Documents'**
   String get homeDocuments;
 
+  /// No description provided for @documentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documentsTitle;
+
+  /// No description provided for @documentsFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get documentsFolders;
+
+  /// No description provided for @documentsFolderSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'School'**
+  String get documentsFolderSchool;
+
+  /// No description provided for @documentsFolderCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls'**
+  String get documentsFolderCalls;
+
+  /// No description provided for @documentsFolderInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices'**
+  String get documentsFolderInvoices;
+
+  /// No description provided for @documentsFolderLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get documentsFolderLegal;
+
+  /// No description provided for @documentsAddedByParentAMother.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by: Parent A (Mother)'**
+  String get documentsAddedByParentAMother;
+
+  /// No description provided for @documentsAccessBothParents.
+  ///
+  /// In en, this message translates to:
+  /// **'Access: Both Parents'**
+  String get documentsAccessBothParents;
+
+  /// No description provided for @documentsLastUpdatedByParentAMother.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated by: Parent A (Mother)'**
+  String get documentsLastUpdatedByParentAMother;
+
+  /// No description provided for @documentsLastUpdatedAtParentAMother.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated at : Parent A (Mother)'**
+  String get documentsLastUpdatedAtParentAMother;
+
+  /// No description provided for @documentsWhoCanView.
+  ///
+  /// In en, this message translates to:
+  /// **'Who Can View'**
+  String get documentsWhoCanView;
+
+  /// No description provided for @documentsWhoCanEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Who Can Edit'**
+  String get documentsWhoCanEdit;
+
+  /// No description provided for @documentsBothParents.
+  ///
+  /// In en, this message translates to:
+  /// **'Both Parents'**
+  String get documentsBothParents;
+
+  /// No description provided for @documentsCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get documentsCustom;
+
+  /// No description provided for @documentsNoOne.
+  ///
+  /// In en, this message translates to:
+  /// **'No one'**
+  String get documentsNoOne;
+
+  /// No description provided for @documentsTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get documentsTabAll;
+
+  /// No description provided for @documentsTabVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get documentsTabVideos;
+
+  /// No description provided for @documentsTabPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get documentsTabPhotos;
+
+  /// No description provided for @documentsTabDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documentsTabDocuments;
+
+  /// No description provided for @documentsTypePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get documentsTypePdf;
+
+  /// No description provided for @documentsTypeCourtDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Court Document'**
+  String get documentsTypeCourtDocument;
+
+  /// No description provided for @documentsTypeInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice'**
+  String get documentsTypeInvoice;
+
+  /// No description provided for @documentsTypeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get documentsTypeImage;
+
+  /// No description provided for @documentsEvidenceStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence Status'**
+  String get documentsEvidenceStatus;
+
+  /// No description provided for @documentsAllRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'All Records'**
+  String get documentsAllRecords;
+
+  /// No description provided for @documentsMarkedAsEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as Evidence'**
+  String get documentsMarkedAsEvidence;
+
+  /// No description provided for @documentsAddedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Added By'**
+  String get documentsAddedBy;
+
+  /// No description provided for @documentsAddedByParentA.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent A'**
+  String get documentsAddedByParentA;
+
+  /// No description provided for @documentsAddedByParentB.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent B'**
+  String get documentsAddedByParentB;
+
+  /// No description provided for @documentsAddedByLawyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Lawyer'**
+  String get documentsAddedByLawyer;
+
+  /// No description provided for @documentsAddedByMediator.
+  ///
+  /// In en, this message translates to:
+  /// **'Mediator'**
+  String get documentsAddedByMediator;
+
+  /// No description provided for @documentsDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get documentsDateRange;
+
+  /// No description provided for @documentsStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get documentsStartDate;
+
+  /// No description provided for @documentsEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get documentsEndDate;
+
   /// No description provided for @homeUpcomingCall.
   ///
   /// In en, this message translates to:
