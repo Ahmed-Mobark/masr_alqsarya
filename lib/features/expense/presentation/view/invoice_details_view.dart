@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:masr_al_qsariya/core/data/dummy_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/features/expense/presentation/cubit/regular_expense_details_cubit.dart';
 
 class InvoiceDetailsView extends StatelessWidget {
-  final ExpenseItem expense;
+  final int workspaceId;
+  final int expenseId;
 
-  const InvoiceDetailsView({super.key, required this.expense});
+  const InvoiceDetailsView({
+    super.key,
+    required this.workspaceId,
+    required this.expenseId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final headerTitle =
-        expense.title ?? (expense.type == ExpenseType.support ? 'Monthly Child Support' : expense.category);
-    final invoiceNumber = expense.referenceNumber;
-    final subtitle = '$headerTitle: ${expense.childName}';
-
-    return Scaffold(
+    return BlocProvider(
+      create: (_) => sl<RegularExpenseDetailsCubit>()
+        ..load(workspaceId: workspaceId, expenseId: expenseId),
+      child: Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
         backgroundColor: AppColors.scaffoldBg,
@@ -51,127 +56,186 @@ class InvoiceDetailsView extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsetsDirectional.only(start: 20.w, end: 20.w, bottom: 24.h),
-        child: Column(
-          children: [
-            SizedBox(height: 8.h),
-            Text(
-              '\$${expense.amount.toStringAsFixed(2)}',
-              style: AppTextStyles.heading1(color: AppColors.darkText).copyWith(fontSize: 26.sp),
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              subtitle,
-              style: AppTextStyles.caption(color: AppColors.greyText).copyWith(fontSize: 12.sp),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 6.h),
-            Text(
-              '${context.tr.invoiceNumberPrefix}$invoiceNumber',
-              style: AppTextStyles.caption(color: AppColors.captionText).copyWith(fontSize: 11.sp),
-            ),
-            SizedBox(height: 18.h),
-            _SectionCard(
-              title: context.tr.invoiceExpenseInformation,
-              child: Column(
-                children: [
-                  _LabeledValueRow(
-                    label: context.tr.invoiceCategory,
-                    value: expense.category,
-                  ),
-                  SizedBox(height: 14.h),
-                  _LabeledValueRow(
-                    label: context.tr.invoiceDateOfService,
-                    value: expense.dateOfService ?? expense.paymentPeriod,
-                  ),
-                  SizedBox(height: 16.h),
-                  Divider(height: 1.h, color: AppColors.border),
-                  SizedBox(height: 14.h),
-                  Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      context.tr.invoiceDescription,
-                      style: AppTextStyles.bodyMedium().copyWith(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.darkText,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      expense.description ?? '-',
-                      style: AppTextStyles.caption(color: AppColors.greyText).copyWith(fontSize: 12.sp, height: 1.35),
-                    ),
-                  ),
-                ],
+      body: BlocBuilder<RegularExpenseDetailsCubit, RegularExpenseDetailsState>(
+        builder: (context, state) {
+          if (state.status == RegularExpenseDetailsStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.status == RegularExpenseDetailsStatus.failure) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
+                child: Text(
+                  state.failure?.message ?? 'Error',
+                  style: AppTextStyles.bodyMedium(color: AppColors.greyText),
+                  textAlign: TextAlign.center,
+                ),
               ),
+            );
+          }
+          final expense = state.item;
+          if (expense == null) return const SizedBox.shrink();
+
+          final subtitle = '${expense.title}: ${expense.childName ?? expense.payerName}';
+
+          return SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(
+              start: 20.w,
+              end: 20.w,
+              bottom: 24.h,
             ),
-            SizedBox(height: 16.h),
-            _SectionCard(
-              title: context.tr.invoicePaymentDetails,
-              backgroundColor: AppColors.purpleColorLight,
-              borderColor: AppColors.transparent,
-              child: Column(
-                children: [
-                  _LabeledValueRow(
-                    label: context.tr.invoiceReferenceNumber,
-                    value: expense.referenceNumber,
-                  ),
-                  SizedBox(height: 12.h),
-                  _LabeledValueRow(
-                    label: context.tr.invoicePaidOn,
-                    value: expense.paidOn ?? expense.paymentPeriod,
-                  ),
-                  SizedBox(height: 12.h),
-                  _LabeledValueRow(
-                    label: context.tr.invoicePaymentMethod,
-                    value: expense.paymentMethod ?? '-',
-                  ),
-                  SizedBox(height: 12.h),
-                  _LabeledValueRow(
-                    label: context.tr.invoiceVerifiedBy,
-                    value: expense.verifiedBy ?? '-',
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16.h),
-            _SectionCard(
-              title: context.tr.invoiceAttachments,
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Container(
-                  padding: EdgeInsetsDirectional.symmetric(horizontal: 14.w, vertical: 12.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.inputBg,
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+            child: Column(
+              children: [
+                SizedBox(height: 8.h),
+                Text(
+                  '${expense.currency} ${expense.amount.toStringAsFixed(2)}',
+                  style: AppTextStyles.heading1(color: AppColors.darkText)
+                      .copyWith(fontSize: 26.sp),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.caption(color: AppColors.greyText)
+                      .copyWith(fontSize: 12.sp),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  '${context.tr.invoiceNumberPrefix}${expense.referenceNumber ?? expense.id}',
+                  style: AppTextStyles.caption(color: AppColors.captionText)
+                      .copyWith(fontSize: 11.sp),
+                ),
+                SizedBox(height: 18.h),
+                _SectionCard(
+                  title: context.tr.invoiceExpenseInformation,
+                  child: Column(
                     children: [
-                      Icon(Iconsax.document, size: 18.sp, color: AppColors.greyText),
-                      SizedBox(width: 10.w),
-                      Text(
-                        expense.attachmentName ?? '-',
-                        style: AppTextStyles.bodyMedium(color: AppColors.greyText).copyWith(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
+                      _LabeledValueRow(
+                        label: context.tr.invoiceCategory,
+                        value: expense.categoryName ?? expense.categoryId.toString(),
+                      ),
+                      SizedBox(height: 14.h),
+                      _LabeledValueRow(
+                        label: context.tr.invoiceDateOfService,
+                        value: expense.date,
+                      ),
+                      SizedBox(height: 16.h),
+                      Divider(height: 1.h, color: AppColors.border),
+                      SizedBox(height: 14.h),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          context.tr.invoiceDescription,
+                          style: AppTextStyles.bodyMedium().copyWith(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.darkText,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          expense.note ?? '-',
+                          style: AppTextStyles.caption(color: AppColors.greyText)
+                              .copyWith(fontSize: 12.sp, height: 1.35),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
+                SizedBox(height: 16.h),
+                _SectionCard(
+                  title: context.tr.invoicePaymentDetails,
+                  backgroundColor: AppColors.purpleColorLight,
+                  borderColor: AppColors.transparent,
+                  child: Column(
+                    children: [
+                      _LabeledValueRow(
+                        label: context.tr.invoiceReferenceNumber,
+                        value: expense.referenceNumber ?? expense.id.toString(),
+                      ),
+                      SizedBox(height: 12.h),
+                      _LabeledValueRow(
+                        label: context.tr.invoicePaidOn,
+                        value: expense.date,
+                      ),
+                      SizedBox(height: 12.h),
+                      _LabeledValueRow(
+                        label: context.tr.invoicePaymentMethod,
+                        value: '-',
+                      ),
+                      SizedBox(height: 12.h),
+                      _LabeledValueRow(
+                        label: context.tr.invoiceVerifiedBy,
+                        value: '-',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                _SectionCard(
+                  title: context.tr.invoiceAttachments,
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Container(
+                      padding: EdgeInsetsDirectional.symmetric(
+                        horizontal: 14.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.inputBg,
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Iconsax.document, size: 18.sp, color: AppColors.greyText),
+                          SizedBox(width: 10.w),
+                          InkWell(
+                            onTap: (expense.receiptUrl == null || expense.receiptUrl!.isEmpty)
+                                ? null
+                                : () async {
+                                    final uri = Uri.tryParse(expense.receiptUrl!);
+                                    if (uri == null) return;
+                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                  },
+                            child: Text(
+                              expense.receiptUrl == null || expense.receiptUrl!.isEmpty
+                                  ? '-'
+                                  : (expense.attachmentName ??
+                                      uriLastSegment(expense.receiptUrl!)),
+                              style: AppTextStyles.bodyMedium(color: AppColors.greyText).copyWith(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                decoration: (expense.receiptUrl == null || expense.receiptUrl!.isEmpty)
+                                    ? null
+                                    : TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
+    ),
     );
   }
+}
+
+String uriLastSegment(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null) return url;
+  final seg = uri.pathSegments;
+  if (seg.isEmpty) return url;
+  return seg.last;
 }
 
 class _SectionCard extends StatelessWidget {

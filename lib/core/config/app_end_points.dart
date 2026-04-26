@@ -110,4 +110,14 @@ class AppEndpoints {
       "workspaces/$workspaceId/calendar-items/types";
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
   static const String addChild = "family-workspace/add-child";
+  static const String familyWorkspaceMembers = "family-workspace/members";
+
+  // Expenses
+  static String workspaceRegularExpenses(int workspaceId) =>
+      "workspaces/$workspaceId/regular-expenses";
+  static String workspaceRegularExpenseDetails(int workspaceId, int expenseId) =>
+      "workspaces/$workspaceId/regular-expenses/$expenseId";
+
+  // Categories
+  static const String categories = "categories";
 }

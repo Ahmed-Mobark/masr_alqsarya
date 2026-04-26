@@ -1,10 +1,19 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
+import 'package:masr_al_qsariya/features/expense/domain/usecases/add_regular_expense_usecase.dart';
+import 'package:masr_al_qsariya/features/expense/presentation/cubit/add_regular_expense_cubit.dart';
+import 'package:masr_al_qsariya/features/categories/presentation/cubit/categories_cubit.dart';
+import 'package:masr_al_qsariya/features/family_workspace/presentation/cubit/family_workspace_members_cubit.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_category_tile.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_choice_chip.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_dashed_card.dart';
@@ -24,8 +33,9 @@ class _AddExpenseViewState extends State<AddExpenseView> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
   bool _alreadyPaid = true;
-  int _selectedChildIndex = 0;
-  int _selectedCategoryIndex = 0;
+  int _selectedChildIndex = 0; // 0 == both
+  int? _selectedChildWorkspaceMemberId;
+  int? _selectedCategoryId;
 
   final _payerNameController = TextEditingController();
   final _payerIdController = TextEditingController();
@@ -36,6 +46,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
   final _expenseTitleController = TextEditingController();
   final _notesController = TextEditingController();
   String? _proofFileName;
+  String? _proofFilePath;
 
   late final FocusNode _payerNameFocus;
   late final FocusNode _payerIdFocus;
@@ -46,35 +57,12 @@ class _AddExpenseViewState extends State<AddExpenseView> {
   late final FocusNode _expenseTitleFocus;
   late final FocusNode _notesFocus;
 
-  static const List<String> _childKeys = ['both', 'laila', 'omar'];
-
-  String _childLabel(BuildContext context, String key) {
-    return switch (key) {
-      'both' => context.tr.addExpenseChildBothChildren,
-      'laila' => 'Laila',
-      'omar' => 'Omar',
-      _ => key,
-    };
+  String _childLabel(BuildContext context, int index, List<String> names) {
+    if (index == 0) return context.tr.addExpenseChildBothChildren;
+    return names[index - 1];
   }
 
-  List<_CategoryTileData> _categories(BuildContext context) => [
-    _CategoryTileData(
-      label: context.tr.expenseCategoryEducation,
-      icon: Iconsax.teacher,
-    ),
-    _CategoryTileData(
-      label: context.tr.addExpenseCategoryMedical,
-      icon: Iconsax.hospital,
-    ),
-    _CategoryTileData(
-      label: context.tr.addExpenseCategoryGroceries,
-      icon: Iconsax.shopping_cart,
-    ),
-    _CategoryTileData(
-      label: context.tr.expenseCategoryActivities,
-      icon: Iconsax.activity,
-    ),
-  ];
+  // Categories are loaded from API via CategoriesCubit.
 
   @override
   void initState() {
@@ -163,7 +151,10 @@ class _AddExpenseViewState extends State<AddExpenseView> {
         return;
       }
 
-      setState(() => _proofFileName = file.name);
+      setState(() {
+        _proofFileName = file.name;
+        _proofFilePath = file.path;
+      });
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -180,54 +171,110 @@ class _AddExpenseViewState extends State<AddExpenseView> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = _categories(context);
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
-      appBar: AppBar(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<AddRegularExpenseCubit>()),
+        BlocProvider(
+          create: (_) => sl<CategoriesCubit>()..load(type: 'regular_expenses'),
+        ),
+        BlocProvider(
+          create: (_) {
+            final cubit = sl<FamilyWorkspaceMembersCubit>();
+            final workspaceId = sl<WorkspaceIdStorage>().get();
+            if (workspaceId != null) {
+              cubit.load(workspaceId: workspaceId);
+            }
+            return cubit;
+          },
+        ),
+      ],
+      child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 18.sp,
-            color: AppColors.darkText,
+        appBar: AppBar(
+          backgroundColor: AppColors.scaffoldBg,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 18.sp,
+              color: AppColors.darkText,
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
-          onPressed: () => Navigator.pop(context),
+          title: Text(
+            context.tr.addExpenseTitle,
+            style: AppTextStyles.navTitle().copyWith(fontSize: 16.sp),
+          ),
+          centerTitle: true,
         ),
-        title: Text(
-          context.tr.addExpenseTitle,
-          style: AppTextStyles.navTitle().copyWith(fontSize: 16.sp),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsetsDirectional.only(
-          start: 20.w,
-          end: 20.w,
-          top: 14.h,
-          bottom: 24.h,
-        ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-                    AddExpenseRequiredLabel(text: context.tr.addExpenseChildLabel),
-              SizedBox(height: 12.h),
-              Wrap(
-                spacing: 10.w,
-                runSpacing: 10.h,
-                children: List.generate(_childKeys.length, (index) {
-                  final selected = _selectedChildIndex == index;
-                        return AddExpenseChoiceChip(
-                    label: _childLabel(context, _childKeys[index]),
-                    selected: selected,
-                    onTap: () => setState(() => _selectedChildIndex = index),
-                  );
-                }),
-              ),
-              SizedBox(height: 18.h),
+        body: BlocListener<AddRegularExpenseCubit, AddRegularExpenseState>(
+          listener: (context, state) {
+            if (state.status == AddRegularExpenseStatus.success) {
+              Navigator.pop(context, true);
+            }
+            if (state.status == AddRegularExpenseStatus.failure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.failure?.message ?? 'Error'),
+                  backgroundColor: AppColors.error,
+                ),
+              );
+            }
+          },
+          child: SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(
+              start: 20.w,
+              end: 20.w,
+              top: 14.h,
+              bottom: 24.h,
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AddExpenseRequiredLabel(
+                    text: context.tr.addExpenseChildLabel,
+                  ),
+                  SizedBox(height: 12.h),
+                  BlocBuilder<FamilyWorkspaceMembersCubit, FamilyWorkspaceMembersState>(
+                    builder: (context, state) {
+                      if (state.status == FamilyWorkspaceMembersStatus.loading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final children = state.items.where((m) => m.isChild).toList();
+                      final names = children.map((e) => e.fullName).toList();
+                      final chipCount = 1 + names.length;
+
+                      if (children.isNotEmpty) {
+                        _selectedChildWorkspaceMemberId ??= children.first.id;
+                      }
+
+                      return Wrap(
+                        spacing: 10.w,
+                        runSpacing: 10.h,
+                        children: List.generate(chipCount, (index) {
+                          final selected = _selectedChildIndex == index;
+                          return AddExpenseChoiceChip(
+                            label: _childLabel(context, index, names),
+                            selected: selected,
+                            onTap: () => setState(() {
+                              _selectedChildIndex = index;
+                              if (index == 0) {
+                                // "Both Children" -> backend expects a single child id; use first child for now.
+                                _selectedChildWorkspaceMemberId =
+                                    children.isNotEmpty ? children.first.id : null;
+                              } else {
+                                _selectedChildWorkspaceMemberId = children[index - 1].id;
+                              }
+                            }),
+                          );
+                        }),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 18.h),
 
               Row(
                 children: [
@@ -349,25 +396,45 @@ class _AddExpenseViewState extends State<AddExpenseView> {
 
                     AddExpenseRequiredLabel(text: context.tr.addExpenseCategoryLabel),
               SizedBox(height: 12.h),
-              Row(
-                children: List.generate(categories.length, (index) {
-                  final selected = _selectedCategoryIndex == index;
-                  final tile = categories[index];
-                  return Expanded(
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        end: index == categories.length - 1 ? 0 : 10.w,
-                      ),
-                            child: AddExpenseCategoryTile(
-                        icon: tile.icon,
-                        label: tile.label,
-                        selected: selected,
-                        onTap: () =>
-                            setState(() => _selectedCategoryIndex = index),
-                      ),
-                    ),
+              BlocBuilder<CategoriesCubit, CategoriesState>(
+                builder: (context, state) {
+                  if (state.status == CategoriesStatus.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state.status == CategoriesStatus.failure) {
+                    return Text(
+                      state.failure?.message ?? 'Error',
+                      style: AppTextStyles.caption(color: AppColors.greyText),
+                    );
+                  }
+
+                  final list = state.items;
+                  if (list.isEmpty) return const SizedBox.shrink();
+                  final visible = list.take(4).toList();
+                  _selectedCategoryId ??= visible.first.id;
+
+                  return Row(
+                    children: List.generate(visible.length, (index) {
+                      final cat = visible[index];
+                      final selected = _selectedCategoryId == cat.id;
+                      return Expanded(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            end: index == visible.length - 1 ? 0 : 10.w,
+                          ),
+                          child: AddExpenseCategoryTile(
+                            icon: Iconsax.category,
+                            label: cat.name,
+                            selected: selected,
+                            onTap: () => setState(() {
+                              _selectedCategoryId = cat.id;
+                            }),
+                          ),
+                        ),
+                      );
+                    }),
                   );
-                }),
+                },
               ),
               SizedBox(height: 18.h),
 
@@ -492,16 +559,76 @@ class _AddExpenseViewState extends State<AddExpenseView> {
               ),
               SizedBox(height: 18.h),
 
-              SizedBox(
-                width: double.infinity,
-                height: 52.h,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // TODO: Save expense
-                      Navigator.pop(context);
-                    }
-                  },
+              BlocBuilder<AddRegularExpenseCubit, AddRegularExpenseState>(
+                builder: (context, state) {
+                  final loading = state.status == AddRegularExpenseStatus.loading;
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 52.h,
+                    child: ElevatedButton(
+                      onPressed: loading
+                          ? null
+                          : () async {
+                              if (!(_formKey.currentState?.validate() ?? false)) {
+                                return;
+                              }
+
+                              final workspaceId =
+                                  sl<WorkspaceIdStorage>().get();
+                              if (workspaceId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Workspace not found')),
+                                );
+                                return;
+                              }
+
+                              final date = _selectedDate;
+                              final formattedDate = date == null
+                                  ? DateFormat('M/d/yyyy').format(DateTime.now())
+                                  : DateFormat('M/d/yyyy').format(date);
+
+                              final attachment = (_proofFilePath != null)
+                                  ? await MultipartFile.fromFile(
+                                      _proofFilePath!,
+                                      filename: _proofFileName,
+                                    )
+                                  : null;
+
+                              if (!context.mounted) return;
+
+                              final categoryId = _selectedCategoryId ?? 6;
+
+                              final childId = _selectedChildWorkspaceMemberId;
+                              if (childId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('No child selected')),
+                                );
+                                return;
+                              }
+
+                              final params = AddRegularExpenseParams(
+                                childWorkspaceMemberId: childId,
+                                payerId: _payerIdController.text.trim(),
+                                payerName: _payerNameController.text.trim(),
+                                payeeId: _payeeIdController.text.trim(),
+                                payeeName: _payeeNameController.text.trim(),
+                                currency: _currencyController.text.trim(),
+                                amount: _amountController.text.trim(),
+                                title: _expenseTitleController.text.trim(),
+                                categoryId: categoryId,
+                                date: formattedDate,
+                                note: _notesController.text.trim().isEmpty
+                                    ? null
+                                    : _notesController.text.trim(),
+                                isPaid: _alreadyPaid,
+                                attachment: attachment,
+                              );
+
+                              context.read<AddRegularExpenseCubit>().submit(
+                                    workspaceId: workspaceId,
+                                    params: params,
+                                  );
+                            },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.darkText,
@@ -519,11 +646,15 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                     ),
                   ),
                 ),
+                  );
+                },
               ),
               SizedBox(height: 10.h),
             ],
           ),
         ),
+      ),
+    ),
       ),
     );
   }
@@ -570,11 +701,4 @@ class _AddExpenseViewState extends State<AddExpenseView> {
       'Dec',
     ][month - 1];
   }
-}
-
-class _CategoryTileData {
-  final String label;
-  final IconData icon;
-
-  const _CategoryTileData({required this.label, required this.icon});
 }

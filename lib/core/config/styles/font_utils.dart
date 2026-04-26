@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppFont {
-  static const String fontFamily = "ReadexPro";
+  static String fontFamily = "ReadexPro";
+
+  static void setLocale(String langCode) {
+    fontFamily = langCode == 'ar' ? 'Rubik' : 'ReadexPro';
+  }
 
   static const FontWeight extraLight = FontWeight.w200;
   static const FontWeight light = FontWeight.w300;
