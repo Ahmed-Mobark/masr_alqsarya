@@ -273,6 +273,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commonCancel => 'Annuler';
 
   @override
+  String get callRecording => 'Enregistrer';
+
+  @override
+  String get callRecordingConsentTitle => 'Consentement d’enregistrement';
+
+  @override
+  String get callRecordingConsentBody =>
+      'Autorisez-vous l’enregistrement de cet appel ? Les deux parents doivent approuver.';
+
+  @override
+  String get callRecordingApprove => 'Approuver';
+
+  @override
+  String get callRecordingDeny => 'Refuser';
+
+  @override
+  String get callRecordingConsentDenied => 'Enregistrement refusé.';
+
+  @override
+  String get callRecordingWaitingOther =>
+      'En attente de l’approbation de l’autre parent.';
+
+  @override
+  String get callRecordingStarted => 'Enregistrement démarré.';
+
+  @override
   String get commonClose => 'Fermer';
 
   @override
@@ -1164,6 +1190,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get scheduleErrorStartDateRequired =>
       'Veuillez sélectionner une date de début.';
+
+  @override
+  String get scheduleCallExpired => 'Expiré';
 
   @override
   String get scheduleCallCreatedSuccess => 'Appel créé avec succès.';

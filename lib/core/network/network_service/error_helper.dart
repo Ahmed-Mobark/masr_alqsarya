@@ -59,7 +59,9 @@ class ErrorHelper {
       case DioExceptionType.badResponse:
         final data = e.response?.data;
         final String message = _extractMessage(data);
-        return ValidationException(message);
+        final errors =
+            data is Map<String, dynamic> ? data['errors'] as Map<String, dynamic>? : null;
+        return ValidationException(message, validationErrors: errors);
       default:
         return ServerException(
           message: 'Unexpected error occurred',

@@ -8,8 +8,13 @@ import 'package:livekit_client/livekit_client.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
+import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_cancel_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_end_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_recording_consent_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_recording_start_usecase.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CallRoomView extends StatefulWidget {
@@ -19,12 +24,14 @@ class CallRoomView extends StatefulWidget {
     required this.token,
     required this.roomName,
     required this.isVideo,
+    required this.callId,
   });
 
   final String livekitUrl;
   final String token;
   final String roomName;
   final bool isVideo;
+  final int callId;
 
   @override
   State<CallRoomView> createState() => _CallRoomViewState();
@@ -41,6 +48,8 @@ class _CallRoomViewState extends State<CallRoomView> {
   String? _bannerMessage;
   bool _reconnecting = false;
   int _reconnectAttempts = 0;
+  bool _recordingStarted = false;
+  bool _ended = false;
 
   @override
   void initState() {
@@ -286,7 +295,214 @@ class _CallRoomViewState extends State<CallRoomView> {
     setState(() => _connecting = false);
   }
 
-  Future<void> _leave() async {
+  int? _workspaceId() => sl<WorkspaceIdStorage>().get();
+
+  bool _looksLikeMissingConsent(String msg) {
+    final m = msg.toLowerCase();
+    return m.contains('يتطلب التسجيل') ||
+        m.contains('requires') && m.contains('consent') ||
+        m.contains('approve') && m.contains('partner');
+  }
+
+  Future<bool> _startRecording() async {
+    final ws = _workspaceId();
+    if (ws == null) return false;
+    final result = await sl<CallRecordingStartUseCase>().call(
+      CallRecordingStartParams(workspaceId: ws, callId: widget.callId),
+    );
+    return result.fold(
+      (f) {
+        if (!mounted) return false;
+        appToast(
+          context: context,
+          type: ToastType.warning,
+          message: _looksLikeMissingConsent(f.message)
+              ? context.tr.callRecordingWaitingOther
+              : f.message,
+        );
+        return false;
+      },
+      (_) => true,
+    );
+  }
+
+  Future<void> _showRecordingConsentSheet() async {
+    if (_exiting) return;
+    final approved = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: false,
+      builder: (context) {
+        return SafeArea(
+          top: false,
+          child: Container(
+            margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
+            decoration: BoxDecoration(
+              color: const Color(0xFF2A2A2A),
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.10),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 44.w,
+                    height: 4.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.22),
+                      borderRadius: BorderRadius.circular(999.r),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 14.h),
+                Text(
+                  context.tr.callRecordingConsentTitle,
+                  style: AppTextStyles.heading2(color: Colors.white).copyWith(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  context.tr.callRecordingConsentBody,
+                  style: AppTextStyles.caption(color: Colors.white70).copyWith(
+                    fontSize: 13.sp,
+                    height: 1.4,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: BorderSide(
+                            color: Colors.white.withValues(alpha: 0.22),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(999.r),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                        ),
+                        child: Text(context.tr.callRecordingDeny),
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF2D260),
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(999.r),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                        ),
+                        child: Text(context.tr.callRecordingApprove),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(context, null),
+                    child: Text(
+                      context.tr.commonCancel,
+                      style: AppTextStyles.bodyMedium(color: Colors.white70)
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (!mounted || approved == null) return;
+
+    final ws = _workspaceId();
+    if (ws == null) return;
+
+    final consentResult = await sl<CallRecordingConsentUseCase>().call(
+      CallRecordingConsentParams(
+        workspaceId: ws,
+        callId: widget.callId,
+        approved: approved,
+      ),
+    );
+    if (!mounted) return;
+    final consentOk = consentResult.fold(
+      (f) {
+        appToast(
+          context: context,
+          type: ToastType.error,
+          message: f.message,
+        );
+        return false;
+      },
+      (_) => true,
+    );
+    if (!consentOk) return;
+
+    if (!mounted) return;
+    if (!approved) {
+      appToast(
+        context: context,
+        type: ToastType.warning,
+        message: context.tr.callRecordingConsentDenied,
+      );
+      return;
+    }
+
+    // Try starting recording; if backend rejects (missing 2nd consent),
+    // user will see "waiting" message.
+    if (!_recordingStarted) {
+      final ok = await _startRecording();
+      if (!mounted) return;
+      if (ok) {
+        _recordingStarted = true;
+        appToast(
+          context: context,
+          type: ToastType.success,
+          message: context.tr.callRecordingStarted,
+        );
+      }
+    }
+  }
+
+  Future<void> _cancelOnBack() async {
+    if (_ended) return;
+    final ws = _workspaceId();
+    if (ws != null) {
+      await sl<CallCancelUseCase>()
+          .call(CallCancelParams(workspaceId: ws, callId: widget.callId));
+    }
+    await _disconnectAndPop();
+  }
+
+  Future<void> _endCall() async {
+    if (_ended) return;
+    _ended = true;
+    final ws = _workspaceId();
+    if (ws != null) {
+      await sl<CallEndUseCase>()
+          .call(CallEndParams(workspaceId: ws, callId: widget.callId));
+    }
+    await _disconnectAndPop();
+  }
+
+  Future<void> _disconnectAndPop() async {
     _exiting = true;
     try {
       await _room?.disconnect();
@@ -421,7 +637,7 @@ class _CallRoomViewState extends State<CallRoomView> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: _exiting ? null : _leave,
+                    onPressed: _exiting ? null : _cancelOnBack,
                     icon: const Icon(
                       Icons.arrow_back_ios_new_rounded,
                       color: Colors.white,
@@ -462,6 +678,13 @@ class _CallRoomViewState extends State<CallRoomView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _RoundControlButton(
+                    icon: Icons.fiber_manual_record,
+                    label: context.tr.callRecording,
+                    isActive: _recordingStarted,
+                    onTap: _showRecordingConsentSheet,
+                  ),
+                  SizedBox(width: 18.w),
+                  _RoundControlButton(
                     icon: _micEnabled ? Icons.mic : Icons.mic_off,
                     label: context.tr.callMic,
                     isActive: _micEnabled,
@@ -482,7 +705,7 @@ class _CallRoomViewState extends State<CallRoomView> {
                     label: context.tr.callLeave,
                     isActive: true,
                     danger: true,
-                    onTap: _leave,
+                    onTap: _endCall,
                   ),
                 ],
               ),

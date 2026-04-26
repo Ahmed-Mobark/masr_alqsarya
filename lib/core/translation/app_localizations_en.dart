@@ -271,6 +271,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonCancel => 'Cancel';
 
   @override
+  String get callRecording => 'Record';
+
+  @override
+  String get callRecordingConsentTitle => 'Recording consent';
+
+  @override
+  String get callRecordingConsentBody =>
+      'Do you allow this call to be recorded? Both parents must approve.';
+
+  @override
+  String get callRecordingApprove => 'Approve';
+
+  @override
+  String get callRecordingDeny => 'Deny';
+
+  @override
+  String get callRecordingConsentDenied => 'Recording denied.';
+
+  @override
+  String get callRecordingWaitingOther =>
+      'Waiting for the other parent to approve.';
+
+  @override
+  String get callRecordingStarted => 'Recording started.';
+
+  @override
   String get commonClose => 'Close';
 
   @override
@@ -1150,6 +1176,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scheduleErrorStartDateRequired => 'Please select a start date.';
+
+  @override
+  String get scheduleCallExpired => 'Expired';
 
   @override
   String get scheduleCallCreatedSuccess => 'Call created successfully.';

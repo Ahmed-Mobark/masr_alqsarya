@@ -268,6 +268,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonCancel => 'إلغاء';
 
   @override
+  String get callRecording => 'تسجيل';
+
+  @override
+  String get callRecordingConsentTitle => 'الموافقة على التسجيل';
+
+  @override
+  String get callRecordingConsentBody =>
+      'هل توافق على تسجيل المكالمة؟ يجب أن يوافق الوالدان.';
+
+  @override
+  String get callRecordingApprove => 'موافقة';
+
+  @override
+  String get callRecordingDeny => 'رفض';
+
+  @override
+  String get callRecordingConsentDenied => 'تم رفض التسجيل.';
+
+  @override
+  String get callRecordingWaitingOther => 'في انتظار موافقة الطرف الآخر.';
+
+  @override
+  String get callRecordingStarted => 'بدأ التسجيل.';
+
+  @override
   String get commonClose => 'إغلاق';
 
   @override
@@ -1141,6 +1166,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scheduleErrorStartDateRequired => 'يرجى اختيار تاريخ البداية.';
+
+  @override
+  String get scheduleCallExpired => 'انتهت';
 
   @override
   String get scheduleCallCreatedSuccess => 'تم إنشاء المكالمة بنجاح.';

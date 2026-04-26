@@ -604,6 +604,54 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get commonCancel;
 
+  /// No description provided for @callRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get callRecording;
+
+  /// No description provided for @callRecordingConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording consent'**
+  String get callRecordingConsentTitle;
+
+  /// No description provided for @callRecordingConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you allow this call to be recorded? Both parents must approve.'**
+  String get callRecordingConsentBody;
+
+  /// No description provided for @callRecordingApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get callRecordingApprove;
+
+  /// No description provided for @callRecordingDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get callRecordingDeny;
+
+  /// No description provided for @callRecordingConsentDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording denied.'**
+  String get callRecordingConsentDenied;
+
+  /// No description provided for @callRecordingWaitingOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the other parent to approve.'**
+  String get callRecordingWaitingOther;
+
+  /// No description provided for @callRecordingStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording started.'**
+  String get callRecordingStarted;
+
   /// No description provided for @commonClose.
   ///
   /// In en, this message translates to:
@@ -2277,6 +2325,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a start date.'**
   String get scheduleErrorStartDateRequired;
+
+  /// No description provided for @scheduleCallExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get scheduleCallExpired;
 
   /// No description provided for @scheduleCallCreatedSuccess.
   ///

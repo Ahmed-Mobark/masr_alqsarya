@@ -35,5 +35,26 @@ abstract class CallsRepository {
     int? categoryId,
     int? childWorkspaceMemberId,
   });
+
+  Future<Either<Failure, void>> startCallRecording({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<Either<Failure, void>> endCall({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<Either<Failure, void>> cancelCall({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<Either<Failure, void>> callRecordingConsent({
+    required int workspaceId,
+    required int callId,
+    required bool approved,
+  });
 }
 

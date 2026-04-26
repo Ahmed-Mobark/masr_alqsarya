@@ -94,6 +94,14 @@ class AppEndpoints {
       "workspaces/$workspaceId/calls";
   static String workspaceCallJoin(int workspaceId, int callId) =>
       "workspaces/$workspaceId/calls/$callId/join";
+  static String workspaceCallRecordingStart(int workspaceId, int callId) =>
+      "workspaces/$workspaceId/calls/$callId/recording/start";
+  static String workspaceCallRecordingConsent(int workspaceId, int callId) =>
+      "workspaces/$workspaceId/calls/$callId/recording/consent";
+  static String workspaceCallEnd(int workspaceId, int callId) =>
+      "workspaces/$workspaceId/calls/$callId/end";
+  static String workspaceCallCancel(int workspaceId, int callId) =>
+      "workspaces/$workspaceId/calls/$callId/cancel";
 
   // Calendar
   static String workspaceCalendarItems(int workspaceId) =>

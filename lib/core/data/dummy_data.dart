@@ -87,6 +87,7 @@ class CalendarEvent {
   final String titleFr;
   final DateTime date;
   final String time;
+  final DateTime? startsAt;
   final Color color;
   final String type;
   final String? location;
@@ -102,6 +103,7 @@ class CalendarEvent {
     required this.titleFr,
     required this.date,
     required this.time,
+    this.startsAt,
     required this.color,
     required this.type,
     this.location,

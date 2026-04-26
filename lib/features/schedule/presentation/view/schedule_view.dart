@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
@@ -178,6 +179,7 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                       token: joined.token,
                       roomName: joined.roomName,
                       isVideo: isVideo,
+                      callId: callId,
                     ),
                   )
                   .then((_) {
@@ -210,6 +212,13 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                   if (scheduled != 0) return scheduled;
                   return b.id.compareTo(a.id);
                 });
+
+              final selectedCalls = sortedCalls.where((c) {
+                final d = c.scheduledStartsAt.toLocal();
+                return d.year == _selectedDay.year &&
+                    d.month == _selectedDay.month &&
+                    d.day == _selectedDay.day;
+              }).toList();
 
               return RefreshIndicator(
                 onRefresh: () => context.read<ScheduleCallsCubit>().load(
@@ -271,16 +280,21 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                           horizontal: 16.w,
                           vertical: 8.h,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () => _changeMonth(-1),
+                        child: Builder(
+                          builder: (context) {
+                            // In RTL, users expect the timeline to move the other way.
+                            final isRtl =
+                                Directionality.of(context) == ui.TextDirection.rtl;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                              onTap: () => _changeMonth(isRtl ? 1 : -1),
                               borderRadius: BorderRadius.circular(12.r),
                               child: Padding(
                                 padding: EdgeInsets.all(6.w),
                                 child: Icon(
-                                  Iconsax.arrow_left_2,
+                                  isRtl ? Iconsax.arrow_right_3 : Iconsax.arrow_left_2,
                                   size: 18.sp,
                                   color: AppColors.darkText,
                                 ),
@@ -297,18 +311,20 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                               ),
                             ),
                             InkWell(
-                              onTap: () => _changeMonth(1),
+                              onTap: () => _changeMonth(isRtl ? -1 : 1),
                               borderRadius: BorderRadius.circular(12.r),
                               child: Padding(
                                 padding: EdgeInsets.all(6.w),
                                 child: Icon(
-                                  Iconsax.arrow_right_3,
+                                  isRtl ? Iconsax.arrow_left_2 : Iconsax.arrow_right_3,
                                   size: 18.sp,
                                   color: AppColors.darkText,
                                 ),
                               ),
                             ),
-                          ],
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -472,7 +488,24 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                               ),
                             )
                           else
-                            ...sortedCalls.map((c) {
+                            ...(selectedCalls.isEmpty
+                                ? [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 24.h,
+                                        bottom: 8.h,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          context.tr.scheduleNoEventsForDay,
+                                          style: AppTextStyles.caption(
+                                            color: AppColors.greyText,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                : selectedCalls.map((c) {
                               final d = c.scheduledStartsAt.toLocal();
                               final day = DateTime(d.year, d.month, d.day);
                               final titleLocalized = c.mode == 'audio'
@@ -484,9 +517,9 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                                 titleAr: titleLocalized,
                                 titleFr: titleLocalized,
                                 date: day,
-                                time: DateFormat(
-                                  "M/d/yyyy'T'HH:mm:ss",
-                                ).format(d),
+                                time:
+                                    DateFormat("M/d/yyyy'T'HH:mm:ss").format(d),
+                                startsAt: d,
                                 color: AppColors.primaryDark,
                                 type: 'Call',
                                 status: c.status == 'scheduled'
@@ -498,7 +531,7 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                                 padding: EdgeInsets.only(bottom: 16.h),
                                 child: _buildEventCard(context, event),
                               );
-                            }),
+                            }).toList()),
                           SizedBox(height: 16.h),
                         ]),
                       ),
@@ -632,7 +665,7 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                 ),
 
                 // Notes
-                if (event.notes != null) ...[
+                if (event.notes != null && event.notes!.trim().isNotEmpty) ...[
                   SizedBox(height: 12.h),
                   Container(
                     width: double.infinity,
@@ -861,6 +894,13 @@ class _CallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeName = Localizations.localeOf(context).toString();
+    final dt = event.startsAt;
+    final header = dt == null
+        ? event.time
+        : '${DateFormat.yMMMd(localeName).format(dt)} • ${DateFormat.jm(localeName).format(dt)}';
+    final isExpired = dt != null && dt.isBefore(DateTime.now());
+
     final statusLabel = switch (event.status) {
       'approved' => context.tr.scheduleLegendApproved,
       'pending' => context.tr.scheduleLegendPending,
@@ -892,7 +932,7 @@ class _CallCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
             child: Text(
-              event.time,
+              header,
               style: AppTextStyles.caption(
                 color: AppColors.greyText,
               ).copyWith(fontSize: 12.sp),
@@ -984,7 +1024,7 @@ class _CallCard extends StatelessWidget {
                           joinState.status == JoinCallStatus.loading &&
                           joinState.activeCallId == callId;
                       return ElevatedButton(
-                        onPressed: isJoining || callId == null
+                        onPressed: isExpired || isJoining || callId == null
                             ? null
                             : () => context.read<JoinCallCubit>().join(callId),
                         style: ElevatedButton.styleFrom(
@@ -1005,7 +1045,9 @@ class _CallCard extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                context.tr.scheduleJoin,
+                                isExpired
+                                    ? context.tr.scheduleCallExpired
+                                    : context.tr.scheduleJoin,
                                 style:
                                     AppTextStyles.bodyMedium(
                                       color: AppColors.darkText,

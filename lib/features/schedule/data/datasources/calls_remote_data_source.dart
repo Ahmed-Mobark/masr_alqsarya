@@ -37,6 +37,27 @@ abstract class CallsRemoteDataSource {
     int? categoryId,
     int? childWorkspaceMemberId,
   });
+
+  Future<void> startCallRecording({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<void> endCall({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<void> cancelCall({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<void> callRecordingConsent({
+    required int workspaceId,
+    required int callId,
+    required bool approved,
+  });
 }
 
 class CallsRemoteDataSourceImpl implements CallsRemoteDataSource {
@@ -154,6 +175,54 @@ class CallsRemoteDataSourceImpl implements CallsRemoteDataSource {
     await _api.post<Map<String, dynamic>>(
       url: AppEndpoints.workspaceCalendarItems(workspaceId),
       formData: FormData.fromMap(payload),
+    );
+  }
+
+  @override
+  Future<void> startCallRecording({
+    required int workspaceId,
+    required int callId,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallRecordingStart(workspaceId, callId),
+    );
+  }
+
+  @override
+  Future<void> endCall({
+    required int workspaceId,
+    required int callId,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallEnd(workspaceId, callId),
+    );
+  }
+
+  @override
+  Future<void> cancelCall({
+    required int workspaceId,
+    required int callId,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallCancel(workspaceId, callId),
+    );
+  }
+
+  @override
+  Future<void> callRecordingConsent({
+    required int workspaceId,
+    required int callId,
+    required bool approved,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallRecordingConsent(workspaceId, callId),
+      // Postman screenshot doesn't show required body fields; backend may accept
+      // different naming conventions. Send a compatible form-data payload.
+      formData: FormData.fromMap({
+        'approved': approved, // bool ("true"/"false")
+        'consent': approved ? 'approve' : 'deny',
+        'status': approved ? 'approved' : 'denied',
+      }),
     );
   }
 }

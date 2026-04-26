@@ -88,4 +88,53 @@ class CallsRepositoryImpl with RepositoryHelper implements CallsRepository {
       return;
     });
   }
+
+  @override
+  Future<Either<Failure, void>> startCallRecording({
+    required int workspaceId,
+    required int callId,
+  }) {
+    return handleEither(() async {
+      await _remote.startCallRecording(workspaceId: workspaceId, callId: callId);
+      return;
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> endCall({
+    required int workspaceId,
+    required int callId,
+  }) {
+    return handleEither(() async {
+      await _remote.endCall(workspaceId: workspaceId, callId: callId);
+      return;
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> cancelCall({
+    required int workspaceId,
+    required int callId,
+  }) {
+    return handleEither(() async {
+      await _remote.cancelCall(workspaceId: workspaceId, callId: callId);
+      return;
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> callRecordingConsent({
+    required int workspaceId,
+    required int callId,
+    required bool approved,
+  }) {
+    return handleEither(() async {
+      await _remote.callRecordingConsent(
+        workspaceId: workspaceId,
+        callId: callId,
+        approved: approved,
+      );
+      return;
+    });
+  }
 }
