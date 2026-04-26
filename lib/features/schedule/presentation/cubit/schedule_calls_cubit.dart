@@ -10,7 +10,7 @@ class ScheduleCallsCubit extends Cubit<ScheduleCallsState> {
   final GetCallsUseCase _getCalls;
   final WorkspaceIdStorage _workspaceIdStorage;
 
-  Future<void> load() async {
+  Future<void> load({DateTime? focusedMonth}) async {
     emit(state.copyWith(status: ScheduleCallsStatus.loading, clearError: true));
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {
@@ -21,7 +21,22 @@ class ScheduleCallsCubit extends Cubit<ScheduleCallsState> {
       return;
     }
 
-    final result = await _getCalls(GetCallsParams(workspaceId: workspaceId));
+    final m = focusedMonth ?? DateTime.now();
+    final firstDayOfMonth = DateTime(m.year, m.month, 1);
+    final startWeekday = firstDayOfMonth.weekday % 7; // Sun=0
+    final gridStart = firstDayOfMonth.subtract(Duration(days: startWeekday));
+    final gridEndExclusive = gridStart.add(const Duration(days: 42));
+
+    final startsFrom = DateTime(gridStart.year, gridStart.month, gridStart.day);
+    final endsTo = gridEndExclusive.subtract(const Duration(seconds: 1));
+
+    final result = await _getCalls(
+      GetCallsParams(
+        workspaceId: workspaceId,
+        startsFrom: startsFrom,
+        endsTo: endsTo,
+      ),
+    );
     result.fold(
       (failure) => emit(
         state.copyWith(

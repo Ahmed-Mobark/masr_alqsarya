@@ -17,7 +17,7 @@ class AddScheduleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<AddScheduleCubit>(),
+      create: (_) => sl<AddScheduleCubit>()..loadTypes(),
       child: const _AddScheduleBody(),
     );
   }
@@ -153,37 +153,48 @@ class _AddScheduleBody extends StatelessWidget {
                       SizedBox(height: 16.h),
 
                       Text(
-                        context.tr.scheduleCallMode,
+                        context.tr.scheduleEventType,
                         style: AppTextStyles.bodyMedium(
                           color: AppColors.darkText,
                         ).copyWith(fontSize: 14.sp),
                       ),
                       SizedBox(height: 8.h),
                       _buildDropdown<String>(
-                        value: state.selectedCallMode,
+                        value: state.selectedEventType,
                         hint: context.tr.scheduleSelect,
-                        items: const ['audio', 'video'],
-                        labelBuilder: (m) => m == 'audio'
-                            ? context.tr.scheduleCallModeAudio
-                            : context.tr.scheduleCallModeVideo,
-                        onChanged: cubit.setCallMode,
+                        items: state.eventTypes.isEmpty
+                            ? const ['audio_call', 'video_call', 'simple_event']
+                            : state.eventTypes.map((t) => t.value).toList(),
+                        labelBuilder: (v) {
+                          final match = state.eventTypes
+                              .where((e) => e.value == v)
+                              .toList();
+                          if (match.isNotEmpty) return match.first.label;
+                          return switch (v) {
+                            'audio_call' => 'Audio Call',
+                            'video_call' => 'Video Call',
+                            'simple_event' => 'Event',
+                            _ => v,
+                          };
+                        },
+                        onChanged: cubit.setEventType,
                       ),
 
                       SizedBox(height: 16.h),
 
                       Text(
-                        context.tr.scheduleDate,
+                        '${context.tr.scheduleDate} (Start)',
                         style: AppTextStyles.bodyMedium(
                           color: AppColors.darkText,
                         ).copyWith(fontSize: 14.sp),
                       ),
                       SizedBox(height: 8.h),
                       _DateField(
-                        value: DateFormat(
-                          "M/d/yyyy'T'HH:mm:ss",
-                        ).format(
-                          context.read<AddScheduleCubit>().scheduledStartsAt(),
-                        ),
+                        value: state.selectedDate == null
+                            ? context.tr.scheduleSelect
+                            : DateFormat("M/d/yyyy'T'HH:mm:ss").format(
+                                context.read<AddScheduleCubit>().scheduledStartsAt()!,
+                              ),
                         onTap: () => _showCompactDatePickerSheet(
                           context: context,
                           focusedMonth: state.focusedMonth,
@@ -199,7 +210,7 @@ class _AddScheduleBody extends StatelessWidget {
                       SizedBox(height: 16.h),
 
                       Text(
-                        context.tr.scheduleTime,
+                        '${context.tr.scheduleTime} (Start)',
                         style: AppTextStyles.bodyMedium(
                           color: AppColors.darkText,
                         ).copyWith(fontSize: 14.sp),
@@ -211,7 +222,7 @@ class _AddScheduleBody extends StatelessWidget {
                         onTap: () async {
                           final time = await showTimePicker(
                             context: context,
-                            initialTime: state.selectedTime ?? TimeOfDay.now(),
+                            initialTime: state.selectedTime ?? const TimeOfDay(hour: 9, minute: 0),
                             builder: (context, child) {
                               return Theme(
                                 data: Theme.of(context).copyWith(
@@ -227,6 +238,97 @@ class _AddScheduleBody extends StatelessWidget {
                           );
                           if (time != null) cubit.setTime(time);
                         },
+                      ),
+
+                      SizedBox(height: 16.h),
+                      Text(
+                        '${context.tr.scheduleDate} (End)',
+                        style: AppTextStyles.bodyMedium(
+                          color: AppColors.darkText,
+                        ).copyWith(fontSize: 14.sp),
+                      ),
+                      SizedBox(height: 8.h),
+                      _DateField(
+                        value: state.selectedEndDate == null
+                            ? context.tr.scheduleSelect
+                            : DateFormat("M/d/yyyy'T'HH:mm:ss").format(
+                                DateTime(
+                                  state.selectedEndDate!.year,
+                                  state.selectedEndDate!.month,
+                                  state.selectedEndDate!.day,
+                                ),
+                              ),
+                        onTap: () => _showCompactDatePickerSheet(
+                          context: context,
+                          focusedMonth: state.focusedMonth,
+                          selected: state.selectedEndDate ??
+                              (state.selectedDate ?? state.selectedDay),
+                          onMonthChanged: cubit.changeMonth,
+                          onSelected: cubit.setEndDate,
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        '${context.tr.scheduleTime} (End)',
+                        style: AppTextStyles.bodyMedium(
+                          color: AppColors.darkText,
+                        ).copyWith(fontSize: 14.sp),
+                      ),
+                      SizedBox(height: 8.h),
+                      _TimeField(
+                        value: state.selectedEndTime?.format(context) ??
+                            context.tr.scheduleSelect,
+                        onTap: () async {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime:
+                                state.selectedEndTime ?? TimeOfDay.now(),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    primary: AppColors.primaryDark,
+                                    onPrimary: Colors.white,
+                                    surface: AppColors.background,
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (time != null) cubit.setEndTime(time);
+                        },
+                      ),
+
+                      SizedBox(height: 16.h),
+                      Text(
+                        context.tr.scheduleNotes,
+                        style: AppTextStyles.bodyMedium(
+                          color: AppColors.darkText,
+                        ).copyWith(fontSize: 14.sp),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextFormField(
+                        initialValue: state.note ?? '',
+                        onChanged: cubit.setNote,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          hintText: context.tr.scheduleNotes,
+                          filled: true,
+                          fillColor: AppColors.background,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide(color: AppColors.primary),
+                          ),
+                        ),
                       ),
 
                       SizedBox(height: 28.h),
@@ -263,7 +365,7 @@ class _AddScheduleBody extends StatelessWidget {
                                     ),
                                   )
                                 : Text(
-                                    context.tr.scheduleCreateCall,
+                                    'Save',
                                     style:
                                         AppTextStyles.bodyMedium(
                                           color: AppColors.darkText,
@@ -347,6 +449,9 @@ class _AddScheduleBody extends StatelessWidget {
       return context.tr.scheduleErrorWorkspaceMissing;
     }
     if (msg == 'missing_type') return context.tr.errorFieldRequired;
+    if (msg == 'missing_start_date') {
+      return context.tr.scheduleErrorStartDateRequired;
+    }
 
     // Backend validation message (as seen in screenshot)
     final lower = msg.toLowerCase();

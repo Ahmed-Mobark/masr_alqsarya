@@ -24,7 +24,10 @@ class ScheduleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<ScheduleCallsCubit>()..load()),
+        BlocProvider(
+          create: (_) =>
+              sl<ScheduleCallsCubit>()..load(focusedMonth: DateTime.now()),
+        ),
         BlocProvider(create: (_) => sl<JoinCallCubit>()),
       ],
       child: const _ScheduleBody(),
@@ -42,41 +45,48 @@ class _ScheduleBody extends StatefulWidget {
 class _ScheduleBodyState extends State<_ScheduleBody> {
   DateTime _focusedMonth = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  int _selectedFilterIndex = 0;
+  final int _selectedFilterIndex = 0;
   int? _lastOpenedCallId;
+  TimeOfDay? _timeFrom;
+  TimeOfDay? _timeTo;
 
-  List<String> _filterLabels(BuildContext context) => [
-        context.tr.scheduleFilterAll,
-        context.tr.scheduleFilterCalls,
-      ];
-
-  static const List<String> _filterTypes = [
-    'All',
-    'Call',
-  ];
+  DateTime _gridStart(DateTime month) {
+    final firstDayOfMonth = DateTime(month.year, month.month, 1);
+    final startWeekday = firstDayOfMonth.weekday % 7; // Sun=0
+    return firstDayOfMonth.subtract(Duration(days: startWeekday));
+  }
 
   List<CalendarEvent> _eventsForDay(DateTime day) {
-    final dayEvents = _callEventsForDay(day).where((e) =>
-        e.date.year == day.year &&
-        e.date.month == day.month &&
-        e.date.day == day.day);
+    final dayEvents = _callEventsForDay(day).where(
+      (e) =>
+          e.date.year == day.year &&
+          e.date.month == day.month &&
+          e.date.day == day.day,
+    );
 
     if (_selectedFilterIndex == 0) return dayEvents.toList();
 
-    final filterType = _filterTypes[_selectedFilterIndex];
-    return dayEvents.where((e) => e.type == filterType).toList();
+    return dayEvents.where((e) => e.type == 'Call').toList();
   }
 
   List<CalendarEvent> _callEventsForDay(DateTime day) {
     final callsState = context.read<ScheduleCallsCubit>().state;
     if (callsState.calls.isEmpty) return const [];
 
+    final visibleStart = _gridStart(_focusedMonth);
+    final visibleEndExclusive = visibleStart.add(const Duration(days: 42));
+
     return callsState.calls
         .map((c) {
           final d = c.scheduledStartsAt.toLocal();
+          if (d.isBefore(visibleStart) || !d.isBefore(visibleEndExclusive)) {
+            return null;
+          }
           final isSameDay =
               d.year == day.year && d.month == day.month && d.day == day.day;
           if (!isSameDay) return null;
+
+          if (!_passesTimeWindow(d)) return null;
 
           final titleLocalized = c.mode == 'audio'
               ? context.tr.scheduleAudioCall
@@ -99,6 +109,22 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
         .toList();
   }
 
+  bool _passesTimeWindow(DateTime dateTime) {
+    final from = _timeFrom;
+    final to = _timeTo;
+    if (from == null && to == null) return true;
+
+    final minutes = dateTime.hour * 60 + dateTime.minute;
+    final fromMinutes = from != null ? from.hour * 60 + from.minute : 0;
+    final toMinutes = to != null ? to.hour * 60 + to.minute : (24 * 60 - 1);
+
+    // If user sets an overnight range (e.g. 22:00 → 02:00), treat it as wrap.
+    if (fromMinutes <= toMinutes) {
+      return minutes >= fromMinutes && minutes <= toMinutes;
+    }
+    return minutes >= fromMinutes || minutes <= toMinutes;
+  }
+
   Color _statusColor(String? status) {
     return switch (status) {
       'approved' => AppColors.success,
@@ -109,18 +135,13 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
   }
 
   void _changeMonth(int delta) {
-    setState(() {
-      _focusedMonth = DateTime(
-        _focusedMonth.year,
-        _focusedMonth.month + delta,
-      );
-    });
+    final next = DateTime(_focusedMonth.year, _focusedMonth.month + delta);
+    setState(() => _focusedMonth = next);
+    context.read<ScheduleCallsCubit>().load(focusedMonth: next);
   }
 
   @override
   Widget build(BuildContext context) {
-    final filterLabels = _filterLabels(context);
-
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
@@ -139,6 +160,8 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
               if (_lastOpenedCallId == callId) return;
               _lastOpenedCallId = callId;
 
+              final joinCubit = context.read<JoinCallCubit>();
+
               String? mode;
               for (final c in context.read<ScheduleCallsCubit>().state.calls) {
                 if (c.id == callId) {
@@ -148,366 +171,344 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
               }
               final isVideo = (mode ?? 'video') == 'video';
 
-              sl<AppNavigator>().push(
-                screen: CallRoomView(
-                  livekitUrl: joined.livekitUrl,
-                  token: joined.token,
-                  roomName: joined.roomName,
-                  isVideo: isVideo,
-                ),
-              ).then((_) {
-                if (!mounted) return;
-                _lastOpenedCallId = null;
-                context.read<JoinCallCubit>().reset();
-              });
+              sl<AppNavigator>()
+                  .push(
+                    screen: CallRoomView(
+                      livekitUrl: joined.livekitUrl,
+                      token: joined.token,
+                      roomName: joined.roomName,
+                      isVideo: isVideo,
+                    ),
+                  )
+                  .then((_) {
+                    if (!mounted) return;
+                    _lastOpenedCallId = null;
+                    joinCubit.reset();
+                  });
             }
             if (state.status == JoinCallStatus.failure) {
               final msg = state.error == 'workspace_missing'
                   ? context.tr.scheduleErrorWorkspaceMissing
                   : context.tr.scheduleJoinCallFailed;
-              appToast(
-                context: context,
-                type: ToastType.error,
-                message: msg,
-              );
+              appToast(context: context, type: ToastType.error, message: msg);
             }
           },
           child: BlocBuilder<ScheduleCallsCubit, ScheduleCallsState>(
             builder: (context, callsState) {
-            final isLoading = callsState.status == ScheduleCallsStatus.loading;
-            final isFailure = callsState.status == ScheduleCallsStatus.failure;
-            final hasCalls = callsState.calls.isNotEmpty;
-            final sortedCalls = [...callsState.calls]
-              ..sort((a, b) {
-                final created = b.createdAt.compareTo(a.createdAt);
-                if (created != 0) return created;
-                final scheduled = b.scheduledStartsAt.compareTo(a.scheduledStartsAt);
-                if (scheduled != 0) return scheduled;
-                return b.id.compareTo(a.id);
-              });
+              final isLoading =
+                  callsState.status == ScheduleCallsStatus.loading;
+              final isFailure =
+                  callsState.status == ScheduleCallsStatus.failure;
+              final hasCalls = callsState.calls.isNotEmpty;
+              final sortedCalls = [...callsState.calls]
+                ..sort((a, b) {
+                  final created = b.createdAt.compareTo(a.createdAt);
+                  if (created != 0) return created;
+                  final scheduled = b.scheduledStartsAt.compareTo(
+                    a.scheduledStartsAt,
+                  );
+                  if (scheduled != 0) return scheduled;
+                  return b.id.compareTo(a.id);
+                });
 
-            return RefreshIndicator(
-              onRefresh: () => context.read<ScheduleCallsCubit>().load(),
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-            // ── Header ──
-            SliverToBoxAdapter(
-              child: Container(
-                color: AppColors.background,
-                padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      context.tr.scheduleSharedCalendarTitle,
-                      style: AppTextStyles.heading2(color: AppColors.darkText)
-                          .copyWith(
-                              fontSize: 20.sp, fontWeight: FontWeight.w700),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await sl<AppNavigator>()
-                            .push(screen: const AddScheduleView());
-                        if (!context.mounted) return;
-                        context.read<ScheduleCallsCubit>().load();
-                      },
+              return RefreshIndicator(
+                onRefresh: () => context.read<ScheduleCallsCubit>().load(
+                  focusedMonth: _focusedMonth,
+                ),
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    // ── Header ──
+                    SliverToBoxAdapter(
                       child: Container(
-                        width: 36.w,
-                        height: 36.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        child: Icon(
-                          Iconsax.add,
-                          size: 20.sp,
-                          color: AppColors.darkText,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // ── Filter chips ──
-            SliverToBoxAdapter(
-              child: Container(
-                color: AppColors.background,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                child: SizedBox(
-                  height: 38.h,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    itemCount: filterLabels.length,
-                    separatorBuilder: (_, __) => SizedBox(width: 8.w),
-                    itemBuilder: (context, index) {
-                      final isSelected = _selectedFilterIndex == index;
-                      return GestureDetector(
-                        onTap: () =>
-                            setState(() => _selectedFilterIndex = index),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 8.h),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? AppColors.primary
-                                : AppColors.background,
-                            borderRadius: BorderRadius.circular(999.r),
-                            border: Border.all(
-                              color: isSelected
-                                  ? AppColors.primary
-                                  : AppColors.border,
-                              width: 1.2,
+                        color: AppColors.background,
+                        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              context.tr.scheduleSharedCalendarTitle,
+                              style:
+                                  AppTextStyles.heading2(
+                                    color: AppColors.darkText,
+                                  ).copyWith(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                             ),
-                          ),
-                          child: Text(
-                            filterLabels[index],
-                            style: AppTextStyles.smallMedium(
-                              color: AppColors.darkText,
-                            ).copyWith(
-                              fontSize: 13.sp,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-
-            // ── Month/Year selector ──
-            SliverToBoxAdapter(
-              child: Container(
-                color: AppColors.background,
-                padding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Month dropdown
-                    GestureDetector(
-                      onTap: () => _changeMonth(-1),
-                      child: Row(
-                        children: [
-                          Text(
-                            _monthString(_focusedMonth),
-                            style: AppTextStyles.heading2(
-                                    color: AppColors.darkText)
-                                .copyWith(fontSize: 16.sp),
-                          ),
-                          SizedBox(width: 4.w),
-                          Icon(
-                            Iconsax.arrow_down_1,
-                            size: 16.sp,
-                            color: AppColors.darkText,
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Year dropdown
-                    GestureDetector(
-                      onTap: () => _changeMonth(1),
-                      child: Row(
-                        children: [
-                          Text(
-                            '${_focusedMonth.year}',
-                            style: AppTextStyles.heading2(
-                                    color: AppColors.darkText)
-                                .copyWith(fontSize: 16.sp),
-                          ),
-                          SizedBox(width: 4.w),
-                          Icon(
-                            Iconsax.arrow_down_1,
-                            size: 16.sp,
-                            color: AppColors.darkText,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // ── Calendar Grid ──
-            SliverToBoxAdapter(
-              child: Container(
-                color: AppColors.background,
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
-                child: _buildCalendarGrid(),
-              ),
-            ),
-
-            // ── Legend ──
-            SliverToBoxAdapter(
-              child: Container(
-                color: AppColors.background,
-                padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
-                child: Row(
-                  children: [
-                    _LegendDot(
-                        color: AppColors.success,
-                        label: context.tr.scheduleLegendApproved),
-                    SizedBox(width: 16.w),
-                    _LegendDot(
-                        color: AppColors.primary,
-                        label: context.tr.scheduleLegendPending),
-                    SizedBox(width: 16.w),
-                    _LegendDot(
-                        color: AppColors.error,
-                        label: context.tr.scheduleLegendEvent),
-                    SizedBox(width: 16.w),
-                    _LegendDot(
-                        color: const Color(0xFF5B7FFF),
-                        label: context.tr.scheduleLegendCall),
-                  ],
-                ),
-              ),
-            ),
-
-            // ── Events ──
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    SizedBox(height: 8.h),
-                    Text(
-                      context.tr.scheduleAllCalls,
-                      style: AppTextStyles.heading2(color: AppColors.darkText)
-                          .copyWith(
-                              fontSize: 18.sp, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: 12.h),
-                    if (isLoading)
-                      Padding(
-                        padding: EdgeInsets.only(top: 28.h),
-                        child: Center(
-                          child: SizedBox(
-                            width: 22.w,
-                            height: 22.w,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.4,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primaryDark,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    else if (isFailure)
-                      Padding(
-                        padding: EdgeInsets.only(top: 28.h),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Iconsax.warning_2,
-                                size: 40.sp,
-                                color: AppColors.error.withValues(alpha: 0.8),
-                              ),
-                              SizedBox(height: 10.h),
-                              Text(
-                                callsState.error ?? context.tr.sorryMessage,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.caption(
-                                  color: AppColors.greyText,
+                            GestureDetector(
+                              onTap: () async {
+                                await sl<AppNavigator>().push(
+                                  screen: const AddScheduleView(),
+                                );
+                                if (!context.mounted) return;
+                                context.read<ScheduleCallsCubit>().load();
+                              },
+                              child: Container(
+                                width: 36.w,
+                                height: 36.w,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Icon(
+                                  Iconsax.add,
+                                  size: 20.sp,
+                                  color: AppColors.darkText,
                                 ),
                               ),
-                              SizedBox(height: 14.h),
-                              SizedBox(
-                                height: 44.h,
-                                child: ElevatedButton(
-                                  onPressed: () => context
-                                      .read<ScheduleCallsCubit>()
-                                      .load(),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: AppColors.darkText,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(999.r),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    context.tr.messagesRetry,
-                                    style: AppTextStyles.bodyMedium(
-                                      color: AppColors.darkText,
-                                    ).copyWith(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w700,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    SliverToBoxAdapter(child: SizedBox(height: 12.h)),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: AppColors.background,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () => _changeMonth(-1),
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: Padding(
+                                padding: EdgeInsets.all(6.w),
+                                child: Icon(
+                                  Iconsax.arrow_left_2,
+                                  size: 18.sp,
+                                  color: AppColors.darkText,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  '${_monthString(_focusedMonth)} ${_focusedMonth.year}',
+                                  style: AppTextStyles.heading2(
+                                    color: AppColors.darkText,
+                                  ).copyWith(fontSize: 16.sp),
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () => _changeMonth(1),
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: Padding(
+                                padding: EdgeInsets.all(6.w),
+                                child: Icon(
+                                  Iconsax.arrow_right_3,
+                                  size: 18.sp,
+                                  color: AppColors.darkText,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // ── Calendar Grid ──
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: AppColors.background,
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        child: GestureDetector(
+                          onHorizontalDragEnd: (details) {
+                            final v = details.primaryVelocity ?? 0;
+                            if (v.abs() < 120) return;
+                            // Swipe left → next month, swipe right → previous month.
+                            _changeMonth(v < 0 ? 1 : -1);
+                          },
+                          child: _buildCalendarGrid(),
+                        ),
+                      ),
+                    ),
+
+                    // ── Legend ──
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: AppColors.background,
+                        padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 12.h),
+                        child: Row(
+                          children: [
+                            _LegendDot(
+                              color: AppColors.success,
+                              label: context.tr.scheduleLegendApproved,
+                            ),
+                            SizedBox(width: 16.w),
+                            _LegendDot(
+                              color: AppColors.primary,
+                              label: context.tr.scheduleLegendPending,
+                            ),
+                            SizedBox(width: 16.w),
+                            _LegendDot(
+                              color: AppColors.error,
+                              label: context.tr.scheduleLegendEvent,
+                            ),
+                            SizedBox(width: 16.w),
+                            _LegendDot(
+                              color: const Color(0xFF5B7FFF),
+                              label: context.tr.scheduleLegendCall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // ── Events ──
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          SizedBox(height: 8.h),
+                          Text(
+                            context.tr.scheduleAllCalls,
+                            style:
+                                AppTextStyles.heading2(
+                                  color: AppColors.darkText,
+                                ).copyWith(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          SizedBox(height: 12.h),
+                          if (isLoading)
+                            Padding(
+                              padding: EdgeInsets.only(top: 28.h),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 22.w,
+                                  height: 22.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.4,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primaryDark,
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else if (!hasCalls)
-                      Padding(
-                        padding: EdgeInsets.only(top: 40.h, bottom: 24.h),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Iconsax.calendar,
-                                size: 48.sp,
-                                color: AppColors.greyText
-                                    .withValues(alpha: 0.5),
+                            )
+                          else if (isFailure)
+                            Padding(
+                              padding: EdgeInsets.only(top: 28.h),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Iconsax.warning_2,
+                                      size: 40.sp,
+                                      color: AppColors.error.withValues(
+                                        alpha: 0.8,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10.h),
+                                    Text(
+                                      callsState.error ??
+                                          context.tr.sorryMessage,
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyles.caption(
+                                        color: AppColors.greyText,
+                                      ),
+                                    ),
+                                    SizedBox(height: 14.h),
+                                    SizedBox(
+                                      height: 44.h,
+                                      child: ElevatedButton(
+                                        onPressed: () => context
+                                            .read<ScheduleCallsCubit>()
+                                            .load(focusedMonth: _focusedMonth),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primary,
+                                          foregroundColor: AppColors.darkText,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              999.r,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          context.tr.messagesRetry,
+                                          style:
+                                              AppTextStyles.bodyMedium(
+                                                color: AppColors.darkText,
+                                              ).copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              SizedBox(height: 12.h),
-                              Text(
-                                context.tr.scheduleNoCalls,
-                                style: AppTextStyles.caption(),
+                            )
+                          else if (!hasCalls)
+                            Padding(
+                              padding: EdgeInsets.only(top: 40.h, bottom: 24.h),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Iconsax.calendar,
+                                      size: 48.sp,
+                                      color: AppColors.greyText.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Text(
+                                      context.tr.scheduleNoCalls,
+                                      style: AppTextStyles.caption(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else
-                      ...sortedCalls.map((c) {
-                        final d = c.scheduledStartsAt.toLocal();
-                        final day = DateTime(d.year, d.month, d.day);
-                        final titleLocalized = c.mode == 'audio'
-                            ? context.tr.scheduleAudioCall
-                            : context.tr.scheduleVideoCall;
-                        final event = CalendarEvent(
-                          id: 'call_${c.id}',
-                          title: titleLocalized,
-                          titleAr: titleLocalized,
-                          titleFr: titleLocalized,
-                          date: day,
-                          time: DateFormat("M/d/yyyy'T'HH:mm:ss").format(d),
-                          color: AppColors.primaryDark,
-                          type: 'Call',
-                          status: c.status == 'scheduled' ? 'pending' : c.status,
-                          notes: c.livekitRoomName,
-                        );
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 16.h),
-                          child: _buildEventCard(context, event),
-                        );
-                      }),
-                    SizedBox(height: 16.h),
+                            )
+                          else
+                            ...sortedCalls.map((c) {
+                              final d = c.scheduledStartsAt.toLocal();
+                              final day = DateTime(d.year, d.month, d.day);
+                              final titleLocalized = c.mode == 'audio'
+                                  ? context.tr.scheduleAudioCall
+                                  : context.tr.scheduleVideoCall;
+                              final event = CalendarEvent(
+                                id: 'call_${c.id}',
+                                title: titleLocalized,
+                                titleAr: titleLocalized,
+                                titleFr: titleLocalized,
+                                date: day,
+                                time: DateFormat(
+                                  "M/d/yyyy'T'HH:mm:ss",
+                                ).format(d),
+                                color: AppColors.primaryDark,
+                                type: 'Call',
+                                status: c.status == 'scheduled'
+                                    ? 'pending'
+                                    : c.status,
+                                notes: c.livekitRoomName,
+                              );
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 16.h),
+                                child: _buildEventCard(context, event),
+                              );
+                            }),
+                          SizedBox(height: 16.h),
+                        ]),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ),
-                ],
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
       ),
     );
   }
@@ -550,8 +551,9 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
             padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
             child: Text(
               dateStr,
-              style: AppTextStyles.caption(color: AppColors.greyText)
-                  .copyWith(fontSize: 12.sp),
+              style: AppTextStyles.caption(
+                color: AppColors.greyText,
+              ).copyWith(fontSize: 12.sp),
             ),
           ),
           Divider(height: 1, color: AppColors.border.withValues(alpha: 0.4)),
@@ -581,10 +583,13 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                     Expanded(
                       child: Text(
                         title,
-                        style: AppTextStyles.bodyMedium(
-                                color: AppColors.darkText)
-                            .copyWith(
-                                fontSize: 15.sp, fontWeight: FontWeight.w600),
+                        style:
+                            AppTextStyles.bodyMedium(
+                              color: AppColors.darkText,
+                            ).copyWith(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ],
@@ -600,13 +605,17 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                       event.time == 'All Day'
                           ? context.tr.scheduleAllDay
                           : event.time,
-                      style: AppTextStyles.caption(color: AppColors.greyText)
-                          .copyWith(fontSize: 12.sp),
+                      style: AppTextStyles.caption(
+                        color: AppColors.greyText,
+                      ).copyWith(fontSize: 12.sp),
                     ),
                     if (event.location != null) ...[
                       SizedBox(width: 12.w),
-                      Icon(Iconsax.location,
-                          size: 14.sp, color: AppColors.greyText),
+                      Icon(
+                        Iconsax.location,
+                        size: 14.sp,
+                        color: AppColors.greyText,
+                      ),
                       SizedBox(width: 4.w),
                       Expanded(
                         child: Text(
@@ -614,8 +623,8 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.caption(
-                                  color: AppColors.greyText)
-                              .copyWith(fontSize: 12.sp),
+                            color: AppColors.greyText,
+                          ).copyWith(fontSize: 12.sp),
                         ),
                       ),
                     ],
@@ -637,17 +646,20 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                       children: [
                         Text(
                           context.tr.scheduleNotes,
-                          style: AppTextStyles.smallMedium(
-                                  color: AppColors.primaryDark)
-                              .copyWith(
-                                  fontSize: 12.sp, fontWeight: FontWeight.w600),
+                          style:
+                              AppTextStyles.smallMedium(
+                                color: AppColors.primaryDark,
+                              ).copyWith(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                         SizedBox(height: 4.h),
                         Text(
                           event.notes!,
-                          style:
-                              AppTextStyles.caption(color: AppColors.bodyText)
-                                  .copyWith(fontSize: 12.sp, height: 1.4),
+                          style: AppTextStyles.caption(
+                            color: AppColors.bodyText,
+                          ).copyWith(fontSize: 12.sp, height: 1.4),
                         ),
                       ],
                     ),
@@ -674,12 +686,8 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
   }
 
   Widget _buildCalendarGrid() {
-    final firstDayOfMonth =
-        DateTime(_focusedMonth.year, _focusedMonth.month, 1);
-    final lastDayOfMonth =
-        DateTime(_focusedMonth.year, _focusedMonth.month + 1, 0);
-    final startWeekday = firstDayOfMonth.weekday % 7; // Sun=0
-    final daysInMonth = lastDayOfMonth.day;
+    final gridStart = _gridStart(_focusedMonth);
+    final focusedMonthOnly = DateTime(_focusedMonth.year, _focusedMonth.month);
 
     final localeName = Localizations.localeOf(context).toString();
     final weekDays = _weekDayLabels(localeName);
@@ -689,32 +697,34 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
         // Weekday headers
         Row(
           children: weekDays
-              .map((d) => Expanded(
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.h),
-                        child: Text(d,
-                            style: AppTextStyles.tiny(
-                                color: AppColors.greyText)),
+              .map(
+                (d) => Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 8.h),
+                      child: Text(
+                        d,
+                        style: AppTextStyles.tiny(color: AppColors.greyText),
                       ),
                     ),
-                  ))
+                  ),
+                ),
+              )
               .toList(),
         ),
         // Day cells
         ...List.generate(6, (week) {
           return Row(
             children: List.generate(7, (day) {
-              final dayIndex = week * 7 + day - startWeekday + 1;
-              if (dayIndex < 1 || dayIndex > daysInMonth) {
-                return Expanded(child: SizedBox(height: 44.h));
-              }
-              final date = DateTime(
-                  _focusedMonth.year, _focusedMonth.month, dayIndex);
-              final isSelected = date.year == _selectedDay.year &&
+              final date = gridStart.add(Duration(days: week * 7 + day));
+              final cellMonthOnly = DateTime(date.year, date.month);
+              final isInFocusedMonth = cellMonthOnly == focusedMonthOnly;
+              final isSelected =
+                  date.year == _selectedDay.year &&
                   date.month == _selectedDay.month &&
                   date.day == _selectedDay.day;
-              final isToday = date.year == DateTime.now().year &&
+              final isToday =
+                  date.year == DateTime.now().year &&
                   date.month == DateTime.now().month &&
                   date.day == DateTime.now().day;
               final dayEvents = _eventsForDay(date);
@@ -722,7 +732,19 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
 
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => setState(() => _selectedDay = date),
+                  onTap: () {
+                    if (isInFocusedMonth) {
+                      setState(() => _selectedDay = date);
+                      return;
+                    }
+                    setState(() {
+                      _focusedMonth = DateTime(date.year, date.month);
+                      _selectedDay = date;
+                    });
+                    context.read<ScheduleCallsCubit>().load(
+                      focusedMonth: _focusedMonth,
+                    );
+                  },
                   child: Container(
                     height: 44.h,
                     margin: EdgeInsets.all(1.w),
@@ -730,19 +752,21 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
                       color: isSelected
                           ? const Color(0xFF5B7FFF)
                           : isToday
-                              ? AppColors.primary.withValues(alpha: 0.2)
-                              : Colors.transparent,
+                          ? AppColors.primary.withValues(alpha: 0.2)
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '$dayIndex',
+                          '${date.day}',
                           style: AppTextStyles.smallMedium(
                             color: isSelected
                                 ? Colors.white
-                                : AppColors.bodyText,
+                                : isInFocusedMonth
+                                ? AppColors.bodyText
+                                : AppColors.greyText,
                           ).copyWith(fontSize: 14.sp),
                         ),
                         if (hasEvents)
@@ -769,19 +793,20 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
   List<Widget> _buildEventDots(List<CalendarEvent> events) {
     final colors = <Color>{};
     for (final e in events) {
-      colors.add(_statusColor(e.status));
+      colors.add(
+        e.type == 'Call' ? AppColors.primaryDark : _statusColor(e.status),
+      );
       if (colors.length >= 3) break;
     }
     return colors
-        .map((c) => Container(
-              margin: EdgeInsets.symmetric(horizontal: 1.w),
-              width: 5.w,
-              height: 5.w,
-              decoration: BoxDecoration(
-                color: c,
-                shape: BoxShape.circle,
-              ),
-            ))
+        .map(
+          (c) => Container(
+            margin: EdgeInsets.symmetric(horizontal: 1.w),
+            width: 5.w,
+            height: 5.w,
+            decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+          ),
+        )
         .toList();
   }
 
@@ -789,7 +814,9 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
     final baseSunday = DateTime.utc(2024, 1, 7); // Sunday
     final formatter = DateFormat.E(localeName);
     return List.generate(
-        7, (i) => formatter.format(baseSunday.add(Duration(days: i))));
+      7,
+      (i) => formatter.format(baseSunday.add(Duration(days: i))),
+    );
   }
 
   String _monthString(DateTime date) {
@@ -817,8 +844,9 @@ class _LegendDot extends StatelessWidget {
         SizedBox(width: 4.w),
         Text(
           label,
-          style: AppTextStyles.tiny(color: AppColors.greyText)
-              .copyWith(fontSize: 10.sp),
+          style: AppTextStyles.tiny(
+            color: AppColors.greyText,
+          ).copyWith(fontSize: 10.sp),
         ),
       ],
     );
@@ -865,8 +893,9 @@ class _CallCard extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
             child: Text(
               event.time,
-              style: AppTextStyles.caption(color: AppColors.greyText)
-                  .copyWith(fontSize: 12.sp),
+              style: AppTextStyles.caption(
+                color: AppColors.greyText,
+              ).copyWith(fontSize: 12.sp),
             ),
           ),
           Divider(height: 1, color: AppColors.border.withValues(alpha: 0.4)),
@@ -884,8 +913,11 @@ class _CallCard extends StatelessWidget {
                         color: AppColors.primaryDark.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
-                      child: Icon(Iconsax.call,
-                          size: 20.sp, color: AppColors.primaryDark),
+                      child: Icon(
+                        Iconsax.call,
+                        size: 20.sp,
+                        color: AppColors.primaryDark,
+                      ),
                     ),
                     SizedBox(width: 12.w),
                     Expanded(
@@ -894,11 +926,13 @@ class _CallCard extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: AppTextStyles.bodyMedium(
-                                    color: AppColors.darkText)
-                                .copyWith(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600),
+                            style:
+                                AppTextStyles.bodyMedium(
+                                  color: AppColors.darkText,
+                                ).copyWith(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                           SizedBox(height: 4.h),
                           Row(
@@ -915,8 +949,8 @@ class _CallCard extends StatelessWidget {
                                 child: Text(
                                   statusLabel,
                                   style: AppTextStyles.tiny(
-                                          color: statusColor)
-                                      .copyWith(fontSize: 10.sp),
+                                    color: statusColor,
+                                  ).copyWith(fontSize: 10.sp),
                                 ),
                               ),
                             ],
@@ -930,8 +964,9 @@ class _CallCard extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Text(
                     '${context.tr.scheduleRoomName}: ${event.notes}',
-                    style: AppTextStyles.caption(color: AppColors.greyText)
-                        .copyWith(fontSize: 12.sp),
+                    style: AppTextStyles.caption(
+                      color: AppColors.greyText,
+                    ).copyWith(fontSize: 12.sp),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -942,15 +977,16 @@ class _CallCard extends StatelessWidget {
                   height: 44.h,
                   child: BlocBuilder<JoinCallCubit, JoinCallState>(
                     builder: (context, joinState) {
-                      final callId =
-                          int.tryParse(event.id.replaceFirst('call_', ''));
-                      final isJoining = joinState.status == JoinCallStatus.loading &&
+                      final callId = int.tryParse(
+                        event.id.replaceFirst('call_', ''),
+                      );
+                      final isJoining =
+                          joinState.status == JoinCallStatus.loading &&
                           joinState.activeCallId == callId;
                       return ElevatedButton(
                         onPressed: isJoining || callId == null
                             ? null
-                            : () =>
-                                context.read<JoinCallCubit>().join(callId),
+                            : () => context.read<JoinCallCubit>().join(callId),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: AppColors.darkText,
@@ -970,11 +1006,13 @@ class _CallCard extends StatelessWidget {
                               )
                             : Text(
                                 context.tr.scheduleJoin,
-                                style: AppTextStyles.bodyMedium(
-                                        color: AppColors.darkText)
-                                    .copyWith(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w700),
+                                style:
+                                    AppTextStyles.bodyMedium(
+                                      color: AppColors.darkText,
+                                    ).copyWith(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                               ),
                       );
                     },
@@ -1017,8 +1055,9 @@ class _ExpenseCard extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
             child: Text(
               dateStr,
-              style: AppTextStyles.caption(color: AppColors.greyText)
-                  .copyWith(fontSize: 12.sp),
+              style: AppTextStyles.caption(
+                color: AppColors.greyText,
+              ).copyWith(fontSize: 12.sp),
             ),
           ),
           Divider(height: 1, color: AppColors.border.withValues(alpha: 0.4)),
@@ -1036,8 +1075,11 @@ class _ExpenseCard extends StatelessWidget {
                         color: AppColors.error.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
-                      child: Icon(Iconsax.money_send,
-                          size: 20.sp, color: AppColors.error),
+                      child: Icon(
+                        Iconsax.money_send,
+                        size: 20.sp,
+                        color: AppColors.error,
+                      ),
                     ),
                     SizedBox(width: 12.w),
                     Expanded(
@@ -1046,18 +1088,20 @@ class _ExpenseCard extends StatelessWidget {
                         children: [
                           Text(
                             context.tr.scheduleExpensePaid,
-                            style: AppTextStyles.bodyMedium(
-                                    color: AppColors.darkText)
-                                .copyWith(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600),
+                            style:
+                                AppTextStyles.bodyMedium(
+                                  color: AppColors.darkText,
+                                ).copyWith(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                           if (event.expenseCategory != null)
                             Text(
                               '${context.tr.scheduleCategory}: ${event.expenseCategory}',
                               style: AppTextStyles.caption(
-                                      color: AppColors.greyText)
-                                  .copyWith(fontSize: 12.sp),
+                                color: AppColors.greyText,
+                              ).copyWith(fontSize: 12.sp),
                             ),
                         ],
                       ),
@@ -1067,7 +1111,9 @@ class _ExpenseCard extends StatelessWidget {
                         event.expenseAmount!,
                         style: AppTextStyles.heading2(color: AppColors.darkText)
                             .copyWith(
-                                fontSize: 16.sp, fontWeight: FontWeight.w700),
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
                   ],
                 ),
@@ -1088,9 +1134,8 @@ class _ExpenseCard extends StatelessWidget {
                     child: Text(
                       context.tr.scheduleViewReceipt,
                       style: AppTextStyles.bodyMedium(
-                              color: AppColors.darkText)
-                          .copyWith(
-                              fontSize: 14.sp, fontWeight: FontWeight.w700),
+                        color: AppColors.darkText,
+                      ).copyWith(fontSize: 14.sp, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),

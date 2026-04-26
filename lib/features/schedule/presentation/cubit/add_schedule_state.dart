@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/entities/call.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/entities/calendar_item_type.dart';
 
 enum AddScheduleStatus { initial, submitting, success, failure }
 
@@ -9,9 +10,14 @@ class AddScheduleState extends Equatable {
     required this.focusedMonth,
     required this.selectedDay,
     this.selectedEventType,
+    this.eventTypes = const [],
     this.selectedChild,
     this.selectedDate,
     this.selectedTime,
+    this.selectedEndDate,
+    this.selectedEndTime,
+    this.note,
+    this.selectedCategoryId,
     this.selectedCallMode = 'video',
     this.status = AddScheduleStatus.initial,
     this.error,
@@ -21,33 +27,48 @@ class AddScheduleState extends Equatable {
   factory AddScheduleState.initial() => AddScheduleState(
         focusedMonth: DateTime.now(),
         selectedDay: DateTime.now(),
-        selectedEventType: 'Call',
+        selectedEventType: null,
       );
 
   final DateTime focusedMonth;
   final DateTime selectedDay;
   final String? selectedEventType;
+  final List<CalendarItemTypeEntity> eventTypes;
   final String? selectedChild;
   final DateTime? selectedDate;
   final TimeOfDay? selectedTime;
+  final DateTime? selectedEndDate;
+  final TimeOfDay? selectedEndTime;
+  final String? note;
+  final int? selectedCategoryId;
   final String selectedCallMode; // audio | video
   final AddScheduleStatus status;
   final String? error;
   final CallEntity? createdCall;
 
-  bool get isCall => selectedEventType == 'Call';
+  bool get isCall => selectedEventType == 'audio_call' || selectedEventType == 'video_call';
+  bool get isSimpleEvent => selectedEventType == 'simple_event';
 
   AddScheduleState copyWith({
     DateTime? focusedMonth,
     DateTime? selectedDay,
     String? selectedEventType,
     bool clearSelectedEventType = false,
+    List<CalendarItemTypeEntity>? eventTypes,
     String? selectedChild,
     bool clearSelectedChild = false,
     DateTime? selectedDate,
     bool clearSelectedDate = false,
     TimeOfDay? selectedTime,
     bool clearSelectedTime = false,
+    DateTime? selectedEndDate,
+    bool clearSelectedEndDate = false,
+    TimeOfDay? selectedEndTime,
+    bool clearSelectedEndTime = false,
+    String? note,
+    bool clearNote = false,
+    int? selectedCategoryId,
+    bool clearSelectedCategoryId = false,
     String? selectedCallMode,
     AddScheduleStatus? status,
     String? error,
@@ -60,10 +81,19 @@ class AddScheduleState extends Equatable {
       selectedDay: selectedDay ?? this.selectedDay,
       selectedEventType:
           clearSelectedEventType ? null : (selectedEventType ?? this.selectedEventType),
+      eventTypes: eventTypes ?? this.eventTypes,
       selectedChild:
           clearSelectedChild ? null : (selectedChild ?? this.selectedChild),
       selectedDate: clearSelectedDate ? null : (selectedDate ?? this.selectedDate),
       selectedTime: clearSelectedTime ? null : (selectedTime ?? this.selectedTime),
+      selectedEndDate:
+          clearSelectedEndDate ? null : (selectedEndDate ?? this.selectedEndDate),
+      selectedEndTime:
+          clearSelectedEndTime ? null : (selectedEndTime ?? this.selectedEndTime),
+      note: clearNote ? null : (note ?? this.note),
+      selectedCategoryId: clearSelectedCategoryId
+          ? null
+          : (selectedCategoryId ?? this.selectedCategoryId),
       selectedCallMode: selectedCallMode ?? this.selectedCallMode,
       status: status ?? this.status,
       error: clearError ? null : (error ?? this.error),
@@ -76,9 +106,14 @@ class AddScheduleState extends Equatable {
         focusedMonth,
         selectedDay,
         selectedEventType,
+        eventTypes,
         selectedChild,
         selectedDate,
         selectedTime,
+        selectedEndDate,
+        selectedEndTime,
+        note,
+        selectedCategoryId,
         selectedCallMode,
         status,
         error,

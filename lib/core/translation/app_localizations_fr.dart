@@ -1162,6 +1162,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Veuillez choisir une date ultérieure.';
 
   @override
+  String get scheduleErrorStartDateRequired =>
+      'Veuillez sélectionner une date de début.';
+
+  @override
   String get scheduleCallCreatedSuccess => 'Appel créé avec succès.';
 
   @override

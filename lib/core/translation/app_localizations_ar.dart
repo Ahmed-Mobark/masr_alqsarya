@@ -1140,6 +1140,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'يرجى اختيار تاريخ في المستقبل.';
 
   @override
+  String get scheduleErrorStartDateRequired => 'يرجى اختيار تاريخ البداية.';
+
+  @override
   String get scheduleCallCreatedSuccess => 'تم إنشاء المكالمة بنجاح.';
 
   @override

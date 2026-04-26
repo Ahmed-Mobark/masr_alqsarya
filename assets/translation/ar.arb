@@ -422,6 +422,7 @@
   "scheduleCreateCall": "إنشاء مكالمة",
   "scheduleErrorWorkspaceMissing": "مساحة العمل غير جاهزة بعد. حاول تسجيل الدخول مرة أخرى.",
   "scheduleErrorScheduledStartsAtAfterNow": "يرجى اختيار تاريخ في المستقبل.",
+  "scheduleErrorStartDateRequired": "يرجى اختيار تاريخ البداية.",
   "scheduleCallCreatedSuccess": "تم إنشاء المكالمة بنجاح.",
   "scheduleRoomName": "الغرفة",
   "scheduleVideoCall": "مكالمة فيديو",
