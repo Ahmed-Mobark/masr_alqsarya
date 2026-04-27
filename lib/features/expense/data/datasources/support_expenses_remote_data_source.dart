@@ -1,35 +1,36 @@
-import 'package:dio/dio.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
-import 'package:masr_al_qsariya/features/expense/data/models/regular_expense_model.dart';
-import 'package:masr_al_qsariya/features/expense/domain/usecases/add_regular_expense_usecase.dart';
+import 'package:dio/dio.dart';
+import 'package:masr_al_qsariya/features/expense/data/models/support_expense_model.dart';
+import 'package:masr_al_qsariya/features/expense/domain/usecases/add_support_expense_usecase.dart';
 
-abstract class RegularExpensesRemoteDataSource {
-  Future<List<RegularExpenseModel>> getRegularExpenses({
+abstract class SupportExpensesRemoteDataSource {
+  Future<List<SupportExpenseModel>> getSupportExpenses({
     required int workspaceId,
   });
 
-  Future<RegularExpenseModel> getRegularExpenseDetails({
+  Future<SupportExpenseModel> getSupportExpenseDetails({
     required int workspaceId,
     required int expenseId,
   });
 
-  Future<RegularExpenseModel> addRegularExpense({
+  Future<SupportExpenseModel> addSupportExpense({
     required int workspaceId,
-    required AddRegularExpenseParams params,
+    required AddSupportExpenseParams params,
   });
 }
 
-class RegularExpensesRemoteDataSourceImpl implements RegularExpensesRemoteDataSource {
-  const RegularExpensesRemoteDataSourceImpl(this._api);
+class SupportExpensesRemoteDataSourceImpl
+    implements SupportExpensesRemoteDataSource {
+  const SupportExpensesRemoteDataSourceImpl(this._api);
   final ApiBaseHelper _api;
 
   @override
-  Future<List<RegularExpenseModel>> getRegularExpenses({
+  Future<List<SupportExpenseModel>> getSupportExpenses({
     required int workspaceId,
   }) async {
     final response = await _api.get<Map<String, dynamic>>(
-      url: AppEndpoints.workspaceRegularExpenses(workspaceId),
+      url: AppEndpoints.workspaceSupportExpenses(workspaceId),
     );
 
     final data = response['data'];
@@ -37,34 +38,31 @@ class RegularExpensesRemoteDataSourceImpl implements RegularExpensesRemoteDataSo
 
     return data
         .whereType<Map<String, dynamic>>()
-        .map(RegularExpenseModel.fromJson)
+        .map(SupportExpenseModel.fromJson)
         .toList();
   }
 
   @override
-  Future<RegularExpenseModel> getRegularExpenseDetails({
+  Future<SupportExpenseModel> getSupportExpenseDetails({
     required int workspaceId,
     required int expenseId,
   }) async {
     final response = await _api.get<Map<String, dynamic>>(
-      url: AppEndpoints.workspaceRegularExpenseDetails(workspaceId, expenseId),
+      url: AppEndpoints.workspaceSupportExpenseDetails(workspaceId, expenseId),
     );
     final data = response['data'];
     if (data is! Map<String, dynamic>) {
-      throw const FormatException('Invalid expense details response');
+      throw const FormatException('Invalid support expense details response');
     }
-    return RegularExpenseModel.fromJson(data);
+    return SupportExpenseModel.fromJson(data);
   }
 
   @override
-  Future<RegularExpenseModel> addRegularExpense({
+  Future<SupportExpenseModel> addSupportExpense({
     required int workspaceId,
-    required AddRegularExpenseParams params,
+    required AddSupportExpenseParams params,
   }) async {
     final form = FormData.fromMap({
-      'child_workspace_member_ids[]': params.childWorkspaceMemberIds
-          .map((e) => e.toString())
-          .toList(),
       'payer_id': params.payerId,
       'payer_name': params.payerName,
       'payee_id': params.payeeId,
@@ -72,7 +70,7 @@ class RegularExpensesRemoteDataSourceImpl implements RegularExpensesRemoteDataSo
       'currency': params.currency,
       'amount': params.amount,
       'title': params.title,
-      'category_id': params.categoryId.toString(),
+      if (params.categoryId != null) 'category_id': params.categoryId.toString(),
       'date': params.date,
       'note': params.note,
       'is_paid': params.isPaid ? '1' : '0',
@@ -80,14 +78,13 @@ class RegularExpensesRemoteDataSourceImpl implements RegularExpensesRemoteDataSo
     });
 
     final response = await _api.post<Map<String, dynamic>>(
-      url: AppEndpoints.workspaceRegularExpenses(workspaceId),
+      url: AppEndpoints.workspaceSupportExpenses(workspaceId),
       formData: form,
     );
 
     final data = response['data'];
     if (data is! Map<String, dynamic>) {
-      // Some APIs return only success message; fallback to empty model.
-      return const RegularExpenseModel(
+      return const SupportExpenseModel(
         id: 0,
         childWorkspaceMemberId: null,
         childName: null,
@@ -111,7 +108,7 @@ class RegularExpensesRemoteDataSourceImpl implements RegularExpensesRemoteDataSo
       );
     }
 
-    return RegularExpenseModel.fromJson(data);
+    return SupportExpenseModel.fromJson(data);
   }
 }
 

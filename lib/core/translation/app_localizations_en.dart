@@ -605,6 +605,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newsTitle => 'News';
 
   @override
+  String get commonError => 'Error';
+
+  @override
   String get expenseTitle => 'Expense';
 
   @override
@@ -618,6 +621,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expenseSubmittedBy => 'Submitted By';
+
+  @override
+  String get expenseSubmittedTo => 'Submitted To';
 
   @override
   String get expenseReferenceNumber => 'Reference Number';
@@ -645,6 +651,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expenseAddExpense => 'Add Expense';
+
+  @override
+  String get expenseNoDataTitle => 'No expenses yet.';
 
   @override
   String get invoiceTitle => 'Invoice';
@@ -692,6 +701,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addExpenseChildBothChildren => 'Both Children';
 
   @override
+  String get addExpenseChildAllChildren => 'All Children';
+
+  @override
   String get addExpensePayerName => 'Payer Name';
 
   @override
@@ -725,7 +737,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addExpenseNotesOptional => 'Notes ( Optional )';
 
   @override
-  String get addExpenseNotesHint => 'note';
+  String get addExpenseNotesHint => 'Notes';
 
   @override
   String get addExpenseYesIPaidIt => 'Yes, I paid it';
@@ -735,6 +747,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addExpenseUploadReceiptOrInvoice => 'Upload receipt or invoice';
+
+  @override
+  String get addExpensePickFromGallery => 'Choose photo from gallery';
+
+  @override
+  String get addExpenseTakePhoto => 'Take a photo';
+
+  @override
+  String get addExpensePickFile => 'Choose a file (PDF)';
 
   @override
   String get addExpenseProofTooLarge => 'File is too large (max 5 MB).';
@@ -765,6 +786,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addExpenseAmountRequired => 'Amount is required';
+
+  @override
+  String get addExpenseTitleRequired => 'Title is required';
 
   @override
   String get addExpenseEnterValidAmount => 'Enter a valid amount';

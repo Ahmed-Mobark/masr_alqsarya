@@ -285,36 +285,40 @@ class _NewsViewBodyStatefulState extends State<_NewsViewBodyStateful> {
           builder: (context, state) {
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: Row(
-                children: [
-                  Icon(
-                    Iconsax.filter,
-                    size: 20.sp,
-                    color: state.hasActiveFilters
-                        ? AppColors.primary
-                        : AppColors.greyText,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    context.tr.newsFilter,
-                    style: AppTextStyles.bodyMedium(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Iconsax.filter,
+                      size: 20.sp,
                       color: state.hasActiveFilters
                           ? AppColors.primary
                           : AppColors.greyText,
-                    ).copyWith(fontSize: 14.sp),
-                  ),
-                  if (state.hasActiveFilters) ...[
-                    SizedBox(width: 6.w),
-                    Container(
-                      width: 6.w,
-                      height: 6.w,
-                      decoration: const BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                      ),
                     ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      context.tr.newsFilter,
+                      style: AppTextStyles.bodyMedium(
+                        color: state.hasActiveFilters
+                            ? AppColors.primary
+                            : AppColors.greyText,
+                      ).copyWith(fontSize: 14.sp),
+                    ),
+                    if (state.hasActiveFilters) ...[
+                      SizedBox(width: 6.w),
+                      Container(
+                        width: 6.w,
+                        height: 6.w,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             );
           },

@@ -55,6 +55,7 @@ class NewsFeedItemModel {
     required this.type,
     required this.likesCount,
     required this.helpfulCount,
+    required this.currentUserReaction,
     required this.category,
     required this.persona,
     required this.postedByUser,
@@ -70,6 +71,7 @@ class NewsFeedItemModel {
   final String type;
   final int likesCount;
   final int helpfulCount;
+  final String? currentUserReaction; // like | helpful | null
   final NewsCategoryModel? category;
   final NewsPersonaModel? persona;
   final PostedByUserModel? postedByUser;
@@ -97,6 +99,7 @@ class NewsFeedItemModel {
       type: (map['type'] as String?) ?? '',
       likesCount: (map['likes_count'] as num?)?.toInt() ?? 0,
       helpfulCount: (map['helpful_count'] as num?)?.toInt() ?? 0,
+      currentUserReaction: map['current_user_reaction']?.toString(),
       category: map['category'] is Map<String, dynamic>
           ? NewsCategoryModel.fromMap(map['category'] as Map<String, dynamic>)
           : null,
@@ -125,7 +128,11 @@ class NewsFeedItemModel {
         type: type,
         likesCount: likesCount,
         helpfulCount: helpfulCount,
-        myReaction: null,
+        myReaction: switch (currentUserReaction?.toLowerCase().trim()) {
+          'like' => NewsReaction.like,
+          'helpful' => NewsReaction.helpful,
+          _ => null,
+        },
         category: category?.toEntity(),
         persona: persona?.toEntity(),
         postedByUser: postedByUser?.toEntity(),

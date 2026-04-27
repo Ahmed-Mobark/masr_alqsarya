@@ -251,6 +251,7 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
                 label: context.tr.newsLike,
                 isSelected: isLiked,
                 isLoading: widget.isLikeLoading,
+                selectedColor: AppColors.blue,
                 onTap: widget.onLike,
               ),
               SizedBox(width: 24.w),
@@ -259,6 +260,7 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
                 label: context.tr.newsHelpful,
                 isSelected: isHelpful,
                 isLoading: widget.isHelpfulLoading,
+                selectedColor: AppColors.error,
                 onTap: widget.onHelpful,
               ),
             ],
@@ -318,6 +320,7 @@ class _ActionButton extends StatelessWidget {
     required this.onTap,
     required this.isSelected,
     required this.isLoading,
+    this.selectedColor,
   });
 
   final IconData icon;
@@ -325,10 +328,12 @@ class _ActionButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSelected;
   final bool isLoading;
+  final Color? selectedColor;
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? AppColors.primaryDark : AppColors.greyText;
+    final color =
+        isSelected ? (selectedColor ?? AppColors.primaryDark) : AppColors.greyText;
     return InkWell(
       onTap: isLoading ? null : onTap,
       borderRadius: BorderRadius.circular(12.r),

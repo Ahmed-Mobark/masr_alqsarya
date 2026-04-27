@@ -2,30 +2,35 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:masr_al_qsariya/core/network/network_service/failures.dart';
-import 'package:masr_al_qsariya/features/expense/domain/entities/regular_expense.dart';
-import 'package:masr_al_qsariya/features/expense/domain/repositories/regular_expenses_repository.dart';
+import 'package:masr_al_qsariya/features/expense/domain/entities/support_expense.dart';
+import 'package:masr_al_qsariya/features/expense/domain/repositories/support_expenses_repository.dart';
 
-class AddRegularExpenseUseCase {
-  final RegularExpensesRepository _repo;
-  const AddRegularExpenseUseCase(this._repo);
+class AddSupportExpenseUseCase {
+  final SupportExpensesRepository _repo;
+  const AddSupportExpenseUseCase(this._repo);
 
-  Future<Either<Failure, RegularExpenseEntity>> call(
-    AddRegularExpenseRequest request,
+  Future<Either<Failure, SupportExpenseEntity>> call(
+    AddSupportExpenseRequest request,
   ) =>
-      _repo.addRegularExpense(workspaceId: request.workspaceId, params: request.params);
+      _repo.addSupportExpense(
+        workspaceId: request.workspaceId,
+        params: request.params,
+      );
 }
 
-class AddRegularExpenseRequest extends Equatable {
+class AddSupportExpenseRequest extends Equatable {
   final int workspaceId;
-  final AddRegularExpenseParams params;
-  const AddRegularExpenseRequest({required this.workspaceId, required this.params});
+  final AddSupportExpenseParams params;
+  const AddSupportExpenseRequest({
+    required this.workspaceId,
+    required this.params,
+  });
 
   @override
   List<Object> get props => [workspaceId, params];
 }
 
-class AddRegularExpenseParams extends Equatable {
-  final List<int> childWorkspaceMemberIds;
+class AddSupportExpenseParams extends Equatable {
   final String payerId;
   final String payerName;
   final String payeeId;
@@ -33,14 +38,13 @@ class AddRegularExpenseParams extends Equatable {
   final String currency;
   final String amount; // backend expects string in form-data
   final String title;
-  final int categoryId;
-  final String date; // e.g. 4/26/2026
+  final int? categoryId;
+  final String date; // e.g. 2026-04-27
   final String? note;
   final bool isPaid;
   final MultipartFile? attachment;
 
-  const AddRegularExpenseParams({
-    required this.childWorkspaceMemberIds,
+  const AddSupportExpenseParams({
     required this.payerId,
     required this.payerName,
     required this.payeeId,
@@ -57,7 +61,6 @@ class AddRegularExpenseParams extends Equatable {
 
   @override
   List<Object?> get props => [
-        childWorkspaceMemberIds,
         payerId,
         payerName,
         payeeId,

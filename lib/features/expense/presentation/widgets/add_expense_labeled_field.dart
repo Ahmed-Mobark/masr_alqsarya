@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
@@ -9,6 +10,9 @@ class AddExpenseLabeledField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final FocusNode? focusNode;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const AddExpenseLabeledField({
     super.key,
@@ -16,6 +20,9 @@ class AddExpenseLabeledField extends StatelessWidget {
     required this.controller,
     required this.hint,
     this.focusNode,
+    this.validator,
+    this.keyboardType,
+    this.inputFormatters,
   });
 
   @override
@@ -34,6 +41,9 @@ class AddExpenseLabeledField extends StatelessWidget {
           child: TextFormField(
             controller: controller,
             focusNode: focusNode,
+            validator: validator,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
             textAlignVertical: TextAlignVertical.center,
             style: AppTextStyles.bodyMedium().copyWith(fontSize: 12.sp),
             decoration: InputDecoration(

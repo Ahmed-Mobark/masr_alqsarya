@@ -597,6 +597,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newsTitle => 'الأخبار';
 
   @override
+  String get commonError => 'خطأ';
+
+  @override
   String get expenseTitle => 'المصروفات';
 
   @override
@@ -610,6 +613,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get expenseSubmittedBy => 'مقدم من';
+
+  @override
+  String get expenseSubmittedTo => 'مقدم إلى';
 
   @override
   String get expenseReferenceNumber => 'رقم المرجع';
@@ -637,6 +643,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get expenseAddExpense => 'إضافة مصروف';
+
+  @override
+  String get expenseNoDataTitle => 'لا توجد مصروفات حتى الآن.';
 
   @override
   String get invoiceTitle => 'الفاتورة';
@@ -684,6 +693,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addExpenseChildBothChildren => 'كلا الطفلين';
 
   @override
+  String get addExpenseChildAllChildren => 'كل الأطفال';
+
+  @override
   String get addExpensePayerName => 'اسم الدافع';
 
   @override
@@ -717,7 +729,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addExpenseNotesOptional => 'ملاحظات ( اختياري )';
 
   @override
-  String get addExpenseNotesHint => 'ملاحظة';
+  String get addExpenseNotesHint => 'ملاحظات';
 
   @override
   String get addExpenseYesIPaidIt => 'نعم، قمت بالدفع';
@@ -727,6 +739,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addExpenseUploadReceiptOrInvoice => 'ارفع إيصالاً أو فاتورة';
+
+  @override
+  String get addExpensePickFromGallery => 'اختر صورة من المعرض';
+
+  @override
+  String get addExpenseTakePhoto => 'التقاط صورة';
+
+  @override
+  String get addExpensePickFile => 'اختر ملفًا (PDF)';
 
   @override
   String get addExpenseProofTooLarge =>
@@ -758,6 +779,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addExpenseAmountRequired => 'المبلغ مطلوب';
+
+  @override
+  String get addExpenseTitleRequired => 'العنوان مطلوب';
 
   @override
   String get addExpenseEnterValidAmount => 'أدخل مبلغًا صحيحًا';

@@ -66,7 +66,7 @@ class InvoiceDetailsView extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
                 child: Text(
-                  state.failure?.message ?? 'Error',
+                  state.failure?.message ?? context.tr.commonError,
                   style: AppTextStyles.bodyMedium(color: AppColors.greyText),
                   textAlign: TextAlign.center,
                 ),
@@ -76,7 +76,13 @@ class InvoiceDetailsView extends StatelessWidget {
           final expense = state.item;
           if (expense == null) return const SizedBox.shrink();
 
-          final subtitle = '${expense.title}: ${expense.childName ?? expense.payerName}';
+          final subtitle =
+              '${expense.title} - ${context.tr.expenseSubmittedBy}: ${expense.payerName} - ${context.tr.expenseSubmittedTo}: ${expense.payeeName}';
+          final currency = currencyDisplay(
+            locale: Localizations.localeOf(context),
+            currencyCode: expense.currency,
+          );
+          final hasNote = (expense.note ?? '').trim().isNotEmpty;
 
           return SingleChildScrollView(
             padding: EdgeInsetsDirectional.only(
@@ -88,7 +94,7 @@ class InvoiceDetailsView extends StatelessWidget {
               children: [
                 SizedBox(height: 8.h),
                 Text(
-                  '${expense.currency} ${expense.amount.toStringAsFixed(2)}',
+                  '$currency ${expense.amount.toStringAsFixed(2)}',
                   style: AppTextStyles.heading1(color: AppColors.darkText)
                       .copyWith(fontSize: 26.sp),
                 ),
@@ -111,6 +117,11 @@ class InvoiceDetailsView extends StatelessWidget {
                   child: Column(
                     children: [
                       _LabeledValueRow(
+                        label: context.tr.expenseChildName,
+                        value: expense.childName ?? '-',
+                      ),
+                      SizedBox(height: 14.h),
+                      _LabeledValueRow(
                         label: context.tr.invoiceCategory,
                         value: expense.categoryName ?? expense.categoryId.toString(),
                       ),
@@ -119,29 +130,31 @@ class InvoiceDetailsView extends StatelessWidget {
                         label: context.tr.invoiceDateOfService,
                         value: expense.date,
                       ),
-                      SizedBox(height: 16.h),
-                      Divider(height: 1.h, color: AppColors.border),
-                      SizedBox(height: 14.h),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          context.tr.invoiceDescription,
-                          style: AppTextStyles.bodyMedium().copyWith(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.darkText,
+                      if (hasNote) ...[
+                        SizedBox(height: 16.h),
+                        Divider(height: 1.h, color: AppColors.border),
+                        SizedBox(height: 14.h),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Text(
+                            context.tr.invoiceDescription,
+                            style: AppTextStyles.bodyMedium().copyWith(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.darkText,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 10.h),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          expense.note ?? '-',
-                          style: AppTextStyles.caption(color: AppColors.greyText)
-                              .copyWith(fontSize: 12.sp, height: 1.35),
+                        SizedBox(height: 10.h),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Text(
+                            expense.note!,
+                            style: AppTextStyles.caption(color: AppColors.greyText)
+                                .copyWith(fontSize: 12.sp, height: 1.35),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -189,29 +202,41 @@ class InvoiceDetailsView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14.r),
                       ),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Iconsax.document, size: 18.sp, color: AppColors.greyText),
                           SizedBox(width: 10.w),
-                          InkWell(
-                            onTap: (expense.receiptUrl == null || expense.receiptUrl!.isEmpty)
-                                ? null
-                                : () async {
-                                    final uri = Uri.tryParse(expense.receiptUrl!);
-                                    if (uri == null) return;
-                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
-                                  },
-                            child: Text(
-                              expense.receiptUrl == null || expense.receiptUrl!.isEmpty
-                                  ? '-'
-                                  : (expense.attachmentName ??
-                                      uriLastSegment(expense.receiptUrl!)),
-                              style: AppTextStyles.bodyMedium(color: AppColors.greyText).copyWith(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                decoration: (expense.receiptUrl == null || expense.receiptUrl!.isEmpty)
-                                    ? null
-                                    : TextDecoration.underline,
+                          Expanded(
+                            child: InkWell(
+                              onTap: (expense.receiptUrl == null ||
+                                      expense.receiptUrl!.isEmpty)
+                                  ? null
+                                  : () async {
+                                      final uri =
+                                          Uri.tryParse(expense.receiptUrl!);
+                                      if (uri == null) return;
+                                      await launchUrl(
+                                        uri,
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    },
+                              child: Text(
+                                expense.receiptUrl == null ||
+                                        expense.receiptUrl!.isEmpty
+                                    ? '-'
+                                    : (expense.attachmentName ??
+                                        uriLastSegment(expense.receiptUrl!)),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyMedium(
+                                  color: AppColors.greyText,
+                                ).copyWith(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  decoration: (expense.receiptUrl == null ||
+                                          expense.receiptUrl!.isEmpty)
+                                      ? null
+                                      : TextDecoration.underline,
+                                ),
                               ),
                             ),
                           ),
@@ -309,4 +334,18 @@ class _LabeledValueRow extends StatelessWidget {
       ],
     );
   }
+}
+
+String currencyDisplay({required Locale locale, required String currencyCode}) {
+  final code = currencyCode.toUpperCase().trim();
+  final isArabic = locale.languageCode == 'ar';
+
+  if (isArabic) {
+    switch (code) {
+      case 'EGP':
+        return 'ج.م';
+    }
+  }
+
+  return code;
 }

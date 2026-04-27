@@ -3,10 +3,13 @@ import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart
 import 'package:masr_al_qsariya/features/family_workspace/data/models/family_workspace_member_model.dart';
 
 abstract class FamilyWorkspaceRemoteDataSource {
-  Future<List<FamilyWorkspaceMemberModel>> getMembers({required int workspaceId});
+  Future<List<FamilyWorkspaceMemberModel>> getMembers({
+    required int workspaceId,
+  });
 }
 
-class FamilyWorkspaceRemoteDataSourceImpl implements FamilyWorkspaceRemoteDataSource {
+class FamilyWorkspaceRemoteDataSourceImpl
+    implements FamilyWorkspaceRemoteDataSource {
   const FamilyWorkspaceRemoteDataSourceImpl(this._api);
   final ApiBaseHelper _api;
 
@@ -17,9 +20,8 @@ class FamilyWorkspaceRemoteDataSourceImpl implements FamilyWorkspaceRemoteDataSo
     final url = Uri(
       path: AppEndpoints.familyWorkspaceMembers,
       queryParameters: {
-        // Backend validation error key is `workspace` but some endpoints accept
-        // `workspace_id`. Send both to be compatible.
-        'workspace': workspaceId.toString(),
+        'role': 'child',
+        // Backend expects workspace_id as query param (matches Postman).
         'workspace_id': workspaceId.toString(),
       },
     ).toString();
@@ -50,4 +52,3 @@ class FamilyWorkspaceRemoteDataSourceImpl implements FamilyWorkspaceRemoteDataSo
     return const [];
   }
 }
-

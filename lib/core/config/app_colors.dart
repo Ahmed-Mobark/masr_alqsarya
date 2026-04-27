@@ -24,6 +24,7 @@ abstract class AppColors {
   static const Color red = Color(0xFFD00416);
   static const Color yellow = Color(0xFFDFB400);
   static const Color green = Color(0xFF1FC16B);
+  static const Color blue = Color(0xFF2F80ED);
 
   static const Color transparent = Colors.transparent;
 
@@ -47,7 +48,7 @@ abstract class AppColors {
   static const Color cardBg = cardColorLight;
 
   static const Color statusBadge = Color(0xFFC89563);
-  static const Color tabActive = primaryDark;
+  static const Color tabActive = primary;
   static const Color tabInactive = hintColorLight;
 
   static const Color error = red;

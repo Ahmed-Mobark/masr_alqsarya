@@ -1,6 +1,6 @@
-import 'package:masr_al_qsariya/features/expense/domain/entities/regular_expense.dart';
+import 'package:masr_al_qsariya/features/expense/domain/entities/support_expense.dart';
 
-class RegularExpenseModel {
+class SupportExpenseModel {
   final int id;
   final int? childWorkspaceMemberId;
   final String? childName;
@@ -22,7 +22,7 @@ class RegularExpenseModel {
   final String? attachmentUrl;
   final String? attachmentName;
 
-  const RegularExpenseModel({
+  const SupportExpenseModel({
     required this.id,
     required this.childWorkspaceMemberId,
     required this.childName,
@@ -45,55 +45,24 @@ class RegularExpenseModel {
     required this.attachmentName,
   });
 
-  factory RegularExpenseModel.fromJson(Map<String, dynamic> json) {
+  factory SupportExpenseModel.fromJson(Map<String, dynamic> json) {
     final rawAmount = json['amount'];
     final parsedAmount = rawAmount is num
         ? rawAmount.toDouble()
-        : double.tryParse('$rawAmount') ??
-            0.0;
+        : double.tryParse('$rawAmount') ?? 0.0;
 
     final rawIsPaid = json['is_paid'];
     final isPaid = rawIsPaid is bool
         ? rawIsPaid
         : (rawIsPaid is num ? rawIsPaid == 1 : ('$rawIsPaid' == '1'));
 
-    String? childName;
-    final child = json['child'];
-    if (child is Map<String, dynamic>) {
-      childName = child['display_name']?.toString();
-    }
-    childName ??= json['child_name']?.toString();
-    final children = json['children'];
-    if ((childName == null || childName.isEmpty) && children is List) {
-      for (final item in children) {
-        if (item is Map<String, dynamic>) {
-          childName = item['display_name']?.toString();
-          if (childName != null && childName.isNotEmpty) break;
-        }
-      }
-    }
-
-    int? childWorkspaceMemberId =
-        (json['child_workspace_member_id'] as num?)?.toInt();
-    final childIds = json['child_workspace_member_ids'];
-    if (childWorkspaceMemberId == null && childIds is List) {
-      for (final item in childIds) {
-        if (item is num) {
-          childWorkspaceMemberId = item.toInt();
-          break;
-        }
-        final parsed = int.tryParse('$item');
-        if (parsed != null) {
-          childWorkspaceMemberId = parsed;
-          break;
-        }
-      }
-    }
-
-    return RegularExpenseModel(
+    return SupportExpenseModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
-      childWorkspaceMemberId: childWorkspaceMemberId,
-      childName: childName,
+      childWorkspaceMemberId:
+          (json['child_workspace_member_id'] as num?)?.toInt(),
+      childName: (json['child'] is Map<String, dynamic>)
+          ? (json['child']['display_name'] ?? '').toString()
+          : json['child_name']?.toString(),
       payerId: (json['payer_id'] ?? '').toString(),
       payerName: (json['payer_name'] ?? '').toString(),
       payeeId: (json['payee_id'] ?? '').toString(),
@@ -109,12 +78,13 @@ class RegularExpenseModel {
       referenceNumber: json['reference_number']?.toString(),
       receiptUrl: json['receipt_url']?.toString(),
       createdAt: json['created_at']?.toString(),
-      attachmentUrl: json['attachment_url']?.toString() ?? json['attachment']?.toString(),
+      attachmentUrl:
+          json['attachment_url']?.toString() ?? json['attachment']?.toString(),
       attachmentName: json['attachment_name']?.toString(),
     );
   }
 
-  RegularExpenseEntity toEntity() => RegularExpenseEntity(
+  SupportExpenseEntity toEntity() => SupportExpenseEntity(
         id: id,
         childWorkspaceMemberId: childWorkspaceMemberId,
         childName: childName,

@@ -610,6 +610,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get newsTitle => 'Actualités';
 
   @override
+  String get commonError => 'Erreur';
+
+  @override
   String get expenseTitle => 'Dépenses';
 
   @override
@@ -623,6 +626,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get expenseSubmittedBy => 'Soumis par';
+
+  @override
+  String get expenseSubmittedTo => 'Soumis à';
 
   @override
   String get expenseReferenceNumber => 'Numéro de référence';
@@ -650,6 +656,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get expenseAddExpense => 'Ajouter une dépense';
+
+  @override
+  String get expenseNoDataTitle => 'Aucune dépense pour le moment.';
 
   @override
   String get invoiceTitle => 'Facture';
@@ -697,6 +706,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addExpenseChildBothChildren => 'Les deux enfants';
 
   @override
+  String get addExpenseChildAllChildren => 'Tous les enfants';
+
+  @override
   String get addExpensePayerName => 'Nom du payeur';
 
   @override
@@ -730,7 +742,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addExpenseNotesOptional => 'Notes ( Optionnel )';
 
   @override
-  String get addExpenseNotesHint => 'note';
+  String get addExpenseNotesHint => 'Notes';
 
   @override
   String get addExpenseYesIPaidIt => 'Oui, je l’ai payée';
@@ -741,6 +753,15 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get addExpenseUploadReceiptOrInvoice =>
       'Téléverser le reçu ou la facture';
+
+  @override
+  String get addExpensePickFromGallery => 'Choisir une photo depuis la galerie';
+
+  @override
+  String get addExpenseTakePhoto => 'Prendre une photo';
+
+  @override
+  String get addExpensePickFile => 'Choisir un fichier (PDF)';
 
   @override
   String get addExpenseProofTooLarge =>
@@ -773,6 +794,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addExpenseAmountRequired => 'Le montant est obligatoire';
+
+  @override
+  String get addExpenseTitleRequired => 'Le titre est obligatoire';
 
   @override
   String get addExpenseEnterValidAmount => 'Saisissez un montant valide';

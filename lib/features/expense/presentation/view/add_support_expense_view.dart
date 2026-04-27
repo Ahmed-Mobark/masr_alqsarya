@@ -12,41 +12,36 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/features/categories/presentation/cubit/categories_cubit.dart';
-import 'package:masr_al_qsariya/features/expense/domain/usecases/add_regular_expense_usecase.dart';
-import 'package:masr_al_qsariya/features/expense/presentation/cubit/add_regular_expense_cubit.dart';
-import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_category_tile.dart';
-import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_choice_chip.dart';
+import 'package:masr_al_qsariya/features/expense/domain/usecases/add_support_expense_usecase.dart';
+import 'package:masr_al_qsariya/features/expense/presentation/cubit/add_support_expense_cubit.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_dashed_card.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_field_container.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_labeled_field.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_required_label.dart';
 import 'package:masr_al_qsariya/features/expense/presentation/widgets/add_expense_segment_option.dart';
-import 'package:masr_al_qsariya/features/family_workspace/presentation/cubit/family_workspace_members_cubit.dart';
 
-class AddExpenseView extends StatefulWidget {
-  const AddExpenseView({super.key});
+class AddSupportExpenseView extends StatefulWidget {
+  const AddSupportExpenseView({super.key});
 
   @override
-  State<AddExpenseView> createState() => _AddExpenseViewState();
+  State<AddSupportExpenseView> createState() => _AddSupportExpenseViewState();
 }
 
-class _AddExpenseViewState extends State<AddExpenseView> {
+class _AddSupportExpenseViewState extends State<AddSupportExpenseView> {
   final ImagePicker _imagePicker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
   bool _alreadyPaid = true;
-  final Set<int> _selectedChildWorkspaceMemberIds = <int>{};
-  int? _selectedCategoryId;
 
   final _payerNameController = TextEditingController();
   final _payerIdController = TextEditingController();
   final _payeeNameController = TextEditingController();
   final _payeeIdController = TextEditingController();
-  final _currencyController = TextEditingController();
+  final _currencyController = TextEditingController(text: 'EGP');
   final _amountController = TextEditingController();
   final _expenseTitleController = TextEditingController();
   final _notesController = TextEditingController();
+
   String? _proofFileName;
   String? _proofFilePath;
 
@@ -78,67 +73,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
     return ok ? null : context.tr.errorInvalidNationalId;
   }
 
-  late final FocusNode _payerNameFocus;
-  late final FocusNode _payerIdFocus;
-  late final FocusNode _payeeNameFocus;
-  late final FocusNode _payeeIdFocus;
-  late final FocusNode _currencyFocus;
-  late final FocusNode _amountFocus;
-  late final FocusNode _expenseTitleFocus;
-  late final FocusNode _notesFocus;
-
-  String _childLabel(
-    BuildContext context, {
-    required int index,
-    required int childrenCount,
-    required List<String> names,
-  }) {
-    final hasGroupChip = childrenCount > 1;
-    if (hasGroupChip && index == 0) {
-      return childrenCount == 2
-          ? context.tr.addExpenseChildBothChildren
-          : context.tr.addExpenseChildAllChildren;
-    }
-    final nameIndex = hasGroupChip ? (index - 1) : index;
-    return names[nameIndex];
-  }
-
-  // Categories are loaded from API via CategoriesCubit.
-
-  @override
-  void initState() {
-    super.initState();
-    _payerNameFocus = FocusNode();
-    _payerIdFocus = FocusNode();
-    _payeeNameFocus = FocusNode();
-    _payeeIdFocus = FocusNode();
-    _currencyFocus = FocusNode();
-    _amountFocus = FocusNode();
-    _expenseTitleFocus = FocusNode();
-    _notesFocus = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    _payerNameFocus.dispose();
-    _payerIdFocus.dispose();
-    _payeeNameFocus.dispose();
-    _payeeIdFocus.dispose();
-    _currencyFocus.dispose();
-    _amountFocus.dispose();
-    _expenseTitleFocus.dispose();
-    _notesFocus.dispose();
-    _payerNameController.dispose();
-    _payerIdController.dispose();
-    _payeeNameController.dispose();
-    _payeeIdController.dispose();
-    _currencyController.dispose();
-    _amountController.dispose();
-    _expenseTitleController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
   Future<void> _pickDate() async {
     final date = await showDatePicker(
       context: context,
@@ -158,9 +92,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
         );
       },
     );
-    if (date != null) {
-      setState(() => _selectedDate = date);
-    }
+    if (date != null) setState(() => _selectedDate = date);
   }
 
   Future<void> _pickProofOfPurchase() async {
@@ -224,10 +156,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                     ),
                     minLeadingWidth: 24.w,
                     horizontalTitleGap: 14.w,
-                    leading: Icon(
-                      Iconsax.document_upload,
-                      color: AppColors.darkText,
-                    ),
+                    leading: Icon(Iconsax.document_upload, color: AppColors.darkText),
                     title: Text(
                       context.tr.addExpensePickFile,
                       style: AppTextStyles.bodyMedium(),
@@ -282,10 +211,8 @@ class _AddExpenseViewState extends State<AddExpenseView> {
         allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png'],
         withData: false,
       );
-
       if (!mounted) return;
       if (result == null || result.files.isEmpty) return;
-
       final picked = result.files.first;
       if (picked.size > maxBytes) {
         messenger.showSnackBar(
@@ -299,7 +226,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
         );
         return;
       }
-
       setState(() {
         _proofFileName = picked.name;
         _proofFilePath = picked.path;
@@ -319,24 +245,36 @@ class _AddExpenseViewState extends State<AddExpenseView> {
   }
 
   @override
+  void dispose() {
+    _payerNameController.dispose();
+    _payerIdController.dispose();
+    _payeeNameController.dispose();
+    _payeeIdController.dispose();
+    _currencyController.dispose();
+    _amountController.dispose();
+    _expenseTitleController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: AppTextStyles.caption(color: AppColors.captionText)
+          .copyWith(fontSize: 12.sp),
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      errorBorder: InputBorder.none,
+      isCollapsed: true,
+      contentPadding: EdgeInsetsDirectional.zero,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => sl<AddRegularExpenseCubit>()),
-        BlocProvider(
-          create: (_) => sl<CategoriesCubit>()..load(type: 'regular_expenses'),
-        ),
-        BlocProvider(
-          create: (_) {
-            final cubit = sl<FamilyWorkspaceMembersCubit>();
-            final workspaceId = sl<WorkspaceIdStorage>().get();
-            if (workspaceId != null) {
-              cubit.load(workspaceId: workspaceId);
-            }
-            return cubit;
-          },
-        ),
-      ],
+    return BlocProvider(
+      create: (_) => sl<AddSupportExpenseCubit>(),
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         appBar: AppBar(
@@ -357,12 +295,12 @@ class _AddExpenseViewState extends State<AddExpenseView> {
           ),
           centerTitle: true,
         ),
-        body: BlocListener<AddRegularExpenseCubit, AddRegularExpenseState>(
+        body: BlocListener<AddSupportExpenseCubit, AddSupportExpenseState>(
           listener: (context, state) {
-            if (state.status == AddRegularExpenseStatus.success) {
+            if (state.status == AddSupportExpenseStatus.success) {
               Navigator.pop(context, true);
             }
-            if (state.status == AddRegularExpenseStatus.failure) {
+            if (state.status == AddSupportExpenseStatus.failure) {
               final msg = _failureMessage(
                 fallback: context.tr.commonError,
                 failure: state.failure,
@@ -389,89 +327,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AddExpenseRequiredLabel(
-                    text: context.tr.addExpenseChildLabel,
-                  ),
-                  SizedBox(height: 12.h),
-                  BlocBuilder<
-                    FamilyWorkspaceMembersCubit,
-                    FamilyWorkspaceMembersState
-                  >(
-                    builder: (context, state) {
-                      if (state.status ==
-                          FamilyWorkspaceMembersStatus.loading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      final children = state.items
-                          .where((m) => m.isChild)
-                          .toList();
-                      final names = children.map((e) => e.fullName).toList();
-                      final chipCount =
-                          (children.length > 1 ? 1 : 0) + names.length;
-
-                      if (children.isNotEmpty &&
-                          _selectedChildWorkspaceMemberIds.isEmpty) {
-                        // Default to selecting the first child to keep the form usable.
-                        _selectedChildWorkspaceMemberIds.add(children.first.id);
-                      }
-
-                      return Wrap(
-                        spacing: 10.w,
-                        runSpacing: 10.h,
-                        children: List.generate(chipCount, (index) {
-                          final hasGroupChip = children.length > 1;
-                          final bool selected = hasGroupChip && index == 0
-                              ? (children.isNotEmpty &&
-                                    _selectedChildWorkspaceMemberIds.length ==
-                                        children.length)
-                              : _selectedChildWorkspaceMemberIds.contains(
-                                  children[hasGroupChip ? (index - 1) : index]
-                                      .id,
-                                );
-                          return AddExpenseChoiceChip(
-                            label: _childLabel(
-                              context,
-                              index: index,
-                              childrenCount: children.length,
-                              names: names,
-                            ),
-                            selected: selected,
-                            onTap: () => setState(() {
-                              final hasGroupChip = children.length > 1;
-                              if (hasGroupChip && index == 0) {
-                                // Select all children (both/all).
-                                _selectedChildWorkspaceMemberIds
-                                  ..clear()
-                                  ..addAll(children.map((e) => e.id));
-                                return;
-                              }
-
-                              final childIndex = hasGroupChip
-                                  ? (index - 1)
-                                  : index;
-                              final id = children[childIndex].id;
-                              if (_selectedChildWorkspaceMemberIds.contains(
-                                id,
-                              )) {
-                                _selectedChildWorkspaceMemberIds.remove(id);
-                                // Keep at least one selected (UX guardrail).
-                                if (_selectedChildWorkspaceMemberIds.isEmpty &&
-                                    children.isNotEmpty) {
-                                  _selectedChildWorkspaceMemberIds.add(
-                                    children.first.id,
-                                  );
-                                }
-                              } else {
-                                _selectedChildWorkspaceMemberIds.add(id);
-                              }
-                            }),
-                          );
-                        }),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 18.h),
-
                   Row(
                     children: [
                       Expanded(
@@ -479,7 +334,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                           label: context.tr.addExpensePayerName,
                           controller: _payerNameController,
                           hint: context.tr.addExpenseFieldHint,
-                          focusNode: _payerNameFocus,
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -488,7 +342,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                           label: context.tr.addExpensePayerId,
                           controller: _payerIdController,
                           hint: context.tr.addExpenseFieldHint,
-                          focusNode: _payerIdFocus,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -500,7 +353,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                     ],
                   ),
                   SizedBox(height: 14.h),
-
                   Row(
                     children: [
                       Expanded(
@@ -508,7 +360,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                           label: context.tr.addExpensePayeeName,
                           controller: _payeeNameController,
                           hint: context.tr.addExpenseFieldHint,
-                          focusNode: _payeeNameFocus,
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -517,7 +368,6 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                           label: context.tr.addExpensePayeeId,
                           controller: _payeeIdController,
                           hint: context.tr.addExpenseFieldHint,
-                          focusNode: _payeeIdFocus,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -529,198 +379,87 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                     ],
                   ),
                   SizedBox(height: 16.h),
-
-                  AddExpenseRequiredLabel(
-                    text: context.tr.addExpenseCurrencyLabel,
-                  ),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseCurrencyLabel),
                   SizedBox(height: 10.h),
                   AddExpenseFieldContainer(
-                    focusNode: _currencyFocus,
                     child: TextFormField(
                       controller: _currencyController,
-                      focusNode: _currencyFocus,
                       textAlignVertical: TextAlignVertical.center,
-                      style: AppTextStyles.bodyMedium().copyWith(
-                        fontSize: 12.sp,
-                      ),
-                      decoration: _inputDecoration(
-                        context.tr.addExpenseFieldHint,
-                      ),
+                      style: AppTextStyles.bodyMedium().copyWith(fontSize: 12.sp),
+                      decoration: _inputDecoration(context.tr.addExpenseFieldHint),
                       validator: (val) => (val == null || val.isEmpty)
                           ? context.tr.addExpenseCurrencyRequired
                           : null,
                     ),
                   ),
                   SizedBox(height: 16.h),
-
-                  AddExpenseRequiredLabel(
-                    text: context.tr.addExpenseAmountLabel,
-                  ),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseAmountLabel),
                   SizedBox(height: 10.h),
                   AddExpenseFieldContainer(
-                    focusNode: _amountFocus,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _amountController,
-                            focusNode: _amountFocus,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            textAlignVertical: TextAlignVertical.center,
-                            style: AppTextStyles.bodyMedium().copyWith(
-                              fontSize: 12.sp,
-                            ),
-                            decoration: _inputDecoration('0.00'),
-                            validator: (val) {
-                              if (val == null || val.isEmpty) {
-                                return context.tr.addExpenseAmountRequired;
-                              }
-                              if (double.tryParse(val) == null) {
-                                return context.tr.addExpenseEnterValidAmount;
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Text(
-                          'EGP',
-                          style:
-                              AppTextStyles.bodyMedium(
-                                color: AppColors.yellow,
-                              ).copyWith(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                      ],
+                    child: TextFormField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: AppTextStyles.bodyMedium().copyWith(fontSize: 12.sp),
+                      decoration: _inputDecoration('0.00'),
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? context.tr.addExpenseAmountRequired
+                          : null,
                     ),
                   ),
                   SizedBox(height: 16.h),
-
-                  _buildLabel(context.tr.addExpenseExpenseTitleLabel),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseExpenseTitleLabel),
                   SizedBox(height: 10.h),
                   AddExpenseFieldContainer(
-                    focusNode: _expenseTitleFocus,
                     child: TextFormField(
                       controller: _expenseTitleController,
-                      focusNode: _expenseTitleFocus,
                       textAlignVertical: TextAlignVertical.center,
-                      style: AppTextStyles.bodyMedium().copyWith(
-                        fontSize: 12.sp,
-                      ),
-                      decoration: _inputDecoration(
-                        context.tr.addExpenseFieldHint,
-                      ),
+                      style: AppTextStyles.bodyMedium().copyWith(fontSize: 12.sp),
+                      decoration: _inputDecoration(context.tr.addExpenseFieldHint),
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? context.tr.addExpenseTitleRequired
+                          : null,
                     ),
                   ),
-                  SizedBox(height: 22.h),
-
-                  AddExpenseRequiredLabel(
-                    text: context.tr.addExpenseCategoryLabel,
-                  ),
-                  SizedBox(height: 12.h),
-                  BlocBuilder<CategoriesCubit, CategoriesState>(
-                    builder: (context, state) {
-                      if (state.status == CategoriesStatus.loading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (state.status == CategoriesStatus.failure) {
-                        return Text(
-                          state.failure?.message ?? 'Error',
-                          style: AppTextStyles.caption(
-                            color: AppColors.greyText,
-                          ),
-                        );
-                      }
-
-                      final list = state.items;
-                      if (list.isEmpty) return const SizedBox.shrink();
-                      final visible = list.take(4).toList();
-                      _selectedCategoryId ??= visible.first.id;
-
-                      return Row(
-                        children: List.generate(visible.length, (index) {
-                          final cat = visible[index];
-                          final selected = _selectedCategoryId == cat.id;
-                          return Expanded(
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                end: index == visible.length - 1 ? 0 : 10.w,
-                              ),
-                              child: AddExpenseCategoryTile(
-                                icon: Iconsax.category,
-                                label: cat.name,
-                                selected: selected,
-                                onTap: () => setState(() {
-                                  _selectedCategoryId = cat.id;
-                                }),
-                              ),
-                            ),
-                          );
-                        }),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 18.h),
-
-                  AddExpenseRequiredLabel(text: context.tr.addExpenseDateLabel),
+                  SizedBox(height: 16.h),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseDatePlaceholder),
                   SizedBox(height: 10.h),
                   InkWell(
-                    borderRadius: BorderRadius.circular(16.r),
                     onTap: _pickDate,
+                    borderRadius: BorderRadius.circular(14.r),
                     child: AddExpenseFieldContainer(
                       child: Row(
                         children: [
+                          Icon(Iconsax.calendar_1, size: 18.sp, color: AppColors.greyText),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: Text(
-                              _selectedDate != null
-                                  ? '${_selectedDate!.day.toString().padLeft(2, '0')} '
-                                        '${_monthShort(_selectedDate!.month)} '
-                                        '${_selectedDate!.year}'
-                                  : context.tr.addExpenseDatePlaceholder,
-                              style: AppTextStyles.bodyMedium(
-                                color: _selectedDate != null
-                                    ? AppColors.darkText
-                                    : AppColors.captionText,
-                              ).copyWith(fontSize: 12.sp),
+                              _selectedDate == null
+                                  ? context.tr.addExpenseDatePlaceholder
+                                  : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                              style: AppTextStyles.bodyMedium().copyWith(
+                                fontSize: 12.sp,
+                                color: AppColors.greyText,
+                              ),
                             ),
-                          ),
-                          Icon(
-                            Iconsax.calendar_1,
-                            size: 18.sp,
-                            color: AppColors.yellow,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 18.h),
-
-                  _buildLabel(context.tr.addExpenseNotesOptional),
+                  SizedBox(height: 16.h),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseNotesOptional),
                   SizedBox(height: 10.h),
                   AddExpenseFieldContainer(
-                    focusNode: _notesFocus,
                     child: TextFormField(
                       controller: _notesController,
-                      focusNode: _notesFocus,
-                      maxLines: 4,
-                      textAlignVertical: TextAlignVertical.top,
-                      style: AppTextStyles.bodyMedium().copyWith(
-                        fontSize: 12.sp,
-                      ),
-                      decoration: _inputDecoration(
-                        context.tr.addExpenseNotesHint,
-                      ),
+                      maxLines: 3,
+                      style: AppTextStyles.bodyMedium().copyWith(fontSize: 12.sp),
+                      decoration: _inputDecoration(context.tr.addExpenseNotesHint),
                     ),
                   ),
                   SizedBox(height: 18.h),
-
-                  AddExpenseRequiredLabel(
-                    text: context.tr.addExpenseAlreadyPaidQuestion,
-                  ),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseAlreadyPaidQuestion),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
@@ -742,10 +481,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                     ],
                   ),
                   SizedBox(height: 18.h),
-
-                  AddExpenseRequiredLabel(
-                    text: context.tr.addExpenseProofOfPurchaseLabel,
-                  ),
+                  AddExpenseRequiredLabel(text: context.tr.addExpenseProofOfPurchaseLabel),
                   SizedBox(height: 12.h),
                   InkWell(
                     borderRadius: BorderRadius.circular(18.r),
@@ -769,8 +505,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                           ),
                           SizedBox(height: 12.h),
                           Text(
-                            _proofFileName ??
-                                context.tr.addExpenseUploadReceiptOrInvoice,
+                            _proofFileName ?? context.tr.addExpenseUploadReceiptOrInvoice,
                             style: AppTextStyles.bodyMedium().copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
@@ -778,23 +513,15 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 6.h),
-                          Text(
-                            context.tr.addExpenseUploadFormats,
-                            style: AppTextStyles.caption(
-                              color: AppColors.captionText,
-                            ).copyWith(fontSize: 10.sp),
-                          ),
                         ],
                       ),
                     ),
                   ),
                   SizedBox(height: 18.h),
-
-                  BlocBuilder<AddRegularExpenseCubit, AddRegularExpenseState>(
+                  BlocBuilder<AddSupportExpenseCubit, AddSupportExpenseState>(
                     builder: (context, state) {
                       final loading =
-                          state.status == AddRegularExpenseStatus.loading;
+                          state.status == AddSupportExpenseStatus.loading;
                       return SizedBox(
                         width: double.infinity,
                         height: 52.h,
@@ -807,8 +534,8 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                                     return;
                                   }
 
-                                  final workspaceId = sl<WorkspaceIdStorage>()
-                                      .get();
+                                  final workspaceId =
+                                      sl<WorkspaceIdStorage>().get();
                                   if (workspaceId == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -820,10 +547,9 @@ class _AddExpenseViewState extends State<AddExpenseView> {
 
                                   final date = _selectedDate;
                                   final formattedDate = date == null
-                                      ? DateFormat(
-                                          'M/d/yyyy',
-                                        ).format(DateTime.now())
-                                      : DateFormat('M/d/yyyy').format(date);
+                                      ? DateFormat('yyyy-MM-dd')
+                                          .format(DateTime.now())
+                                      : DateFormat('yyyy-MM-dd').format(date);
 
                                   final attachment = (_proofFilePath != null)
                                       ? await MultipartFile.fromFile(
@@ -834,21 +560,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
 
                                   if (!context.mounted) return;
 
-                                  final categoryId = _selectedCategoryId ?? 6;
-
-                                  final childIds =
-                                      _selectedChildWorkspaceMemberIds.toList();
-                                  if (childIds.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('No child selected'),
-                                      ),
-                                    );
-                                    return;
-                                  }
-
-                                  final params = AddRegularExpenseParams(
-                                    childWorkspaceMemberIds: childIds,
+                                  final params = AddSupportExpenseParams(
                                     payerId: _payerIdController.text.trim(),
                                     payerName: _payerNameController.text.trim(),
                                     payeeId: _payeeIdController.text.trim(),
@@ -856,7 +568,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                                     currency: _currencyController.text.trim(),
                                     amount: _amountController.text.trim(),
                                     title: _expenseTitleController.text.trim(),
-                                    categoryId: categoryId,
+                                    categoryId: null,
                                     date: formattedDate,
                                     note: _notesController.text.trim().isEmpty
                                         ? null
@@ -865,10 +577,10 @@ class _AddExpenseViewState extends State<AddExpenseView> {
                                     attachment: attachment,
                                   );
 
-                                  context.read<AddRegularExpenseCubit>().submit(
-                                    workspaceId: workspaceId,
-                                    params: params,
-                                  );
+                                  context.read<AddSupportExpenseCubit>().submit(
+                                        workspaceId: workspaceId,
+                                        params: params,
+                                      );
                                 },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
@@ -899,47 +611,5 @@ class _AddExpenseViewState extends State<AddExpenseView> {
       ),
     );
   }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: AppTextStyles.bodyMedium().copyWith(
-        fontSize: 13.sp,
-        fontWeight: FontWeight.w700,
-        color: AppColors.darkText,
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: AppTextStyles.caption(
-        color: AppColors.captionText,
-      ).copyWith(fontSize: 12.sp),
-      border: InputBorder.none,
-      enabledBorder: InputBorder.none,
-      focusedBorder: InputBorder.none,
-      errorBorder: InputBorder.none,
-      isCollapsed: true,
-      contentPadding: EdgeInsetsDirectional.zero,
-    );
-  }
-
-  String _monthShort(int month) {
-    return const [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ][month - 1];
-  }
 }
+

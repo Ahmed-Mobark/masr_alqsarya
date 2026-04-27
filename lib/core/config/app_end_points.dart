@@ -117,6 +117,10 @@ class AppEndpoints {
       "workspaces/$workspaceId/regular-expenses";
   static String workspaceRegularExpenseDetails(int workspaceId, int expenseId) =>
       "workspaces/$workspaceId/regular-expenses/$expenseId";
+  static String workspaceSupportExpenses(int workspaceId) =>
+      "workspaces/$workspaceId/support-expenses";
+  static String workspaceSupportExpenseDetails(int workspaceId, int expenseId) =>
+      "workspaces/$workspaceId/support-expenses/$expenseId";
 
   // Categories
   static const String categories = "categories";

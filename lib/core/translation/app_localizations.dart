@@ -1216,6 +1216,12 @@ abstract class AppLocalizations {
   /// **'News'**
   String get newsTitle;
 
+  /// No description provided for @commonError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get commonError;
+
   /// No description provided for @expenseTitle.
   ///
   /// In en, this message translates to:
@@ -1245,6 +1251,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submitted By'**
   String get expenseSubmittedBy;
+
+  /// No description provided for @expenseSubmittedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted To'**
+  String get expenseSubmittedTo;
 
   /// No description provided for @expenseReferenceNumber.
   ///
@@ -1299,6 +1311,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Expense'**
   String get expenseAddExpense;
+
+  /// No description provided for @expenseNoDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses yet.'**
+  String get expenseNoDataTitle;
 
   /// No description provided for @invoiceTitle.
   ///
@@ -1390,6 +1408,12 @@ abstract class AppLocalizations {
   /// **'Both Children'**
   String get addExpenseChildBothChildren;
 
+  /// No description provided for @addExpenseChildAllChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'All Children'**
+  String get addExpenseChildAllChildren;
+
   /// No description provided for @addExpensePayerName.
   ///
   /// In en, this message translates to:
@@ -1459,7 +1483,7 @@ abstract class AppLocalizations {
   /// No description provided for @addExpenseNotesHint.
   ///
   /// In en, this message translates to:
-  /// **'note'**
+  /// **'Notes'**
   String get addExpenseNotesHint;
 
   /// No description provided for @addExpenseYesIPaidIt.
@@ -1479,6 +1503,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload receipt or invoice'**
   String get addExpenseUploadReceiptOrInvoice;
+
+  /// No description provided for @addExpensePickFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose photo from gallery'**
+  String get addExpensePickFromGallery;
+
+  /// No description provided for @addExpenseTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get addExpenseTakePhoto;
+
+  /// No description provided for @addExpensePickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file (PDF)'**
+  String get addExpensePickFile;
 
   /// No description provided for @addExpenseProofTooLarge.
   ///
@@ -1539,6 +1581,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount is required'**
   String get addExpenseAmountRequired;
+
+  /// No description provided for @addExpenseTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Title is required'**
+  String get addExpenseTitleRequired;
 
   /// No description provided for @addExpenseEnterValidAmount.
   ///

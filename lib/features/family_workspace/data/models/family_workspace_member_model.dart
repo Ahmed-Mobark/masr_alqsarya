@@ -21,7 +21,12 @@ class FamilyWorkspaceMemberModel {
 
     final first = (json['first_name'] ?? json['firstName'] ?? '').toString();
     final last = (json['last_name'] ?? json['lastName'] ?? '').toString();
-    final name = (json['name'] ?? json['full_name'] ?? '').toString();
+    final name = (json['display_name'] ??
+            json['name'] ??
+            json['full_name'] ??
+            json['fullName'] ??
+            '')
+        .toString();
 
     final fullName = (name.isNotEmpty)
         ? name
