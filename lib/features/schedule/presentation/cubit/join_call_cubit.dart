@@ -19,6 +19,21 @@ class JoinCallCubit extends Cubit<JoinCallState> {
     emit(const JoinCallState());
   }
 
+  String _errorMessageFromFailure(dynamic failure) {
+    final errors = failure.errors;
+    if (errors is Map && errors.isNotEmpty) {
+      final callErr = errors['call'];
+      if (callErr is List && callErr.isNotEmpty) {
+        return callErr.map((e) => e.toString()).join('\n');
+      }
+      if (callErr is String && callErr.trim().isNotEmpty) {
+        return callErr;
+      }
+    }
+    final msg = failure.message?.toString();
+    return (msg == null || msg.trim().isEmpty) ? 'unknown_error' : msg;
+  }
+
   Future<void> join(int callId) async {
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {
@@ -44,7 +59,7 @@ class JoinCallCubit extends Cubit<JoinCallState> {
     result.fold(
       (failure) => emit(state.copyWith(
         status: JoinCallStatus.failure,
-        error: failure.message,
+        error: _errorMessageFromFailure(failure),
         activeCallId: callId,
       )),
       (joined) async {

@@ -191,7 +191,7 @@ class _ScheduleBodyState extends State<_ScheduleBody> {
             if (state.status == JoinCallStatus.failure) {
               final msg = state.error == 'workspace_missing'
                   ? context.tr.scheduleErrorWorkspaceMissing
-                  : context.tr.scheduleJoinCallFailed;
+                  : (state.error ?? context.tr.scheduleJoinCallFailed);
               appToast(context: context, type: ToastType.error, message: msg);
             }
           },
