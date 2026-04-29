@@ -64,10 +64,10 @@ class _ChatViewState extends State<ChatView> {
     return BlocConsumer<ChatDetailCubit, ChatDetailState>(
       listenWhen: (prev, curr) =>
           ((prev.toneWarning != curr.toneWarning ||
-                      prev.toneSuggestedAlternative !=
-                          curr.toneSuggestedAlternative) &&
-                  curr.toneWarning != null &&
-                  curr.toneSuggestedAlternative != null) ||
+                  prev.toneSuggestedAlternative !=
+                      curr.toneSuggestedAlternative) &&
+              curr.toneWarning != null &&
+              curr.toneSuggestedAlternative != null) ||
           (prev.sendError != curr.sendError && curr.sendError != null) ||
           (prev.isSending && !curr.isSending && curr.sendError == null) ||
           (prev.attachmentFeedback != curr.attachmentFeedback &&
@@ -128,15 +128,15 @@ class _ChatViewState extends State<ChatView> {
             showDialog<void>(
               context: context,
               builder: (_) => AlertDialog(
-                title: const Text('تنبيه'),
+                title: Text(context.tr.chatBlockedAlertTitle),
                 content: Text(
-                  '${state.moderationBlockReason ?? 'ممنوع إرسال محتوى غير لائق.'}\n'
-                  'عدد التحذيرات: ${state.warningCount}',
+                  '${state.moderationBlockReason ?? context.tr.chatBlockedDefaultReason}\n'
+                  '${context.tr.chatBlockedWarningCount(state.warningCount)}',
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('حسنًا'),
+                    child: Text(context.tr.chatBlockedOk),
                   ),
                 ],
               ),
@@ -455,7 +455,7 @@ class _ChatViewState extends State<ChatView> {
                                     minimumSize: const Size(0, 34),
                                   ),
                                   child: Text(
-                                    'مسح',
+                                    context.tr.chatClearAttachments,
                                     style: AppTextStyles.caption(
                                       color: AppColors.greyText,
                                     ),
@@ -482,7 +482,7 @@ class _ChatViewState extends State<ChatView> {
                                   ? null
                                   : () => context
                                         .read<ChatDetailCubit>()
-                                        .pickImages(),
+                                        .pickMedia(),
                               icon: const Icon(
                                 Iconsax.gallery,
                                 color: AppColors.darkText,
@@ -620,7 +620,7 @@ class _ToneAssistantSheet extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Tone Assistant Intervention',
+                      context.tr.chatToneAssistantTitle,
                       style: AppTextStyles.heading2(),
                     ),
                   ),
@@ -640,7 +640,7 @@ class _ToneAssistantSheet extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Suggested Alternative',
+                context.tr.chatToneSuggestedAlternative,
                 style: AppTextStyles.body().copyWith(
                   color: AppColors.greyText,
                   fontWeight: FontWeight.w700,
@@ -677,9 +677,9 @@ class _ToneAssistantSheet extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () => onRephrase(suggestedAlternative),
-                  child: const Text(
-                    'REPHRASE MESSAGE',
-                    style: TextStyle(fontWeight: FontWeight.w800),
+                  child: Text(
+                    context.tr.chatToneRephraseMessage,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
               ),
@@ -818,7 +818,7 @@ class _ChatBubble extends StatelessWidget {
                                     const SizedBox(width: 6),
                                     Text(
                                       isImage
-                                          ? 'عرض'
+                                          ? context.tr.chatAttachmentViewAction
                                           : context
                                                 .tr
                                                 .chatAttachmentDownloadAction,
@@ -875,9 +875,9 @@ void _showImagePreview(BuildContext context, ChatAttachment attachment) {
                       'Authorization': 'Bearer $token',
                     'Accept': '*/*',
                   },
-                  errorBuilder: (_, __, ___) => Center(
+                  errorBuilder: (context, __, ___) => Center(
                     child: Text(
-                      'تعذر عرض الصورة',
+                      context.tr.chatImagePreviewFailed,
                       style: AppTextStyles.body(color: Colors.white),
                     ),
                   ),

@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:masr_al_qsariya/features/auth/domain/entities/pending_invitation.dart';
 import 'package:masr_al_qsariya/features/auth/domain/entities/workspace.dart';
 
 enum AuthAction {
   navigateToHome,
+  navigateToPendingInvitation,
   navigateToVerification,
   navigateToRoleOptions,
   navigateToLogin,
@@ -14,6 +16,11 @@ enum AuthAction {
   coPartnerInvited,
   childAdded,
   familyWorkspaceUpgraded,
+}
+
+enum VerificationFlow {
+  signUp,
+  login,
 }
 
 class AuthState extends Equatable {
@@ -38,6 +45,8 @@ class AuthState extends Equatable {
     this.resetCode,
     this.workspace,
     this.isLoadingWorkspace = false,
+    this.pendingInvitation,
+    this.verificationFlow,
     this.action,
   });
 
@@ -61,6 +70,8 @@ class AuthState extends Equatable {
   final String? resetCode;
   final Workspace? workspace;
   final bool isLoadingWorkspace;
+  final PendingInvitation? pendingInvitation;
+  final VerificationFlow? verificationFlow;
   final AuthAction? action;
 
   AuthState copyWith({
@@ -84,6 +95,8 @@ class AuthState extends Equatable {
     String? resetCode,
     Workspace? workspace,
     bool? isLoadingWorkspace,
+    PendingInvitation? pendingInvitation,
+    VerificationFlow? verificationFlow,
     AuthAction? action,
     bool clearSubmitError = false,
     bool clearAction = false,
@@ -115,6 +128,8 @@ class AuthState extends Equatable {
       resetCode: resetCode ?? this.resetCode,
       workspace: workspace ?? this.workspace,
       isLoadingWorkspace: isLoadingWorkspace ?? this.isLoadingWorkspace,
+      pendingInvitation: pendingInvitation ?? this.pendingInvitation,
+      verificationFlow: verificationFlow ?? this.verificationFlow,
       action: clearAction ? null : action ?? this.action,
     );
   }
@@ -141,6 +156,8 @@ class AuthState extends Equatable {
     resetCode,
     workspace,
     isLoadingWorkspace,
+    pendingInvitation,
+    verificationFlow,
     action,
   ];
 }

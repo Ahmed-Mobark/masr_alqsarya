@@ -79,6 +79,15 @@
   "authLastNameLabel": "Last Name",
   "authLastNameHint": "Doe",
   "authConfirmPasswordLabel": "Confirm Password",
+
+  "pendingInvitationTitle": "Family workspace invitation",
+  "pendingInvitationSubtitle": "You have a pending invitation. You can accept to join the workspace or reject it.",
+  "pendingInvitationWorkspaceLabel": "Workspace",
+  "pendingInvitationInvitedByLabel": "Invited by",
+  "pendingInvitationRoleLabel": "Role",
+  "pendingInvitationAccept": "Accept invitation",
+  "pendingInvitationReject": "Reject invitation",
+
   "authAgreeTermsPrefix": "Please agree to the ",
   "authTermsAndConditions": "Terms & Conditions",
   "authAgreeTermsSuffix": " to continue.",
@@ -540,5 +549,97 @@
   "rescheduleTitle": "Request Reschedule",
   "rescheduleSelectDate": "Select a new date",
   "rescheduleSelectTime": "Select Time",
-  "rescheduleSubmit": "REQUEST RESCHEDULE"
+  "rescheduleSubmit": "REQUEST RESCHEDULE",
+
+  "documentDetailsTitle": "Document",
+  "documentDetailsFileSummary": "File Summary",
+  "documentDetailsAddedBy": "Added By",
+  "documentDetailsDateAdded": "Date Added",
+  "documentDetailsVisibility": "Visibility",
+  "documentDetailsVisibilityBothParents": "Both Parents (Joint Access)",
+  "documentDetailsInfo": "Info",
+  "documentDetailsFileLabel": "File: {name}",
+  "@documentDetailsFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDetailsTypeLabel": "Type: {type}",
+  "@documentDetailsTypeLabel": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "documentDetailsSizeLabel": "Size: {size}",
+  "@documentDetailsSizeLabel": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "documentDetailsActions": "Document Actions",
+  "documentDetailsDownload": "Download",
+  "documentDetailsUpdatePermissions": "Update Permissions",
+  "documentDetailsActivityLog": "Activity Log",
+  "documentDetailsArchive": "Archive",
+
+  "documentDetailsVisibilityCount": "{canView} of {total}",
+  "@documentDetailsVisibilityCount": {
+    "placeholders": {
+      "canView": {},
+      "total": {}
+    }
+  },
+  "documentDetailsEvidence": "Evidence",
+  "documentDetailsNotEvidence": "Not Evidence",
+  "folderEmptyTitle": "No files yet",
+  "folderEmptySubtitle": "Files added to this folder will appear here",
+
+  "auditLogTitle": "Audit Log",
+  "auditLogMarkAsEvidence": "Mark as Evidence",
+  "auditLogEvidenceSubtitle": "Visible to legal counsel and court",
+  "auditLogActivityHistory": "Activity History",
+  "auditLogNoActivity": "No activity yet",
+  "auditLogLoadFailed": "Failed to load activity",
+  "auditLogDownload": "DOWNLOAD",
+  "auditLogActionUploaded": "Uploaded by {name}",
+  "@auditLogActionUploaded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionViewed": "Viewed by {name}",
+  "@auditLogActionViewed": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionDownloaded": "Downloaded by {name}",
+  "@auditLogActionDownloaded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionMarkedAsEvidence": "Marked as Evidence",
+  "auditLogActionPermissionChanged": "{name} changed permissions",
+  "@auditLogActionPermissionChanged": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+
+  "chatBlockedAlertTitle": "Warning",
+  "chatBlockedDefaultReason": "Sending inappropriate content is not allowed.",
+  "chatBlockedWarningCount": "Warnings: {count}",
+  "@chatBlockedWarningCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "chatBlockedOk": "OK",
+  "chatClearAttachments": "Clear",
+  "chatToneAssistantTitle": "Tone Assistant Intervention",
+  "chatToneSuggestedAlternative": "Suggested Alternative",
+  "chatToneRephraseMessage": "REPHRASE MESSAGE",
+  "chatAttachmentViewAction": "View",
+  "chatImagePreviewFailed": "Could not display the image"
 }

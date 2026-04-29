@@ -10,7 +10,9 @@ import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/forgot_password_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/pending_invitation_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/sign_up_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_bottom_link.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_divider.dart';
@@ -46,6 +48,20 @@ class LoginView extends StatelessWidget {
               sl<AppNavigator>().pushReplacement(screen: const MainNavView());
               context.read<AuthCubit>().clearAction();
               return;
+            case AuthAction.navigateToPendingInvitation:
+              final pending = state.pendingInvitation;
+              if (pending == null) return;
+              sl<AppNavigator>().pushReplacement(
+                screen: PendingInvitationView(pendingInvitation: pending),
+              );
+              context.read<AuthCubit>().clearAction();
+              return;
+            case AuthAction.navigateToVerification:
+              sl<AppNavigator>().pushReplacement(
+                screen: VerificationView(email: state.registeredEmail),
+              );
+              context.read<AuthCubit>().clearAction();
+              return;
             case AuthAction.navigateToSignUp:
               sl<AppNavigator>().push(screen: const SignUpView());
               context.read<AuthCubit>().clearAction();
@@ -55,7 +71,6 @@ class LoginView extends StatelessWidget {
               context.read<AuthCubit>().clearAction();
               return;
             case null:
-            case AuthAction.navigateToVerification:
             case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToLogin:
             case AuthAction.navigateToForgotPasswordOtp:

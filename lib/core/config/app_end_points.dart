@@ -56,8 +56,7 @@ class AppEndpoints {
   static String privateChatChannelName({
     required int workspaceId,
     required int chatId,
-  }) =>
-      'private-workspace.$workspaceId.chat.$chatId';
+  }) => 'private-workspace.$workspaceId.chat.$chatId';
 
   // Auth
   static const String authRegister = "auth/register";
@@ -88,6 +87,24 @@ class AppEndpoints {
     int attachmentId,
   ) =>
       "workspaces/$workspaceId/chats/$chatId/attachments/$attachmentId/download";
+  static String workspaceUploadedFiles(int workspaceId) =>
+      "workspaces/$workspaceId/uploaded-files";
+
+  static String workspaceUploadedFileDetail(int workspaceId, int assetId) =>
+      "workspaces/$workspaceId/uploaded-files/$assetId";
+
+  static String workspaceUploadedFilePermissions(
+    int workspaceId,
+    int assetId,
+  ) => "workspaces/$workspaceId/uploaded-files/$assetId/permissions";
+
+  static String workspaceUploadedFileActivity(
+    int workspaceId,
+    int assetId,
+  ) => "workspaces/$workspaceId/uploaded-files/$assetId/activity";
+
+  static String workspaceUploadedFileEvidence(int workspaceId, int assetId) =>
+      "workspaces/$workspaceId/uploaded-files/$assetId/evidence";
 
   // Calls
   static String workspaceCalls(int workspaceId) =>
@@ -111,16 +128,22 @@ class AppEndpoints {
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
   static const String addChild = "family-workspace/add-child";
   static const String familyWorkspaceMembers = "family-workspace/members";
+  static const String familyWorkspaceJoinByCode =
+      "family-workspace/invitations/respond";
 
   // Expenses
   static String workspaceRegularExpenses(int workspaceId) =>
       "workspaces/$workspaceId/regular-expenses";
-  static String workspaceRegularExpenseDetails(int workspaceId, int expenseId) =>
-      "workspaces/$workspaceId/regular-expenses/$expenseId";
+  static String workspaceRegularExpenseDetails(
+    int workspaceId,
+    int expenseId,
+  ) => "workspaces/$workspaceId/regular-expenses/$expenseId";
   static String workspaceSupportExpenses(int workspaceId) =>
       "workspaces/$workspaceId/support-expenses";
-  static String workspaceSupportExpenseDetails(int workspaceId, int expenseId) =>
-      "workspaces/$workspaceId/support-expenses/$expenseId";
+  static String workspaceSupportExpenseDetails(
+    int workspaceId,
+    int expenseId,
+  ) => "workspaces/$workspaceId/support-expenses/$expenseId";
 
   // Categories
   static const String categories = "categories";

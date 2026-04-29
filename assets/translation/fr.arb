@@ -79,6 +79,15 @@
   "authLastNameLabel": "Nom",
   "authLastNameHint": "Dupont",
   "authConfirmPasswordLabel": "Confirmer le mot de passe",
+
+  "pendingInvitationTitle": "Invitation à l’espace familial",
+  "pendingInvitationSubtitle": "Vous avez une invitation en attente. Vous pouvez accepter pour rejoindre l’espace ou la refuser.",
+  "pendingInvitationWorkspaceLabel": "Espace",
+  "pendingInvitationInvitedByLabel": "Invité par",
+  "pendingInvitationRoleLabel": "Rôle",
+  "pendingInvitationAccept": "Accepter l’invitation",
+  "pendingInvitationReject": "Refuser l’invitation",
+
   "authAgreeTermsPrefix": "Veuillez accepter les ",
   "authTermsAndConditions": "Conditions générales",
   "authAgreeTermsSuffix": " pour continuer.",
@@ -540,5 +549,97 @@
   "rescheduleTitle": "Demande de reprogrammation",
   "rescheduleSelectDate": "Sélectionnez une nouvelle date",
   "rescheduleSelectTime": "Sélectionner l'heure",
-  "rescheduleSubmit": "REPROGRAMMER"
+  "rescheduleSubmit": "REPROGRAMMER",
+
+  "documentDetailsTitle": "Document",
+  "documentDetailsFileSummary": "Résumé du fichier",
+  "documentDetailsAddedBy": "Ajouté par",
+  "documentDetailsDateAdded": "Date d'ajout",
+  "documentDetailsVisibility": "Visibilité",
+  "documentDetailsVisibilityBothParents": "Les deux parents (accès conjoint)",
+  "documentDetailsInfo": "Infos",
+  "documentDetailsFileLabel": "Fichier : {name}",
+  "@documentDetailsFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDetailsTypeLabel": "Type : {type}",
+  "@documentDetailsTypeLabel": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "documentDetailsSizeLabel": "Taille : {size}",
+  "@documentDetailsSizeLabel": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "documentDetailsActions": "Actions du document",
+  "documentDetailsDownload": "Télécharger",
+  "documentDetailsUpdatePermissions": "Modifier les permissions",
+  "documentDetailsActivityLog": "Journal d'activité",
+  "documentDetailsArchive": "Archiver",
+
+  "documentDetailsVisibilityCount": "{canView} sur {total}",
+  "@documentDetailsVisibilityCount": {
+    "placeholders": {
+      "canView": {},
+      "total": {}
+    }
+  },
+  "documentDetailsEvidence": "Preuve",
+  "documentDetailsNotEvidence": "Pas une preuve",
+  "folderEmptyTitle": "Aucun fichier pour le moment",
+  "folderEmptySubtitle": "Les fichiers ajoutés à ce dossier apparaîtront ici",
+
+  "auditLogTitle": "Journal d'audit",
+  "auditLogMarkAsEvidence": "Marquer comme preuve",
+  "auditLogEvidenceSubtitle": "Visible par le conseiller juridique et le tribunal",
+  "auditLogActivityHistory": "Historique d'activité",
+  "auditLogNoActivity": "Aucune activité pour le moment",
+  "auditLogLoadFailed": "Impossible de charger l'activité",
+  "auditLogDownload": "TÉLÉCHARGER",
+  "auditLogActionUploaded": "Téléversé par {name}",
+  "@auditLogActionUploaded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionViewed": "Consulté par {name}",
+  "@auditLogActionViewed": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionDownloaded": "Téléchargé par {name}",
+  "@auditLogActionDownloaded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionMarkedAsEvidence": "Marqué comme preuve",
+  "auditLogActionPermissionChanged": "{name} a modifié les permissions",
+  "@auditLogActionPermissionChanged": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+
+  "chatBlockedAlertTitle": "Avertissement",
+  "chatBlockedDefaultReason": "L'envoi de contenu inapproprié n'est pas autorisé.",
+  "chatBlockedWarningCount": "Avertissements : {count}",
+  "@chatBlockedWarningCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "chatBlockedOk": "OK",
+  "chatClearAttachments": "Effacer",
+  "chatToneAssistantTitle": "Intervention de l'assistant de ton",
+  "chatToneSuggestedAlternative": "Alternative suggérée",
+  "chatToneRephraseMessage": "REFORMULER LE MESSAGE",
+  "chatAttachmentViewAction": "Voir",
+  "chatImagePreviewFailed": "Impossible d'afficher l'image"
 }

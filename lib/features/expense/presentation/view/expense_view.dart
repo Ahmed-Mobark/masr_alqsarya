@@ -57,272 +57,285 @@ class _ExpenseViewState extends State<ExpenseView> {
         builder: (context) => Scaffold(
           backgroundColor: AppColors.scaffoldBg,
           appBar: AppBar(
-          backgroundColor: AppColors.scaffoldBg,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          leading: const SizedBox.shrink(),
-          leadingWidth: 0,
-          title: Text(
-            context.tr.expenseTitle,
-            style: AppTextStyles.heading2().copyWith(fontSize: 18.sp),
-          ),
-          centerTitle: true,
-          actions: [
-            Padding(
-              padding: EdgeInsetsDirectional.only(end: 20.w),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(999.r),
-                onTap: () async {
-                  final screen = _selectedTab == 0
-                      ? const AddExpenseView()
-                      : const AddSupportExpenseView();
-                  final changed = await Navigator.of(context).push(
-                    AppPageRoute.build(
-                      screen: screen,
-                      animation: NavAnimation.fade,
+            backgroundColor: AppColors.scaffoldBg,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            leading: const SizedBox.shrink(),
+            leadingWidth: 0,
+            title: Text(
+              context.tr.expenseTitle,
+              style: AppTextStyles.heading2().copyWith(fontSize: 18.sp),
+            ),
+            centerTitle: true,
+            actions: [
+              Padding(
+                padding: EdgeInsetsDirectional.only(end: 20.w),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(999.r),
+                  onTap: () async {
+                    final screen = _selectedTab == 0
+                        ? const AddExpenseView()
+                        : const AddSupportExpenseView();
+                    final changed = await Navigator.of(context).push(
+                      AppPageRoute.build(
+                        screen: screen,
+                        animation: NavAnimation.fade,
+                      ),
+                    );
+                    if (!context.mounted) return;
+                    if (changed != true) return;
+                    final id = _workspaceId;
+                    if (id == null) return;
+                    if (_selectedTab == 0) {
+                      context.read<RegularExpensesCubit>().load(
+                        workspaceId: id,
+                      );
+                    } else {
+                      context.read<SupportExpensesCubit>().load(
+                        workspaceId: id,
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: 32.w,
+                    height: 32.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.primary, width: 1.w),
                     ),
-                  );
-                  if (!context.mounted) return;
-                  if (changed != true) return;
-                  final id = _workspaceId;
-                  if (id == null) return;
-                  if (_selectedTab == 0) {
-                    context.read<RegularExpensesCubit>().load(workspaceId: id);
-                  } else {
-                    context.read<SupportExpensesCubit>().load(workspaceId: id);
-                  }
-                },
-                child: Container(
-                  width: 32.w,
-                  height: 32.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.primary, width: 1.w),
-                  ),
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Iconsax.add,
-                    size: 18.sp,
-                    color: AppColors.primary,
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Iconsax.add,
+                      size: 18.sp,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
           ),
           body: Column(
-          children: [
-            SizedBox(height: 10.h),
-            Padding(
-              padding: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _ExpenseTab(
-                      label: context.tr.expenseRegularExpense,
-                      isSelected: _selectedTab == 0,
-                      onTap: () {
-                        setState(() => _selectedTab = 0);
-                        final id = _workspaceId;
-                        if (id == null) return;
-                        context.read<RegularExpensesCubit>().load(workspaceId: id);
-                      },
+            children: [
+              SizedBox(height: 10.h),
+              Padding(
+                padding: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _ExpenseTab(
+                        label: context.tr.expenseRegularExpense,
+                        isSelected: _selectedTab == 0,
+                        onTap: () {
+                          setState(() => _selectedTab = 0);
+                          final id = _workspaceId;
+                          if (id == null) return;
+                          context.read<RegularExpensesCubit>().load(
+                            workspaceId: id,
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 18.w),
-                  Expanded(
-                    child: _ExpenseTab(
-                      label: context.tr.expenseSupportPayment,
-                      isSelected: _selectedTab == 1,
-                      onTap: () {
-                        setState(() => _selectedTab = 1);
-                        final id = _workspaceId;
-                        if (id == null) return;
-                        context.read<SupportExpensesCubit>().load(workspaceId: id);
-                      },
+                    SizedBox(width: 18.w),
+                    Expanded(
+                      child: _ExpenseTab(
+                        label: context.tr.expenseSupportPayment,
+                        isSelected: _selectedTab == 1,
+                        onTap: () {
+                          setState(() => _selectedTab = 1);
+                          final id = _workspaceId;
+                          if (id == null) return;
+                          context.read<SupportExpensesCubit>().load(
+                            workspaceId: id,
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 18.h),
-            // Expense list
-            Expanded(
-              child: _selectedTab == 0
-                  ? BlocBuilder<RegularExpensesCubit, RegularExpensesState>(
-                      builder: (context, state) {
-                        if (_workspaceId == null) {
-                          return Center(
-                            child: Text(
-                              'Workspace not found',
-                              style: AppTextStyles.bodyMedium(
-                                color: AppColors.greyText,
+              SizedBox(height: 18.h),
+              // Expense list
+              Expanded(
+                child: _selectedTab == 0
+                    ? BlocBuilder<RegularExpensesCubit, RegularExpensesState>(
+                        builder: (context, state) {
+                          if (_workspaceId == null) {
+                            return Center(
+                              child: Text(
+                                'Workspace not found',
+                                style: AppTextStyles.bodyMedium(
+                                  color: AppColors.greyText,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                        if (state.status == RegularExpensesStatus.loading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (state.status == RegularExpensesStatus.failure) {
-                          return Center(
-                            child: Text(
-                              state.failure?.message ?? 'Error',
-                              style: AppTextStyles.bodyMedium(
-                                color: AppColors.greyText,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-                        if (state.items.isEmpty) {
-                          return Center(
-                            child: Padding(
-                              padding:
-                                  EdgeInsetsDirectional.symmetric(horizontal: 28.w),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/empty.png',
-                                    width: 220.w,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(height: 14.h),
-                                  Text(
-                                    context.tr.expenseNoDataTitle,
-                                    style: AppTextStyles.bodyMedium(
-                                      color: AppColors.greyText,
-                                    ).copyWith(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        return RefreshIndicator(
-                          color: AppColors.yellow,
-                          backgroundColor: AppColors.background,
-                          onRefresh: () async {
-                            final id = _workspaceId;
-                            if (id == null) return;
-                            await context.read<RegularExpensesCubit>().load(
-                              workspaceId: id,
                             );
-                          },
-                          child: ListView.separated(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: EdgeInsetsDirectional.symmetric(
-                              horizontal: 20.w,
-                            ),
-                            itemCount: state.items.length,
-                            separatorBuilder: (_, __) => SizedBox(height: 14.h),
-                            itemBuilder: (context, index) {
-                              final expense = state.items[index];
-                              return _RegularExpenseCard(
-                                expense: expense,
-                                workspaceId: _workspaceId!,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    )
-                  : BlocBuilder<SupportExpensesCubit, SupportExpensesState>(
-                      builder: (context, state) {
-                        if (_workspaceId == null) {
-                          return Center(
-                            child: Text(
-                              'Workspace not found',
-                              style: AppTextStyles.bodyMedium(
-                                color: AppColors.greyText,
+                          }
+                          if (state.status == RegularExpensesStatus.loading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (state.status == RegularExpensesStatus.failure) {
+                            return Center(
+                              child: Text(
+                                state.failure?.message ?? 'Error',
+                                style: AppTextStyles.bodyMedium(
+                                  color: AppColors.greyText,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                          );
-                        }
-                        if (state.status == SupportExpensesStatus.loading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (state.status == SupportExpensesStatus.failure) {
-                          return Center(
-                            child: Text(
-                              state.failure?.message ?? 'Error',
-                              style: AppTextStyles.bodyMedium(
-                                color: AppColors.greyText,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-                        if (state.items.isEmpty) {
-                          return Center(
-                            child: Padding(
-                              padding:
-                                  EdgeInsetsDirectional.symmetric(horizontal: 28.w),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/empty.png',
-                                    width: 220.w,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(height: 14.h),
-                                  Text(
-                                    context.tr.expenseNoDataTitle,
-                                    style: AppTextStyles.bodyMedium(
-                                      color: AppColors.greyText,
-                                    ).copyWith(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w600,
+                            );
+                          }
+                          if (state.items.isEmpty) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.symmetric(
+                                  horizontal: 28.w,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/empty.png',
+                                      width: 220.w,
+                                      fit: BoxFit.contain,
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                                    SizedBox(height: 14.h),
+                                    Text(
+                                      context.tr.expenseNoDataTitle,
+                                      style:
+                                          AppTextStyles.bodyMedium(
+                                            color: AppColors.greyText,
+                                          ).copyWith(
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }
-
-                        // TODO: implement SupportExpense card UI once API contract confirmed.
-                        return RefreshIndicator(
-                          color: AppColors.yellow,
-                          backgroundColor: AppColors.background,
-                          onRefresh: () async {
-                            final id = _workspaceId;
-                            if (id == null) return;
-                            await context.read<SupportExpensesCubit>().load(
-                                  workspaceId: id,
-                                );
-                          },
-                          child: ListView.separated(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: EdgeInsetsDirectional.symmetric(
-                              horizontal: 20.w,
-                            ),
-                            itemCount: state.items.length,
-                            separatorBuilder: (_, __) => SizedBox(height: 14.h),
-                            itemBuilder: (context, index) {
-                              final expense = state.items[index];
-                              return _SupportExpenseCard(
-                                expense: expense,
-                                workspaceId: _workspaceId!,
+                            );
+                          }
+                          return RefreshIndicator(
+                            color: AppColors.yellow,
+                            backgroundColor: AppColors.background,
+                            onRefresh: () async {
+                              final id = _workspaceId;
+                              if (id == null) return;
+                              await context.read<RegularExpensesCubit>().load(
+                                workspaceId: id,
                               );
                             },
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
+                            child: ListView.separated(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: EdgeInsetsDirectional.symmetric(
+                                horizontal: 20.w,
+                              ),
+                              itemCount: state.items.length,
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: 14.h),
+                              itemBuilder: (context, index) {
+                                final expense = state.items[index];
+                                return _RegularExpenseCard(
+                                  expense: expense,
+                                  workspaceId: _workspaceId!,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      )
+                    : BlocBuilder<SupportExpensesCubit, SupportExpensesState>(
+                        builder: (context, state) {
+                          if (_workspaceId == null) {
+                            return Center(
+                              child: Text(
+                                'Workspace not found',
+                                style: AppTextStyles.bodyMedium(
+                                  color: AppColors.greyText,
+                                ),
+                              ),
+                            );
+                          }
+                          if (state.status == SupportExpensesStatus.loading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (state.status == SupportExpensesStatus.failure) {
+                            return Center(
+                              child: Text(
+                                state.failure?.message ?? 'Error',
+                                style: AppTextStyles.bodyMedium(
+                                  color: AppColors.greyText,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+                          if (state.items.isEmpty) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.symmetric(
+                                  horizontal: 28.w,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/empty.png',
+                                      width: 220.w,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    SizedBox(height: 14.h),
+                                    Text(
+                                      context.tr.expenseNoDataTitle,
+                                      style:
+                                          AppTextStyles.bodyMedium(
+                                            color: AppColors.greyText,
+                                          ).copyWith(
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                          return RefreshIndicator(
+                            color: AppColors.yellow,
+                            backgroundColor: AppColors.background,
+                            onRefresh: () async {
+                              final id = _workspaceId;
+                              if (id == null) return;
+                              await context.read<SupportExpensesCubit>().load(
+                                workspaceId: id,
+                              );
+                            },
+                            child: ListView.separated(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: EdgeInsetsDirectional.symmetric(
+                                horizontal: 20.w,
+                              ),
+                              itemCount: state.items.length,
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: 14.h),
+                              itemBuilder: (context, index) {
+                                final expense = state.items[index];
+                                return _SupportExpenseCard(
+                                  expense: expense,
+                                  workspaceId: _workspaceId!,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
           ),
         ),
       ),
@@ -402,7 +415,8 @@ class _SupportExpenseCard extends StatelessWidget {
                       _KeyValue(
                         label: context.tr.addExpenseCategoryLabel,
                         value:
-                            (expense.categoryName ?? expense.categoryId.toString()),
+                            (expense.categoryName ??
+                            expense.categoryId.toString()),
                       ),
                       SizedBox(height: 12.h),
                       _KeyValue(
@@ -461,7 +475,9 @@ class _SupportExpenseCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 InkWell(
-                  onTap: (expense.receiptUrl == null || expense.receiptUrl!.isEmpty)
+                  onTap:
+                      (expense.receiptUrl == null ||
+                          expense.receiptUrl!.isEmpty)
                       ? null
                       : () async {
                           final uri = Uri.tryParse(expense.receiptUrl!);

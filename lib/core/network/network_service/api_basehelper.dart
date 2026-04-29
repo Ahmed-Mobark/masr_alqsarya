@@ -107,7 +107,13 @@ class ApiBaseHelper {
       String? token = sl<Storage>().getToken();
       if(token != null) {dio.options.headers['Authorization'] = 'Bearer $token';}
       final response = await request();
-      return response.data!;
+      final data = response.data;
+      if (data == null) {
+        // Common for 204 No Content endpoints (e.g. logout).
+        if (null is T) return null as T;
+        throw AppException('Empty response');
+      }
+      return data;
     } on DioException catch (e) {
       log(
         'DioException error: ${e.type} - ${e.message} '

@@ -9,8 +9,10 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/pending_invitation_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/role_options_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_back_button.dart';
+import 'package:masr_al_qsariya/features/nav_bar/presentation/view/main_nav_view.dart';
 
 class VerificationView extends StatefulWidget {
   const VerificationView({super.key, this.email});
@@ -118,6 +120,20 @@ class _VerificationViewState extends State<VerificationView> {
                 child: const RoleOptionsView(),
               ),
             );
+            context.read<AuthCubit>().clearAction();
+          }
+
+          if (state.action == AuthAction.navigateToPendingInvitation) {
+            final pending = state.pendingInvitation;
+            if (pending == null) return;
+            sl<AppNavigator>().pushAndRemoveUntil(
+              screen: PendingInvitationView(pendingInvitation: pending),
+            );
+            context.read<AuthCubit>().clearAction();
+          }
+
+          if (state.action == AuthAction.navigateToHome) {
+            sl<AppNavigator>().pushAndRemoveUntil(screen: const MainNavView());
             context.read<AuthCubit>().clearAction();
           }
         },

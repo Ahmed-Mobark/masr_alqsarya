@@ -5,7 +5,7 @@ class AppFont {
   static String fontFamily = "ReadexPro";
 
   static void setLocale(String langCode) {
-    fontFamily = langCode == 'ar' ? 'Rubik' : 'ReadexPro';
+    fontFamily = langCode == 'ar' ? 'Almarai' : 'ReadexPro';
   }
 
   static const FontWeight extraLight = FontWeight.w200;

@@ -9,11 +9,13 @@ import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/core/storage/models/local_user.dart';
 import 'package:masr_al_qsariya/features/auth/domain/entities/login_response.dart';
+import 'package:masr_al_qsariya/features/auth/domain/entities/pending_invitation.dart';
 import 'package:masr_al_qsariya/features/auth/domain/entities/workspace.dart';
 import 'package:masr_al_qsariya/core/utils/validator.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/get_profile_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/join_workspace_by_code_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
@@ -43,6 +45,7 @@ class AuthCubit extends Cubit<AuthState> {
     required ResetPasswordUseCase resetPasswordUseCase,
     required GetWorkspaceUseCase getWorkspaceUseCase,
     required UpgradeWorkspaceToFamilyUseCase upgradeWorkspaceToFamilyUseCase,
+    required JoinWorkspaceByCodeUseCase joinWorkspaceByCodeUseCase,
     required Storage storage,
     required WorkspaceIdStorage workspaceIdStorage,
     required RealtimeService realtimeService,
@@ -59,6 +62,7 @@ class AuthCubit extends Cubit<AuthState> {
         _resetPasswordUseCase = resetPasswordUseCase,
         _getWorkspaceUseCase = getWorkspaceUseCase,
         _upgradeWorkspaceToFamilyUseCase = upgradeWorkspaceToFamilyUseCase,
+        _joinWorkspaceByCodeUseCase = joinWorkspaceByCodeUseCase,
         _storage = storage,
         _workspaceIdStorage = workspaceIdStorage,
         _realtimeService = realtimeService,
@@ -77,9 +81,22 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase _resetPasswordUseCase;
   final GetWorkspaceUseCase _getWorkspaceUseCase;
   final UpgradeWorkspaceToFamilyUseCase _upgradeWorkspaceToFamilyUseCase;
+  final JoinWorkspaceByCodeUseCase _joinWorkspaceByCodeUseCase;
   final Storage _storage;
   final WorkspaceIdStorage _workspaceIdStorage;
   final RealtimeService _realtimeService;
+
+  void setPendingInvitation(PendingInvitation invitation) {
+    emit(state.copyWith(pendingInvitation: invitation));
+  }
+
+  Future<void> _clearAuthCacheAndDisconnect() async {
+    await _storage.deleteToken();
+    await _storage.deleteUser();
+    await _storage.deleteSelectedRole();
+    await _workspaceIdStorage.delete();
+    await _realtimeService.disconnect();
+  }
 
   Future<void> _cacheUserProfile() async {
     final result = await _getProfileUseCase();
@@ -202,13 +219,50 @@ class AuthCubit extends Cubit<AuthState> {
       await _storage.storeToken(token: data.token!);
     }
     await _cacheUserProfile();
+
+    final loginEmail = loginEmailController.text.trim();
+    if (!data.isVerified) {
+      // Send OTP then navigate to verification screen.
+      final resend = await _resendCodeUseCase(loginEmail);
+      final resendFailure = resend.fold<Failure?>((f) => f, (_) => null);
+      if (resendFailure != null) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            submitError: resendFailure.message,
+          ),
+        );
+        return;
+      }
+
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          registeredEmail: loginEmail,
+          pendingInvitation: data.pendingInvitation,
+          verificationFlow: VerificationFlow.login,
+          action: AuthAction.navigateToVerification,
+        ),
+      );
+      return;
+    }
+
+    final PendingInvitation? pending = data.pendingInvitation;
+    if (data.hasPendingInvitations &&
+        pending != null &&
+        pending.invitationCode.trim().isNotEmpty) {
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          pendingInvitation: pending,
+          action: AuthAction.navigateToPendingInvitation,
+        ),
+      );
+      return;
+    }
+
     await _persistFirstWorkspaceAfterAuth();
-    emit(
-      state.copyWith(
-        isSubmitting: false,
-        action: AuthAction.navigateToHome,
-      ),
-    );
+    emit(state.copyWith(isSubmitting: false, action: AuthAction.navigateToHome));
   }
 
   Future<void> _persistFirstWorkspaceAfterAuth() async {
@@ -268,6 +322,7 @@ class AuthCubit extends Cubit<AuthState> {
             isSubmitting: false,
             registeredEmail: data.email,
             registerMessage: data.message,
+            verificationFlow: VerificationFlow.signUp,
             action: AuthAction.navigateToVerification,
           ),
         );
@@ -299,7 +354,29 @@ class AuthCubit extends Cubit<AuthState> {
         if (data.token.isNotEmpty) {
           _storage.storeToken(token: data.token);
         }
-        _cacheUserProfile().whenComplete(() {
+        _cacheUserProfile().whenComplete(() async {
+          final flow = state.verificationFlow;
+          if (flow == VerificationFlow.login) {
+            final pending = state.pendingInvitation;
+            if (pending != null && pending.invitationCode.trim().isNotEmpty) {
+              emit(
+                state.copyWith(
+                  isSubmitting: false,
+                  action: AuthAction.navigateToPendingInvitation,
+                ),
+              );
+              return;
+            }
+            await _persistFirstWorkspaceAfterAuth();
+            emit(
+              state.copyWith(
+                isSubmitting: false,
+                action: AuthAction.navigateToHome,
+              ),
+            );
+            return;
+          }
+
           emit(
             state.copyWith(
               isSubmitting: false,
@@ -335,11 +412,7 @@ class AuthCubit extends Cubit<AuthState> {
     await _logoutUseCase();
 
     // Always clear cache regardless of API result
-    await _storage.deleteToken();
-    await _storage.deleteUser();
-    await _storage.deleteSelectedRole();
-    await _workspaceIdStorage.delete();
-    await _realtimeService.disconnect();
+    await _clearAuthCacheAndDisconnect();
 
     emit(
       state.copyWith(
@@ -347,6 +420,35 @@ class AuthCubit extends Cubit<AuthState> {
         action: AuthAction.navigateToLogin,
       ),
     );
+  }
+
+  Future<void> respondToPendingInvitation({required bool accept}) async {
+    final pending = state.pendingInvitation;
+    if (pending == null) return;
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    final result = await _joinWorkspaceByCodeUseCase(
+      JoinWorkspaceByCodeParams(
+        invitationCode: pending.invitationCode,
+        status: accept ? 'accept' : 'reject',
+      ),
+    );
+
+    final failure = result.fold<Failure?>((f) => f, (_) => null);
+    if (failure != null) {
+      emit(state.copyWith(isSubmitting: false, submitError: failure.message));
+      return;
+    }
+
+    if (!accept) {
+      await _clearAuthCacheAndDisconnect();
+      emit(state.copyWith(isSubmitting: false, action: AuthAction.navigateToLogin));
+      return;
+    }
+
+    await _persistFirstWorkspaceAfterAuth();
+    emit(state.copyWith(isSubmitting: false, action: AuthAction.navigateToHome));
   }
 
   Future<void> submitUpgradeToFamily() async {

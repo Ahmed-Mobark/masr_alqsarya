@@ -11,6 +11,7 @@ import 'package:masr_al_qsariya/features/auth/domain/repositories/auth_repositor
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/join_workspace_by_code_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
@@ -116,6 +117,15 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
   Future<Either<Failure, void>> upgradeWorkspaceToFamily() {
     return handleEither(() async {
       await _remote.upgradeWorkspaceToFamily();
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> joinWorkspaceByCode(
+    JoinWorkspaceByCodeParams params,
+  ) {
+    return handleEither(() async {
+      await _remote.joinWorkspaceByCode(params);
     });
   }
 }

@@ -9,6 +9,7 @@ import 'package:masr_al_qsariya/features/auth/data/models/workspace_model.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/join_workspace_by_code_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
@@ -28,6 +29,7 @@ abstract class AuthRemoteDataSource {
   Future<void> inviteCoPartner(InviteCoPartnerParams params);
   Future<void> addChild(AddChildParams params);
   Future<void> upgradeWorkspaceToFamily();
+  Future<void> joinWorkspaceByCode(JoinWorkspaceByCodeParams params);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -131,7 +133,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<void> logout() async {
-    await _api.post<Map<String, dynamic>>(url: AppEndpoints.authLogout);
+    await _api.post<dynamic>(url: AppEndpoints.authLogout);
   }
 
   @override
@@ -184,6 +186,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'email': params.email,
         'phone': params.phone,
         'date_of_birth': params.dateOfBirth,
+      }),
+    );
+  }
+
+  @override
+  Future<void> joinWorkspaceByCode(JoinWorkspaceByCodeParams params) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.familyWorkspaceJoinByCode,
+      formData: FormData.fromMap({
+        'invitation_code': params.invitationCode,
+        'status': params.status,
       }),
     );
   }

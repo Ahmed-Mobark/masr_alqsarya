@@ -72,7 +72,7 @@ class Validator {
       return context.tr.errorFieldRequired;
     }
     if (value.length < 8 ||
-        !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-_+=<>.,;:]).{8,}$')
+        !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$')
             .hasMatch(value)) {
       return context.tr.errorInvalidPassword;
     }

@@ -13,6 +13,7 @@ import 'package:masr_al_qsariya/features/schedule/schedule_inj.dart';
 import 'package:masr_al_qsariya/features/expense/expense_inj.dart';
 import 'package:masr_al_qsariya/features/categories/categories_inj.dart';
 import 'package:masr_al_qsariya/features/family_workspace/family_workspace_inj.dart';
+import 'package:masr_al_qsariya/features/documents/documents_inj.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt sl = GetIt.instance;
@@ -29,6 +30,7 @@ Future<void> init() async {
   await initScheduleInjection(sl);
   await initExpenseInjection(sl);
   await initCategoriesInjection(sl);
+  await initDocumentsInjection(sl);
   await initFamilyWorkspaceInjection(sl);
   await initNavBarInjection(sl);
   initNavigationInjection(sl);

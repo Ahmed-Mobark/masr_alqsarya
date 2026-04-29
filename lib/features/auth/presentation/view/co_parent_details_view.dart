@@ -47,6 +47,7 @@ class CoParentDetailsView extends StatelessWidget {
               return;
             case null:
             case AuthAction.navigateToHome:
+            case AuthAction.navigateToPendingInvitation:
             case AuthAction.navigateToVerification:
             case AuthAction.navigateToRoleOptions:
             case AuthAction.navigateToLogin:

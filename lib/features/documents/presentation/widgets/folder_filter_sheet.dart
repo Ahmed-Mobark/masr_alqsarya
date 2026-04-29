@@ -26,14 +26,14 @@ class FolderFilterResult {
 }
 
 class FolderFilterSheet extends StatefulWidget {
-  const FolderFilterSheet({
-    super.key,
-    this.initial,
-  });
+  const FolderFilterSheet({super.key, this.initial});
 
   final FolderFilterResult? initial;
 
-  static Future<FolderFilterResult?> show(BuildContext context, {FolderFilterResult? initial}) {
+  static Future<FolderFilterResult?> show(
+    BuildContext context, {
+    FolderFilterResult? initial,
+  }) {
     return showModalBottomSheet<FolderFilterResult>(
       context: context,
       isScrollControlled: true,
@@ -58,7 +58,9 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(text: widget.initial?.search ?? '');
+    _searchController = TextEditingController(
+      text: widget.initial?.search ?? '',
+    );
     _selectedType = widget.initial?.type;
     _selectedSort = widget.initial?.sort ?? 'newest';
     _evidenceOnly = widget.initial?.evidenceOnly ?? false;
@@ -119,7 +121,6 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
               surface: AppColors.background,
               onSurface: AppColors.darkText,
             ),
-            dialogBackgroundColor: AppColors.background,
             datePickerTheme: DatePickerThemeData(
               backgroundColor: AppColors.background,
               headerBackgroundColor: AppColors.background,
@@ -133,10 +134,9 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
               ),
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.yellow,
-              ),
+              style: TextButton.styleFrom(foregroundColor: AppColors.yellow),
             ),
+            dialogTheme: DialogThemeData(backgroundColor: AppColors.background),
           ),
           child: child!,
         );
@@ -160,7 +160,6 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
               surface: AppColors.background,
               onSurface: AppColors.darkText,
             ),
-            dialogBackgroundColor: AppColors.background,
             datePickerTheme: DatePickerThemeData(
               backgroundColor: AppColors.background,
               headerBackgroundColor: AppColors.background,
@@ -174,10 +173,9 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
               ),
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.yellow,
-              ),
+              style: TextButton.styleFrom(foregroundColor: AppColors.yellow),
             ),
+            dialogTheme: DialogThemeData(backgroundColor: AppColors.background),
           ),
           child: child!,
         );
@@ -218,15 +216,17 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
               children: [
                 Text(
                   context.tr.newsFilter,
-                  style: AppTextStyles.heading2(color: AppColors.darkText)
-                      .copyWith(fontSize: 20.sp),
+                  style: AppTextStyles.heading2(
+                    color: AppColors.darkText,
+                  ).copyWith(fontSize: 20.sp),
                 ),
                 GestureDetector(
                   onTap: _reset,
                   child: Text(
                     context.tr.newsResetFilters,
-                    style: AppTextStyles.bodyMedium(color: AppColors.primary)
-                        .copyWith(fontSize: 14.sp),
+                    style: AppTextStyles.bodyMedium(
+                      color: AppColors.primary,
+                    ).copyWith(fontSize: 14.sp),
                   ),
                 ),
               ],
@@ -243,18 +243,25 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                   SizedBox(height: 10.h),
                   TextField(
                     controller: _searchController,
-                    style: AppTextStyles.body(color: AppColors.darkText)
-                        .copyWith(fontSize: 14.sp),
+                    style: AppTextStyles.body(
+                      color: AppColors.darkText,
+                    ).copyWith(fontSize: 14.sp),
                     decoration: InputDecoration(
                       hintText: context.tr.newsSearchHint,
-                      hintStyle: AppTextStyles.body(color: AppColors.greyText)
-                          .copyWith(fontSize: 14.sp),
-                      prefixIcon: Icon(Iconsax.search_normal,
-                          color: AppColors.greyText, size: 20.sp),
+                      hintStyle: AppTextStyles.body(
+                        color: AppColors.greyText,
+                      ).copyWith(fontSize: 14.sp),
+                      prefixIcon: Icon(
+                        Iconsax.search_normal,
+                        color: AppColors.greyText,
+                        size: 20.sp,
+                      ),
                       filled: true,
                       fillColor: AppColors.inputBg,
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18.r),
                         borderSide: BorderSide.none,
@@ -265,7 +272,10 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18.r),
-                        borderSide: BorderSide(color: AppColors.primary, width: 1.2),
+                        borderSide: BorderSide(
+                          color: AppColors.primary,
+                          width: 1.2,
+                        ),
                       ),
                     ),
                   ),
@@ -345,7 +355,8 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                         child: _CheckLine(
                           label: context.tr.documentsAddedByParentA,
                           checked: _addedBy.contains('parentA'),
-                          onTap: () => setState(() => _toggleAddedBy('parentA')),
+                          onTap: () =>
+                              setState(() => _toggleAddedBy('parentA')),
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -353,7 +364,8 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                         child: _CheckLine(
                           label: context.tr.documentsAddedByParentB,
                           checked: _addedBy.contains('parentB'),
-                          onTap: () => setState(() => _toggleAddedBy('parentB')),
+                          onTap: () =>
+                              setState(() => _toggleAddedBy('parentB')),
                         ),
                       ),
                     ],
@@ -373,7 +385,8 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                         child: _CheckLine(
                           label: context.tr.documentsAddedByMediator,
                           checked: _addedBy.contains('mediator'),
-                          onTap: () => setState(() => _toggleAddedBy('mediator')),
+                          onTap: () =>
+                              setState(() => _toggleAddedBy('mediator')),
                         ),
                       ),
                     ],
@@ -390,7 +403,12 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                         ),
                       ),
                       SizedBox(width: 12.w),
-                      Text('-', style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
+                      Text(
+                        '-',
+                        style: AppTextStyles.bodyMedium(
+                          color: AppColors.greyText,
+                        ),
+                      ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: _DateField(
@@ -424,11 +442,12 @@ class _FolderFilterSheetState extends State<FolderFilterSheet> {
                   ),
                   child: Text(
                     context.tr.newsApplyFilters,
-                    style: AppTextStyles.bodyMedium(color: AppColors.darkText).copyWith(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
-                    ),
+                    style: AppTextStyles.bodyMedium(color: AppColors.darkText)
+                        .copyWith(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
                   ),
                 ),
               ),
@@ -456,7 +475,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: AppTextStyles.bodyMedium(color: AppColors.darkText).copyWith(fontSize: 15.sp),
+      style: AppTextStyles.bodyMedium(
+        color: AppColors.darkText,
+      ).copyWith(fontSize: 15.sp),
     );
   }
 }
@@ -465,7 +486,11 @@ class _Chip extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _Chip({required this.label, required this.selected, required this.onTap});
+  const _Chip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -474,7 +499,9 @@ class _Chip extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.background,
+          color: selected
+              ? AppColors.primary.withValues(alpha: 0.15)
+              : AppColors.background,
           borderRadius: BorderRadius.circular(999.r),
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.border,
@@ -496,7 +523,11 @@ class _RadioLine extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _RadioLine({required this.label, required this.selected, required this.onTap});
+  const _RadioLine({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -509,14 +540,20 @@ class _RadioLine extends StatelessWidget {
             height: 18.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: selected ? AppColors.primary : AppColors.border, width: 1.2),
+              border: Border.all(
+                color: selected ? AppColors.primary : AppColors.border,
+                width: 1.2,
+              ),
             ),
             padding: EdgeInsetsDirectional.all(3.w),
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 120),
               opacity: selected ? 1 : 0,
               child: const DecoratedBox(
-                decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.yellow),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.yellow,
+                ),
               ),
             ),
           ),
@@ -524,7 +561,9 @@ class _RadioLine extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: AppTextStyles.bodyMedium(color: AppColors.greyText).copyWith(fontSize: 13.sp),
+              style: AppTextStyles.bodyMedium(
+                color: AppColors.greyText,
+              ).copyWith(fontSize: 13.sp),
             ),
           ),
         ],
@@ -537,7 +576,11 @@ class _CheckLine extends StatelessWidget {
   final String label;
   final bool checked;
   final VoidCallback onTap;
-  const _CheckLine({required this.label, required this.checked, required this.onTap});
+  const _CheckLine({
+    required this.label,
+    required this.checked,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -550,17 +593,26 @@ class _CheckLine extends StatelessWidget {
             height: 18.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4.r),
-              border: Border.all(color: checked ? AppColors.primary : AppColors.border, width: 1.2),
+              border: Border.all(
+                color: checked ? AppColors.primary : AppColors.border,
+                width: 1.2,
+              ),
               color: checked ? AppColors.primary : Colors.transparent,
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.check, size: 12.sp, color: checked ? AppColors.darkText : Colors.transparent),
+            child: Icon(
+              Icons.check,
+              size: 12.sp,
+              color: checked ? AppColors.darkText : Colors.transparent,
+            ),
           ),
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
               label,
-              style: AppTextStyles.bodyMedium(color: AppColors.greyText).copyWith(fontSize: 13.sp),
+              style: AppTextStyles.bodyMedium(
+                color: AppColors.greyText,
+              ).copyWith(fontSize: 13.sp),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -593,7 +645,9 @@ class _DateField extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: AppTextStyles.bodyMedium(color: AppColors.captionText).copyWith(fontSize: 12.sp),
+                style: AppTextStyles.bodyMedium(
+                  color: AppColors.captionText,
+                ).copyWith(fontSize: 12.sp),
               ),
             ),
             Icon(Iconsax.calendar_1, size: 18.sp, color: AppColors.yellow),
@@ -603,4 +657,3 @@ class _DateField extends StatelessWidget {
     );
   }
 }
-

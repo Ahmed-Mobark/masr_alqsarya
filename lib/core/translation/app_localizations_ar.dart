@@ -234,6 +234,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authConfirmPasswordLabel => 'تأكيد كلمة المرور';
 
   @override
+  String get pendingInvitationTitle => 'دعوة لمساحة العائلة';
+
+  @override
+  String get pendingInvitationSubtitle =>
+      'لديك دعوة معلّقة. يمكنك الموافقة للانضمام لمساحة العائلة أو رفض الدعوة.';
+
+  @override
+  String get pendingInvitationWorkspaceLabel => 'مساحة العمل';
+
+  @override
+  String get pendingInvitationInvitedByLabel => 'الدعوة من';
+
+  @override
+  String get pendingInvitationRoleLabel => 'الدور';
+
+  @override
+  String get pendingInvitationAccept => 'قبول الدعوة';
+
+  @override
+  String get pendingInvitationReject => 'رفض الدعوة';
+
+  @override
   String get authAgreeTermsPrefix => 'يرجى الموافقة على ';
 
   @override
@@ -1469,4 +1491,149 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rescheduleSubmit => 'طلب إعادة جدولة';
+
+  @override
+  String get documentDetailsTitle => 'المستند';
+
+  @override
+  String get documentDetailsFileSummary => 'ملخص الملف';
+
+  @override
+  String get documentDetailsAddedBy => 'أضيف بواسطة';
+
+  @override
+  String get documentDetailsDateAdded => 'تاريخ الإضافة';
+
+  @override
+  String get documentDetailsVisibility => 'الرؤية';
+
+  @override
+  String get documentDetailsVisibilityBothParents =>
+      'كلا الوالدين (وصول مشترك)';
+
+  @override
+  String get documentDetailsInfo => 'معلومات';
+
+  @override
+  String documentDetailsFileLabel(Object name) {
+    return 'الملف: $name';
+  }
+
+  @override
+  String documentDetailsTypeLabel(Object type) {
+    return 'النوع: $type';
+  }
+
+  @override
+  String documentDetailsSizeLabel(Object size) {
+    return 'الحجم: $size';
+  }
+
+  @override
+  String get documentDetailsActions => 'إجراءات المستند';
+
+  @override
+  String get documentDetailsDownload => 'تنزيل';
+
+  @override
+  String get documentDetailsUpdatePermissions => 'تحديث الصلاحيات';
+
+  @override
+  String get documentDetailsActivityLog => 'سجل النشاط';
+
+  @override
+  String get documentDetailsArchive => 'أرشفة';
+
+  @override
+  String documentDetailsVisibilityCount(Object canView, Object total) {
+    return '$canView من $total';
+  }
+
+  @override
+  String get documentDetailsEvidence => 'دليل';
+
+  @override
+  String get documentDetailsNotEvidence => 'ليس دليلاً';
+
+  @override
+  String get folderEmptyTitle => 'لا توجد ملفات بعد';
+
+  @override
+  String get folderEmptySubtitle => 'الملفات المضافة لهذا المجلد ستظهر هنا';
+
+  @override
+  String get auditLogTitle => 'سجل المراجعة';
+
+  @override
+  String get auditLogMarkAsEvidence => 'تعليم كدليل';
+
+  @override
+  String get auditLogEvidenceSubtitle => 'مرئي للمستشار القانوني والمحكمة';
+
+  @override
+  String get auditLogActivityHistory => 'سجل النشاط';
+
+  @override
+  String get auditLogNoActivity => 'لا يوجد نشاط بعد';
+
+  @override
+  String get auditLogLoadFailed => 'فشل تحميل النشاط';
+
+  @override
+  String get auditLogDownload => 'تنزيل';
+
+  @override
+  String auditLogActionUploaded(Object name) {
+    return 'رُفع بواسطة $name';
+  }
+
+  @override
+  String auditLogActionViewed(Object name) {
+    return 'شُوهد بواسطة $name';
+  }
+
+  @override
+  String auditLogActionDownloaded(Object name) {
+    return 'نُزّل بواسطة $name';
+  }
+
+  @override
+  String get auditLogActionMarkedAsEvidence => 'تم التعليم كدليل';
+
+  @override
+  String auditLogActionPermissionChanged(Object name) {
+    return '$name غيّر الصلاحيات';
+  }
+
+  @override
+  String get chatBlockedAlertTitle => 'تنبيه';
+
+  @override
+  String get chatBlockedDefaultReason => 'ممنوع إرسال محتوى غير لائق.';
+
+  @override
+  String chatBlockedWarningCount(Object count) {
+    return 'عدد التحذيرات: $count';
+  }
+
+  @override
+  String get chatBlockedOk => 'حسنًا';
+
+  @override
+  String get chatClearAttachments => 'مسح';
+
+  @override
+  String get chatToneAssistantTitle => 'تدخل مساعد النبرة';
+
+  @override
+  String get chatToneSuggestedAlternative => 'بديل مقترح';
+
+  @override
+  String get chatToneRephraseMessage => 'إعادة صياغة الرسالة';
+
+  @override
+  String get chatAttachmentViewAction => 'عرض';
+
+  @override
+  String get chatImagePreviewFailed => 'تعذر عرض الصورة';
 }

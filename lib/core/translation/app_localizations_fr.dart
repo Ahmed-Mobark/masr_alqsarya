@@ -239,6 +239,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authConfirmPasswordLabel => 'Confirmer le mot de passe';
 
   @override
+  String get pendingInvitationTitle => 'Invitation à l’espace familial';
+
+  @override
+  String get pendingInvitationSubtitle =>
+      'Vous avez une invitation en attente. Vous pouvez accepter pour rejoindre l’espace ou la refuser.';
+
+  @override
+  String get pendingInvitationWorkspaceLabel => 'Espace';
+
+  @override
+  String get pendingInvitationInvitedByLabel => 'Invité par';
+
+  @override
+  String get pendingInvitationRoleLabel => 'Rôle';
+
+  @override
+  String get pendingInvitationAccept => 'Accepter l’invitation';
+
+  @override
+  String get pendingInvitationReject => 'Refuser l’invitation';
+
+  @override
   String get authAgreeTermsPrefix => 'Veuillez accepter les ';
 
   @override
@@ -1494,4 +1516,152 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rescheduleSubmit => 'REPROGRAMMER';
+
+  @override
+  String get documentDetailsTitle => 'Document';
+
+  @override
+  String get documentDetailsFileSummary => 'Résumé du fichier';
+
+  @override
+  String get documentDetailsAddedBy => 'Ajouté par';
+
+  @override
+  String get documentDetailsDateAdded => 'Date d\'ajout';
+
+  @override
+  String get documentDetailsVisibility => 'Visibilité';
+
+  @override
+  String get documentDetailsVisibilityBothParents =>
+      'Les deux parents (accès conjoint)';
+
+  @override
+  String get documentDetailsInfo => 'Infos';
+
+  @override
+  String documentDetailsFileLabel(Object name) {
+    return 'Fichier : $name';
+  }
+
+  @override
+  String documentDetailsTypeLabel(Object type) {
+    return 'Type : $type';
+  }
+
+  @override
+  String documentDetailsSizeLabel(Object size) {
+    return 'Taille : $size';
+  }
+
+  @override
+  String get documentDetailsActions => 'Actions du document';
+
+  @override
+  String get documentDetailsDownload => 'Télécharger';
+
+  @override
+  String get documentDetailsUpdatePermissions => 'Modifier les permissions';
+
+  @override
+  String get documentDetailsActivityLog => 'Journal d\'activité';
+
+  @override
+  String get documentDetailsArchive => 'Archiver';
+
+  @override
+  String documentDetailsVisibilityCount(Object canView, Object total) {
+    return '$canView sur $total';
+  }
+
+  @override
+  String get documentDetailsEvidence => 'Preuve';
+
+  @override
+  String get documentDetailsNotEvidence => 'Pas une preuve';
+
+  @override
+  String get folderEmptyTitle => 'Aucun fichier pour le moment';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Les fichiers ajoutés à ce dossier apparaîtront ici';
+
+  @override
+  String get auditLogTitle => 'Journal d\'audit';
+
+  @override
+  String get auditLogMarkAsEvidence => 'Marquer comme preuve';
+
+  @override
+  String get auditLogEvidenceSubtitle =>
+      'Visible par le conseiller juridique et le tribunal';
+
+  @override
+  String get auditLogActivityHistory => 'Historique d\'activité';
+
+  @override
+  String get auditLogNoActivity => 'Aucune activité pour le moment';
+
+  @override
+  String get auditLogLoadFailed => 'Impossible de charger l\'activité';
+
+  @override
+  String get auditLogDownload => 'TÉLÉCHARGER';
+
+  @override
+  String auditLogActionUploaded(Object name) {
+    return 'Téléversé par $name';
+  }
+
+  @override
+  String auditLogActionViewed(Object name) {
+    return 'Consulté par $name';
+  }
+
+  @override
+  String auditLogActionDownloaded(Object name) {
+    return 'Téléchargé par $name';
+  }
+
+  @override
+  String get auditLogActionMarkedAsEvidence => 'Marqué comme preuve';
+
+  @override
+  String auditLogActionPermissionChanged(Object name) {
+    return '$name a modifié les permissions';
+  }
+
+  @override
+  String get chatBlockedAlertTitle => 'Avertissement';
+
+  @override
+  String get chatBlockedDefaultReason =>
+      'L\'envoi de contenu inapproprié n\'est pas autorisé.';
+
+  @override
+  String chatBlockedWarningCount(Object count) {
+    return 'Avertissements : $count';
+  }
+
+  @override
+  String get chatBlockedOk => 'OK';
+
+  @override
+  String get chatClearAttachments => 'Effacer';
+
+  @override
+  String get chatToneAssistantTitle => 'Intervention de l\'assistant de ton';
+
+  @override
+  String get chatToneSuggestedAlternative => 'Alternative suggérée';
+
+  @override
+  String get chatToneRephraseMessage => 'REFORMULER LE MESSAGE';
+
+  @override
+  String get chatAttachmentViewAction => 'Voir';
+
+  @override
+  String get chatImagePreviewFailed => 'Impossible d\'afficher l\'image';
 }

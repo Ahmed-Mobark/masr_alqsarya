@@ -9,6 +9,7 @@ class ToneAssistantDecision {
   final bool shouldIntervene;
   final String? warning;
   final String? suggestedAlternative;
+
   /// 0..100
   final int score;
 }
@@ -77,7 +78,13 @@ String _normalize(String input) {
       .replaceAll('آ', 'ا')
       .replaceAll('ى', 'ي')
       .replaceAll('ة', 'ه');
-  s = s.replaceAll(RegExp(r'[\s\-_.,;:!؟"''()\[\]{}]+'), '');
+  s = s.replaceAll(
+    RegExp(
+      r'[\s\-_.,;:!؟"'
+      '()[]{}]+',
+    ),
+    '',
+  );
   s = s.replaceAll(RegExp(r'(.)\1{2,}'), r'$1$1');
   return s.trim();
 }
@@ -117,4 +124,3 @@ const List<String> _aggressive = [
   'idiot',
   'stupid',
 ];
-

@@ -79,6 +79,15 @@
   "authLastNameLabel": "اسم العائلة",
   "authLastNameHint": "أحمد",
   "authConfirmPasswordLabel": "تأكيد كلمة المرور",
+
+  "pendingInvitationTitle": "دعوة لمساحة العائلة",
+  "pendingInvitationSubtitle": "لديك دعوة معلّقة. يمكنك الموافقة للانضمام لمساحة العائلة أو رفض الدعوة.",
+  "pendingInvitationWorkspaceLabel": "مساحة العمل",
+  "pendingInvitationInvitedByLabel": "الدعوة من",
+  "pendingInvitationRoleLabel": "الدور",
+  "pendingInvitationAccept": "قبول الدعوة",
+  "pendingInvitationReject": "رفض الدعوة",
+
   "authAgreeTermsPrefix": "يرجى الموافقة على ",
   "authTermsAndConditions": "الشروط والأحكام",
   "authAgreeTermsSuffix": " للمتابعة.",
@@ -538,5 +547,97 @@
   "rescheduleTitle": "طلب إعادة جدولة",
   "rescheduleSelectDate": "اختر تاريخاً جديداً",
   "rescheduleSelectTime": "اختر الوقت",
-  "rescheduleSubmit": "طلب إعادة جدولة"
+  "rescheduleSubmit": "طلب إعادة جدولة",
+
+  "documentDetailsTitle": "المستند",
+  "documentDetailsFileSummary": "ملخص الملف",
+  "documentDetailsAddedBy": "أضيف بواسطة",
+  "documentDetailsDateAdded": "تاريخ الإضافة",
+  "documentDetailsVisibility": "الرؤية",
+  "documentDetailsVisibilityBothParents": "كلا الوالدين (وصول مشترك)",
+  "documentDetailsInfo": "معلومات",
+  "documentDetailsFileLabel": "الملف: {name}",
+  "@documentDetailsFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDetailsTypeLabel": "النوع: {type}",
+  "@documentDetailsTypeLabel": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "documentDetailsSizeLabel": "الحجم: {size}",
+  "@documentDetailsSizeLabel": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "documentDetailsActions": "إجراءات المستند",
+  "documentDetailsDownload": "تنزيل",
+  "documentDetailsUpdatePermissions": "تحديث الصلاحيات",
+  "documentDetailsActivityLog": "سجل النشاط",
+  "documentDetailsArchive": "أرشفة",
+
+  "documentDetailsVisibilityCount": "{canView} من {total}",
+  "@documentDetailsVisibilityCount": {
+    "placeholders": {
+      "canView": {},
+      "total": {}
+    }
+  },
+  "documentDetailsEvidence": "دليل",
+  "documentDetailsNotEvidence": "ليس دليلاً",
+  "folderEmptyTitle": "لا توجد ملفات بعد",
+  "folderEmptySubtitle": "الملفات المضافة لهذا المجلد ستظهر هنا",
+
+  "auditLogTitle": "سجل المراجعة",
+  "auditLogMarkAsEvidence": "تعليم كدليل",
+  "auditLogEvidenceSubtitle": "مرئي للمستشار القانوني والمحكمة",
+  "auditLogActivityHistory": "سجل النشاط",
+  "auditLogNoActivity": "لا يوجد نشاط بعد",
+  "auditLogLoadFailed": "فشل تحميل النشاط",
+  "auditLogDownload": "تنزيل",
+  "auditLogActionUploaded": "رُفع بواسطة {name}",
+  "@auditLogActionUploaded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionViewed": "شُوهد بواسطة {name}",
+  "@auditLogActionViewed": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionDownloaded": "نُزّل بواسطة {name}",
+  "@auditLogActionDownloaded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "auditLogActionMarkedAsEvidence": "تم التعليم كدليل",
+  "auditLogActionPermissionChanged": "{name} غيّر الصلاحيات",
+  "@auditLogActionPermissionChanged": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+
+  "chatBlockedAlertTitle": "تنبيه",
+  "chatBlockedDefaultReason": "ممنوع إرسال محتوى غير لائق.",
+  "chatBlockedWarningCount": "عدد التحذيرات: {count}",
+  "@chatBlockedWarningCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "chatBlockedOk": "حسنًا",
+  "chatClearAttachments": "مسح",
+  "chatToneAssistantTitle": "تدخل مساعد النبرة",
+  "chatToneSuggestedAlternative": "بديل مقترح",
+  "chatToneRephraseMessage": "إعادة صياغة الرسالة",
+  "chatAttachmentViewAction": "عرض",
+  "chatImagePreviewFailed": "تعذر عرض الصورة"
 }

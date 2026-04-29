@@ -54,9 +54,11 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   void removePendingAttachmentAt(int index) {
     if (index < 0 || index >= _pendingAttachments.length) return;
     _pendingAttachments.removeAt(index);
-    emit(state.copyWith(
-      pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
-    ));
+    emit(
+      state.copyWith(
+        pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+      ),
+    );
   }
 
   void clearPendingAttachments() {
@@ -72,9 +74,11 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       if (path == null || path.trim().isEmpty) continue;
       _pendingAttachments.add(_LocalAttachment(path: path, name: f.name));
     }
-    emit(state.copyWith(
-      pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
-    ));
+    emit(
+      state.copyWith(
+        pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+      ),
+    );
   }
 
   Future<void> pickImages({ImageSource source = ImageSource.gallery}) async {
@@ -82,13 +86,41 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     final picked = await picker.pickMultiImage();
     if (picked.isEmpty) return;
     for (final x in picked) {
-      _pendingAttachments.add(
-        _LocalAttachment(path: x.path, name: x.name),
-      );
+      _pendingAttachments.add(_LocalAttachment(path: x.path, name: x.name));
     }
-    emit(state.copyWith(
-      pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
-    ));
+    emit(
+      state.copyWith(
+        pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+      ),
+    );
+  }
+
+  Future<void> pickMedia() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickMultipleMedia();
+    if (picked.isEmpty) return;
+    for (final x in picked) {
+      _pendingAttachments.add(_LocalAttachment(path: x.path, name: x.name));
+    }
+    emit(
+      state.copyWith(
+        pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+      ),
+    );
+  }
+
+  Future<void> pickVideo() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickVideo(source: ImageSource.gallery);
+    if (picked == null) return;
+    _pendingAttachments.add(
+      _LocalAttachment(path: picked.path, name: picked.name),
+    );
+    emit(
+      state.copyWith(
+        pendingAttachmentNames: _pendingAttachments.map((e) => e.name).toList(),
+      ),
+    );
   }
 
   void clearSendError() {
@@ -106,18 +138,22 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   Future<void> downloadAttachment(ChatAttachment attachment) async {
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {
-      emit(state.copyWith(
-        clearAttachmentFeedback: true,
-        attachmentFeedback: '__workspace_missing__',
-      ));
+      emit(
+        state.copyWith(
+          clearAttachmentFeedback: true,
+          attachmentFeedback: '__workspace_missing__',
+        ),
+      );
       return;
     }
 
-    emit(state.copyWith(
-      clearAttachmentFeedback: true,
-      attachmentFeedback: null,
-      downloadingAttachmentId: attachment.id,
-    ));
+    emit(
+      state.copyWith(
+        clearAttachmentFeedback: true,
+        attachmentFeedback: null,
+        downloadingAttachmentId: attachment.id,
+      ),
+    );
 
     final result = await _downloadAttachment(
       DownloadChatAttachmentParams(
@@ -129,31 +165,37 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
     final failure = result.fold<Failure?>((f) => f, (_) => null);
     if (failure != null) {
-      emit(state.copyWith(
-        clearDownloadingAttachment: true,
-        clearAttachmentFeedback: true,
-        attachmentFeedback: '__download_fail__',
-      ));
+      emit(
+        state.copyWith(
+          clearDownloadingAttachment: true,
+          clearAttachmentFeedback: true,
+          attachmentFeedback: '__download_fail__',
+        ),
+      );
       return;
     }
 
     final bytes = result.fold<Uint8List>((_) => Uint8List(0), (b) => b);
     final label = await _saveAttachmentFile(bytes, attachment.displayName);
     if (label == null) {
-      emit(state.copyWith(
-        clearDownloadingAttachment: true,
-        clearAttachmentFeedback: true,
-        attachmentFeedback: '__download_fail__',
-      ));
+      emit(
+        state.copyWith(
+          clearDownloadingAttachment: true,
+          clearAttachmentFeedback: true,
+          attachmentFeedback: '__download_fail__',
+        ),
+      );
       return;
     }
 
-    emit(state.copyWith(
-      clearDownloadingAttachment: true,
-      clearAttachmentFeedback: true,
-      attachmentFeedback: '__download_ok__',
-      attachmentSavedLabel: label,
-    ));
+    emit(
+      state.copyWith(
+        clearDownloadingAttachment: true,
+        clearAttachmentFeedback: true,
+        attachmentFeedback: '__download_ok__',
+        attachmentSavedLabel: label,
+      ),
+    );
   }
 
   Future<String?> _saveAttachmentFile(Uint8List bytes, String rawName) async {
@@ -187,10 +229,12 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     final workspaceId = _workspaceIdStorage.get();
     if (workspaceId == null) {
       if (!silentRefresh) {
-        emit(state.copyWith(
-          status: ChatDetailStatus.failure,
-          workspaceMissing: true,
-        ));
+        emit(
+          state.copyWith(
+            status: ChatDetailStatus.failure,
+            workspaceMissing: true,
+          ),
+        );
       }
       return;
     }
@@ -199,24 +243,25 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     final failure = result.fold<Failure?>((f) => f, (_) => null);
     if (failure != null) {
       if (!silentRefresh) {
-        emit(state.copyWith(
-          status: ChatDetailStatus.failure,
-          errorMessage: failure.message,
-        ));
+        emit(
+          state.copyWith(
+            status: ChatDetailStatus.failure,
+            errorMessage: failure.message,
+          ),
+        );
       }
       return;
     }
 
-    final items = result.fold<List<ChatMessage>>(
-      (_) => [],
-      (list) => list,
-    );
+    final items = result.fold<List<ChatMessage>>((_) => [], (list) => list);
 
     final sorted = List<ChatMessage>.from(items)
       ..sort((a, b) {
-        final da = DateTime.tryParse(a.createdAtIso ?? '') ??
+        final da =
+            DateTime.tryParse(a.createdAtIso ?? '') ??
             DateTime.fromMillisecondsSinceEpoch(0);
-        final db = DateTime.tryParse(b.createdAtIso ?? '') ??
+        final db =
+            DateTime.tryParse(b.createdAtIso ?? '') ??
             DateTime.fromMillisecondsSinceEpoch(0);
         return da.compareTo(db);
       });
@@ -234,10 +279,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       );
     }).toList();
 
-    emit(state.copyWith(
-      status: ChatDetailStatus.success,
-      messages: rows,
-    ));
+    emit(state.copyWith(status: ChatDetailStatus.success, messages: rows));
 
     if (!silentRefresh) {
       unawaited(_ensureSoketiSubscription());
@@ -395,10 +437,12 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       isSent: true,
       attachments: optimisticAttachments,
     );
-    emit(state.copyWith(
-      messages: List<ChatBubbleRow>.from(state.messages)..add(optimistic),
-      pendingAttachmentNames: const [],
-    ));
+    emit(
+      state.copyWith(
+        messages: List<ChatBubbleRow>.from(state.messages)..add(optimistic),
+        pendingAttachmentNames: const [],
+      ),
+    );
 
     final result = await _sendMessage(
       SendChatMessageParams(
@@ -415,11 +459,13 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       // Remove optimistic bubble on failure.
       final updated = List<ChatBubbleRow>.from(state.messages)
         ..removeWhere((m) => m.messageId == optimistic.messageId);
-      emit(state.copyWith(
-        isSending: false,
-        sendError: failure.message,
-        messages: updated,
-      ));
+      emit(
+        state.copyWith(
+          isSending: false,
+          sendError: failure.message,
+          messages: updated,
+        ),
+      );
       return;
     }
 
@@ -489,21 +535,18 @@ List<ChatAttachment> _attachmentsFromMap(Map<String, dynamic> map) {
     final m = Map<String, dynamic>.from(item);
     final id = (m['id'] as num?)?.toInt();
     if (id == null) continue;
-    final name = (m['original_name'] as String?)?.trim() ??
+    final name =
+        (m['original_name'] as String?)?.trim() ??
         (m['original_filename'] as String?)?.trim() ??
         (m['file_name'] as String?)?.trim() ??
         (m['name'] as String?)?.trim() ??
         '';
     final url = (m['url'] as String?)?.trim();
-    final mimeType = (m['mime_type'] as String?)?.trim() ??
+    final mimeType =
+        (m['mime_type'] as String?)?.trim() ??
         (m['mimeType'] as String?)?.trim();
     out.add(
-      ChatAttachment(
-        id: id,
-        displayName: name,
-        url: url,
-        mimeType: mimeType,
-      ),
+      ChatAttachment(id: id, displayName: name, url: url, mimeType: mimeType),
     );
   }
   return out;

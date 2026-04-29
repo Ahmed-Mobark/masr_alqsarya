@@ -237,6 +237,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authConfirmPasswordLabel => 'Confirm Password';
 
   @override
+  String get pendingInvitationTitle => 'Family workspace invitation';
+
+  @override
+  String get pendingInvitationSubtitle =>
+      'You have a pending invitation. You can accept to join the workspace or reject it.';
+
+  @override
+  String get pendingInvitationWorkspaceLabel => 'Workspace';
+
+  @override
+  String get pendingInvitationInvitedByLabel => 'Invited by';
+
+  @override
+  String get pendingInvitationRoleLabel => 'Role';
+
+  @override
+  String get pendingInvitationAccept => 'Accept invitation';
+
+  @override
+  String get pendingInvitationReject => 'Reject invitation';
+
+  @override
   String get authAgreeTermsPrefix => 'Please agree to the ';
 
   @override
@@ -1480,4 +1502,151 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescheduleSubmit => 'REQUEST RESCHEDULE';
+
+  @override
+  String get documentDetailsTitle => 'Document';
+
+  @override
+  String get documentDetailsFileSummary => 'File Summary';
+
+  @override
+  String get documentDetailsAddedBy => 'Added By';
+
+  @override
+  String get documentDetailsDateAdded => 'Date Added';
+
+  @override
+  String get documentDetailsVisibility => 'Visibility';
+
+  @override
+  String get documentDetailsVisibilityBothParents =>
+      'Both Parents (Joint Access)';
+
+  @override
+  String get documentDetailsInfo => 'Info';
+
+  @override
+  String documentDetailsFileLabel(Object name) {
+    return 'File: $name';
+  }
+
+  @override
+  String documentDetailsTypeLabel(Object type) {
+    return 'Type: $type';
+  }
+
+  @override
+  String documentDetailsSizeLabel(Object size) {
+    return 'Size: $size';
+  }
+
+  @override
+  String get documentDetailsActions => 'Document Actions';
+
+  @override
+  String get documentDetailsDownload => 'Download';
+
+  @override
+  String get documentDetailsUpdatePermissions => 'Update Permissions';
+
+  @override
+  String get documentDetailsActivityLog => 'Activity Log';
+
+  @override
+  String get documentDetailsArchive => 'Archive';
+
+  @override
+  String documentDetailsVisibilityCount(Object canView, Object total) {
+    return '$canView of $total';
+  }
+
+  @override
+  String get documentDetailsEvidence => 'Evidence';
+
+  @override
+  String get documentDetailsNotEvidence => 'Not Evidence';
+
+  @override
+  String get folderEmptyTitle => 'No files yet';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Files added to this folder will appear here';
+
+  @override
+  String get auditLogTitle => 'Audit Log';
+
+  @override
+  String get auditLogMarkAsEvidence => 'Mark as Evidence';
+
+  @override
+  String get auditLogEvidenceSubtitle => 'Visible to legal counsel and court';
+
+  @override
+  String get auditLogActivityHistory => 'Activity History';
+
+  @override
+  String get auditLogNoActivity => 'No activity yet';
+
+  @override
+  String get auditLogLoadFailed => 'Failed to load activity';
+
+  @override
+  String get auditLogDownload => 'DOWNLOAD';
+
+  @override
+  String auditLogActionUploaded(Object name) {
+    return 'Uploaded by $name';
+  }
+
+  @override
+  String auditLogActionViewed(Object name) {
+    return 'Viewed by $name';
+  }
+
+  @override
+  String auditLogActionDownloaded(Object name) {
+    return 'Downloaded by $name';
+  }
+
+  @override
+  String get auditLogActionMarkedAsEvidence => 'Marked as Evidence';
+
+  @override
+  String auditLogActionPermissionChanged(Object name) {
+    return '$name changed permissions';
+  }
+
+  @override
+  String get chatBlockedAlertTitle => 'Warning';
+
+  @override
+  String get chatBlockedDefaultReason =>
+      'Sending inappropriate content is not allowed.';
+
+  @override
+  String chatBlockedWarningCount(Object count) {
+    return 'Warnings: $count';
+  }
+
+  @override
+  String get chatBlockedOk => 'OK';
+
+  @override
+  String get chatClearAttachments => 'Clear';
+
+  @override
+  String get chatToneAssistantTitle => 'Tone Assistant Intervention';
+
+  @override
+  String get chatToneSuggestedAlternative => 'Suggested Alternative';
+
+  @override
+  String get chatToneRephraseMessage => 'REPHRASE MESSAGE';
+
+  @override
+  String get chatAttachmentViewAction => 'View';
+
+  @override
+  String get chatImagePreviewFailed => 'Could not display the image';
 }

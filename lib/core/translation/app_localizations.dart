@@ -538,6 +538,48 @@ abstract class AppLocalizations {
   /// **'Confirm Password'**
   String get authConfirmPasswordLabel;
 
+  /// No description provided for @pendingInvitationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Family workspace invitation'**
+  String get pendingInvitationTitle;
+
+  /// No description provided for @pendingInvitationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have a pending invitation. You can accept to join the workspace or reject it.'**
+  String get pendingInvitationSubtitle;
+
+  /// No description provided for @pendingInvitationWorkspaceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace'**
+  String get pendingInvitationWorkspaceLabel;
+
+  /// No description provided for @pendingInvitationInvitedByLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited by'**
+  String get pendingInvitationInvitedByLabel;
+
+  /// No description provided for @pendingInvitationRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get pendingInvitationRoleLabel;
+
+  /// No description provided for @pendingInvitationAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept invitation'**
+  String get pendingInvitationAccept;
+
+  /// No description provided for @pendingInvitationReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject invitation'**
+  String get pendingInvitationReject;
+
   /// No description provided for @authAgreeTermsPrefix.
   ///
   /// In en, this message translates to:
@@ -2913,6 +2955,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'REQUEST RESCHEDULE'**
   String get rescheduleSubmit;
+
+  /// No description provided for @documentDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get documentDetailsTitle;
+
+  /// No description provided for @documentDetailsFileSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'File Summary'**
+  String get documentDetailsFileSummary;
+
+  /// No description provided for @documentDetailsAddedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Added By'**
+  String get documentDetailsAddedBy;
+
+  /// No description provided for @documentDetailsDateAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Added'**
+  String get documentDetailsDateAdded;
+
+  /// No description provided for @documentDetailsVisibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility'**
+  String get documentDetailsVisibility;
+
+  /// No description provided for @documentDetailsVisibilityBothParents.
+  ///
+  /// In en, this message translates to:
+  /// **'Both Parents (Joint Access)'**
+  String get documentDetailsVisibilityBothParents;
+
+  /// No description provided for @documentDetailsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get documentDetailsInfo;
+
+  /// No description provided for @documentDetailsFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'File: {name}'**
+  String documentDetailsFileLabel(Object name);
+
+  /// No description provided for @documentDetailsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type: {type}'**
+  String documentDetailsTypeLabel(Object type);
+
+  /// No description provided for @documentDetailsSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Size: {size}'**
+  String documentDetailsSizeLabel(Object size);
+
+  /// No description provided for @documentDetailsActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Document Actions'**
+  String get documentDetailsActions;
+
+  /// No description provided for @documentDetailsDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get documentDetailsDownload;
+
+  /// No description provided for @documentDetailsUpdatePermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Permissions'**
+  String get documentDetailsUpdatePermissions;
+
+  /// No description provided for @documentDetailsActivityLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Log'**
+  String get documentDetailsActivityLog;
+
+  /// No description provided for @documentDetailsArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get documentDetailsArchive;
+
+  /// No description provided for @documentDetailsVisibilityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{canView} of {total}'**
+  String documentDetailsVisibilityCount(Object canView, Object total);
+
+  /// No description provided for @documentDetailsEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence'**
+  String get documentDetailsEvidence;
+
+  /// No description provided for @documentDetailsNotEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Evidence'**
+  String get documentDetailsNotEvidence;
+
+  /// No description provided for @folderEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No files yet'**
+  String get folderEmptyTitle;
+
+  /// No description provided for @folderEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Files added to this folder will appear here'**
+  String get folderEmptySubtitle;
+
+  /// No description provided for @auditLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Log'**
+  String get auditLogTitle;
+
+  /// No description provided for @auditLogMarkAsEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Evidence'**
+  String get auditLogMarkAsEvidence;
+
+  /// No description provided for @auditLogEvidenceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible to legal counsel and court'**
+  String get auditLogEvidenceSubtitle;
+
+  /// No description provided for @auditLogActivityHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity History'**
+  String get auditLogActivityHistory;
+
+  /// No description provided for @auditLogNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity yet'**
+  String get auditLogNoActivity;
+
+  /// No description provided for @auditLogLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load activity'**
+  String get auditLogLoadFailed;
+
+  /// No description provided for @auditLogDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'DOWNLOAD'**
+  String get auditLogDownload;
+
+  /// No description provided for @auditLogActionUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded by {name}'**
+  String auditLogActionUploaded(Object name);
+
+  /// No description provided for @auditLogActionViewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewed by {name}'**
+  String auditLogActionViewed(Object name);
+
+  /// No description provided for @auditLogActionDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded by {name}'**
+  String auditLogActionDownloaded(Object name);
+
+  /// No description provided for @auditLogActionMarkedAsEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as Evidence'**
+  String get auditLogActionMarkedAsEvidence;
+
+  /// No description provided for @auditLogActionPermissionChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} changed permissions'**
+  String auditLogActionPermissionChanged(Object name);
+
+  /// No description provided for @chatBlockedAlertTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get chatBlockedAlertTitle;
+
+  /// No description provided for @chatBlockedDefaultReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending inappropriate content is not allowed.'**
+  String get chatBlockedDefaultReason;
+
+  /// No description provided for @chatBlockedWarningCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Warnings: {count}'**
+  String chatBlockedWarningCount(Object count);
+
+  /// No description provided for @chatBlockedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get chatBlockedOk;
+
+  /// No description provided for @chatClearAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get chatClearAttachments;
+
+  /// No description provided for @chatToneAssistantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone Assistant Intervention'**
+  String get chatToneAssistantTitle;
+
+  /// No description provided for @chatToneSuggestedAlternative.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested Alternative'**
+  String get chatToneSuggestedAlternative;
+
+  /// No description provided for @chatToneRephraseMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'REPHRASE MESSAGE'**
+  String get chatToneRephraseMessage;
+
+  /// No description provided for @chatAttachmentViewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get chatAttachmentViewAction;
+
+  /// No description provided for @chatImagePreviewFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not display the image'**
+  String get chatImagePreviewFailed;
 }
 
 class _AppLocalizationsDelegate

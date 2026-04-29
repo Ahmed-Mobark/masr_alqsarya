@@ -11,7 +11,7 @@ class AppImages {
   static const String onboarding2 = "${_path}onboarding_2.png";
   static const String onboarding3 = "${_path}onboarding_3.png";
   static const String onboarding4 = "${_path}onboarding_4.png";
-
+  static const String pendingInvitation = "${_path}pend.png";
 }
 
 /// Splash and other video/GIF assets under assets/videos/

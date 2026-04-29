@@ -12,7 +12,6 @@ import 'package:masr_al_qsariya/core/theme/app_theme.dart';
 import 'package:masr_al_qsariya/core/translation/app_localizations.dart';
 import 'package:masr_al_qsariya/features/splash/presentation/view/splash_view.dart';
 
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
   static MyAppState? of(BuildContext context) =>
@@ -50,40 +49,43 @@ class MyAppState extends State<MyApp> {
           final isArabic = _locale.languageCode == 'ar';
           final effectiveTheme = isArabic
               ? theme.copyWith(
-                  textTheme: GoogleFonts.rubikTextTheme(theme.textTheme),
-                  primaryTextTheme:
-                      GoogleFonts.rubikTextTheme(theme.primaryTextTheme),
+                  textTheme: GoogleFonts.almaraiTextTheme(theme.textTheme),
+                  primaryTextTheme: GoogleFonts.almaraiTextTheme(
+                    theme.primaryTextTheme,
+                  ),
                 )
               : theme;
           final effectiveDarkTheme = isArabic
               ? darkTheme.copyWith(
-                  textTheme: GoogleFonts.rubikTextTheme(darkTheme.textTheme),
-                  primaryTextTheme:
-                      GoogleFonts.rubikTextTheme(darkTheme.primaryTextTheme),
+                  textTheme: GoogleFonts.almaraiTextTheme(darkTheme.textTheme),
+                  primaryTextTheme: GoogleFonts.almaraiTextTheme(
+                    darkTheme.primaryTextTheme,
+                  ),
                 )
               : darkTheme;
 
           return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          scrollBehavior: const ScrollBehavior()
-              .copyWith(physics: const BouncingScrollPhysics()),
-          theme: effectiveTheme,
-          darkTheme: effectiveDarkTheme,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorObservers: [ObserverUtils.routeObserver],
-          locale: _locale,
-          navigatorKey: sl<AppNavigator>().navigatorKey,
-          builder: (context, child) {
-            final textDirection = _locale.languageCode == 'ar'
-                ? TextDirection.rtl
-                : TextDirection.ltr;
-            return Directionality(
-              textDirection: textDirection,
-              child: child ?? const SizedBox.shrink(),
-            );
-          },
-          home: const SplashView(),
+            debugShowCheckedModeBanner: false,
+            scrollBehavior: const ScrollBehavior().copyWith(
+              physics: const BouncingScrollPhysics(),
+            ),
+            theme: effectiveTheme,
+            darkTheme: effectiveDarkTheme,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            navigatorObservers: [ObserverUtils.routeObserver],
+            locale: _locale,
+            navigatorKey: sl<AppNavigator>().navigatorKey,
+            builder: (context, child) {
+              final textDirection = _locale.languageCode == 'ar'
+                  ? TextDirection.rtl
+                  : TextDirection.ltr;
+              return Directionality(
+                textDirection: textDirection,
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
+            home: const SplashView(),
           );
         },
       ),
