@@ -9,15 +9,32 @@ class FamilyWorkspaceMembersCubit extends Cubit<FamilyWorkspaceMembersState> {
   FamilyWorkspaceMembersCubit(this._getMembers)
       : super(const FamilyWorkspaceMembersState.initial());
 
-  Future<void> load({required int workspaceId}) async {
-    emit(state.copyWith(status: FamilyWorkspaceMembersStatus.loading));
-    final result = await _getMembers(workspaceId: workspaceId);
+  Future<void> load({
+    required int workspaceId,
+    String? role,
+  }) async {
+    emit(
+      FamilyWorkspaceMembersState(
+        status: FamilyWorkspaceMembersStatus.loading,
+        items: state.items,
+        failure: null,
+      ),
+    );
+    final result = await _getMembers(workspaceId: workspaceId, role: role);
     result.fold(
       (failure) => emit(
-        state.copyWith(status: FamilyWorkspaceMembersStatus.failure, failure: failure),
+        FamilyWorkspaceMembersState(
+          status: FamilyWorkspaceMembersStatus.failure,
+          items: state.items,
+          failure: failure,
+        ),
       ),
       (items) => emit(
-        state.copyWith(status: FamilyWorkspaceMembersStatus.success, items: items),
+        FamilyWorkspaceMembersState(
+          status: FamilyWorkspaceMembersStatus.success,
+          items: items,
+          failure: null,
+        ),
       ),
     );
   }
@@ -33,7 +50,7 @@ class FamilyWorkspaceMembersState extends Equatable {
   const FamilyWorkspaceMembersState({
     required this.status,
     required this.items,
-    required this.failure,
+    this.failure,
   });
 
   const FamilyWorkspaceMembersState.initial()
@@ -49,7 +66,7 @@ class FamilyWorkspaceMembersState extends Equatable {
     return FamilyWorkspaceMembersState(
       status: status ?? this.status,
       items: items ?? this.items,
-      failure: failure,
+      failure: failure ?? this.failure,
     );
   }
 

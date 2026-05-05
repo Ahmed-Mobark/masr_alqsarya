@@ -9,6 +9,13 @@ class LoginResponse extends Equatable {
     this.isVerified = true,
     this.hasPendingInvitations = false,
     this.pendingInvitation,
+    this.userId,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phone,
+    this.type,
+    this.permissions = const [],
   });
 
   final String? token;
@@ -17,6 +24,13 @@ class LoginResponse extends Equatable {
   final bool isVerified;
   final bool hasPendingInvitations;
   final PendingInvitation? pendingInvitation;
+  final int? userId;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? phone;
+  final String? type;
+  final List<String> permissions;
 
   @override
   List<Object?> get props => [
@@ -26,5 +40,12 @@ class LoginResponse extends Equatable {
         isVerified,
         hasPendingInvitations,
         pendingInvitation,
+        userId,
+        firstName,
+        lastName,
+        email,
+        phone,
+        type,
+        permissions,
       ];
 }

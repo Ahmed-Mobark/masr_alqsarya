@@ -1,15 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:masr_al_qsariya/core/config/app_icons.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
+import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachment.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_cubit.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_state.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/cubit/conversation_insights_cubit.dart';
+import 'package:masr_al_qsariya/features/messages/presentation/view/conversation_insights_view.dart';
 
 class ChatView extends StatefulWidget {
   final int chatId;
@@ -82,17 +88,15 @@ class _ChatViewState extends State<ChatView> {
             builder: (_) => _ToneAssistantSheet(
               warning: state.toneWarning!,
               suggestedAlternative: state.toneSuggestedAlternative!,
-              onRephrase: (suggested) {
-                _messageController.text = suggested;
-                _messageController.selection = TextSelection.fromPosition(
-                  TextPosition(offset: suggested.length),
-                );
+              onRephrase: (_) {
                 Navigator.pop(context);
-                context.read<ChatDetailCubit>().clearToneIntervention();
+                context.read<ChatDetailCubit>().sendToneSuggestedMessage();
               },
               onClose: () {
                 Navigator.pop(context);
-                context.read<ChatDetailCubit>().clearToneIntervention();
+                context
+                    .read<ChatDetailCubit>()
+                    .sendOriginalAfterToneSuggestionDismiss();
               },
             ),
           );
@@ -165,6 +169,47 @@ class _ChatViewState extends State<ChatView> {
               icon: const Icon(Icons.arrow_back, color: AppColors.darkText),
               onPressed: () => Navigator.pop(context),
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 4),
+                child: _TopActionIconButton(
+                  iconPath: AppIcons.chatInsights,
+                  onTap: () {
+                    final workspaceId = sl<WorkspaceIdStorage>().get();
+                    if (workspaceId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(context.tr.messagesWorkspaceMissing)),
+                      );
+                      return;
+                    }
+                    sl<AppNavigator>().push(
+                      screen: BlocProvider(
+                        create: (_) => sl<ConversationInsightsCubit>()
+                          ..load(
+                            workspaceId: workspaceId,
+                            chatId: widget.chatId,
+                          ),
+                        child: const ConversationInsightsView(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 12),
+                child: _TopActionIconButton(
+                  iconPath: AppIcons.chatPolicy,
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      builder: (_) => const _ConversationPolicySheet(),
+                    );
+                  },
+                ),
+              ),
+            ],
             titleSpacing: 0,
             title: Row(
               children: [
@@ -314,10 +359,10 @@ class _ChatViewState extends State<ChatView> {
                 builder: (context, state) {
                   return Container(
                     padding: EdgeInsetsDirectional.only(
-                      start: 16,
-                      end: 8,
-                      top: 10,
-                      bottom: MediaQuery.of(context).padding.bottom + 10,
+                      start: 16.w,
+                      end: 16.w,
+                      top: 10.h,
+                      bottom: MediaQuery.of(context).padding.bottom + 10.h,
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.background,
@@ -335,10 +380,10 @@ class _ChatViewState extends State<ChatView> {
                         if (state.pendingAttachmentNames.isNotEmpty)
                           Container(
                             width: double.infinity,
-                            margin: const EdgeInsetsDirectional.only(
-                              start: 6,
-                              end: 6,
-                              bottom: 8,
+                            margin: EdgeInsetsDirectional.only(
+                              start: 6.w,
+                              end: 6.w,
+                              bottom: 8.h,
                             ),
                             padding: const EdgeInsetsDirectional.only(
                               start: 10,
@@ -464,89 +509,79 @@ class _ChatViewState extends State<ChatView> {
                               ],
                             ),
                           ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: state.isSending
-                                  ? null
-                                  : () => context
-                                        .read<ChatDetailCubit>()
-                                        .pickFiles(),
-                              icon: const Icon(
-                                Iconsax.paperclip,
-                                color: AppColors.darkText,
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            14.w,
+                            8.h,
+                            8.w,
+                            8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(28.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 12,
+                                offset: const Offset(0, 2),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: state.isSending
-                                  ? null
-                                  : () => context
-                                        .read<ChatDetailCubit>()
-                                        .pickMedia(),
-                              icon: const Icon(
-                                Iconsax.gallery,
-                                color: AppColors.darkText,
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.scaffoldBg,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: AppColors.darkText.withValues(
-                                      alpha: 0.05,
-                                    ),
-                                  ),
-                                ),
+                            ],
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Expanded(
                                 child: TextField(
                                   controller: _messageController,
                                   readOnly: state.isSending,
+                                  minLines: 1,
+                                  maxLines: 5,
                                   textAlign: TextAlign.start,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
                                   decoration: InputDecoration(
+                                    isDense: true,
+                                    isCollapsed: false,
                                     hintText: context.tr.chatTypeMessageHint,
                                     hintStyle: AppTextStyles.caption(
-                                      color: AppColors.greyText,
-                                    ),
+                                      color: AppColors.captionText,
+                                    ).copyWith(fontSize: 14.sp),
                                     border: InputBorder.none,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 14,
+                                    contentPadding:
+                                        EdgeInsetsDirectional.fromSTEB(
+                                      4.w,
+                                      10.h,
+                                      8.w,
+                                      10.h,
                                     ),
                                   ),
-                                  style: AppTextStyles.bodyMedium(),
+                                  style: AppTextStyles.bodyMedium(
+                                    color: AppColors.greyText,
+                                  ).copyWith(fontSize: 15.sp),
                                   onSubmitted: state.isSending
                                       ? null
                                       : (_) => _submitMessage(context),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              width: 44,
-                              height: 44,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
+                              SizedBox(width: 4.w),
+                              _ChatInputCircleButton(
+                                isLoading: state.isSending,
+                                icon: Iconsax.send_2,
+                                onPressed: state.isSending
+                                    ? null
+                                    : () => _submitMessage(context),
                               ),
-                              child: state.isSending
-                                  ? const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: AppColors.darkText,
-                                      ),
-                                    )
-                                  : IconButton(
-                                      onPressed: () => _submitMessage(context),
-                                      icon: const Icon(
-                                        Icons.send_rounded,
-                                        size: 20,
-                                        color: AppColors.darkText,
-                                      ),
-                                    ),
-                            ),
-                          ],
+                              SizedBox(width: 8.w),
+                              _ChatInputCircleButton(
+                                icon: Iconsax.paperclip,
+                                onPressed: state.isSending
+                                    ? null
+                                    : () =>
+                                        _showChatAttachmentOptions(context),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -563,6 +598,107 @@ class _ChatViewState extends State<ChatView> {
   void _submitMessage(BuildContext context) {
     FocusScope.of(context).unfocus();
     context.read<ChatDetailCubit>().sendMessage(_messageController.text);
+  }
+
+  void _showChatAttachmentOptions(BuildContext context) {
+    final tr = context.tr;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 4.h),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  tr.chatAttachMenuTitle,
+                  style: AppTextStyles.heading2(color: AppColors.darkText)
+                      .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Iconsax.gallery, color: AppColors.darkText),
+              title: Text(
+                tr.chatAttachFromGallery,
+                style: AppTextStyles.body(color: AppColors.darkText),
+              ),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                if (!context.mounted) return;
+                context.read<ChatDetailCubit>().pickMedia();
+              },
+            ),
+            ListTile(
+              leading: Icon(Iconsax.document, color: AppColors.darkText),
+              title: Text(
+                tr.chatAttachFromFiles,
+                style: AppTextStyles.body(color: AppColors.darkText),
+              ),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                if (!context.mounted) return;
+                context.read<ChatDetailCubit>().pickFiles();
+              },
+            ),
+            SizedBox(height: 8.h),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatInputCircleButton extends StatelessWidget {
+  const _ChatInputCircleButton({
+    required this.icon,
+    required this.onPressed,
+    this.isLoading = false,
+  });
+
+  final IconData icon;
+  final VoidCallback? onPressed;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: isLoading ? null : onPressed,
+        customBorder: const CircleBorder(),
+        child: Ink(
+          width: 44.w,
+          height: 44.w,
+          decoration: const BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: isLoading
+                ? SizedBox(
+                    width: 22.w,
+                    height: 22.w,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.white,
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    color: AppColors.white,
+                    size: 22.sp,
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -683,11 +819,207 @@ class _ToneAssistantSheet extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.darkText,
+                    side: BorderSide(
+                      color: AppColors.darkText.withValues(alpha: 0.12),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: onClose,
+                  child: Text(
+                    context.tr.chatToneSendAsIs,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
               const SizedBox(height: 8),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _TopActionIconButton extends StatelessWidget {
+  const _TopActionIconButton({required this.iconPath, required this.onTap});
+
+  final String iconPath;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(99),
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
+          color: AppColors.background,
+        ),
+        child: Center(
+          child: AppIcons.icon(icon: iconPath, size: 30.w),
+        ),
+      ),
+    );
+  }
+}
+
+class _ConversationPolicySheet extends StatelessWidget {
+  const _ConversationPolicySheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 10),
+        decoration: const BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadiusDirectional.only(
+            topStart: Radius.circular(28),
+            topEnd: Radius.circular(28),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            start: 20,
+            end: 20,
+            top: 24,
+            bottom: 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary.withValues(alpha: 0.18),
+                    ),
+                    child: Center(
+                      child: AppIcons.icon(
+                        icon: AppIcons.chatPolicy,
+                        size: 30.w,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      context.tr.chatPolicyTitle,
+                      style: AppTextStyles.heading2(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _PolicyItem(
+                icon: Icons.delete_outline_rounded,
+                title: context.tr.chatPolicyDeletionTitle,
+                description: context.tr.chatPolicyDeletionDescription,
+              ),
+              const SizedBox(height: 16),
+              _PolicyItem(
+                icon: Icons.history_rounded,
+                title: context.tr.chatPolicyHistoryTitle,
+                description: context.tr.chatPolicyHistoryDescription,
+              ),
+              const SizedBox(height: 16),
+              _PolicyItem(
+                icon: Icons.gavel_rounded,
+                title: context.tr.chatPolicyLegalTitle,
+                description: context.tr.chatPolicyLegalDescription,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.darkText,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    context.tr.chatPolicyAcknowledge,
+                    style: AppTextStyles.button().copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PolicyItem extends StatelessWidget {
+  const _PolicyItem({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary.withValues(alpha: 0.15),
+          ),
+          child: Icon(icon, size: 20, color: AppColors.primary),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.bodyMedium().copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: AppTextStyles.caption(color: AppColors.greyText),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -746,6 +1078,35 @@ class _ChatBubble extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (message.isFlagged)
+                      Container(
+                        margin: const EdgeInsetsDirectional.only(bottom: 8),
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFE8E7),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.warning_amber_rounded,
+                              size: 14,
+                              color: Color(0xFFD43C38),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              context.tr.chatFlaggedMessage,
+                              style: AppTextStyles.extraSmall(
+                                color: const Color(0xFFD43C38),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     if (message.text.isNotEmpty)
                       Text(
                         message.text,

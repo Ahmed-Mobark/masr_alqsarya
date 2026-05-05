@@ -14,7 +14,6 @@ class AddScheduleState extends Equatable {
     this.selectedChild,
     this.selectedDate,
     this.selectedTime,
-    this.selectedEndDate,
     this.selectedEndTime,
     this.note,
     this.selectedCategoryId,
@@ -24,11 +23,16 @@ class AddScheduleState extends Equatable {
     this.createdCall,
   });
 
-  factory AddScheduleState.initial() => AddScheduleState(
-        focusedMonth: DateTime.now(),
-        selectedDay: DateTime.now(),
-        selectedEventType: null,
-      );
+  factory AddScheduleState.initial() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return AddScheduleState(
+      focusedMonth: DateTime(today.year, today.month, 1),
+      selectedDay: today,
+      selectedDate: today,
+      selectedEventType: null,
+    );
+  }
 
   final DateTime focusedMonth;
   final DateTime selectedDay;
@@ -37,7 +41,6 @@ class AddScheduleState extends Equatable {
   final String? selectedChild;
   final DateTime? selectedDate;
   final TimeOfDay? selectedTime;
-  final DateTime? selectedEndDate;
   final TimeOfDay? selectedEndTime;
   final String? note;
   final int? selectedCategoryId;
@@ -48,6 +51,16 @@ class AddScheduleState extends Equatable {
 
   bool get isCall => selectedEventType == 'audio_call' || selectedEventType == 'video_call';
   bool get isSimpleEvent => selectedEventType == 'simple_event';
+
+  /// Both times set on the same day and end is not strictly after start.
+  bool get hasInvalidEndBeforeStart {
+    final s = selectedTime;
+    final e = selectedEndTime;
+    if (s == null || e == null) return false;
+    final sm = s.hour * 60 + s.minute;
+    final em = e.hour * 60 + e.minute;
+    return em <= sm;
+  }
 
   AddScheduleState copyWith({
     DateTime? focusedMonth,
@@ -61,8 +74,6 @@ class AddScheduleState extends Equatable {
     bool clearSelectedDate = false,
     TimeOfDay? selectedTime,
     bool clearSelectedTime = false,
-    DateTime? selectedEndDate,
-    bool clearSelectedEndDate = false,
     TimeOfDay? selectedEndTime,
     bool clearSelectedEndTime = false,
     String? note,
@@ -86,8 +97,6 @@ class AddScheduleState extends Equatable {
           clearSelectedChild ? null : (selectedChild ?? this.selectedChild),
       selectedDate: clearSelectedDate ? null : (selectedDate ?? this.selectedDate),
       selectedTime: clearSelectedTime ? null : (selectedTime ?? this.selectedTime),
-      selectedEndDate:
-          clearSelectedEndDate ? null : (selectedEndDate ?? this.selectedEndDate),
       selectedEndTime:
           clearSelectedEndTime ? null : (selectedEndTime ?? this.selectedEndTime),
       note: clearNote ? null : (note ?? this.note),
@@ -110,7 +119,6 @@ class AddScheduleState extends Equatable {
         selectedChild,
         selectedDate,
         selectedTime,
-        selectedEndDate,
         selectedEndTime,
         note,
         selectedCategoryId,

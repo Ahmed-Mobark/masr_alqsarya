@@ -11,8 +11,11 @@ import 'package:masr_al_qsariya/features/auth/domain/repositories/auth_repositor
 import 'package:masr_al_qsariya/features/auth/domain/usecases/login_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/add_child_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/invite_co_partner_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/manage_family_invitation_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/join_workspace_by_code_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/register_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/change_password_usecase.dart';
+import 'package:masr_al_qsariya/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/verify_reset_code_usecase.dart';
@@ -77,6 +80,20 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> changePassword(ChangePasswordParams params) {
+    return handleEither(() async {
+      await _remote.changePassword(params);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAccount(DeleteAccountParams params) {
+    return handleEither(() async {
+      await _remote.deleteAccount(params);
+    });
+  }
+
+  @override
   Future<Either<Failure, void>> logout() {
     return handleEither(() async {
       await _remote.logout();
@@ -103,6 +120,24 @@ class AuthRepositoryImpl with RepositoryHelper implements AuthRepository {
   Future<Either<Failure, void>> inviteCoPartner(InviteCoPartnerParams params) {
     return handleEither(() async {
       await _remote.inviteCoPartner(params);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> resendFamilyInvitation(
+    ResendFamilyInvitationParams params,
+  ) {
+    return handleEither(() async {
+      await _remote.resendFamilyInvitation(params);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> cancelFamilyInvitation(
+    CancelFamilyInvitationParams params,
+  ) {
+    return handleEither(() async {
+      await _remote.cancelFamilyInvitation(params);
     });
   }
 

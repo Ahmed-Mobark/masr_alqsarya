@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:masr_al_qsariya/core/data/dummy_data.dart';
-import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/features/home/domain/entities/recent_activity.dart';
 
 class ActivityItemTile extends StatelessWidget {
   const ActivityItemTile({
@@ -12,29 +11,35 @@ class ActivityItemTile extends StatelessWidget {
     this.onTap,
   });
 
-  final ActivityItem item;
+  final RecentActivity item;
   final VoidCallback? onTap;
 
-  String _title(BuildContext context) {
-    return switch (item.titleKey) {
-      'newEvent' => context.tr.homeNewEvent,
-      'newSession' => context.tr.homeNewSession,
-      'pendingCost' => context.tr.homePendingCost(2),
-      _ => item.titleKey,
-    };
+  IconData _iconForKind(String kind) {
+    switch (kind) {
+      case 'live_session':
+        return Icons.videocam_outlined;
+      case 'session_library_item':
+        return Icons.play_circle_outline_rounded;
+      case 'news_feed':
+        return Icons.article_outlined;
+      default:
+        return Icons.notifications_none_rounded;
+    }
   }
 
-  String? _action(BuildContext context) {
-    if (item.actionKey == null) return null;
-    return switch (item.actionKey!) {
-      'review' => context.tr.homeReview,
-      _ => item.actionKey,
-    };
+  String _subtitle() {
+    final details = item.description.trim().isNotEmpty
+        ? item.description.trim()
+        : (item.personaName?.trim().isNotEmpty ?? false)
+            ? item.personaName!.trim()
+            : '';
+    if (details.isEmpty) return item.occurredAt;
+    return '${item.occurredAt} - $details';
   }
 
   @override
   Widget build(BuildContext context) {
-    final actionLabel = _action(context);
+    final actionLabel = item.actionLabel;
 
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
@@ -68,7 +73,7 @@ class ActivityItemTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
-                  item.icon,
+                  _iconForKind(item.kind),
                   size: 22.sp,
                   color: AppColors.yellow,
                 ),
@@ -80,7 +85,7 @@ class ActivityItemTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _title(context),
+                      item.title,
                       style: AppTextStyles.bodyMedium(
                         color: AppColors.darkText,
                       ).copyWith(
@@ -90,7 +95,7 @@ class ActivityItemTile extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      item.subtitle,
+                      _subtitle(),
                       style: AppTextStyles.caption(
                         color: AppColors.greyText,
                       ).copyWith(fontSize: 12.sp, height: 1.3),

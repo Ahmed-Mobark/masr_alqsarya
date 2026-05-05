@@ -8,6 +8,7 @@ class ChatMessage extends Equatable {
     this.createdAtIso,
     this.senderId,
     this.attachments = const [],
+    this.isFlagged = false,
   });
 
   final int id;
@@ -15,7 +16,15 @@ class ChatMessage extends Equatable {
   final String? createdAtIso;
   final int? senderId;
   final List<ChatAttachment> attachments;
+  final bool isFlagged;
 
   @override
-  List<Object?> get props => [id, body, createdAtIso, senderId, attachments];
+  List<Object?> get props => [
+        id,
+        body,
+        createdAtIso,
+        senderId,
+        attachments,
+        isFlagged,
+      ];
 }

@@ -5,6 +5,7 @@ import 'package:masr_al_qsariya/features/family_workspace/data/models/family_wor
 abstract class FamilyWorkspaceRemoteDataSource {
   Future<List<FamilyWorkspaceMemberModel>> getMembers({
     required int workspaceId,
+    String? role,
   });
 }
 
@@ -16,14 +17,18 @@ class FamilyWorkspaceRemoteDataSourceImpl
   @override
   Future<List<FamilyWorkspaceMemberModel>> getMembers({
     required int workspaceId,
+    String? role,
   }) async {
+    final queryParameters = <String, String>{
+      'workspace_id': workspaceId.toString(),
+    };
+    if (role != null && role.trim().isNotEmpty) {
+      queryParameters['role'] = role.trim();
+    }
+
     final url = Uri(
       path: AppEndpoints.familyWorkspaceMembers,
-      queryParameters: {
-        'role': 'child',
-        // Backend expects workspace_id as query param (matches Postman).
-        'workspace_id': workspaceId.toString(),
-      },
+      queryParameters: queryParameters,
     ).toString();
 
     final response = await _api.get<Map<String, dynamic>>(

@@ -77,6 +77,17 @@ class _AddScheduleBody extends StatelessWidget {
             }
           },
           builder: (context, state) {
+            final now = DateTime.now();
+            final todayCalendar = DateTime(now.year, now.month, now.day);
+            final minFocusedMonth = DateTime(
+              todayCalendar.year,
+              todayCalendar.month,
+              1,
+            );
+            final canGoToPreviousMonth = state.focusedMonth.isAfter(
+              minFocusedMonth,
+            );
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -93,22 +104,27 @@ class _AddScheduleBody extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () => cubit.changeMonth(-1),
-                        child: Row(
-                          children: [
-                            Text(
-                              _monthString(context, state.focusedMonth),
-                              style: AppTextStyles.heading2(
+                        onTap: canGoToPreviousMonth
+                            ? () => cubit.changeMonth(-1)
+                            : null,
+                        child: Opacity(
+                          opacity: canGoToPreviousMonth ? 1 : 0.35,
+                          child: Row(
+                            children: [
+                              Text(
+                                _monthString(context, state.focusedMonth),
+                                style: AppTextStyles.heading2(
+                                  color: AppColors.darkText,
+                                ).copyWith(fontSize: 16.sp),
+                              ),
+                              SizedBox(width: 4.w),
+                              Icon(
+                                Iconsax.arrow_down_1,
+                                size: 16.sp,
                                 color: AppColors.darkText,
-                              ).copyWith(fontSize: 16.sp),
-                            ),
-                            SizedBox(width: 4.w),
-                            Icon(
-                              Iconsax.arrow_down_1,
-                              size: 16.sp,
-                              color: AppColors.darkText,
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       GestureDetector(
@@ -139,10 +155,8 @@ class _AddScheduleBody extends StatelessWidget {
                   child: _CalendarGrid(
                     focusedMonth: state.focusedMonth,
                     selectedDay: state.selectedDate ?? state.selectedDay,
-                    onSelectDay: (d) {
-                      cubit.selectDay(d);
-                      cubit.setDate(d);
-                    },
+                    minimumSelectableDate: todayCalendar,
+                    onSelectDay: cubit.selectDay,
                   ),
                 ),
                 Padding(
@@ -183,58 +197,39 @@ class _AddScheduleBody extends StatelessWidget {
                       SizedBox(height: 16.h),
 
                       Text(
-                        '${context.tr.scheduleDate} (Start)',
+                        context.tr.scheduleDate,
                         style: AppTextStyles.bodyMedium(
                           color: AppColors.darkText,
                         ).copyWith(fontSize: 14.sp),
                       ),
                       SizedBox(height: 8.h),
                       _DateField(
-                        value: state.selectedDate == null
-                            ? context.tr.scheduleSelect
-                            : DateFormat("M/d/yyyy'T'HH:mm:ss").format(
-                                context.read<AddScheduleCubit>().scheduledStartsAt()!,
-                              ),
-                        onTap: () => _showCompactDatePickerSheet(
-                          context: context,
-                          focusedMonth: state.focusedMonth,
-                          selected: state.selectedDate ?? state.selectedDay,
-                          onMonthChanged: cubit.changeMonth,
-                          onSelected: (d) {
-                            cubit.selectDay(d);
-                            cubit.setDate(d);
-                          },
-                        ),
+                        value: DateFormat.yMMMd(
+                          Localizations.localeOf(context).toString(),
+                        ).format(state.selectedDate ?? state.selectedDay),
+                        onTap: null,
                       ),
 
                       SizedBox(height: 16.h),
 
                       Text(
-                        '${context.tr.scheduleTime} (Start)',
+                        context.tr.scheduleTimeStart,
                         style: AppTextStyles.bodyMedium(
                           color: AppColors.darkText,
                         ).copyWith(fontSize: 14.sp),
                       ),
                       SizedBox(height: 8.h),
                       _TimeField(
-                        value: state.selectedTime?.format(context) ??
+                        value:
+                            state.selectedTime?.format(context) ??
                             context.tr.scheduleSelect,
                         onTap: () async {
-                          final time = await showTimePicker(
-                            context: context,
-                            initialTime: state.selectedTime ?? const TimeOfDay(hour: 9, minute: 0),
-                            builder: (context, child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  colorScheme: const ColorScheme.light(
-                                    primary: AppColors.primaryDark,
-                                    onPrimary: Colors.white,
-                                    surface: AppColors.background,
-                                  ),
-                                ),
-                                child: child!,
-                              );
-                            },
+                          final time = await _pickTime(
+                            context,
+                            initialTime:
+                                state.selectedTime ??
+                                const TimeOfDay(hour: 9, minute: 0),
+                            helpText: context.tr.scheduleTimeStart,
                           );
                           if (time != null) cubit.setTime(time);
                         },
@@ -242,61 +237,37 @@ class _AddScheduleBody extends StatelessWidget {
 
                       SizedBox(height: 16.h),
                       Text(
-                        '${context.tr.scheduleDate} (End)',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.darkText,
-                        ).copyWith(fontSize: 14.sp),
-                      ),
-                      SizedBox(height: 8.h),
-                      _DateField(
-                        value: state.selectedEndDate == null
-                            ? context.tr.scheduleSelect
-                            : DateFormat("M/d/yyyy'T'HH:mm:ss").format(
-                                DateTime(
-                                  state.selectedEndDate!.year,
-                                  state.selectedEndDate!.month,
-                                  state.selectedEndDate!.day,
-                                ),
-                              ),
-                        onTap: () => _showCompactDatePickerSheet(
-                          context: context,
-                          focusedMonth: state.focusedMonth,
-                          selected: state.selectedEndDate ??
-                              (state.selectedDate ?? state.selectedDay),
-                          onMonthChanged: cubit.changeMonth,
-                          onSelected: cubit.setEndDate,
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        '${context.tr.scheduleTime} (End)',
+                        context.tr.scheduleTimeEnd,
                         style: AppTextStyles.bodyMedium(
                           color: AppColors.darkText,
                         ).copyWith(fontSize: 14.sp),
                       ),
                       SizedBox(height: 8.h),
                       _TimeField(
-                        value: state.selectedEndTime?.format(context) ??
+                        value:
+                            state.selectedEndTime?.format(context) ??
                             context.tr.scheduleSelect,
                         onTap: () async {
-                          final time = await showTimePicker(
-                            context: context,
+                          final time = await _pickTime(
+                            context,
                             initialTime:
-                                state.selectedEndTime ?? TimeOfDay.now(),
-                            builder: (context, child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  colorScheme: const ColorScheme.light(
-                                    primary: AppColors.primaryDark,
-                                    onPrimary: Colors.white,
-                                    surface: AppColors.background,
-                                  ),
-                                ),
-                                child: child!,
-                              );
-                            },
+                                state.selectedEndTime ??
+                                state.selectedTime ??
+                                const TimeOfDay(hour: 17, minute: 0),
+                            helpText: context.tr.scheduleTimeEnd,
                           );
-                          if (time != null) cubit.setEndTime(time);
+                          if (time != null) {
+                            final ok = cubit.setEndTime(time);
+                            if (!ok && context.mounted) {
+                              await appToast(
+                                context: context,
+                                type: ToastType.error,
+                                message: context
+                                    .tr
+                                    .scheduleErrorEndTimeNotAfterStart,
+                              );
+                            }
+                          }
                         },
                       ),
 
@@ -340,7 +311,8 @@ class _AddScheduleBody extends StatelessWidget {
                           height: 52.h,
                           child: ElevatedButton(
                             onPressed:
-                                state.status == AddScheduleStatus.submitting
+                                state.status == AddScheduleStatus.submitting ||
+                                    state.hasInvalidEndBeforeStart
                                 ? null
                                 : () async {
                                     await cubit.submit();
@@ -365,7 +337,7 @@ class _AddScheduleBody extends StatelessWidget {
                                     ),
                                   )
                                 : Text(
-                                    'Save',
+                                    context.tr.commonSave,
                                     style:
                                         AppTextStyles.bodyMedium(
                                           color: AppColors.darkText,
@@ -440,6 +412,32 @@ class _AddScheduleBody extends StatelessWidget {
     return DateFormat.MMMM(localeName).format(date);
   }
 
+  /// Numeric time entry (no analog dial) — simpler than default [TimePickerEntryMode.dial].
+  Future<TimeOfDay?> _pickTime(
+    BuildContext context, {
+    required TimeOfDay initialTime,
+    String? helpText,
+  }) {
+    return showTimePicker(
+      context: context,
+      initialTime: initialTime,
+      initialEntryMode: TimePickerEntryMode.input,
+      helpText: helpText,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primaryDark,
+              onPrimary: Colors.white,
+              surface: AppColors.background,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+  }
+
   String _localizeError(BuildContext context, String raw) {
     final msg = raw.trim();
     if (msg.isEmpty) return context.tr.sorryMessage;
@@ -452,6 +450,9 @@ class _AddScheduleBody extends StatelessWidget {
     if (msg == 'missing_start_date') {
       return context.tr.scheduleErrorStartDateRequired;
     }
+    if (msg == 'end_time_not_after_start') {
+      return context.tr.scheduleErrorEndTimeNotAfterStart;
+    }
 
     // Backend validation message (as seen in screenshot)
     final lower = msg.toLowerCase();
@@ -463,105 +464,19 @@ class _AddScheduleBody extends StatelessWidget {
 
     return msg;
   }
-
-  Future<void> _showCompactDatePickerSheet({
-    required BuildContext context,
-    required DateTime focusedMonth,
-    required DateTime selected,
-    required void Function(int delta) onMonthChanged,
-    required ValueChanged<DateTime> onSelected,
-  }) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
-      ),
-      builder: (context) {
-        // This sheet is purely UI; state is still driven by the cubit.
-        return Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(16.w, 12.h, 16.w, 16.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 44.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: AppColors.border,
-                  borderRadius: BorderRadius.circular(999.r),
-                ),
-              ),
-              SizedBox(height: 12.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => onMonthChanged(-1),
-                    child: Row(
-                      children: [
-                        Text(
-                          _monthString(context, focusedMonth),
-                          style: AppTextStyles.heading2(
-                            color: AppColors.darkText,
-                          ).copyWith(fontSize: 16.sp),
-                        ),
-                        SizedBox(width: 4.w),
-                        Icon(
-                          Iconsax.arrow_down_1,
-                          size: 16.sp,
-                          color: AppColors.darkText,
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => onMonthChanged(1),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${focusedMonth.year}',
-                          style: AppTextStyles.heading2(
-                            color: AppColors.darkText,
-                          ).copyWith(fontSize: 16.sp),
-                        ),
-                        SizedBox(width: 4.w),
-                        Icon(
-                          Iconsax.arrow_down_1,
-                          size: 16.sp,
-                          color: AppColors.darkText,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8.h),
-              _CalendarGrid(
-                focusedMonth: focusedMonth,
-                selectedDay: selected,
-                onSelectDay: (d) {
-                  onSelected(d);
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
 
 class _CalendarGrid extends StatelessWidget {
   const _CalendarGrid({
     required this.focusedMonth,
     required this.selectedDay,
+    required this.minimumSelectableDate,
     required this.onSelectDay,
   });
 
   final DateTime focusedMonth;
   final DateTime selectedDay;
+  final DateTime minimumSelectableDate;
   final ValueChanged<DateTime> onSelectDay;
 
   @override
@@ -609,7 +524,9 @@ class _CalendarGrid extends StatelessWidget {
                 focusedMonth.month,
                 dayIndex,
               );
+              final isDisabled = date.isBefore(minimumSelectableDate);
               final isSelected =
+                  !isDisabled &&
                   date.year == selectedDay.year &&
                   date.month == selectedDay.month &&
                   date.day == selectedDay.day;
@@ -620,14 +537,15 @@ class _CalendarGrid extends StatelessWidget {
 
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => onSelectDay(date),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: isDisabled ? null : () => onSelectDay(date),
                   child: Container(
                     height: 44.h,
                     margin: EdgeInsets.all(1.w),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFF5B7FFF)
-                          : isToday
+                          ? AppColors.blue
+                          : isToday && !isDisabled
                           ? AppColors.primary.withValues(alpha: 0.2)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(10.r),
@@ -636,7 +554,11 @@ class _CalendarGrid extends StatelessWidget {
                       child: Text(
                         '$dayIndex',
                         style: AppTextStyles.smallMedium(
-                          color: isSelected ? Colors.white : AppColors.bodyText,
+                          color: isSelected
+                              ? Colors.white
+                              : isDisabled
+                              ? AppColors.greyText.withValues(alpha: 0.45)
+                              : AppColors.bodyText,
                         ).copyWith(fontSize: 14.sp),
                       ),
                     ),
@@ -661,49 +583,50 @@ class _CalendarGrid extends StatelessWidget {
 }
 
 class _DateField extends StatelessWidget {
-  const _DateField({required this.value, required this.onTap});
+  const _DateField({required this.value, this.onTap});
 
   final String value;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final field = InputDecorator(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.background,
+        contentPadding: EdgeInsetsDirectional.fromSTEB(14.w, 14.h, 14.w, 14.h),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: AppColors.border),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: AppColors.border),
+        ),
+        prefixIcon: Icon(
+          Iconsax.calendar,
+          size: 18.sp,
+          color: onTap == null ? AppColors.greyText : AppColors.primary,
+        ),
+      ),
+      child: Text(
+        value,
+        style: AppTextStyles.bodyMedium(
+          color: onTap == null ? AppColors.greyText : AppColors.darkText,
+        ).copyWith(fontSize: 14.sp),
+      ),
+    );
+
+    if (onTap == null) {
+      return field;
+    }
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
-        child: InputDecorator(
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: AppColors.background,
-            contentPadding: EdgeInsetsDirectional.fromSTEB(
-              14.w,
-              14.h,
-              14.w,
-              14.h,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: AppColors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: AppColors.primary, width: 1.2),
-            ),
-            prefixIcon: Icon(
-              Iconsax.calendar,
-              size: 18.sp,
-              color: AppColors.primary,
-            ),
-          ),
-          child: Text(
-            value,
-            style: AppTextStyles.bodyMedium(
-              color: AppColors.darkText,
-            ).copyWith(fontSize: 14.sp),
-          ),
-        ),
+        child: field,
       ),
     );
   }

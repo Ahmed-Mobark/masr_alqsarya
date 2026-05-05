@@ -331,7 +331,7 @@ class _AddExpenseViewState extends State<AddExpenseView> {
             final cubit = sl<FamilyWorkspaceMembersCubit>();
             final workspaceId = sl<WorkspaceIdStorage>().get();
             if (workspaceId != null) {
-              cubit.load(workspaceId: workspaceId);
+              cubit.load(workspaceId: workspaceId, role: 'child');
             }
             return cubit;
           },

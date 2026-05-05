@@ -426,6 +426,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountSecurityChangePassword => 'Change Password';
 
   @override
+  String get accountSecurityChangePasswordSubtitle =>
+      'Enter your current password, then choose a new password.';
+
+  @override
+  String get accountSecurityCurrentPasswordLabel => 'Current Password';
+
+  @override
+  String get accountSecurityPasswordChangedSuccess =>
+      'Your password was updated successfully.';
+
+  @override
   String get accountSecurityEmailMissingForPassword =>
       'Your account has no email address. Add one before changing your password.';
 
@@ -441,10 +452,178 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete your account? This action cannot be undone.';
 
   @override
+  String get accountSecurityDeletePasswordPrompt =>
+      'Enter your current password to confirm.';
+
+  @override
+  String get accountSecurityDeleteConfirmAction => 'Delete permanently';
+
+  @override
+  String get accountSecurityAccountDeleted => 'Your account has been deleted.';
+
+  @override
   String get languageDeviceLanguage => 'Device Language';
 
   @override
   String get familyInfoTitle => 'Family Information';
+
+  @override
+  String get familyInfoStatusLabel => 'Status';
+
+  @override
+  String get familyInfoStatusPending => 'Pending';
+
+  @override
+  String get familyInfoStatusActive => 'Active';
+
+  @override
+  String get familyInfoStatusApproved => 'Approved';
+
+  @override
+  String get familyInfoSectionFamily => 'Family Info';
+
+  @override
+  String get familyInfoSectionOwner => 'Account holder';
+
+  @override
+  String get familyInfoSectionCoParent => 'Co-parent Information';
+
+  @override
+  String get familyInfoSectionChild => 'Child Information';
+
+  @override
+  String get familyInfoSectionLawyer => 'Lawyer Information';
+
+  @override
+  String get familyInfoFieldName => 'name';
+
+  @override
+  String get familyInfoFieldEmail => 'Email';
+
+  @override
+  String get familyInfoFieldPhone => 'Phone Number';
+
+  @override
+  String get familyInfoFieldBirthDate => 'Birth Date';
+
+  @override
+  String get familyInfoNoWorkspace =>
+      'No workspace is selected. Please sign in again.';
+
+  @override
+  String get familyInfoRetry => 'Retry';
+
+  @override
+  String get familyInfoEmptyValue => '—';
+
+  @override
+  String get familyInfoProfessionalLawyerSubtitle =>
+      'Invite a therapist, lawyer, or someone else you trust. You can resend or cancel the invitation while it is still pending.';
+
+  @override
+  String get familyInfoSectionProfessional => 'Trusted contacts';
+
+  @override
+  String get familyInfoAddSomeoneFamilySpace =>
+      'Add someone to your Family space';
+
+  @override
+  String get inviteProfessionalTitle => 'Add someone to your Family space';
+
+  @override
+  String get inviteProfessionalSubtitle =>
+      'You can invite trusted people to participate in your child\'s care and communication.';
+
+  @override
+  String get inviteProfessionalTypeLabel => 'Type';
+
+  @override
+  String get inviteProfessionalTypeHint => 'Select type';
+
+  @override
+  String get inviteProfessionalTypeTherapist => 'Therapist';
+
+  @override
+  String get inviteProfessionalTypeLawyer => 'Lawyer';
+
+  @override
+  String get inviteProfessionalTypeOther => 'Other';
+
+  @override
+  String get inviteProfessionalFirstNameLabel => 'First name';
+
+  @override
+  String get inviteProfessionalLastNameLabel => 'Last name';
+
+  @override
+  String get inviteProfessionalEmailLabel => 'Email';
+
+  @override
+  String get inviteProfessionalPhoneLabel => 'Phone number';
+
+  @override
+  String get inviteProfessionalFirstNameHint => 'Enter first name';
+
+  @override
+  String get inviteProfessionalLastNameHint => 'Enter last name';
+
+  @override
+  String get inviteProfessionalEmailHint => 'Enter email address';
+
+  @override
+  String get inviteProfessionalPhoneHint => 'Enter phone number';
+
+  @override
+  String get inviteProfessionalContinue => 'Continue';
+
+  @override
+  String get familyInfoInviteLawyer => 'Invite lawyer';
+
+  @override
+  String get familyInfoInviteLawyerTitle => 'Send an invitation';
+
+  @override
+  String get familyInfoLawyerInviteSuccess => 'Invitation sent.';
+
+  @override
+  String get familyInfoInvitationStatus => 'Invitation status';
+
+  @override
+  String get familyInfoMemberStatusLabel => 'Status';
+
+  @override
+  String get familyInfoInvitationPending => 'Pending';
+
+  @override
+  String get familyInfoInvitationAccepted => 'Accepted';
+
+  @override
+  String get familyInfoInvitationCancelled => 'Cancelled';
+
+  @override
+  String get familyInfoInvitationExpired => 'Expired';
+
+  @override
+  String get familyInfoInvitationDeclined => 'Declined';
+
+  @override
+  String get familyInfoInvitationUnknown => 'Unknown';
+
+  @override
+  String get familyInfoResendInvitation => 'Resend';
+
+  @override
+  String get familyInfoCancelInvitation => 'Cancel';
+
+  @override
+  String get familyInfoResendInvitationSuccess => 'Invitation resent.';
+
+  @override
+  String get familyInfoCancelInvitationSuccess => 'Invitation cancelled.';
+
+  @override
+  String get familyInfoLawyerEmailMissing =>
+      'This invitation has no email on file. Pull to refresh or contact support.';
 
   @override
   String get familyChildrenTitle => 'Children';
@@ -1224,6 +1403,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleErrorStartDateRequired => 'Please select a start date.';
 
   @override
+  String get scheduleErrorEndTimeNotAfterStart =>
+      'End time must be after start time on the same day.';
+
+  @override
   String get scheduleCallExpired => 'Expired';
 
   @override
@@ -1264,6 +1447,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scheduleTime => 'Time';
+
+  @override
+  String get scheduleTimeStart => 'Start time';
+
+  @override
+  String get scheduleTimeEnd => 'End time';
 
   @override
   String get scheduleNotes => 'Notes';
@@ -1360,6 +1549,189 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeDocuments => 'Documents';
+
+  @override
+  String get sessionsScreenTitle => 'Sessions';
+
+  @override
+  String get sessionsNextAvailableTitle => 'Next Available Sessions';
+
+  @override
+  String get sessionsJoin => 'JOIN';
+
+  @override
+  String get sessionsBookSession => 'BOOK SESSION';
+
+  @override
+  String get sessionsPublic => 'Public';
+
+  @override
+  String get sessionsPrivate => 'Private';
+
+  @override
+  String get sessionsSampleExpertName => 'Dr. Kevin Lowe';
+
+  @override
+  String get sessionsSampleExpertRole => 'Family Mediator • PhD Psychology';
+
+  @override
+  String get sessionsTomorrow => 'Tomorrow';
+
+  @override
+  String get sessionsWednesdayShort => 'Wed';
+
+  @override
+  String get sessionsTime0930 => '09:30 AM';
+
+  @override
+  String get sessionsRatingValue => '4.9';
+
+  @override
+  String get sessionsLibraryTitle => 'Sessions Library';
+
+  @override
+  String get sessionsLibrarySearchHint => 'Search';
+
+  @override
+  String get sessionsLibraryFilterA11y => 'Filter';
+
+  @override
+  String get sessionsLibraryTabAll => 'All';
+
+  @override
+  String get sessionsLibraryTabPublicSessions => 'Public Sessions';
+
+  @override
+  String get sessionsLibraryTabPrivateRecordings => 'Private Recordings';
+
+  @override
+  String get sessionsLibraryWatchRecording => 'WATCH RECORDING';
+
+  @override
+  String get sessionsLibraryTagPublic => 'Public';
+
+  @override
+  String get sessionsLibraryTagVlog => 'Vlog';
+
+  @override
+  String get sessionsLibraryTagPlaylist => 'Playlist';
+
+  @override
+  String get sessionsLibrarySampleRecordingTitle =>
+      'Family Mediation – October 2026';
+
+  @override
+  String get sessionsLibrarySampleExpertName => 'Dr. Salma Hassan';
+
+  @override
+  String get sessionsLibrarySampleParticipantsAb => 'Parent A, Parent B';
+
+  @override
+  String get sessionsLibrarySampleFamiliesCount => '5 Families';
+
+  @override
+  String get sessionsLibrarySampleArchivedDate => 'Sept 12, 2026';
+
+  @override
+  String get sessionsLibraryLabelArchived => 'Archived';
+
+  @override
+  String get sessionsLibraryDurationSample => '45:30';
+
+  @override
+  String get sessionsLibraryEmpty => 'No recordings found.';
+
+  @override
+  String get sessionsLibraryTypeSingleVideo => 'Video';
+
+  @override
+  String get sessionsLibraryFilterSheetTitle => 'Filters';
+
+  @override
+  String get sessionsLibraryFilterSortLabel => 'Sort';
+
+  @override
+  String get sessionsLibraryFilterSortDesc => 'Newest first';
+
+  @override
+  String get sessionsLibraryFilterSortAsc => 'Oldest first';
+
+  @override
+  String get sessionsLibraryFilterExpertLabel => 'Expert';
+
+  @override
+  String get sessionsLibraryFilterExpertAll => 'All experts';
+
+  @override
+  String get sessionsLibraryFilterPerPageLabel => 'Items per page';
+
+  @override
+  String get sessionsLibraryFilterApply => 'Apply';
+
+  @override
+  String get sessionsLibraryFilterReset => 'Reset';
+
+  @override
+  String get sessionsLibraryWatchInAppTitle => 'Watch';
+
+  @override
+  String get sessionsLibraryWatchLoadFailed =>
+      'Could not open this link. Check your connection and try again.';
+
+  @override
+  String get sessionsEmpty => 'No sessions yet.';
+
+  @override
+  String get sessionsRetry => 'Try again';
+
+  @override
+  String get sessionsStatusUpcoming => 'Upcoming';
+
+  @override
+  String get sessionsStatusScheduled => 'Scheduled';
+
+  @override
+  String get sessionsStatusLive => 'Live';
+
+  @override
+  String get sessionsStatusEnded => 'Ended';
+
+  @override
+  String get sessionsStatusArchived => 'Archived';
+
+  @override
+  String get sessionLobbyTitle => 'Session Lobby';
+
+  @override
+  String get sessionLobbyScheduleTitle => 'Session Schedule';
+
+  @override
+  String get sessionLobbyRecordingConsentTitle => 'Recording Consent';
+
+  @override
+  String get sessionLobbyJoinSession => 'JOIN SESSION';
+
+  @override
+  String get sessionLobbyStartDateLabel => 'Start Date';
+
+  @override
+  String get sessionLobbyStartTimeLabel => 'Start Time';
+
+  @override
+  String get sessionLobbyDurationLabel => 'Duration';
+
+  @override
+  String sessionLobbyDurationValue(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get sessionLobbyConsentDefaultLine =>
+      'I consent to the recording of this session.';
+
+  @override
+  String get sessionLobbyRecordingPlaceholder =>
+      'This session may be recorded for documentation and security purposes.';
 
   @override
   String get documentsTitle => 'Documents';
@@ -1636,6 +2008,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatClearAttachments => 'Clear';
 
   @override
+  String get chatAttachMenuTitle => 'Add attachment';
+
+  @override
+  String get chatAttachFromGallery => 'Photos';
+
+  @override
+  String get chatAttachFromFiles => 'Files';
+
+  @override
   String get chatToneAssistantTitle => 'Tone Assistant Intervention';
 
   @override
@@ -1645,8 +2026,112 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatToneRephraseMessage => 'REPHRASE MESSAGE';
 
   @override
+  String get chatToneSendAsIs => 'SEND AS IS';
+
+  @override
   String get chatAttachmentViewAction => 'View';
 
   @override
+  String get chatFlaggedMessage => 'Flagged message';
+
+  @override
   String get chatImagePreviewFailed => 'Could not display the image';
+
+  @override
+  String get chatPolicyTitle => 'Conversation Policy';
+
+  @override
+  String get chatPolicyDeletionTitle => 'Message Deletion';
+
+  @override
+  String get chatPolicyDeletionDescription =>
+      'All sent messages are permanent. To maintain a transparent record for co-parenting safety, editing or deleting messages is not permitted.';
+
+  @override
+  String get chatPolicyHistoryTitle => 'Message History';
+
+  @override
+  String get chatPolicyHistoryDescription =>
+      'Every message is timestamped and logged securely. Read receipts and delivery status are permanently recorded in the system logs.';
+
+  @override
+  String get chatPolicyLegalTitle => 'Legal Notice';
+
+  @override
+  String get chatPolicyLegalDescription =>
+      'The entire conversation record can be exported as official documentation for legal proceedings or mediation requirements.';
+
+  @override
+  String get chatPolicyAcknowledge => 'I UNDERSTAND';
+
+  @override
+  String get chatInsightsTitle => 'Conversation Insights';
+
+  @override
+  String get chatInsightsToneTab => 'Tone Analysis';
+
+  @override
+  String get chatInsightsAuditTab => 'Audit Log';
+
+  @override
+  String get chatInsightsOverallTone => 'Overall Communication Tone';
+
+  @override
+  String get chatInsightsCalmNeutral => 'Calm & Neutral';
+
+  @override
+  String get chatInsightsHealthy => 'Healthy';
+
+  @override
+  String get chatInsightsOptimal => 'OPTIMAL';
+
+  @override
+  String get chatInsightsToneDescription =>
+      'Your communication remains consistently constructive and professional. No significant patterns of escalation detected this week.';
+
+  @override
+  String get chatInsightsRecentActivityTitle => 'Recent Activity & Flags';
+
+  @override
+  String get chatInsightsPassiveAggressiveFlag => 'Passive-Aggressive Flag';
+
+  @override
+  String get chatInsightsPassiveAggressiveExample =>
+      '\"I guess it\'s fine if you\'re late again...\"';
+
+  @override
+  String get chatInsightsToneCorrectionApplied => 'Tone Correction Applied';
+
+  @override
+  String get chatInsightsToneCorrectionDescription =>
+      'User edited a message to follow neutrality guidelines before sending.';
+
+  @override
+  String get chatInsightsActivityDate => 'Oct 24, 09:12 AM';
+
+  @override
+  String get chatInsightsAuditSectionTitle => 'Message Audit Log';
+
+  @override
+  String get chatInsightsIncidentCode => 'Incident #4291-B';
+
+  @override
+  String get chatInsightsOriginalText => 'Original Text (Draft/Redacted)';
+
+  @override
+  String get chatInsightsRevisedText => 'Revised Text (Sent)';
+
+  @override
+  String get chatInsightsOriginalExample =>
+      '\"You never inform me about the doctor\'s appointments until the last second. It\'s ridiculous.\"';
+
+  @override
+  String get chatInsightsRevisedExample =>
+      '\"Please inform me about the doctor\'s appointments as soon as they are scheduled. Thank you.\"';
+
+  @override
+  String get chatInsightsEmptyActivities => 'No recent alerts or corrections.';
+
+  @override
+  String get chatInsightsEmptyAuditLog => 'No audit entries yet.';
 }

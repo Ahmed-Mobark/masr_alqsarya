@@ -1,34 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:masr_al_qsariya/core/data/dummy_data.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/features/home/presentation/widgets/reschedule_bottom_sheet.dart';
 
 class AwaitingCard extends StatelessWidget {
   const AwaitingCard({
     super.key,
-    required this.item,
-    this.onTap,
+    required this.subtitle,
+    this.onJoin,
+    this.joinLoading = false,
   });
 
-  final AwaitingItem item;
-  final VoidCallback? onTap;
-
-  String _title(BuildContext context) {
-    return switch (item.titleKey) {
-      'upcomingCall' => context.tr.homeUpcomingCall,
-      _ => item.titleKey,
-    };
-  }
-
-  String _badge(BuildContext context) {
-    return switch (item.badgeKey) {
-      'reminder' => context.tr.homeReminder,
-      _ => item.badgeKey,
-    };
-  }
+  final String subtitle;
+  final VoidCallback? onJoin;
+  final bool joinLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +55,7 @@ class AwaitingCard extends StatelessWidget {
                   ),
                 ),
                 child: Icon(
-                  item.icon,
+                  Icons.phone_outlined,
                   size: 20.sp,
                   color: AppColors.yellow,
                 ),
@@ -81,7 +67,7 @@ class AwaitingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _title(context),
+                      context.tr.homeUpcomingCall,
                       style: AppTextStyles.bodyMedium(
                         color: AppColors.darkText,
                       ).copyWith(
@@ -91,7 +77,7 @@ class AwaitingCard extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      item.subtitle,
+                      subtitle,
                       style: AppTextStyles.caption(
                         color: AppColors.greyText,
                       ).copyWith(fontSize: 12.sp),
@@ -113,7 +99,7 @@ class AwaitingCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999.r),
                 ),
                 child: Text(
-                  _badge(context),
+                  context.tr.homeReminder,
                   style: AppTextStyles.small(
                     color: AppColors.yellow,
                   ).copyWith(
@@ -123,62 +109,35 @@ class AwaitingCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 14.h),
-          // Bottom: action buttons
-          Row(
-            children: [
-              // Confirm button (filled yellow)
-              Expanded(
-                child: SizedBox(
-                  height: 40.h,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.darkText,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999.r),
+          SizedBox(
+            width: double.infinity,
+            height: 40.h,
+            child: ElevatedButton(
+              onPressed: joinLoading ? null : onJoin,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.darkText,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999.r),
+                ),
+              ),
+              child: joinLoading
+                  ? SizedBox(
+                      width: 16.r,
+                      height: 16.r,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.darkText,
                       ),
-                    ),
-                    child: Text(
-                      context.tr.homeConfirm,
+                    )
+                  : Text(
+                      context.tr.scheduleJoin,
                       style: AppTextStyles.smallMedium(
                         color: AppColors.darkText,
-                      ).copyWith(
-                          fontSize: 12.sp, fontWeight: FontWeight.w700),
+                      ).copyWith(fontSize: 12.sp, fontWeight: FontWeight.w700),
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10.w),
-              // Request Reschedule button (outlined)
-              Expanded(
-                child: SizedBox(
-                  height: 40.h,
-                  child: OutlinedButton(
-                    onPressed: () => RescheduleBottomSheet.show(context),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.darkText,
-                      side: BorderSide(
-                          color: AppColors.darkText, width: 1.2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999.r),
-                      ),
-                    ),
-                    child: FittedBox(
-                      child: Text(
-                        context.tr.homeRequestReschedule,
-                        style: AppTextStyles.smallMedium(
-                          color: AppColors.darkText,
-                        ).copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),

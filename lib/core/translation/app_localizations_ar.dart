@@ -422,6 +422,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accountSecurityChangePassword => 'تغيير كلمة المرور';
 
   @override
+  String get accountSecurityChangePasswordSubtitle =>
+      'أدخل كلمة المرور الحالية، ثم اختر كلمة مرور جديدة.';
+
+  @override
+  String get accountSecurityCurrentPasswordLabel => 'كلمة المرور الحالية';
+
+  @override
+  String get accountSecurityPasswordChangedSuccess =>
+      'تم تحديث كلمة المرور بنجاح.';
+
+  @override
   String get accountSecurityEmailMissingForPassword =>
       'لا يوجد بريد إلكتروني مرتبط بحسابك. أضف بريدًا إلكترونيًا قبل تغيير كلمة المرور.';
 
@@ -436,10 +447,177 @@ class AppLocalizationsAr extends AppLocalizations {
       'هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.';
 
   @override
+  String get accountSecurityDeletePasswordPrompt =>
+      'أدخل كلمة المرور الحالية للتأكيد.';
+
+  @override
+  String get accountSecurityDeleteConfirmAction => 'حذف نهائي';
+
+  @override
+  String get accountSecurityAccountDeleted => 'تم حذف حسابك.';
+
+  @override
   String get languageDeviceLanguage => 'لغة الجهاز';
 
   @override
   String get familyInfoTitle => 'معلومات العائلة';
+
+  @override
+  String get familyInfoStatusLabel => 'الحالة';
+
+  @override
+  String get familyInfoStatusPending => 'قيد الانتظار';
+
+  @override
+  String get familyInfoStatusActive => 'نشط';
+
+  @override
+  String get familyInfoStatusApproved => 'مُعتمد';
+
+  @override
+  String get familyInfoSectionFamily => 'معلومات العائلة';
+
+  @override
+  String get familyInfoSectionOwner => 'صاحب الحساب';
+
+  @override
+  String get familyInfoSectionCoParent => 'معلومات الشريك';
+
+  @override
+  String get familyInfoSectionChild => 'معلومات الطفل';
+
+  @override
+  String get familyInfoSectionLawyer => 'معلومات المحامي';
+
+  @override
+  String get familyInfoFieldName => 'الاسم';
+
+  @override
+  String get familyInfoFieldEmail => 'البريد الإلكتروني';
+
+  @override
+  String get familyInfoFieldPhone => 'رقم الهاتف';
+
+  @override
+  String get familyInfoFieldBirthDate => 'تاريخ الميلاد';
+
+  @override
+  String get familyInfoNoWorkspace =>
+      'لم يتم اختيار مساحة عمل. يُرجى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get familyInfoRetry => 'إعادة المحاولة';
+
+  @override
+  String get familyInfoEmptyValue => '—';
+
+  @override
+  String get familyInfoProfessionalLawyerSubtitle =>
+      'ادعُ معالجاً أو محامياً أو شخصاً آخر. يمكنك إعادة إرسال الدعوة أو إلغاؤها ما دامت قيد الانتظار.';
+
+  @override
+  String get familyInfoSectionProfessional => 'أشخاص موثوقون';
+
+  @override
+  String get familyInfoAddSomeoneFamilySpace => 'إضافة شخص إلى مساحة عائلتك';
+
+  @override
+  String get inviteProfessionalTitle => 'إضافة شخص إلى مساحة عائلتك';
+
+  @override
+  String get inviteProfessionalSubtitle =>
+      'يمكنك دعوة أشخاص موثوقين للمشاركة في رعاية طفلك والتواصل.';
+
+  @override
+  String get inviteProfessionalTypeLabel => 'النوع';
+
+  @override
+  String get inviteProfessionalTypeHint => 'اختر النوع';
+
+  @override
+  String get inviteProfessionalTypeTherapist => 'معالج نفسي';
+
+  @override
+  String get inviteProfessionalTypeLawyer => 'محامٍ';
+
+  @override
+  String get inviteProfessionalTypeOther => 'آخر';
+
+  @override
+  String get inviteProfessionalFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get inviteProfessionalLastNameLabel => 'اسم العائلة';
+
+  @override
+  String get inviteProfessionalEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get inviteProfessionalPhoneLabel => 'رقم الهاتف';
+
+  @override
+  String get inviteProfessionalFirstNameHint => 'أدخل الاسم الأول';
+
+  @override
+  String get inviteProfessionalLastNameHint => 'أدخل اسم العائلة';
+
+  @override
+  String get inviteProfessionalEmailHint => 'أدخل البريد الإلكتروني';
+
+  @override
+  String get inviteProfessionalPhoneHint => 'أدخل رقم الهاتف';
+
+  @override
+  String get inviteProfessionalContinue => 'متابعة';
+
+  @override
+  String get familyInfoInviteLawyer => 'دعوة محامٍ';
+
+  @override
+  String get familyInfoInviteLawyerTitle => 'دعوة';
+
+  @override
+  String get familyInfoLawyerInviteSuccess => 'تم إرسال الدعوة.';
+
+  @override
+  String get familyInfoInvitationStatus => 'حالة الدعوة';
+
+  @override
+  String get familyInfoMemberStatusLabel => 'الحالة';
+
+  @override
+  String get familyInfoInvitationPending => 'قيد الانتظار';
+
+  @override
+  String get familyInfoInvitationAccepted => 'مقبولة';
+
+  @override
+  String get familyInfoInvitationCancelled => 'ملغاة';
+
+  @override
+  String get familyInfoInvitationExpired => 'منتهية';
+
+  @override
+  String get familyInfoInvitationDeclined => 'مرفوضة';
+
+  @override
+  String get familyInfoInvitationUnknown => 'غير معروف';
+
+  @override
+  String get familyInfoResendInvitation => 'إعادة الإرسال';
+
+  @override
+  String get familyInfoCancelInvitation => 'إلغاء';
+
+  @override
+  String get familyInfoResendInvitationSuccess => 'تمت إعادة إرسال الدعوة.';
+
+  @override
+  String get familyInfoCancelInvitationSuccess => 'تم إلغاء الدعوة.';
+
+  @override
+  String get familyInfoLawyerEmailMissing =>
+      'لا يوجد بريد لهذه الدعوة. اسحب للتحديث أو تواصل مع الدعم.';
 
   @override
   String get familyChildrenTitle => 'الأطفال';
@@ -1214,6 +1392,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scheduleErrorStartDateRequired => 'يرجى اختيار تاريخ البداية.';
 
   @override
+  String get scheduleErrorEndTimeNotAfterStart =>
+      'يجب أن يكون وقت الانتهاء بعد وقت البداية في نفس اليوم.';
+
+  @override
   String get scheduleCallExpired => 'انتهت';
 
   @override
@@ -1254,6 +1436,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scheduleTime => 'الوقت';
+
+  @override
+  String get scheduleTimeStart => 'وقت البداية';
+
+  @override
+  String get scheduleTimeEnd => 'وقت النهاية';
 
   @override
   String get scheduleNotes => 'ملاحظات';
@@ -1349,6 +1537,187 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeDocuments => 'المستندات';
+
+  @override
+  String get sessionsScreenTitle => 'الجلسات';
+
+  @override
+  String get sessionsNextAvailableTitle => 'أقرب المواعيد المتاحة';
+
+  @override
+  String get sessionsJoin => 'انضمام';
+
+  @override
+  String get sessionsBookSession => 'حجز جلسة';
+
+  @override
+  String get sessionsPublic => 'عامة';
+
+  @override
+  String get sessionsPrivate => 'خاصة';
+
+  @override
+  String get sessionsSampleExpertName => 'د. كيفن لو';
+
+  @override
+  String get sessionsSampleExpertRole => 'وسيط أسري • دكتوراه في علم النفس';
+
+  @override
+  String get sessionsTomorrow => 'غداً';
+
+  @override
+  String get sessionsWednesdayShort => 'الأربعاء';
+
+  @override
+  String get sessionsTime0930 => '09:30 ص';
+
+  @override
+  String get sessionsRatingValue => '4.9';
+
+  @override
+  String get sessionsLibraryTitle => 'مكتبة الجلسات';
+
+  @override
+  String get sessionsLibrarySearchHint => 'بحث';
+
+  @override
+  String get sessionsLibraryFilterA11y => 'تصفية';
+
+  @override
+  String get sessionsLibraryTabAll => 'الكل';
+
+  @override
+  String get sessionsLibraryTabPublicSessions => 'جلسات عامة';
+
+  @override
+  String get sessionsLibraryTabPrivateRecordings => 'تسجيلات خاصة';
+
+  @override
+  String get sessionsLibraryWatchRecording => 'مشاهدة التسجيل';
+
+  @override
+  String get sessionsLibraryTagPublic => 'عامة';
+
+  @override
+  String get sessionsLibraryTagVlog => 'مدونة فيديو';
+
+  @override
+  String get sessionsLibraryTagPlaylist => 'قائمة تشغيل';
+
+  @override
+  String get sessionsLibrarySampleRecordingTitle => 'وساطة أسرية – أكتوبر 2026';
+
+  @override
+  String get sessionsLibrarySampleExpertName => 'د. سلمى حسن';
+
+  @override
+  String get sessionsLibrarySampleParticipantsAb => 'الوالد أ، الوالد ب';
+
+  @override
+  String get sessionsLibrarySampleFamiliesCount => '5 عائلات';
+
+  @override
+  String get sessionsLibrarySampleArchivedDate => '12 سبتمبر 2026';
+
+  @override
+  String get sessionsLibraryLabelArchived => 'أُرشف في';
+
+  @override
+  String get sessionsLibraryDurationSample => '45:30';
+
+  @override
+  String get sessionsLibraryEmpty => 'لا توجد تسجيلات.';
+
+  @override
+  String get sessionsLibraryTypeSingleVideo => 'فيديو';
+
+  @override
+  String get sessionsLibraryFilterSheetTitle => 'عوامل التصفية';
+
+  @override
+  String get sessionsLibraryFilterSortLabel => 'الترتيب';
+
+  @override
+  String get sessionsLibraryFilterSortDesc => 'الأحدث أولاً';
+
+  @override
+  String get sessionsLibraryFilterSortAsc => 'الأقدم أولاً';
+
+  @override
+  String get sessionsLibraryFilterExpertLabel => 'الخبير';
+
+  @override
+  String get sessionsLibraryFilterExpertAll => 'كل الخبراء';
+
+  @override
+  String get sessionsLibraryFilterPerPageLabel => 'عدد العناصر في الصفحة';
+
+  @override
+  String get sessionsLibraryFilterApply => 'تطبيق';
+
+  @override
+  String get sessionsLibraryFilterReset => 'إعادة ضبط';
+
+  @override
+  String get sessionsLibraryWatchInAppTitle => 'مشاهدة';
+
+  @override
+  String get sessionsLibraryWatchLoadFailed =>
+      'تعذّر فتح هذا الرابط. تحقق من الاتصال وحاول مرة أخرى.';
+
+  @override
+  String get sessionsEmpty => 'لا توجد جلسات بعد.';
+
+  @override
+  String get sessionsRetry => 'إعادة المحاولة';
+
+  @override
+  String get sessionsStatusUpcoming => 'قادمة';
+
+  @override
+  String get sessionsStatusScheduled => 'مجدولة';
+
+  @override
+  String get sessionsStatusLive => 'مباشرة';
+
+  @override
+  String get sessionsStatusEnded => 'منتهية';
+
+  @override
+  String get sessionsStatusArchived => 'مؤرشفة';
+
+  @override
+  String get sessionLobbyTitle => 'ردهة الجلسة';
+
+  @override
+  String get sessionLobbyScheduleTitle => 'جدول الجلسة';
+
+  @override
+  String get sessionLobbyRecordingConsentTitle => 'الموافقة على التسجيل';
+
+  @override
+  String get sessionLobbyJoinSession => 'الانضمام للجلسة';
+
+  @override
+  String get sessionLobbyStartDateLabel => 'تاريخ البدء';
+
+  @override
+  String get sessionLobbyStartTimeLabel => 'وقت البدء';
+
+  @override
+  String get sessionLobbyDurationLabel => 'المدة';
+
+  @override
+  String sessionLobbyDurationValue(int minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String get sessionLobbyConsentDefaultLine => 'أوافق على تسجيل هذه الجلسة.';
+
+  @override
+  String get sessionLobbyRecordingPlaceholder =>
+      'قد تُسجَّل هذه الجلسة لأغراض التوثيق والأمان.';
 
   @override
   String get documentsTitle => 'المستندات';
@@ -1623,6 +1992,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chatClearAttachments => 'مسح';
 
   @override
+  String get chatAttachMenuTitle => 'إضافة مرفق';
+
+  @override
+  String get chatAttachFromGallery => 'صور';
+
+  @override
+  String get chatAttachFromFiles => 'ملفات';
+
+  @override
   String get chatToneAssistantTitle => 'تدخل مساعد النبرة';
 
   @override
@@ -1632,8 +2010,112 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chatToneRephraseMessage => 'إعادة صياغة الرسالة';
 
   @override
+  String get chatToneSendAsIs => 'إرسال كما هي';
+
+  @override
   String get chatAttachmentViewAction => 'عرض';
 
   @override
+  String get chatFlaggedMessage => 'رسالة عليها ملاحظة';
+
+  @override
   String get chatImagePreviewFailed => 'تعذر عرض الصورة';
+
+  @override
+  String get chatPolicyTitle => 'سياسة المحادثة';
+
+  @override
+  String get chatPolicyDeletionTitle => 'حذف الرسائل';
+
+  @override
+  String get chatPolicyDeletionDescription =>
+      'جميع الرسائل المرسلة دائمة. للحفاظ على سجل شفاف لسلامة التشارك في رعاية الأبناء، لا يُسمح بتعديل الرسائل أو حذفها.';
+
+  @override
+  String get chatPolicyHistoryTitle => 'سجل الرسائل';
+
+  @override
+  String get chatPolicyHistoryDescription =>
+      'كل رسالة تحمل ختمًا زمنيًا ويتم حفظها بأمان. يتم تسجيل إيصالات القراءة وحالة التسليم بشكل دائم في سجلات النظام.';
+
+  @override
+  String get chatPolicyLegalTitle => 'إشعار قانوني';
+
+  @override
+  String get chatPolicyLegalDescription =>
+      'يمكن تصدير سجل المحادثة بالكامل كتوثيق رسمي للإجراءات القانونية أو متطلبات الوساطة.';
+
+  @override
+  String get chatPolicyAcknowledge => 'أفهم ذلك';
+
+  @override
+  String get chatInsightsTitle => 'تحليلات المحادثة';
+
+  @override
+  String get chatInsightsToneTab => 'تحليل النبرة';
+
+  @override
+  String get chatInsightsAuditTab => 'سجل التدقيق';
+
+  @override
+  String get chatInsightsOverallTone => 'النبرة العامة للتواصل';
+
+  @override
+  String get chatInsightsCalmNeutral => 'هادئ ومحايد';
+
+  @override
+  String get chatInsightsHealthy => 'صحي';
+
+  @override
+  String get chatInsightsOptimal => 'مثالي';
+
+  @override
+  String get chatInsightsToneDescription =>
+      'يظل تواصلك بنّاءً ومهنيًا بشكل مستمر. لم يتم رصد أنماط تصعيد ملحوظة هذا الأسبوع.';
+
+  @override
+  String get chatInsightsRecentActivityTitle => 'أحدث الأنشطة والتنبيهات';
+
+  @override
+  String get chatInsightsPassiveAggressiveFlag => 'تنبيه نبرة سلبية مبطنة';
+
+  @override
+  String get chatInsightsPassiveAggressiveExample =>
+      '\"أظن أنه لا بأس إذا تأخرت مجددًا...\"';
+
+  @override
+  String get chatInsightsToneCorrectionApplied => 'تم تطبيق تصحيح النبرة';
+
+  @override
+  String get chatInsightsToneCorrectionDescription =>
+      'قام المستخدم بتعديل رسالة للالتزام بإرشادات الحياد قبل الإرسال.';
+
+  @override
+  String get chatInsightsActivityDate => '24 أكتوبر، 09:12 ص';
+
+  @override
+  String get chatInsightsAuditSectionTitle => 'سجل تدقيق الرسائل';
+
+  @override
+  String get chatInsightsIncidentCode => 'حادثة #4291-B';
+
+  @override
+  String get chatInsightsOriginalText => 'النص الأصلي (مسودة/منقح)';
+
+  @override
+  String get chatInsightsRevisedText => 'النص المعدل (تم الإرسال)';
+
+  @override
+  String get chatInsightsOriginalExample =>
+      '\"أنت لا تخبرني أبدًا بمواعيد الطبيب إلا في آخر لحظة. هذا غير مقبول.\"';
+
+  @override
+  String get chatInsightsRevisedExample =>
+      '\"يرجى إبلاغي بمواعيد الطبيب بمجرد تحديدها. شكرًا لك.\"';
+
+  @override
+  String get chatInsightsEmptyActivities => 'لا توجد تنبيهات أو تصحيحات حديثة.';
+
+  @override
+  String get chatInsightsEmptyAuditLog => 'لا توجد عناصر في سجل التدقيق بعد.';
 }

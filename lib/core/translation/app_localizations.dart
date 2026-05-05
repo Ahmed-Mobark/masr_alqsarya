@@ -904,6 +904,24 @@ abstract class AppLocalizations {
   /// **'Change Password'**
   String get accountSecurityChangePassword;
 
+  /// No description provided for @accountSecurityChangePasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current password, then choose a new password.'**
+  String get accountSecurityChangePasswordSubtitle;
+
+  /// No description provided for @accountSecurityCurrentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get accountSecurityCurrentPasswordLabel;
+
+  /// No description provided for @accountSecurityPasswordChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password was updated successfully.'**
+  String get accountSecurityPasswordChangedSuccess;
+
   /// No description provided for @accountSecurityEmailMissingForPassword.
   ///
   /// In en, this message translates to:
@@ -928,6 +946,24 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete your account? This action cannot be undone.'**
   String get accountSecurityDeleteConfirm;
 
+  /// No description provided for @accountSecurityDeletePasswordPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current password to confirm.'**
+  String get accountSecurityDeletePasswordPrompt;
+
+  /// No description provided for @accountSecurityDeleteConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get accountSecurityDeleteConfirmAction;
+
+  /// No description provided for @accountSecurityAccountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get accountSecurityAccountDeleted;
+
   /// No description provided for @languageDeviceLanguage.
   ///
   /// In en, this message translates to:
@@ -939,6 +975,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Family Information'**
   String get familyInfoTitle;
+
+  /// No description provided for @familyInfoStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get familyInfoStatusLabel;
+
+  /// No description provided for @familyInfoStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get familyInfoStatusPending;
+
+  /// No description provided for @familyInfoStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get familyInfoStatusActive;
+
+  /// No description provided for @familyInfoStatusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get familyInfoStatusApproved;
+
+  /// No description provided for @familyInfoSectionFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Info'**
+  String get familyInfoSectionFamily;
+
+  /// No description provided for @familyInfoSectionOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Account holder'**
+  String get familyInfoSectionOwner;
+
+  /// No description provided for @familyInfoSectionCoParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-parent Information'**
+  String get familyInfoSectionCoParent;
+
+  /// No description provided for @familyInfoSectionChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Information'**
+  String get familyInfoSectionChild;
+
+  /// No description provided for @familyInfoSectionLawyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Lawyer Information'**
+  String get familyInfoSectionLawyer;
+
+  /// No description provided for @familyInfoFieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'name'**
+  String get familyInfoFieldName;
+
+  /// No description provided for @familyInfoFieldEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get familyInfoFieldEmail;
+
+  /// No description provided for @familyInfoFieldPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get familyInfoFieldPhone;
+
+  /// No description provided for @familyInfoFieldBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth Date'**
+  String get familyInfoFieldBirthDate;
+
+  /// No description provided for @familyInfoNoWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'No workspace is selected. Please sign in again.'**
+  String get familyInfoNoWorkspace;
+
+  /// No description provided for @familyInfoRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get familyInfoRetry;
+
+  /// No description provided for @familyInfoEmptyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get familyInfoEmptyValue;
+
+  /// No description provided for @familyInfoProfessionalLawyerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite a therapist, lawyer, or someone else you trust. You can resend or cancel the invitation while it is still pending.'**
+  String get familyInfoProfessionalLawyerSubtitle;
+
+  /// No description provided for @familyInfoSectionProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted contacts'**
+  String get familyInfoSectionProfessional;
+
+  /// No description provided for @familyInfoAddSomeoneFamilySpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone to your Family space'**
+  String get familyInfoAddSomeoneFamilySpace;
+
+  /// No description provided for @inviteProfessionalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone to your Family space'**
+  String get inviteProfessionalTitle;
+
+  /// No description provided for @inviteProfessionalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You can invite trusted people to participate in your child\'s care and communication.'**
+  String get inviteProfessionalSubtitle;
+
+  /// No description provided for @inviteProfessionalTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get inviteProfessionalTypeLabel;
+
+  /// No description provided for @inviteProfessionalTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select type'**
+  String get inviteProfessionalTypeHint;
+
+  /// No description provided for @inviteProfessionalTypeTherapist.
+  ///
+  /// In en, this message translates to:
+  /// **'Therapist'**
+  String get inviteProfessionalTypeTherapist;
+
+  /// No description provided for @inviteProfessionalTypeLawyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Lawyer'**
+  String get inviteProfessionalTypeLawyer;
+
+  /// No description provided for @inviteProfessionalTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get inviteProfessionalTypeOther;
+
+  /// No description provided for @inviteProfessionalFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get inviteProfessionalFirstNameLabel;
+
+  /// No description provided for @inviteProfessionalLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get inviteProfessionalLastNameLabel;
+
+  /// No description provided for @inviteProfessionalEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get inviteProfessionalEmailLabel;
+
+  /// No description provided for @inviteProfessionalPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get inviteProfessionalPhoneLabel;
+
+  /// No description provided for @inviteProfessionalFirstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter first name'**
+  String get inviteProfessionalFirstNameHint;
+
+  /// No description provided for @inviteProfessionalLastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter last name'**
+  String get inviteProfessionalLastNameHint;
+
+  /// No description provided for @inviteProfessionalEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email address'**
+  String get inviteProfessionalEmailHint;
+
+  /// No description provided for @inviteProfessionalPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get inviteProfessionalPhoneHint;
+
+  /// No description provided for @inviteProfessionalContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get inviteProfessionalContinue;
+
+  /// No description provided for @familyInfoInviteLawyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite lawyer'**
+  String get familyInfoInviteLawyer;
+
+  /// No description provided for @familyInfoInviteLawyerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send an invitation'**
+  String get familyInfoInviteLawyerTitle;
+
+  /// No description provided for @familyInfoLawyerInviteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation sent.'**
+  String get familyInfoLawyerInviteSuccess;
+
+  /// No description provided for @familyInfoInvitationStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation status'**
+  String get familyInfoInvitationStatus;
+
+  /// No description provided for @familyInfoMemberStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get familyInfoMemberStatusLabel;
+
+  /// No description provided for @familyInfoInvitationPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get familyInfoInvitationPending;
+
+  /// No description provided for @familyInfoInvitationAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get familyInfoInvitationAccepted;
+
+  /// No description provided for @familyInfoInvitationCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get familyInfoInvitationCancelled;
+
+  /// No description provided for @familyInfoInvitationExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get familyInfoInvitationExpired;
+
+  /// No description provided for @familyInfoInvitationDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get familyInfoInvitationDeclined;
+
+  /// No description provided for @familyInfoInvitationUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get familyInfoInvitationUnknown;
+
+  /// No description provided for @familyInfoResendInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get familyInfoResendInvitation;
+
+  /// No description provided for @familyInfoCancelInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get familyInfoCancelInvitation;
+
+  /// No description provided for @familyInfoResendInvitationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation resent.'**
+  String get familyInfoResendInvitationSuccess;
+
+  /// No description provided for @familyInfoCancelInvitationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation cancelled.'**
+  String get familyInfoCancelInvitationSuccess;
+
+  /// No description provided for @familyInfoLawyerEmailMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation has no email on file. Pull to refresh or contact support.'**
+  String get familyInfoLawyerEmailMissing;
 
   /// No description provided for @familyChildrenTitle.
   ///
@@ -2416,6 +2758,12 @@ abstract class AppLocalizations {
   /// **'Please select a start date.'**
   String get scheduleErrorStartDateRequired;
 
+  /// No description provided for @scheduleErrorEndTimeNotAfterStart.
+  ///
+  /// In en, this message translates to:
+  /// **'End time must be after start time on the same day.'**
+  String get scheduleErrorEndTimeNotAfterStart;
+
   /// No description provided for @scheduleCallExpired.
   ///
   /// In en, this message translates to:
@@ -2499,6 +2847,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time'**
   String get scheduleTime;
+
+  /// No description provided for @scheduleTimeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start time'**
+  String get scheduleTimeStart;
+
+  /// No description provided for @scheduleTimeEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End time'**
+  String get scheduleTimeEnd;
 
   /// No description provided for @scheduleNotes.
   ///
@@ -2679,6 +3039,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Documents'**
   String get homeDocuments;
+
+  /// No description provided for @sessionsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get sessionsScreenTitle;
+
+  /// No description provided for @sessionsNextAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Available Sessions'**
+  String get sessionsNextAvailableTitle;
+
+  /// No description provided for @sessionsJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'JOIN'**
+  String get sessionsJoin;
+
+  /// No description provided for @sessionsBookSession.
+  ///
+  /// In en, this message translates to:
+  /// **'BOOK SESSION'**
+  String get sessionsBookSession;
+
+  /// No description provided for @sessionsPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get sessionsPublic;
+
+  /// No description provided for @sessionsPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get sessionsPrivate;
+
+  /// No description provided for @sessionsSampleExpertName.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Kevin Lowe'**
+  String get sessionsSampleExpertName;
+
+  /// No description provided for @sessionsSampleExpertRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Mediator • PhD Psychology'**
+  String get sessionsSampleExpertRole;
+
+  /// No description provided for @sessionsTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get sessionsTomorrow;
+
+  /// No description provided for @sessionsWednesdayShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get sessionsWednesdayShort;
+
+  /// No description provided for @sessionsTime0930.
+  ///
+  /// In en, this message translates to:
+  /// **'09:30 AM'**
+  String get sessionsTime0930;
+
+  /// No description provided for @sessionsRatingValue.
+  ///
+  /// In en, this message translates to:
+  /// **'4.9'**
+  String get sessionsRatingValue;
+
+  /// No description provided for @sessionsLibraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions Library'**
+  String get sessionsLibraryTitle;
+
+  /// No description provided for @sessionsLibrarySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get sessionsLibrarySearchHint;
+
+  /// No description provided for @sessionsLibraryFilterA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get sessionsLibraryFilterA11y;
+
+  /// No description provided for @sessionsLibraryTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get sessionsLibraryTabAll;
+
+  /// No description provided for @sessionsLibraryTabPublicSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Sessions'**
+  String get sessionsLibraryTabPublicSessions;
+
+  /// No description provided for @sessionsLibraryTabPrivateRecordings.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Recordings'**
+  String get sessionsLibraryTabPrivateRecordings;
+
+  /// No description provided for @sessionsLibraryWatchRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'WATCH RECORDING'**
+  String get sessionsLibraryWatchRecording;
+
+  /// No description provided for @sessionsLibraryTagPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get sessionsLibraryTagPublic;
+
+  /// No description provided for @sessionsLibraryTagVlog.
+  ///
+  /// In en, this message translates to:
+  /// **'Vlog'**
+  String get sessionsLibraryTagVlog;
+
+  /// No description provided for @sessionsLibraryTagPlaylist.
+  ///
+  /// In en, this message translates to:
+  /// **'Playlist'**
+  String get sessionsLibraryTagPlaylist;
+
+  /// No description provided for @sessionsLibrarySampleRecordingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Mediation – October 2026'**
+  String get sessionsLibrarySampleRecordingTitle;
+
+  /// No description provided for @sessionsLibrarySampleExpertName.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Salma Hassan'**
+  String get sessionsLibrarySampleExpertName;
+
+  /// No description provided for @sessionsLibrarySampleParticipantsAb.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent A, Parent B'**
+  String get sessionsLibrarySampleParticipantsAb;
+
+  /// No description provided for @sessionsLibrarySampleFamiliesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'5 Families'**
+  String get sessionsLibrarySampleFamiliesCount;
+
+  /// No description provided for @sessionsLibrarySampleArchivedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sept 12, 2026'**
+  String get sessionsLibrarySampleArchivedDate;
+
+  /// No description provided for @sessionsLibraryLabelArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get sessionsLibraryLabelArchived;
+
+  /// No description provided for @sessionsLibraryDurationSample.
+  ///
+  /// In en, this message translates to:
+  /// **'45:30'**
+  String get sessionsLibraryDurationSample;
+
+  /// No description provided for @sessionsLibraryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recordings found.'**
+  String get sessionsLibraryEmpty;
+
+  /// No description provided for @sessionsLibraryTypeSingleVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get sessionsLibraryTypeSingleVideo;
+
+  /// No description provided for @sessionsLibraryFilterSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get sessionsLibraryFilterSheetTitle;
+
+  /// No description provided for @sessionsLibraryFilterSortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sessionsLibraryFilterSortLabel;
+
+  /// No description provided for @sessionsLibraryFilterSortDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get sessionsLibraryFilterSortDesc;
+
+  /// No description provided for @sessionsLibraryFilterSortAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get sessionsLibraryFilterSortAsc;
+
+  /// No description provided for @sessionsLibraryFilterExpertLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert'**
+  String get sessionsLibraryFilterExpertLabel;
+
+  /// No description provided for @sessionsLibraryFilterExpertAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All experts'**
+  String get sessionsLibraryFilterExpertAll;
+
+  /// No description provided for @sessionsLibraryFilterPerPageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Items per page'**
+  String get sessionsLibraryFilterPerPageLabel;
+
+  /// No description provided for @sessionsLibraryFilterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get sessionsLibraryFilterApply;
+
+  /// No description provided for @sessionsLibraryFilterReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get sessionsLibraryFilterReset;
+
+  /// No description provided for @sessionsLibraryWatchInAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get sessionsLibraryWatchInAppTitle;
+
+  /// No description provided for @sessionsLibraryWatchLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open this link. Check your connection and try again.'**
+  String get sessionsLibraryWatchLoadFailed;
+
+  /// No description provided for @sessionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions yet.'**
+  String get sessionsEmpty;
+
+  /// No description provided for @sessionsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get sessionsRetry;
+
+  /// No description provided for @sessionsStatusUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get sessionsStatusUpcoming;
+
+  /// No description provided for @sessionsStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get sessionsStatusScheduled;
+
+  /// No description provided for @sessionsStatusLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get sessionsStatusLive;
+
+  /// No description provided for @sessionsStatusEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get sessionsStatusEnded;
+
+  /// No description provided for @sessionsStatusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get sessionsStatusArchived;
+
+  /// No description provided for @sessionLobbyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Lobby'**
+  String get sessionLobbyTitle;
+
+  /// No description provided for @sessionLobbyScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Schedule'**
+  String get sessionLobbyScheduleTitle;
+
+  /// No description provided for @sessionLobbyRecordingConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording Consent'**
+  String get sessionLobbyRecordingConsentTitle;
+
+  /// No description provided for @sessionLobbyJoinSession.
+  ///
+  /// In en, this message translates to:
+  /// **'JOIN SESSION'**
+  String get sessionLobbyJoinSession;
+
+  /// No description provided for @sessionLobbyStartDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get sessionLobbyStartDateLabel;
+
+  /// No description provided for @sessionLobbyStartTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get sessionLobbyStartTimeLabel;
+
+  /// No description provided for @sessionLobbyDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get sessionLobbyDurationLabel;
+
+  /// No description provided for @sessionLobbyDurationValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String sessionLobbyDurationValue(int minutes);
+
+  /// No description provided for @sessionLobbyConsentDefaultLine.
+  ///
+  /// In en, this message translates to:
+  /// **'I consent to the recording of this session.'**
+  String get sessionLobbyConsentDefaultLine;
+
+  /// No description provided for @sessionLobbyRecordingPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'This session may be recorded for documentation and security purposes.'**
+  String get sessionLobbyRecordingPlaceholder;
 
   /// No description provided for @documentsTitle.
   ///
@@ -3178,6 +3892,24 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get chatClearAttachments;
 
+  /// No description provided for @chatAttachMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add attachment'**
+  String get chatAttachMenuTitle;
+
+  /// No description provided for @chatAttachFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get chatAttachFromGallery;
+
+  /// No description provided for @chatAttachFromFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get chatAttachFromFiles;
+
   /// No description provided for @chatToneAssistantTitle.
   ///
   /// In en, this message translates to:
@@ -3196,17 +3928,209 @@ abstract class AppLocalizations {
   /// **'REPHRASE MESSAGE'**
   String get chatToneRephraseMessage;
 
+  /// No description provided for @chatToneSendAsIs.
+  ///
+  /// In en, this message translates to:
+  /// **'SEND AS IS'**
+  String get chatToneSendAsIs;
+
   /// No description provided for @chatAttachmentViewAction.
   ///
   /// In en, this message translates to:
   /// **'View'**
   String get chatAttachmentViewAction;
 
+  /// No description provided for @chatFlaggedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Flagged message'**
+  String get chatFlaggedMessage;
+
   /// No description provided for @chatImagePreviewFailed.
   ///
   /// In en, this message translates to:
   /// **'Could not display the image'**
   String get chatImagePreviewFailed;
+
+  /// No description provided for @chatPolicyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation Policy'**
+  String get chatPolicyTitle;
+
+  /// No description provided for @chatPolicyDeletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message Deletion'**
+  String get chatPolicyDeletionTitle;
+
+  /// No description provided for @chatPolicyDeletionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'All sent messages are permanent. To maintain a transparent record for co-parenting safety, editing or deleting messages is not permitted.'**
+  String get chatPolicyDeletionDescription;
+
+  /// No description provided for @chatPolicyHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message History'**
+  String get chatPolicyHistoryTitle;
+
+  /// No description provided for @chatPolicyHistoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Every message is timestamped and logged securely. Read receipts and delivery status are permanently recorded in the system logs.'**
+  String get chatPolicyHistoryDescription;
+
+  /// No description provided for @chatPolicyLegalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal Notice'**
+  String get chatPolicyLegalTitle;
+
+  /// No description provided for @chatPolicyLegalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The entire conversation record can be exported as official documentation for legal proceedings or mediation requirements.'**
+  String get chatPolicyLegalDescription;
+
+  /// No description provided for @chatPolicyAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'I UNDERSTAND'**
+  String get chatPolicyAcknowledge;
+
+  /// No description provided for @chatInsightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation Insights'**
+  String get chatInsightsTitle;
+
+  /// No description provided for @chatInsightsToneTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone Analysis'**
+  String get chatInsightsToneTab;
+
+  /// No description provided for @chatInsightsAuditTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Log'**
+  String get chatInsightsAuditTab;
+
+  /// No description provided for @chatInsightsOverallTone.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Communication Tone'**
+  String get chatInsightsOverallTone;
+
+  /// No description provided for @chatInsightsCalmNeutral.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm & Neutral'**
+  String get chatInsightsCalmNeutral;
+
+  /// No description provided for @chatInsightsHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get chatInsightsHealthy;
+
+  /// No description provided for @chatInsightsOptimal.
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIMAL'**
+  String get chatInsightsOptimal;
+
+  /// No description provided for @chatInsightsToneDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your communication remains consistently constructive and professional. No significant patterns of escalation detected this week.'**
+  String get chatInsightsToneDescription;
+
+  /// No description provided for @chatInsightsRecentActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity & Flags'**
+  String get chatInsightsRecentActivityTitle;
+
+  /// No description provided for @chatInsightsPassiveAggressiveFlag.
+  ///
+  /// In en, this message translates to:
+  /// **'Passive-Aggressive Flag'**
+  String get chatInsightsPassiveAggressiveFlag;
+
+  /// No description provided for @chatInsightsPassiveAggressiveExample.
+  ///
+  /// In en, this message translates to:
+  /// **'\"I guess it\'s fine if you\'re late again...\"'**
+  String get chatInsightsPassiveAggressiveExample;
+
+  /// No description provided for @chatInsightsToneCorrectionApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone Correction Applied'**
+  String get chatInsightsToneCorrectionApplied;
+
+  /// No description provided for @chatInsightsToneCorrectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'User edited a message to follow neutrality guidelines before sending.'**
+  String get chatInsightsToneCorrectionDescription;
+
+  /// No description provided for @chatInsightsActivityDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Oct 24, 09:12 AM'**
+  String get chatInsightsActivityDate;
+
+  /// No description provided for @chatInsightsAuditSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message Audit Log'**
+  String get chatInsightsAuditSectionTitle;
+
+  /// No description provided for @chatInsightsIncidentCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident #4291-B'**
+  String get chatInsightsIncidentCode;
+
+  /// No description provided for @chatInsightsOriginalText.
+  ///
+  /// In en, this message translates to:
+  /// **'Original Text (Draft/Redacted)'**
+  String get chatInsightsOriginalText;
+
+  /// No description provided for @chatInsightsRevisedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Revised Text (Sent)'**
+  String get chatInsightsRevisedText;
+
+  /// No description provided for @chatInsightsOriginalExample.
+  ///
+  /// In en, this message translates to:
+  /// **'\"You never inform me about the doctor\'s appointments until the last second. It\'s ridiculous.\"'**
+  String get chatInsightsOriginalExample;
+
+  /// No description provided for @chatInsightsRevisedExample.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Please inform me about the doctor\'s appointments as soon as they are scheduled. Thank you.\"'**
+  String get chatInsightsRevisedExample;
+
+  /// No description provided for @chatInsightsEmptyActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent alerts or corrections.'**
+  String get chatInsightsEmptyActivities;
+
+  /// No description provided for @chatInsightsEmptyAuditLog.
+  ///
+  /// In en, this message translates to:
+  /// **'No audit entries yet.'**
+  String get chatInsightsEmptyAuditLog;
 }
 
 class _AppLocalizationsDelegate

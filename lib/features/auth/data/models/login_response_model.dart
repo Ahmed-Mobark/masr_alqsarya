@@ -9,6 +9,13 @@ class LoginResponseModel {
     this.isVerified = true,
     this.hasPendingInvitations = false,
     this.pendingInvitation,
+    this.userId,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phone,
+    this.type,
+    this.permissions = const [],
   });
 
   final String? token;
@@ -17,6 +24,13 @@ class LoginResponseModel {
   final bool isVerified;
   final bool hasPendingInvitations;
   final PendingInvitation? pendingInvitation;
+  final int? userId;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? phone;
+  final String? type;
+  final List<String> permissions;
 
   static bool _parseLooseBool(dynamic v) {
     if (v is bool) return v;
@@ -40,6 +54,11 @@ class LoginResponseModel {
     final isVerified = _parseLooseBool(userMap['is_verified']);
     final hasPendingInvitations =
         _parseLooseBool(userMap['has_pending_invitations']);
+    final permissions = (userMap['permissions'] as List?)
+            ?.map((e) => e.toString().trim())
+            .where((e) => e.isNotEmpty)
+            .toList(growable: false) ??
+        const <String>[];
 
     PendingInvitation? pendingInvitation;
     if (hasPendingInvitations) {
@@ -67,6 +86,13 @@ class LoginResponseModel {
       isVerified: isVerified,
       hasPendingInvitations: hasPendingInvitations,
       pendingInvitation: pendingInvitation,
+      userId: (userMap['id'] as num?)?.toInt(),
+      firstName: userMap['first_name']?.toString(),
+      lastName: userMap['last_name']?.toString(),
+      email: userMap['email']?.toString(),
+      phone: userMap['phone']?.toString(),
+      type: userMap['type']?.toString(),
+      permissions: permissions,
     );
   }
 
@@ -77,5 +103,12 @@ class LoginResponseModel {
         isVerified: isVerified,
         hasPendingInvitations: hasPendingInvitations,
         pendingInvitation: pendingInvitation,
+        userId: userId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        type: type,
+        permissions: permissions,
       );
 }

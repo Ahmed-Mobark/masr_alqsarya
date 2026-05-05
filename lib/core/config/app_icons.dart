@@ -23,6 +23,8 @@ class AppIcons {
   static const String googleIcon = '${_path}google_icon.svg';
   static const String appleIcon = '${_path}apple_icon.svg';
   static const String documentsIcon = '${_path}docs.svg';
+  static const String chatInsights = '${_path}anal.svg';
+  static const String chatPolicy = '${_path}info.svg';
 
   // Method to render SVG as a widget
   static Widget icon({required String icon, double size = 24, Color? color}) {

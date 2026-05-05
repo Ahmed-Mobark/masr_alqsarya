@@ -10,6 +10,7 @@ class ChatBubbleRow extends Equatable {
     required this.time,
     required this.isSent,
     this.attachments = const [],
+    this.isFlagged = false,
   });
 
   final int? messageId;
@@ -17,9 +18,17 @@ class ChatBubbleRow extends Equatable {
   final String time;
   final bool isSent;
   final List<ChatAttachment> attachments;
+  final bool isFlagged;
 
   @override
-  List<Object?> get props => [messageId, text, time, isSent, attachments];
+  List<Object?> get props => [
+        messageId,
+        text,
+        time,
+        isSent,
+        attachments,
+        isFlagged,
+      ];
 }
 
 class ChatDetailState extends Equatable {

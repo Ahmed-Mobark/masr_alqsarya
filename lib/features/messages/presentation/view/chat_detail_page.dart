@@ -8,6 +8,7 @@ import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/download_chat_attachment_usecase.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/get_chat_messages_usecase.dart';
+import 'package:masr_al_qsariya/features/messages/domain/usecases/log_chat_moderation_decision_usecase.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/send_chat_message_usecase.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_cubit.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/view/chat_view.dart';
@@ -31,6 +32,7 @@ class ChatDetailPage extends StatelessWidget {
       create: (_) => ChatDetailCubit(
         sl<GetChatMessagesUseCase>(),
         sl<SendChatMessageUseCase>(),
+        sl<LogChatModerationDecisionUseCase>(),
         sl<DownloadChatAttachmentUseCase>(),
         sl<WorkspaceIdStorage>(),
         sl<Storage>(),

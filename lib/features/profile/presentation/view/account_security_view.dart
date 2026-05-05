@@ -5,7 +5,7 @@ import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/view/forgot_password_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/view/change_password_view.dart';
 
 class AccountSecurityView extends StatelessWidget {
   const AccountSecurityView({super.key});
@@ -113,18 +113,8 @@ class AccountSecurityView extends StatelessWidget {
             const SizedBox(height: 12),
             InkWell(
               onTap: () {
-                final email = user?.email.trim();
-                if (email == null || email.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content:
-                          Text(context.tr.accountSecurityEmailMissingForPassword),
-                    ),
-                  );
-                  return;
-                }
                 sl<AppNavigator>().push(
-                  screen: ForgotPasswordView(prefilledEmail: email),
+                  screen: const ChangePasswordView(),
                 );
               },
               borderRadius: BorderRadius.circular(25),

@@ -190,7 +190,20 @@ class ApiBaseHelper {
     return _performRequest<T>(() => getDio(environment).patch<T>(url, data: formData ?? body, options: options), environment: environment,);
   }
 
-  Future<T> delete<T>({required String url, Map<String, dynamic>? body, ApiEnvironment environment = ApiEnvironment.primary,}) async {
-    return _performRequest<T>(() => getDio(environment).delete<T>(url, data: body), environment: environment);
+  Future<T> delete<T>({
+    required String url,
+    Map<String, dynamic>? body,
+    FormData? formData,
+    Options? options,
+    ApiEnvironment environment = ApiEnvironment.primary,
+  }) async {
+    return _performRequest<T>(
+      () => getDio(environment).delete<T>(
+        url,
+        data: formData ?? body,
+        options: options,
+      ),
+      environment: environment,
+    );
   }
 }

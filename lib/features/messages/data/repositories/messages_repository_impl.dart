@@ -6,8 +6,10 @@ import 'package:masr_al_qsariya/core/network/network_service/repository_helper.d
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/messages/data/datasources/messages_remote_data_source.dart';
 import 'package:masr_al_qsariya/features/messages/data/models/chat_thread_model.dart';
+import 'package:masr_al_qsariya/features/messages/domain/entities/chat_audit_log_entry.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_message.dart';
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_thread.dart';
+import 'package:masr_al_qsariya/features/messages/domain/entities/chat_tone_insights.dart';
 import 'package:masr_al_qsariya/features/messages/domain/repositories/messages_repository.dart';
 
 class MessagesRepositoryImpl with RepositoryHelper implements MessagesRepository {
@@ -44,18 +46,39 @@ class MessagesRepositoryImpl with RepositoryHelper implements MessagesRepository
   }
 
   @override
-  Future<Either<Failure, void>> sendChatMessage(
+  Future<Either<Failure, int?>> sendChatMessage(
     int workspaceId,
     int chatId,
     String? body,
     List<String> attachmentPaths,
   ) {
     return handleEither(() async {
-      await _remote.sendChatMessage(
+      return _remote.sendChatMessage(
         workspaceId,
         chatId,
         body,
         attachmentPaths,
+      );
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> logChatModerationDecision({
+    required int workspaceId,
+    required int chatId,
+    required int workspaceChatMessageId,
+    required bool suggestionAccepted,
+    required String originalMessage,
+    String? aiSuggestion,
+  }) {
+    return handleEither(() async {
+      await _remote.logChatModerationDecision(
+        workspaceId: workspaceId,
+        chatId: chatId,
+        workspaceChatMessageId: workspaceChatMessageId,
+        suggestionAccepted: suggestionAccepted,
+        originalMessage: originalMessage,
+        aiSuggestion: aiSuggestion,
       );
     });
   }
@@ -72,6 +95,28 @@ class MessagesRepositoryImpl with RepositoryHelper implements MessagesRepository
         chatId,
         attachmentId,
       );
+    });
+  }
+
+  @override
+  Future<Either<Failure, ChatToneInsights>> getChatToneInsights(
+    int workspaceId,
+    int chatId,
+  ) {
+    return handleEither(() async {
+      final model = await _remote.fetchChatToneInsights(workspaceId, chatId);
+      return model.toEntity();
+    });
+  }
+
+  @override
+  Future<Either<Failure, List<ChatAuditLogEntry>>> getChatAuditLogs(
+    int workspaceId,
+    int chatId,
+  ) {
+    return handleEither(() async {
+      final model = await _remote.fetchChatAuditLogs(workspaceId, chatId);
+      return model.toEntities();
     });
   }
 }

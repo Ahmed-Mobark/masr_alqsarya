@@ -48,6 +48,8 @@ abstract class AppColors {
   static const Color cardBg = cardColorLight;
 
   static const Color statusBadge = Color(0xFFC89563);
+  static const Color sessionSlotsSurface = Color(0xFFFFFDF0);
+  static const Color sessionSlotInactiveBg = Color(0xFFF0F0F0);
   static const Color tabActive = primary;
   static const Color tabInactive = hintColorLight;
 

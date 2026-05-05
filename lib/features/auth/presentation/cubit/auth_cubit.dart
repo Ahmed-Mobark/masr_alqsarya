@@ -99,6 +99,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> _cacheUserProfile() async {
+    final cached = _storage.getUser();
     final result = await _getProfileUseCase();
     result.fold(
       (_) {},
@@ -110,6 +111,8 @@ class AuthCubit extends Cubit<AuthState> {
             lastName: profile.lastName,
             email: profile.email,
             phone: profile.phone,
+            type: profile.type ?? cached?.type,
+            permissions: cached?.permissions ?? const [],
             imageUrl: null,
             isVerified: profile.isVerified,
             emailVerifiedAt: profile.emailVerifiedAt,
@@ -217,6 +220,31 @@ class AuthCubit extends Cubit<AuthState> {
 
     if (data.token != null && data.token!.isNotEmpty) {
       await _storage.storeToken(token: data.token!);
+    }
+    final id = data.userId;
+    final firstName = data.firstName?.trim();
+    final lastName = data.lastName?.trim();
+    final email = data.email?.trim();
+    if (id != null &&
+        firstName != null &&
+        firstName.isNotEmpty &&
+        lastName != null &&
+        lastName.isNotEmpty &&
+        email != null &&
+        email.isNotEmpty) {
+      await _storage.storeUser(
+        user: LocalUser(
+          id: id,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: data.phone?.trim(),
+          type: data.type?.trim(),
+          permissions: data.permissions,
+          imageUrl: null,
+          isVerified: data.isVerified,
+        ),
+      );
     }
     await _cacheUserProfile();
 
@@ -497,6 +525,8 @@ class AuthCubit extends Cubit<AuthState> {
         lastName: coPartnerLastNameController.text.trim(),
         phone: fullPhone,
         email: coPartnerEmailController.text.trim(),
+        type: InviteCoPartnerParams.typeCoPartner,
+        workspaceId: _workspaceIdStorage.get(),
       ),
     );
 
@@ -530,8 +560,12 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
 
     final phoneDigits = childPhoneController.text.trim();
-    final fullPhone = '${state.childDialCode}$phoneDigits';
+    final fullPhone = phoneDigits.isEmpty
+        ? ''
+        : '${state.childDialCode}$phoneDigits';
 
+    // Backend add-child accepts only: display_name, first_name, last_name,
+    // email, phone, date_of_birth (multipart). Keep this list in sync with API.
     final result = await _addChildUseCase(
       AddChildParams(
         displayName: childDisplayNameController.text.trim(),

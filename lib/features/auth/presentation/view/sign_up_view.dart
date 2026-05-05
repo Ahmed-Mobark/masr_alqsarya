@@ -45,9 +45,11 @@ class SignUpView extends StatelessWidget {
           switch (state.action) {
             case AuthAction.navigateToVerification:
               sl<AppNavigator>().push(
-                screen: VerificationView(email: state.registeredEmail),
+                screen: BlocProvider.value(
+                  value: context.read<AuthCubit>(),
+                  child: VerificationView(email: state.registeredEmail),
+                ),
               );
-              context.read<AuthCubit>().clearAction();
               return;
             case AuthAction.navigateToLogin:
               sl<AppNavigator>().pushReplacement(screen: const LoginView());

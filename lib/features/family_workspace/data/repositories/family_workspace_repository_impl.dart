@@ -14,9 +14,13 @@ class FamilyWorkspaceRepositoryImpl
   @override
   Future<Either<Failure, List<FamilyWorkspaceMemberEntity>>> getMembers({
     required int workspaceId,
+    String? role,
   }) {
     return handleEither(() async {
-      final models = await _remote.getMembers(workspaceId: workspaceId);
+      final models = await _remote.getMembers(
+        workspaceId: workspaceId,
+        role: role,
+      );
       return models.map((m) => m.toEntity()).toList();
     });
   }

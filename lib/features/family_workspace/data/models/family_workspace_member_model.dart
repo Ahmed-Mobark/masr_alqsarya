@@ -5,12 +5,24 @@ class FamilyWorkspaceMemberModel {
   final String fullName;
   final String role;
   final String? avatarUrl;
+  final String? email;
+  final String? phone;
+  final String? birthDate;
+  final int? invitationId;
+  final String? invitationStatus;
+  final String? memberStatus;
 
   const FamilyWorkspaceMemberModel({
     required this.id,
     required this.fullName,
     required this.role,
-    required this.avatarUrl,
+    this.avatarUrl,
+    this.email,
+    this.phone,
+    this.birthDate,
+    this.invitationId,
+    this.invitationStatus,
+    this.memberStatus,
   });
 
   factory FamilyWorkspaceMemberModel.fromJson(Map<String, dynamic> json) {
@@ -34,11 +46,65 @@ class FamilyWorkspaceMemberModel {
 
     final role = (json['role'] ?? json['type'] ?? '').toString();
 
+    final userJson = json['user'];
+    final nestedEmail =
+        userJson is Map ? userJson['email']?.toString() : null;
+    final nestedPhone =
+        userJson is Map ? userJson['phone']?.toString() : null;
+
+    final emailRaw =
+        (json['email'] ?? nestedEmail)?.toString().trim() ?? '';
+    final phoneRaw = (json['phone'] ??
+            json['phone_number'] ??
+            json['mobile'] ??
+            nestedPhone)
+        ?.toString()
+        .trim() ??
+        '';
+
+    final birthRaw = json['date_of_birth'] ??
+        json['birth_date'] ??
+        json['dob'] ??
+        json['birthday'];
+    final birthTrimmed =
+        birthRaw == null ? '' : birthRaw.toString().trim();
+    final birthDate = birthTrimmed.isEmpty ? null : birthTrimmed;
+
+    int? invitationId;
+    String? invitationStatus;
+    final inv = json['invitation'];
+    if (inv is Map) {
+      invitationId = (inv['id'] as num?)?.toInt();
+      invitationStatus = inv['status']?.toString();
+    }
+    invitationId ??= (json['invitation_id'] as num?)?.toInt() ??
+        (json['pending_invitation_id'] as num?)?.toInt();
+    invitationStatus ??= json['invitation_status']?.toString() ??
+        json['invite_status']?.toString();
+
+    final invitationStatusNorm = invitationStatus?.trim();
+    final invitationStatusFinal =
+        (invitationStatusNorm == null || invitationStatusNorm.isEmpty)
+            ? null
+            : invitationStatusNorm;
+
+    final memberStatusRaw = json['status']?.toString().trim();
+    final memberStatus =
+        (memberStatusRaw == null || memberStatusRaw.isEmpty)
+            ? null
+            : memberStatusRaw;
+
     return FamilyWorkspaceMemberModel(
       id: id,
       fullName: fullName.isEmpty ? '-' : fullName,
       role: role.isEmpty ? 'member' : role,
       avatarUrl: json['avatar_url']?.toString() ?? json['image_url']?.toString(),
+      email: emailRaw.isEmpty ? null : emailRaw,
+      phone: phoneRaw.isEmpty ? null : phoneRaw,
+      birthDate: birthDate,
+      invitationId: invitationId,
+      invitationStatus: invitationStatusFinal,
+      memberStatus: memberStatus,
     );
   }
 
@@ -47,6 +113,12 @@ class FamilyWorkspaceMemberModel {
         fullName: fullName,
         role: role,
         avatarUrl: avatarUrl,
+        email: email,
+        phone: phone,
+        birthDate: birthDate,
+        invitationId: invitationId,
+        invitationStatus: invitationStatus,
+        memberStatus: memberStatus,
       );
 }
 

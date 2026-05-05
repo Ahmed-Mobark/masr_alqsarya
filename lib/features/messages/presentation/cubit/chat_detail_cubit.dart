@@ -18,6 +18,7 @@ import 'package:masr_al_qsariya/features/messages/domain/entities/chat_attachmen
 import 'package:masr_al_qsariya/features/messages/domain/entities/chat_message.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/download_chat_attachment_usecase.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/get_chat_messages_usecase.dart';
+import 'package:masr_al_qsariya/features/messages/domain/usecases/log_chat_moderation_decision_usecase.dart';
 import 'package:masr_al_qsariya/features/messages/domain/usecases/send_chat_message_usecase.dart';
 import 'package:masr_al_qsariya/features/messages/presentation/cubit/chat_detail_state.dart';
 import 'package:path/path.dart' as p;
@@ -27,6 +28,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   ChatDetailCubit(
     this._getMessages,
     this._sendMessage,
+    this._logModerationDecision,
     this._downloadAttachment,
     this._workspaceIdStorage,
     this._storage,
@@ -38,6 +40,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   final GetChatMessagesUseCase _getMessages;
   final SendChatMessageUseCase _sendMessage;
+  final LogChatModerationDecisionUseCase _logModerationDecision;
   final DownloadChatAttachmentUseCase _downloadAttachment;
   final WorkspaceIdStorage _workspaceIdStorage;
   final Storage _storage;
@@ -50,6 +53,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   int _optimisticId = -1;
   int _optimisticAttachmentId = -1;
   final List<_LocalAttachment> _pendingAttachments = [];
+  _PendingToneIntervention? _pendingToneIntervention;
 
   void removePendingAttachmentAt(int index) {
     if (index < 0 || index >= _pendingAttachments.length) return;
@@ -276,6 +280,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
         time: time,
         isSent: isMine,
         attachments: m.attachments,
+        isFlagged: m.isFlagged,
       );
     }).toList();
 
@@ -338,6 +343,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
             attachments: incoming.attachments.isNotEmpty
                 ? incoming.attachments
                 : current.attachments,
+            isFlagged: incoming.isFlagged,
           );
           emit(state.copyWith(messages: updated));
         }
@@ -355,6 +361,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
             time: _formatTime(incoming.createdAtIso),
             isSent: false,
             attachments: incoming.attachments,
+            isFlagged: incoming.isFlagged,
           ),
         );
       emit(state.copyWith(messages: updated));
@@ -389,10 +396,16 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       return;
     }
 
-    // Free tone assistant intervention (UI suggestion) before moderation/send.
+    // Show tone suggestion, then let user choose:
+    // - accept suggestion and send suggested text
+    // - dismiss and send original text
     if (text.isNotEmpty) {
       final tone = _toneAssistant.review(text);
       if (tone.shouldIntervene) {
+        _pendingToneIntervention = _PendingToneIntervention(
+          originalMessage: text,
+          aiSuggestion: tone.suggestedAlternative,
+        );
         emit(
           state.copyWith(
             toneWarning: tone.warning,
@@ -403,8 +416,67 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       }
     }
 
+    await _sendPreparedMessage(
+      workspaceId: workspaceId,
+      messageBody: text,
+      moderationOriginalMessage: null,
+      moderationAiSuggestion: null,
+      moderationSuggestionAccepted: null,
+    );
+  }
+
+  Future<void> sendToneSuggestedMessage() async {
+    final pending = _pendingToneIntervention;
+    if (pending == null) return;
+    final workspaceId = _workspaceIdStorage.get();
+    if (workspaceId == null) {
+      emit(state.copyWith(sendError: '__workspace_missing__'));
+      return;
+    }
+
+    emit(state.copyWith(clearToneIntervention: true));
+    _pendingToneIntervention = null;
+    await _sendPreparedMessage(
+      workspaceId: workspaceId,
+      messageBody: pending.aiSuggestion ?? pending.originalMessage,
+      moderationOriginalMessage: pending.originalMessage,
+      moderationAiSuggestion: pending.aiSuggestion,
+      moderationSuggestionAccepted: true,
+    );
+  }
+
+  Future<void> sendOriginalAfterToneSuggestionDismiss() async {
+    final pending = _pendingToneIntervention;
+    if (pending == null) return;
+    final workspaceId = _workspaceIdStorage.get();
+    if (workspaceId == null) {
+      emit(state.copyWith(sendError: '__workspace_missing__'));
+      return;
+    }
+
+    emit(state.copyWith(clearToneIntervention: true));
+    _pendingToneIntervention = null;
+    await _sendPreparedMessage(
+      workspaceId: workspaceId,
+      messageBody: pending.originalMessage,
+      moderationOriginalMessage: pending.originalMessage,
+      moderationAiSuggestion: pending.aiSuggestion,
+      moderationSuggestionAccepted: false,
+    );
+  }
+
+  Future<void> _sendPreparedMessage({
+    required int workspaceId,
+    required String messageBody,
+    required String? moderationOriginalMessage,
+    required String? moderationAiSuggestion,
+    required bool? moderationSuggestionAccepted,
+  }) async {
+    final text = messageBody.trim();
+
+    // Keep content moderation for attachments, but don't block text-only profanity.
     final decision = await _moderation.review(
-      text: text.isEmpty ? null : text,
+      text: null,
       attachmentPaths: _pendingAttachments.map((e) => e.path).toList(),
     );
     if (!decision.allowed) {
@@ -436,6 +508,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       time: _formatTime(DateTime.now().toIso8601String()),
       isSent: true,
       attachments: optimisticAttachments,
+      isFlagged: false,
     );
     emit(
       state.copyWith(
@@ -469,6 +542,25 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       return;
     }
 
+    final sentMessageId = result.fold<int?>((_) => null, (id) => id);
+    if (moderationSuggestionAccepted != null &&
+        moderationOriginalMessage != null &&
+        moderationOriginalMessage.trim().isNotEmpty &&
+        sentMessageId != null) {
+      unawaited(
+        _logModerationDecision(
+          LogChatModerationDecisionParams(
+            workspaceId: workspaceId,
+            chatId: chatId,
+            workspaceChatMessageId: sentMessageId,
+            suggestionAccepted: moderationSuggestionAccepted,
+            originalMessage: moderationOriginalMessage,
+            aiSuggestion: moderationAiSuggestion,
+          ),
+        ),
+      );
+    }
+
     emit(state.copyWith(isSending: false));
   }
 
@@ -493,6 +585,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
 
     final body = (bodyRaw is String) ? bodyRaw : '';
+    final isFlagged = payload['is_flagged'] == true;
     final attachments = _attachmentsFromMap(payload);
     if (body.trim().isEmpty && attachments.isEmpty) return null;
     return _IncomingMessage(
@@ -501,6 +594,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       createdAtIso: createdAt is String ? createdAt : null,
       senderUserId: senderUserId,
       attachments: attachments,
+      isFlagged: isFlagged,
     );
   }
 
@@ -565,6 +659,7 @@ class _IncomingMessage {
     required this.senderUserId,
     required this.attachments,
     required this.createdAtIso,
+    required this.isFlagged,
   });
 
   final int id;
@@ -572,4 +667,15 @@ class _IncomingMessage {
   final int? senderUserId;
   final List<ChatAttachment> attachments;
   final String? createdAtIso;
+  final bool isFlagged;
+}
+
+class _PendingToneIntervention {
+  const _PendingToneIntervention({
+    required this.originalMessage,
+    required this.aiSuggestion,
+  });
+
+  final String originalMessage;
+  final String? aiSuggestion;
 }

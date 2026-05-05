@@ -9,7 +9,8 @@ class GetFamilyWorkspaceMembersUseCase {
 
   Future<Either<Failure, List<FamilyWorkspaceMemberEntity>>> call({
     required int workspaceId,
+    String? role,
   }) =>
-      _repo.getMembers(workspaceId: workspaceId);
+      _repo.getMembers(workspaceId: workspaceId, role: role);
 }
 

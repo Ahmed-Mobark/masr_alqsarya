@@ -14,6 +14,16 @@ class AuthPhoneNumberField extends StatelessWidget {
     required this.selectedDialCode,
     required this.onDialCodeChanged,
     this.validator,
+    /// When set, overrides the default white card background (e.g. [AppColors.inputBg]).
+    this.fillColor,
+    /// When set, overrides default corner radius (e.g. `14` to match compact form fields).
+    this.borderRadius,
+    this.borderColor,
+    this.focusedBorderColor,
+    /// When set, overrides default vertical padding (e.g. align with other form rows).
+    this.contentPadding,
+    /// When set, overrides default input text color (e.g. [AppColors.darkText]).
+    this.textColor,
   });
 
   final TextEditingController controller;
@@ -21,6 +31,12 @@ class AuthPhoneNumberField extends StatelessWidget {
   final String selectedDialCode;
   final ValueChanged<String> onDialCodeChanged;
   final String? Function(String?)? validator;
+  final Color? fillColor;
+  final double? borderRadius;
+  final Color? borderColor;
+  final Color? focusedBorderColor;
+  final EdgeInsetsGeometry? contentPadding;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +45,18 @@ class AuthPhoneNumberField extends StatelessWidget {
       hintText: hint,
       keyboardType: TextInputType.phone,
       validator: validator,
-      cardColor: AppColors.white,
+      textColor: textColor,
+      cardColor: fillColor ?? AppColors.white,
       hintStyle: AppTextStyles.body(
         color: AppColors.captionText,
       ).copyWith(fontSize: 14.sp),
-      borderColor: AppColors.border.withValues(alpha: 0.75),
-      focusedBorderColor: AppColors.primary.withValues(alpha: 0.95),
+      borderColor: borderColor ?? AppColors.border.withValues(alpha: 0.75),
+      focusedBorderColor: focusedBorderColor ?? AppColors.primary.withValues(alpha: 0.95),
       errorBorderColor: AppColors.error.withValues(alpha: 0.9),
-      borderRadius: 18,
+      borderRadius: borderRadius ?? 18,
       // Prefix lives in prefixIcon slot; remove left padding.
-      contentPadding: EdgeInsetsDirectional.fromSTEB(0, 16.h, 16.w, 16.h),
+      contentPadding:
+          contentPadding ?? EdgeInsetsDirectional.fromSTEB(0, 16.h, 16.w, 16.h),
       prefixWidget: _CountryPrefix(
         selectedDialCode: selectedDialCode,
         onDialCodeChanged: onDialCodeChanged,

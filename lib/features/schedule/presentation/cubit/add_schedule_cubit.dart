@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:masr_al_qsariya/core/storage/workspace_id_storage.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/create_calendar_item_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/get_calendar_item_types_usecase.dart';
@@ -11,10 +10,10 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
     required CreateCalendarItemUseCase createCalendarItem,
     required GetCalendarItemTypesUseCase getCalendarItemTypes,
     required WorkspaceIdStorage workspaceIdStorage,
-  })  : _createCalendarItem = createCalendarItem,
-        _getCalendarItemTypes = getCalendarItemTypes,
-        _workspaceIdStorage = workspaceIdStorage,
-        super(AddScheduleState.initial());
+  }) : _createCalendarItem = createCalendarItem,
+       _getCalendarItemTypes = getCalendarItemTypes,
+       _workspaceIdStorage = workspaceIdStorage,
+       super(AddScheduleState.initial());
 
   final CreateCalendarItemUseCase _createCalendarItem;
   final GetCalendarItemTypesUseCase _getCalendarItemTypes;
@@ -27,27 +26,45 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
     final result = await _getCalendarItemTypes(
       GetCalendarItemTypesParams(workspaceId: workspaceId),
     );
-    result.fold(
-      (_) {},
-      (types) => emit(state.copyWith(eventTypes: types)),
-    );
+    result.fold((_) {}, (types) => emit(state.copyWith(eventTypes: types)));
   }
 
+  static DateTime _todayCalendar() {
+    final n = DateTime.now();
+    return DateTime(n.year, n.month, n.day);
+  }
+
+  static DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  /// Wall-clock on the device → UTC instant for APIs that store `...Z`.
+  ///
+  /// Avoids sending `M/d/yyyy'T'HH:mm:ss` without offset; servers often treat
+  /// that as UTC so 9:00 local becomes `09:00Z` and displays as noon in +3.
+  static String _calendarInstantUtcIso(DateTime localWallClock) =>
+      localWallClock.toUtc().toIso8601String();
+
   void changeMonth(int delta) {
-    emit(
-      state.copyWith(
-        focusedMonth: DateTime(state.focusedMonth.year, state.focusedMonth.month + delta),
-      ),
+    final today = _todayCalendar();
+    var next = DateTime(
+      state.focusedMonth.year,
+      state.focusedMonth.month + delta,
+      1,
     );
+    final minMonthStart = DateTime(today.year, today.month, 1);
+    if (next.isBefore(minMonthStart)) {
+      next = minMonthStart;
+      if (next.year == state.focusedMonth.year &&
+          next.month == state.focusedMonth.month) {
+        return;
+      }
+    }
+    emit(state.copyWith(focusedMonth: next));
   }
 
   void selectDay(DateTime day) {
-    emit(
-      state.copyWith(
-        selectedDay: day,
-        selectedDate: day,
-      ),
-    );
+    final dayOnly = _dateOnly(day);
+    if (dayOnly.isBefore(_todayCalendar())) return;
+    emit(state.copyWith(selectedDay: dayOnly, selectedDate: dayOnly));
   }
 
   void setEventType(String? value) {
@@ -89,13 +106,44 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
 
   void setChild(String? value) => emit(state.copyWith(selectedChild: value));
 
-  void setDate(DateTime? value) => emit(state.copyWith(selectedDate: value));
+  void setDate(DateTime? value) {
+    if (value == null) return;
+    final dayOnly = _dateOnly(value);
+    if (dayOnly.isBefore(_todayCalendar())) return;
+    emit(state.copyWith(selectedDate: dayOnly, selectedDay: dayOnly));
+  }
 
-  void setTime(TimeOfDay? value) => emit(state.copyWith(selectedTime: value));
+  static int _timeMinutes(TimeOfDay t) => t.hour * 60 + t.minute;
 
-  void setEndDate(DateTime? value) => emit(state.copyWith(selectedEndDate: value));
+  static bool _endStrictlyAfterStart(TimeOfDay start, TimeOfDay end) =>
+      _timeMinutes(end) > _timeMinutes(start);
 
-  void setEndTime(TimeOfDay? value) => emit(state.copyWith(selectedEndTime: value));
+  void setTime(TimeOfDay? value) {
+    if (value == null) {
+      emit(state.copyWith(clearSelectedTime: true));
+      return;
+    }
+    final end = state.selectedEndTime;
+    if (end != null && !_endStrictlyAfterStart(value, end)) {
+      emit(state.copyWith(selectedTime: value, clearSelectedEndTime: true));
+      return;
+    }
+    emit(state.copyWith(selectedTime: value));
+  }
+
+  /// Returns `false` if end is not strictly after the current start time.
+  bool setEndTime(TimeOfDay? value) {
+    if (value == null) {
+      emit(state.copyWith(clearSelectedEndTime: true));
+      return true;
+    }
+    final start = state.selectedTime;
+    if (start != null && !_endStrictlyAfterStart(start, value)) {
+      return false;
+    }
+    emit(state.copyWith(selectedEndTime: value));
+    return true;
+  }
 
   void setNote(String? value) => emit(state.copyWith(note: value));
 
@@ -112,17 +160,28 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
     if (t == null) {
       return DateTime(baseDate.year, baseDate.month, baseDate.day);
     }
-    return DateTime(baseDate.year, baseDate.month, baseDate.day, t.hour, t.minute);
+    return DateTime(
+      baseDate.year,
+      baseDate.month,
+      baseDate.day,
+      t.hour,
+      t.minute,
+    );
   }
 
+  /// Same calendar day as [scheduledStartsAt]; only the end **time** differs.
   DateTime? scheduledEndsAt() {
-    final baseDate = state.selectedEndDate;
+    final baseDate = state.selectedDate;
     if (baseDate == null) return null;
     final t = state.selectedEndTime;
-    if (t == null) {
-      return DateTime(baseDate.year, baseDate.month, baseDate.day);
-    }
-    return DateTime(baseDate.year, baseDate.month, baseDate.day, t.hour, t.minute);
+    if (t == null) return null;
+    return DateTime(
+      baseDate.year,
+      baseDate.month,
+      baseDate.day,
+      t.hour,
+      t.minute,
+    );
   }
 
   Map<String, dynamic>? buildCallPayload() {
@@ -131,8 +190,7 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
     if (scheduled == null) return null;
     return <String, dynamic>{
       'mode': state.selectedCallMode,
-      'scheduled_starts_at':
-          DateFormat("M/d/yyyy'T'HH:mm:ss").format(scheduled),
+      'scheduled_starts_at': _calendarInstantUtcIso(scheduled),
     };
   }
 
@@ -140,11 +198,33 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
     if (state.status == AddScheduleStatus.submitting) return;
 
     if (state.selectedEventType == null) {
-      emit(state.copyWith(status: AddScheduleStatus.failure, error: 'missing_type'));
+      emit(
+        state.copyWith(
+          status: AddScheduleStatus.failure,
+          error: 'missing_type',
+        ),
+      );
       return;
     }
     if (state.selectedDate == null) {
-      emit(state.copyWith(status: AddScheduleStatus.failure, error: 'missing_start_date'));
+      emit(
+        state.copyWith(
+          status: AddScheduleStatus.failure,
+          error: 'missing_start_date',
+        ),
+      );
+      return;
+    }
+
+    final startDt = scheduledStartsAt()!;
+    final endDt = scheduledEndsAt();
+    if (endDt != null && !endDt.isAfter(startDt)) {
+      emit(
+        state.copyWith(
+          status: AddScheduleStatus.failure,
+          error: 'end_time_not_after_start',
+        ),
+      );
       return;
     }
 
@@ -159,19 +239,16 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
       return;
     }
 
-    emit(state.copyWith(
-      status: AddScheduleStatus.submitting,
-      clearError: true,
-      clearCreatedCall: true,
-    ));
-
-    final startsAt = DateFormat("M/d/yyyy'T'HH:mm:ss").format(
-      scheduledStartsAt()!,
+    emit(
+      state.copyWith(
+        status: AddScheduleStatus.submitting,
+        clearError: true,
+        clearCreatedCall: true,
+      ),
     );
-    final endsDt = scheduledEndsAt();
-    final endsAt = endsDt != null
-        ? DateFormat("M/d/yyyy'T'HH:mm:ss").format(endsDt)
-        : null;
+
+    final startsAt = _calendarInstantUtcIso(startDt);
+    final endsAt = endDt != null ? _calendarInstantUtcIso(endDt) : null;
 
     final result = await _createCalendarItem(
       CreateCalendarItemParams(
@@ -196,4 +273,3 @@ class AddScheduleCubit extends Cubit<AddScheduleState> {
     );
   }
 }
-

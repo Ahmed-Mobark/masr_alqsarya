@@ -21,7 +21,7 @@ class SendChatMessageUseCase {
 
   final MessagesRepository _repo;
 
-  Future<Either<Failure, void>> call(SendChatMessageParams params) {
+  Future<Either<Failure, int?>> call(SendChatMessageParams params) {
     return _repo.sendChatMessage(
       params.workspaceId,
       params.chatId,

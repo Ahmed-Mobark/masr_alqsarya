@@ -5,6 +5,7 @@ import 'package:masr_al_qsariya/features/family_workspace/domain/entities/family
 abstract class FamilyWorkspaceRepository {
   Future<Either<Failure, List<FamilyWorkspaceMemberEntity>>> getMembers({
     required int workspaceId,
+    String? role,
   });
 }
 

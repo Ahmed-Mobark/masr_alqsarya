@@ -10,6 +10,7 @@ import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/widgets/delete_account_dialog.dart';
 import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/account_security_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/family_info_view.dart';
@@ -70,6 +71,53 @@ class _ProfileBody extends StatelessWidget {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: InkWell(
+                onTap: () {
+                  showDialog<void>(
+                    context: context,
+                    builder: (_) =>
+                        DeleteAccountDialog(scaffoldContext: context),
+                  );
+                },
+                borderRadius: BorderRadius.circular(25),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: AppColors.error.withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.delete_outline,
+                        color: AppColors.error,
+                        size: 22,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          context.tr.profileMenuDeleteAccount,
+                          style: AppTextStyles.body(color: AppColors.error),
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right,
+                        color: AppColors.error.withValues(alpha: 0.7),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             // LOG OUT button at bottom
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
@@ -122,7 +170,10 @@ class _ProfileBody extends StatelessWidget {
     final displayName = (user?.fullName.isNotEmpty ?? false)
         ? user!.fullName
         : 'Leslie Pfeffer';
-    final role = sl<Storage>().getSelectedRole() ?? 'Mother';
+    final role = (user?.type?.trim().isNotEmpty ?? false)
+        ? user!.type!.trim()
+        : (sl<Storage>().getSelectedRole() ?? 'Mother');
+    final userCode = user?.id.toString() ?? '--';
 
     return Row(
       children: [
@@ -154,7 +205,7 @@ class _ProfileBody extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Clipboard.setData(const ClipboardData(text: 'DKVLRT'));
+            Clipboard.setData(ClipboardData(text: userCode));
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -165,7 +216,7 @@ class _ProfileBody extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('DKVLRT',
+                Text(userCode,
                     style:
                         AppTextStyles.smallMedium(color: AppColors.darkText)),
                 const SizedBox(width: 6),
@@ -225,17 +276,6 @@ class _ProfileBody extends StatelessWidget {
         _buildMenuItem(
           title: context.tr.profileMenuLegalTerms,
           onTap: () => _showTermsOfUse(context),
-        ),
-        _buildDivider(),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          child: GestureDetector(
-            onTap: () => _showDeleteAccountDialog(context),
-            child: Text(
-              context.tr.profileMenuDeleteAccount,
-              style: AppTextStyles.body(color: AppColors.error),
-            ),
-          ),
         ),
       ],
     );
@@ -305,34 +345,6 @@ class _ProfileBody extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showDeleteAccountDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.cardBg,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(context.tr.accountSecurityDeleteAccount,
-            style: AppTextStyles.heading2()),
-        content: Text(
-          context.tr.accountSecurityDeleteConfirm,
-          style: AppTextStyles.body(color: AppColors.greyText),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(context.tr.commonCancel,
-                style: AppTextStyles.bodyMedium(color: AppColors.greyText)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(context.tr.commonDelete,
-                style: AppTextStyles.bodyMedium(color: AppColors.error)),
-          ),
-        ],
       ),
     );
   }

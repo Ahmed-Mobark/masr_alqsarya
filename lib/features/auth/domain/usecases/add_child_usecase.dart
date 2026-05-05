@@ -13,6 +13,7 @@ class AddChildUseCase {
   }
 }
 
+/// Payload for `POST /family-workspace/add-child` (multipart). **Only** these six fields.
 class AddChildParams extends Equatable {
   const AddChildParams({
     required this.displayName,

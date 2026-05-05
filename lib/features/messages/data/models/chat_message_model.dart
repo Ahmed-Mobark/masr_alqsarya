@@ -8,6 +8,7 @@ class ChatMessageModel {
     this.createdAtIso,
     this.senderId,
     this.attachments = const [],
+    this.isFlagged = false,
   });
 
   final int id;
@@ -15,6 +16,7 @@ class ChatMessageModel {
   final String? createdAtIso;
   final int? senderId;
   final List<ChatAttachment> attachments;
+  final bool isFlagged;
 
   static List<ChatAttachment> _attachmentsFromMap(Map<String, dynamic> map) {
     final raw = map['attachments'];
@@ -66,6 +68,7 @@ class ChatMessageModel {
       createdAtIso: (map['created_at'] as String?)?.trim(),
       senderId: senderId,
       attachments: _attachmentsFromMap(map),
+      isFlagged: map['is_flagged'] == true,
     );
   }
 
@@ -75,5 +78,6 @@ class ChatMessageModel {
         createdAtIso: createdAtIso,
         senderId: senderId,
         attachments: attachments,
+        isFlagged: isFlagged,
       );
 }

@@ -69,6 +69,8 @@ class AppEndpoints {
   static const String authForgotPassword = "auth/forgot-password";
   static const String authVerifyResetCode = "auth/verify-reset-code";
   static const String authResetPassword = "auth/reset-password";
+  static const String authPassword = "auth/password";
+  static const String authAccount = "auth/account";
 
   // News
   static const String newsFeeds = "news-feeds";
@@ -81,6 +83,12 @@ class AppEndpoints {
       "workspaces/$workspaceId/chats";
   static String workspaceChatMessages(int workspaceId, int chatId) =>
       "workspaces/$workspaceId/chats/$chatId/messages";
+  static String workspaceChatModerationLogs(int workspaceId, int chatId) =>
+      "workspaces/$workspaceId/chats/$chatId/moderation-logs";
+  static String workspaceChatTone(int workspaceId, int chatId) =>
+      "workspaces/$workspaceId/chats/$chatId/tone";
+  static String workspaceChatLogs(int workspaceId, int chatId) =>
+      "workspaces/$workspaceId/chats/$chatId/logs";
   static String workspaceChatAttachmentDownload(
     int workspaceId,
     int chatId,
@@ -125,11 +133,18 @@ class AppEndpoints {
       "workspaces/$workspaceId/calendar-items";
   static String workspaceCalendarItemTypes(int workspaceId) =>
       "workspaces/$workspaceId/calendar-items/types";
+  /// Co-parent onboarding invite (multipart `type`, e.g. `co_partner`).
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
+  /// Therapist / lawyer / other (multipart `professional_type`).
+  static const String inviteProfessional = "family-workspace/invite-professional";
   static const String addChild = "family-workspace/add-child";
   static const String familyWorkspaceMembers = "family-workspace/members";
   static const String familyWorkspaceJoinByCode =
       "family-workspace/invitations/respond";
+  static String familyWorkspaceInvitationResend(int invitationId) =>
+      "family-workspace/invitations/$invitationId/resend";
+  static String familyWorkspaceInvitationCancel(int invitationId) =>
+      "family-workspace/invitations/$invitationId/cancel";
 
   // Expenses
   static String workspaceRegularExpenses(int workspaceId) =>
@@ -147,4 +162,14 @@ class AppEndpoints {
 
   // Categories
   static const String categories = "categories";
+
+  // Live sessions (mediation / Q&A)
+  static const String liveSessions = "live-sessions";
+  static String liveSession(int liveSessionId) => "live-sessions/$liveSessionId";
+
+  /// Recorded session library (search, filters, pagination).
+  static const String sessionLibrary = "session-library";
+
+  // Home
+  static const String homeRecentActivities = "mobile/home/recent-activities";
 }

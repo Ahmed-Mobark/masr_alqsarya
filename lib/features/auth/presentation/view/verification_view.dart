@@ -41,6 +41,9 @@ class _VerificationViewState extends State<VerificationView> {
   @override
   void initState() {
     super.initState();
+    if (widget.email != null && widget.email!.trim().isNotEmpty) {
+      context.read<AuthCubit>().setRegisteredEmail(widget.email!.trim());
+    }
     _startTimer();
   }
 
@@ -81,20 +84,12 @@ class _VerificationViewState extends State<VerificationView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        final cubit = sl<AuthCubit>();
-        if (widget.email != null) {
-          cubit.setRegisteredEmail(widget.email!);
-        }
-        return cubit;
-      },
-      child: BlocConsumer<AuthCubit, AuthState>(
-        listenWhen: (previous, current) =>
-            previous.action != current.action ||
-            previous.submitError != current.submitError ||
-            previous.resendSuccess != current.resendSuccess,
-        listener: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(
+      listenWhen: (previous, current) =>
+          previous.action != current.action ||
+          previous.submitError != current.submitError ||
+          previous.resendSuccess != current.resendSuccess,
+      listener: (context, state) {
           if (state.submitError != null && state.submitError!.isNotEmpty) {
             appToast(
               context: context,
@@ -136,9 +131,9 @@ class _VerificationViewState extends State<VerificationView> {
             sl<AppNavigator>().pushAndRemoveUntil(screen: const MainNavView());
             context.read<AuthCubit>().clearAction();
           }
-        },
-        builder: (context, state) {
-          final cubit = context.read<AuthCubit>();
+      },
+      builder: (context, state) {
+        final cubit = context.read<AuthCubit>();
           final maskedEmail = state.registeredEmail != null
               ? _maskEmail(state.registeredEmail!)
               : '';
@@ -374,8 +369,7 @@ class _VerificationViewState extends State<VerificationView> {
               ),
             ),
           );
-        },
-      ),
+      },
     );
   }
 }
