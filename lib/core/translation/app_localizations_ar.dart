@@ -1551,6 +1551,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sessionsBookSession => 'حجز جلسة';
 
   @override
+  String get sessionsBookNow => 'احجز الآن';
+
+  @override
+  String get sessionsBookedBadge => 'محجوزة';
+
+  @override
+  String get sessionsBookedSuccess => 'تم حجز الجلسة بنجاح.';
+
+  @override
+  String get sessionsBookedFailed => 'تعذر حجز هذه الجلسة. حاول مرة أخرى.';
+
+  @override
+  String get sessionLobbyJoinNotAvailableYet =>
+      'سيتاح الانضمام عند بدء الجلسة.';
+
+  @override
+  String sessionLobbyJoinAvailableAt(String time) {
+    return 'سيتاح الانضمام في $time.';
+  }
+
+  @override
   String get sessionsPublic => 'عامة';
 
   @override
@@ -1860,6 +1881,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rescheduleSubmit => 'طلب إعادة جدولة';
+
+  @override
+  String get homeCallConfirmedSuccess => 'تم تأكيد المكالمة بنجاح.';
+
+  @override
+  String get homeCallRescheduledSuccess => 'تمت إعادة جدولة المكالمة بنجاح.';
+
+  @override
+  String get homeCallActionFailed => 'تعذر تنفيذ الإجراء حالياً.';
 
   @override
   String get documentDetailsTitle => 'المستند';

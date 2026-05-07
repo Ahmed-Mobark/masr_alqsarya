@@ -1578,6 +1578,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sessionsBookSession => 'RÉSERVER UNE SESSION';
 
   @override
+  String get sessionsBookNow => 'RÉSERVER MAINTENANT';
+
+  @override
+  String get sessionsBookedBadge => 'Réservée';
+
+  @override
+  String get sessionsBookedSuccess => 'Session réservée avec succès.';
+
+  @override
+  String get sessionsBookedFailed =>
+      'Impossible de réserver cette session. Veuillez réessayer.';
+
+  @override
+  String get sessionLobbyJoinNotAvailableYet =>
+      'Rejoindre sera disponible au début de la session.';
+
+  @override
+  String sessionLobbyJoinAvailableAt(String time) {
+    return 'Rejoindre sera disponible à $time.';
+  }
+
+  @override
   String get sessionsPublic => 'Public';
 
   @override
@@ -1890,6 +1912,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rescheduleSubmit => 'REPROGRAMMER';
+
+  @override
+  String get homeCallConfirmedSuccess => 'Appel confirmé avec succès.';
+
+  @override
+  String get homeCallRescheduledSuccess => 'Appel reprogrammé avec succès.';
+
+  @override
+  String get homeCallActionFailed =>
+      'Impossible d\'effectuer cette action pour le moment.';
 
   @override
   String get documentDetailsTitle => 'Document';

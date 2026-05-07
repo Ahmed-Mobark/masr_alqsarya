@@ -1563,6 +1563,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionsBookSession => 'BOOK SESSION';
 
   @override
+  String get sessionsBookNow => 'BOOK NOW';
+
+  @override
+  String get sessionsBookedBadge => 'Booked';
+
+  @override
+  String get sessionsBookedSuccess => 'Session booked successfully.';
+
+  @override
+  String get sessionsBookedFailed =>
+      'Could not book this session. Please try again.';
+
+  @override
+  String get sessionLobbyJoinNotAvailableYet =>
+      'Join will be available when the session starts.';
+
+  @override
+  String sessionLobbyJoinAvailableAt(String time) {
+    return 'Join will be available at $time.';
+  }
+
+  @override
   String get sessionsPublic => 'Public';
 
   @override
@@ -1874,6 +1896,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescheduleSubmit => 'REQUEST RESCHEDULE';
+
+  @override
+  String get homeCallConfirmedSuccess => 'Call confirmed successfully.';
+
+  @override
+  String get homeCallRescheduledSuccess => 'Call rescheduled successfully.';
+
+  @override
+  String get homeCallActionFailed =>
+      'Unable to complete this action right now.';
 
   @override
   String get documentDetailsTitle => 'Document';

@@ -7,10 +7,7 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 
 class SessionOfferSlotData {
-  const SessionOfferSlotData({
-    required this.dayLabel,
-    required this.timeLabel,
-  });
+  const SessionOfferSlotData({required this.dayLabel, required this.timeLabel});
 
   final String dayLabel;
   final String timeLabel;
@@ -34,6 +31,7 @@ class SessionOfferCard extends StatelessWidget {
     this.scheduleTimeLabel,
     this.scheduleDurationLabel,
     this.showPrimaryButton = true,
+    this.isPrimaryLoading = false,
   });
 
   final String sessionTypeLabel;
@@ -51,6 +49,7 @@ class SessionOfferCard extends StatelessWidget {
   final String? scheduleTimeLabel;
   final String? scheduleDurationLabel;
   final bool showPrimaryButton;
+  final bool isPrimaryLoading;
 
   static const String _dash = '\u2014';
 
@@ -99,12 +98,13 @@ class SessionOfferCard extends StatelessWidget {
                         children: [
                           Text(
                             expertName,
-                            style: AppTextStyles.heading2(
-                              color: AppColors.darkText,
-                            ).copyWith(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style:
+                                AppTextStyles.heading2(
+                                  color: AppColors.darkText,
+                                ).copyWith(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
                           ),
                           if (expertRole.trim().isNotEmpty) ...[
                             SizedBox(height: 4.h),
@@ -129,12 +129,13 @@ class SessionOfferCard extends StatelessWidget {
                                 SizedBox(width: 4.w),
                                 Text(
                                   ratingLabel,
-                                  style: AppTextStyles.smallMedium(
-                                    color: AppColors.darkText,
-                                  ).copyWith(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style:
+                                      AppTextStyles.smallMedium(
+                                        color: AppColors.darkText,
+                                      ).copyWith(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                 ),
                               ],
                             ),
@@ -165,12 +166,13 @@ class SessionOfferCard extends StatelessWidget {
                         if ((nextAvailableTitle ?? '').trim().isNotEmpty) ...[
                           Text(
                             nextAvailableTitle!.trim(),
-                            style: AppTextStyles.smallMedium(
-                              color: AppColors.darkText,
-                            ).copyWith(
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style:
+                                AppTextStyles.smallMedium(
+                                  color: AppColors.darkText,
+                                ).copyWith(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
                           ),
                           SizedBox(height: 10.h),
                         ],
@@ -213,19 +215,24 @@ class SessionOfferCard extends StatelessWidget {
                             children: [
                               Text(
                                 context.tr.sessionLobbyStartDateLabel,
-                                style: AppTextStyles.caption(
-                                  color: AppColors.greyText,
-                                ).copyWith(fontSize: 11.sp, fontWeight: FontWeight.w600),
+                                style:
+                                    AppTextStyles.caption(
+                                      color: AppColors.greyText,
+                                    ).copyWith(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
                               SizedBox(height: 6.h),
                               Text(
                                 dateLine,
-                                style: AppTextStyles.smallMedium(
-                                  color: AppColors.darkText,
-                                ).copyWith(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style:
+                                    AppTextStyles.smallMedium(
+                                      color: AppColors.darkText,
+                                    ).copyWith(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                               ),
                             ],
                           ),
@@ -238,25 +245,31 @@ class SessionOfferCard extends StatelessWidget {
                             color: AppColors.border,
                           ),
                         ),
+                        SizedBox(width: 8.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 context.tr.sessionLobbyStartTimeLabel,
-                                style: AppTextStyles.caption(
-                                  color: AppColors.greyText,
-                                ).copyWith(fontSize: 11.sp, fontWeight: FontWeight.w600),
+                                style:
+                                    AppTextStyles.caption(
+                                      color: AppColors.greyText,
+                                    ).copyWith(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
                               SizedBox(height: 6.h),
                               Text(
                                 timeLine,
-                                style: AppTextStyles.smallMedium(
-                                  color: AppColors.darkText,
-                                ).copyWith(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style:
+                                    AppTextStyles.smallMedium(
+                                      color: AppColors.darkText,
+                                    ).copyWith(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                               ),
                             ],
                           ),
@@ -269,25 +282,32 @@ class SessionOfferCard extends StatelessWidget {
                             color: AppColors.border,
                           ),
                         ),
+                        SizedBox(width: 8.w),
+
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 context.tr.sessionLobbyDurationLabel,
-                                style: AppTextStyles.caption(
-                                  color: AppColors.greyText,
-                                ).copyWith(fontSize: 11.sp, fontWeight: FontWeight.w600),
+                                style:
+                                    AppTextStyles.caption(
+                                      color: AppColors.greyText,
+                                    ).copyWith(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
                               SizedBox(height: 6.h),
                               Text(
                                 durationLine,
-                                style: AppTextStyles.smallMedium(
-                                  color: AppColors.darkText,
-                                ).copyWith(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style:
+                                    AppTextStyles.smallMedium(
+                                      color: AppColors.darkText,
+                                    ).copyWith(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                               ),
                             ],
                           ),
@@ -300,7 +320,7 @@ class SessionOfferCard extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: onPrimaryPressed,
+                      onPressed: isPrimaryLoading ? null : onPrimaryPressed,
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: AppColors.darkText,
@@ -310,15 +330,25 @@ class SessionOfferCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                       ),
-                      child: Text(
-                        primaryLabel,
-                        style: AppTextStyles.button(
-                          color: AppColors.darkText,
-                        ).copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                      child: isPrimaryLoading
+                          ? SizedBox(
+                              width: 18.w,
+                              height: 18.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.darkText,
+                              ),
+                            )
+                          : Text(
+                              primaryLabel,
+                              style:
+                                  AppTextStyles.button(
+                                    color: AppColors.darkText,
+                                  ).copyWith(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
                     ),
                   ),
                 ],
@@ -332,10 +362,7 @@ class SessionOfferCard extends StatelessWidget {
               sessionTypeLabel,
               style: AppTextStyles.smallMedium(
                 color: AppColors.yellow,
-              ).copyWith(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w700,
-              ),
+              ).copyWith(fontSize: 12.sp, fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -373,11 +400,7 @@ class _Avatar extends StatelessWidget {
             ),
             errorWidget: (_, __, ___) => ColoredBox(
               color: AppColors.inputBg,
-              child: Icon(
-                Iconsax.user,
-                size: 28.sp,
-                color: AppColors.greyText,
-              ),
+              child: Icon(Iconsax.user, size: 28.sp, color: AppColors.greyText),
             ),
           ),
         ),
@@ -391,11 +414,7 @@ class _Avatar extends StatelessWidget {
         child: SizedBox(
           width: 56.w,
           height: 56.w,
-          child: Icon(
-            Iconsax.user,
-            size: 28.sp,
-            color: AppColors.greyText,
-          ),
+          child: Icon(Iconsax.user, size: 28.sp, color: AppColors.greyText),
         ),
       ),
     );
@@ -424,9 +443,7 @@ class _TimeSlotChip extends StatelessWidget {
           duration: const Duration(milliseconds: 180),
           padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 6.w),
           decoration: BoxDecoration(
-            color: selected
-                ? AppColors.white
-                : AppColors.sessionSlotInactiveBg,
+            color: selected ? AppColors.white : AppColors.sessionSlotInactiveBg,
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
               color: selected ? AppColors.yellow : AppColors.transparent,

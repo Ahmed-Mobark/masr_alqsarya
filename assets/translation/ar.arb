@@ -559,6 +559,19 @@
   "sessionsNextAvailableTitle": "أقرب المواعيد المتاحة",
   "sessionsJoin": "انضمام",
   "sessionsBookSession": "حجز جلسة",
+  "sessionsBookNow": "احجز الآن",
+  "sessionsBookedBadge": "محجوزة",
+  "sessionsBookedSuccess": "تم حجز الجلسة بنجاح.",
+  "sessionsBookedFailed": "تعذر حجز هذه الجلسة. حاول مرة أخرى.",
+  "sessionLobbyJoinNotAvailableYet": "سيتاح الانضمام عند بدء الجلسة.",
+  "sessionLobbyJoinAvailableAt": "سيتاح الانضمام في {time}.",
+  "@sessionLobbyJoinAvailableAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "sessionsPublic": "عامة",
   "sessionsPrivate": "خاصة",
   "sessionsSampleExpertName": "د. كيفن لو",
@@ -677,6 +690,9 @@
   "rescheduleSelectDate": "اختر تاريخاً جديداً",
   "rescheduleSelectTime": "اختر الوقت",
   "rescheduleSubmit": "طلب إعادة جدولة",
+  "homeCallConfirmedSuccess": "تم تأكيد المكالمة بنجاح.",
+  "homeCallRescheduledSuccess": "تمت إعادة جدولة المكالمة بنجاح.",
+  "homeCallActionFailed": "تعذر تنفيذ الإجراء حالياً.",
 
   "documentDetailsTitle": "المستند",
   "documentDetailsFileSummary": "ملخص الملف",

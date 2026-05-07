@@ -137,4 +137,31 @@ class CallsRepositoryImpl with RepositoryHelper implements CallsRepository {
       return;
     });
   }
+
+  @override
+  Future<Either<Failure, void>> confirmCall({
+    required int workspaceId,
+    required int callId,
+  }) {
+    return handleEither(() async {
+      await _remote.confirmCall(workspaceId: workspaceId, callId: callId);
+      return;
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> rescheduleCall({
+    required int workspaceId,
+    required int callId,
+    required String scheduledStartsAt,
+  }) {
+    return handleEither(() async {
+      await _remote.rescheduleCall(
+        workspaceId: workspaceId,
+        callId: callId,
+        scheduledStartsAt: scheduledStartsAt,
+      );
+      return;
+    });
+  }
 }

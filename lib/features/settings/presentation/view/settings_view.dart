@@ -58,7 +58,6 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ),
               const Divider(color: AppColors.border, height: 1, indent: 70),
-
               // Email Notifications
               SettingsRow(
                 icon: Iconsax.sms,
@@ -71,7 +70,6 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ),
               const Divider(color: AppColors.border, height: 1, indent: 70),
-
               // Dark Mode (disabled)
               SettingsRow(
                 icon: Iconsax.moon,
@@ -84,7 +82,6 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ),
               const Divider(color: AppColors.border, height: 1, indent: 70),
-
               // Tone Analysis
               SettingsRow(
                 icon: Iconsax.message_text,
@@ -97,7 +94,6 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ),
               const Divider(color: AppColors.border, height: 1, indent: 70),
-
               // Language
               SettingsRow(
                 icon: Iconsax.global,

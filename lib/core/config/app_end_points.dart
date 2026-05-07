@@ -106,10 +106,8 @@ class AppEndpoints {
     int assetId,
   ) => "workspaces/$workspaceId/uploaded-files/$assetId/permissions";
 
-  static String workspaceUploadedFileActivity(
-    int workspaceId,
-    int assetId,
-  ) => "workspaces/$workspaceId/uploaded-files/$assetId/activity";
+  static String workspaceUploadedFileActivity(int workspaceId, int assetId) =>
+      "workspaces/$workspaceId/uploaded-files/$assetId/activity";
 
   static String workspaceUploadedFileEvidence(int workspaceId, int assetId) =>
       "workspaces/$workspaceId/uploaded-files/$assetId/evidence";
@@ -127,16 +125,23 @@ class AppEndpoints {
       "workspaces/$workspaceId/calls/$callId/end";
   static String workspaceCallCancel(int workspaceId, int callId) =>
       "workspaces/$workspaceId/calls/$callId/cancel";
+  static String workspaceCallConfirm(int workspaceId, int callId) =>
+      "workspaces/$workspaceId/calls/$callId/confirm";
+  static String workspaceCallReschedule(int workspaceId, int callId) =>
+      "workspaces/$workspaceId/calls/$callId/reschedule";
 
   // Calendar
   static String workspaceCalendarItems(int workspaceId) =>
       "workspaces/$workspaceId/calendar-items";
   static String workspaceCalendarItemTypes(int workspaceId) =>
       "workspaces/$workspaceId/calendar-items/types";
+
   /// Co-parent onboarding invite (multipart `type`, e.g. `co_partner`).
   static const String inviteCoPartner = "family-workspace/invite-co-partner";
+
   /// Therapist / lawyer / other (multipart `professional_type`).
-  static const String inviteProfessional = "family-workspace/invite-professional";
+  static const String inviteProfessional =
+      "family-workspace/invite-professional";
   static const String addChild = "family-workspace/add-child";
   static const String familyWorkspaceMembers = "family-workspace/members";
   static const String familyWorkspaceJoinByCode =
@@ -165,7 +170,10 @@ class AppEndpoints {
 
   // Live sessions (mediation / Q&A)
   static const String liveSessions = "live-sessions";
-  static String liveSession(int liveSessionId) => "live-sessions/$liveSessionId";
+  static String liveSession(int liveSessionId) =>
+      "live-sessions/$liveSessionId";
+  static String workspaceLiveSessionBookings(int workspaceId) =>
+      "workspaces/$workspaceId/live-session-bookings";
 
   /// Recorded session library (search, filters, pagination).
   static const String sessionLibrary = "session-library";

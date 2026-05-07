@@ -27,7 +27,8 @@ class HomeRecentActivitiesCubit extends Cubit<HomeRecentActivitiesState> {
       (data) => emit(
         state.copyWith(
           status: HomeRecentActivitiesStatus.success,
-          activities: data,
+          activities: data.activities,
+          calls: data.calls,
         ),
       ),
     );

@@ -33,29 +33,37 @@ class QuickActionCard extends StatelessWidget {
           ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 44.w,
-              height: 44.w,
+              width: 40.w,
+              height: 40.w,
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              child: Icon(icon, size: 22.sp, color: AppColors.yellow),
+              child: Icon(icon, size: 20.sp, color: AppColors.yellow),
             ),
-            SizedBox(height: 10.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w),
-              child: Text(
-                label,
-                style: AppTextStyles.smallMedium(
-                  color: AppColors.darkText,
-                ).copyWith(fontSize: 12.sp, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            SizedBox(height: 6.h),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: Center(
+                  child: Text(
+                    label,
+                    style: AppTextStyles.smallMedium(
+                      color: AppColors.darkText,
+                    ).copyWith(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
             ),
           ],

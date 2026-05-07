@@ -56,5 +56,16 @@ abstract class CallsRepository {
     required int callId,
     required bool approved,
   });
+
+  Future<Either<Failure, void>> confirmCall({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<Either<Failure, void>> rescheduleCall({
+    required int workspaceId,
+    required int callId,
+    required String scheduledStartsAt,
+  });
 }
 

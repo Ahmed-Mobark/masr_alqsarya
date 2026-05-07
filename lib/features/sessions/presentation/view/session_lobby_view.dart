@@ -9,6 +9,7 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/sessions/domain/entities/live_session_lobby.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/cubit/live_session_lobby_cubit.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/cubit/live_session_lobby_state.dart';
@@ -40,6 +41,22 @@ class SessionLobbyView extends StatelessWidget {
     return DateFormat.jm(locale).format(d.toLocal());
   }
 
+  bool _canJoinSession(LiveSessionLobby lobby) {
+    final link = lobby.sessionLink?.trim();
+    if (link == null || link.isEmpty) return false;
+    final start = lobby.startsAt?.toLocal();
+    if (start == null) return true;
+    return !DateTime.now().isBefore(start);
+  }
+
+  String _joinAvailableLabel(BuildContext context, LiveSessionLobby lobby) {
+    final start = lobby.startsAt?.toLocal();
+    if (start == null) return context.tr.sessionLobbyJoinNotAvailableYet;
+    final locale = Localizations.localeOf(context).toString();
+    final dateTime = DateFormat.yMMMd(locale).add_jm().format(start);
+    return context.tr.sessionLobbyJoinAvailableAt(dateTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     final tr = context.tr;
@@ -67,7 +84,25 @@ class SessionLobbyView extends StatelessWidget {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: BlocBuilder<LiveSessionLobbyCubit, LiveSessionLobbyState>(
+        child: BlocConsumer<LiveSessionLobbyCubit, LiveSessionLobbyState>(
+          listenWhen: (previous, current) =>
+              previous.bookingStatus != current.bookingStatus,
+          listener: (context, state) {
+            if (state.bookingStatus == LiveSessionLobbyBookingStatus.success) {
+              appToast(
+                context: context,
+                type: ToastType.success,
+                message: context.tr.sessionsBookedSuccess,
+              );
+              return;
+            }
+            if (state.bookingStatus == LiveSessionLobbyBookingStatus.failure) {
+              final msg = state.bookingError == 'workspace_missing'
+                  ? context.tr.scheduleErrorWorkspaceMissing
+                  : (state.bookingError ?? context.tr.sessionsBookedFailed);
+              appToast(context: context, type: ToastType.error, message: msg);
+            }
+          },
           builder: (context, state) {
             if (state.status == LiveSessionLobbyStatus.loading ||
                 state.status == LiveSessionLobbyStatus.initial) {
@@ -105,12 +140,21 @@ class SessionLobbyView extends StatelessWidget {
             if (lobby == null) {
               return Center(child: Text(tr.sessionsEmpty));
             }
+            final isBooked = lobby.isBooked ?? false;
+            final canJoin = _canJoinSession(lobby);
+            final isBooking =
+                state.bookingStatus == LiveSessionLobbyBookingStatus.loading;
 
             return Column(
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: EdgeInsetsDirectional.fromSTEB(16.w, 8.h, 16.w, 16.h),
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      16.w,
+                      8.h,
+                      16.w,
+                      16.h,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -125,13 +169,14 @@ class SessionLobbyView extends StatelessWidget {
                               : _dash,
                           scheduleTitle: tr.sessionLobbyScheduleTitle,
                           recordingTitle: tr.sessionLobbyRecordingConsentTitle,
-                          recordingBody: lobby.recordingConsentDescription
+                          recordingBody:
+                              lobby.recordingConsentDescription
                                   .trim()
                                   .isNotEmpty
                               ? lobby.recordingConsentDescription
                               : tr.sessionLobbyRecordingPlaceholder,
-                          consentLine: lobby
-                                  .recordingConsentAcknowledgement
+                          consentLine:
+                              lobby.recordingConsentAcknowledgement
                                   .trim()
                                   .isNotEmpty
                               ? lobby.recordingConsentAcknowledgement
@@ -143,29 +188,71 @@ class SessionLobbyView extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(16.w, 0, 16.w, 12.h),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: () => _openSessionLink(lobby.sessionLink),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.darkText,
-                        elevation: 0,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(999.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: isBooking
+                              ? null
+                              : (!isBooked
+                                    ? () => context.read<LiveSessionLobbyCubit>().book()
+                                    : (canJoin
+                                          ? () => _openSessionLink(lobby.sessionLink)
+                                          : null)),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: !isBooked
+                                ? AppColors.primary
+                                : (canJoin ? AppColors.primary : AppColors.border),
+                            foregroundColor: AppColors.darkText,
+                            disabledBackgroundColor: AppColors.border,
+                            disabledForegroundColor: AppColors.greyText,
+                            elevation: 0,
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(999.r),
+                            ),
+                          ),
+                          child: isBooking
+                              ? SizedBox(
+                                  width: 18.w,
+                                  height: 18.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.darkText,
+                                  ),
+                                )
+                              : Text(
+                                  isBooked
+                                      ? tr.sessionLobbyJoinSession
+                                      : tr.sessionsBookNow,
+                                  style:
+                                      AppTextStyles.button(
+                                        color: AppColors.darkText,
+                                      ).copyWith(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                ),
                         ),
                       ),
-                      child: Text(
-                        tr.sessionLobbyJoinSession,
-                        style: AppTextStyles.button(
-                          color: AppColors.darkText,
-                        ).copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w800,
+                      if (isBooked && !canJoin) ...[
+                        SizedBox(height: 8.h),
+                        Text(
+                          _joinAvailableLabel(context, lobby),
+                          textAlign: TextAlign.center,
+                          style:
+                              AppTextStyles.caption(
+                                color: AppColors.greyText,
+                              ).copyWith(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                height: 1.3,
+                              ),
                         ),
-                      ),
-                    ),
+                      ],
+                    ],
                   ),
                 ),
               ],
@@ -259,12 +346,13 @@ class _MediatorCard extends StatelessWidget {
                       children: [
                         Text(
                           lobby.mediatorName,
-                          style: AppTextStyles.heading2(
-                            color: AppColors.darkText,
-                          ).copyWith(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style:
+                              AppTextStyles.heading2(
+                                color: AppColors.darkText,
+                              ).copyWith(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                         if (lobby.mediatorTitle.trim().isNotEmpty) ...[
                           SizedBox(height: 4.h),
@@ -287,12 +375,13 @@ class _MediatorCard extends StatelessWidget {
                               SizedBox(width: 4.w),
                               Text(
                                 lobby.mediatorRating,
-                                style: AppTextStyles.smallMedium(
-                                  color: AppColors.darkText,
-                                ).copyWith(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style:
+                                    AppTextStyles.smallMedium(
+                                      color: AppColors.darkText,
+                                    ).copyWith(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                               ),
                             ],
                           ),
@@ -383,11 +472,7 @@ class _MediatorCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Iconsax.video,
-                    size: 20.sp,
-                    color: AppColors.yellow,
-                  ),
+                  Icon(Iconsax.video, size: 20.sp, color: AppColors.yellow),
                   SizedBox(width: 8.w),
                   Text(
                     recordingTitle,
@@ -407,12 +492,7 @@ class _MediatorCard extends StatelessWidget {
               SizedBox(height: 12.h),
               Container(
                 width: double.infinity,
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  12.w,
-                  12.h,
-                  12.w,
-                  12.h,
-                ),
+                padding: EdgeInsetsDirectional.fromSTEB(12.w, 12.h, 12.w, 12.h),
                 decoration: BoxDecoration(
                   color: AppColors.sessionSlotsSurface,
                   borderRadius: BorderRadius.circular(14.r),
@@ -429,9 +509,13 @@ class _MediatorCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         consentLine,
-                        style: AppTextStyles.smallMedium(
-                          color: AppColors.darkText,
-                        ).copyWith(fontSize: 13.sp, fontWeight: FontWeight.w600),
+                        style:
+                            AppTextStyles.smallMedium(
+                              color: AppColors.darkText,
+                            ).copyWith(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ],
@@ -472,10 +556,7 @@ class _ShadowCard extends StatelessWidget {
 }
 
 class _ScheduleColumn extends StatelessWidget {
-  const _ScheduleColumn({
-    required this.label,
-    required this.value,
-  });
+  const _ScheduleColumn({required this.label, required this.value});
 
   final String label;
   final String value;

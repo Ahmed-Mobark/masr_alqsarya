@@ -27,4 +27,9 @@ abstract class LiveSessionsRepository {
     int perPage,
     String? sortDirection,
   });
+
+  Future<Either<Failure, Unit>> bookLiveSession({
+    required int workspaceId,
+    required int liveSessionId,
+  });
 }

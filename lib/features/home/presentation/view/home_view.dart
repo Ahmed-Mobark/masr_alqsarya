@@ -11,22 +11,20 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/documents/presentation/view/documents_view.dart';
+import 'package:masr_al_qsariya/features/home/domain/entities/home_awaiting_call.dart';
 import 'package:masr_al_qsariya/features/home/domain/entities/recent_activity.dart';
+import 'package:masr_al_qsariya/features/home/presentation/cubit/home_awaiting_call_action_cubit.dart';
+import 'package:masr_al_qsariya/features/home/presentation/cubit/home_awaiting_call_action_state.dart';
 import 'package:masr_al_qsariya/features/home/presentation/cubit/home_recent_activities_cubit.dart';
 import 'package:masr_al_qsariya/features/home/presentation/cubit/home_recent_activities_state.dart';
 import 'package:masr_al_qsariya/features/home/presentation/widgets/activity_item_tile.dart';
 import 'package:masr_al_qsariya/features/home/presentation/widgets/awaiting_card.dart';
 import 'package:masr_al_qsariya/features/home/presentation/widgets/quick_action_card.dart';
+import 'package:masr_al_qsariya/features/home/presentation/widgets/reschedule_bottom_sheet.dart';
 import 'package:masr_al_qsariya/features/nav_bar/presentation/cubit/nav_bar_cubit.dart';
 import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/privacy_security_static_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/profile_view.dart';
-import 'package:masr_al_qsariya/features/schedule/domain/entities/call.dart';
-import 'package:masr_al_qsariya/features/schedule/presentation/cubit/join_call_cubit.dart';
-import 'package:masr_al_qsariya/features/schedule/presentation/cubit/join_call_state.dart';
-import 'package:masr_al_qsariya/features/schedule/presentation/cubit/schedule_calls_cubit.dart';
-import 'package:masr_al_qsariya/features/schedule/presentation/cubit/schedule_calls_state.dart';
-import 'package:masr_al_qsariya/features/schedule/presentation/view/call_room_view.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/view/session_library_watch_view.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/view/sessions_library_view.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/view/sessions_view.dart'
@@ -52,52 +50,29 @@ class HomeView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => sl<HomeRecentActivitiesCubit>()..load()),
-        BlocProvider(
-          create: (_) =>
-              sl<ScheduleCallsCubit>()..load(focusedMonth: DateTime.now()),
-        ),
-        BlocProvider(create: (_) => sl<JoinCallCubit>()),
+        BlocProvider(create: (_) => sl<HomeAwaitingCallActionCubit>()),
       ],
-      child: BlocListener<JoinCallCubit, JoinCallState>(
-        listenWhen: (prev, next) => prev.status != next.status,
+      child: BlocListener<HomeAwaitingCallActionCubit, HomeAwaitingCallActionState>(
+        listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
-          if (state.status == JoinCallStatus.failure) {
+          if (state.status == HomeAwaitingCallActionStatus.failure) {
             final msg = state.error == 'workspace_missing'
                 ? context.tr.scheduleErrorWorkspaceMissing
-                : (state.error ?? context.tr.scheduleJoinCallFailed);
+                : (state.error ?? context.tr.homeCallActionFailed);
             appToast(context: context, type: ToastType.error, message: msg);
             return;
           }
-
-          if (state.status != JoinCallStatus.success) return;
-          final joined = state.joined;
-          final callId = state.activeCallId;
-          if (joined == null || callId == null) return;
-
-          CallEntity? call;
-          for (final e in context.read<ScheduleCallsCubit>().state.calls) {
-            if (e.id == callId) {
-              call = e;
-              break;
-            }
-          }
-          final isVideo = (call?.mode ?? 'video') == 'video';
-
+          if (state.status != HomeAwaitingCallActionStatus.success) return;
+          final successMessage = state.actionType == HomeAwaitingCallActionType.confirm
+              ? context.tr.homeCallConfirmedSuccess
+              : context.tr.homeCallRescheduledSuccess;
           appToast(
             context: context,
             type: ToastType.success,
-            message: context.tr.scheduleJoinCallSuccess,
+            message: successMessage,
           );
-          sl<AppNavigator>().push(
-            screen: CallRoomView(
-              livekitUrl: joined.livekitUrl,
-              token: joined.token,
-              roomName: joined.roomName,
-              isVideo: isVideo,
-              callId: callId,
-            ),
-          );
-          context.read<JoinCallCubit>().reset();
+          context.read<HomeRecentActivitiesCubit>().load();
+          context.read<HomeAwaitingCallActionCubit>().reset();
         },
         child: Scaffold(
           backgroundColor: AppColors.scaffoldBg,
@@ -108,12 +83,9 @@ class HomeView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 12.h),
-
                   // ── Top Header Row ──
                   _buildHeaderRow(context),
-
                   SizedBox(height: 28.h),
-
                   // ── Quick Actions ──
                   if (_buildActions(context).isNotEmpty) ...[
                     Text(
@@ -137,7 +109,6 @@ class HomeView extends StatelessWidget {
                     SizedBox(height: 8.h),
                     _buildRecentActivityList(context),
                   ],
-
                   SizedBox(height: 24.h),
                 ],
               ),
@@ -296,37 +267,15 @@ class HomeView extends StatelessWidget {
     ];
   }
 
-  /// Horizontal list of awaiting response cards.
-  Widget _buildAwaitingSection(BuildContext context) {
-    return BlocBuilder<ScheduleCallsCubit, ScheduleCallsState>(
-      builder: (context, callsState) {
-        final call = _nextCallWithinHour(callsState.calls);
-        if (call == null) return const SizedBox.shrink();
-
-        return BlocBuilder<JoinCallCubit, JoinCallState>(
-          builder: (context, joinState) {
-            final isJoining =
-                joinState.status == JoinCallStatus.loading &&
-                joinState.activeCallId == call.id;
-            return AwaitingCard(
-              subtitle: _awaitingSubtitle(context, call),
-              joinLoading: isJoining,
-              onJoin: () => context.read<JoinCallCubit>().join(call.id),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Widget _buildAwaitingBlock(BuildContext context) {
     if (!_can(_pWorkspaceCalls)) {
       return SizedBox(height: 28.h);
     }
-    return BlocBuilder<ScheduleCallsCubit, ScheduleCallsState>(
-      builder: (context, callsState) {
-        final call = _nextCallWithinHour(callsState.calls);
-        if (call == null) return SizedBox(height: 28.h);
+    return BlocBuilder<HomeRecentActivitiesCubit, HomeRecentActivitiesState>(
+      builder: (context, state) {
+        final calls = _pendingCalls(state.calls);
+        if (calls.isEmpty) return SizedBox(height: 28.h);
+        final actionState = context.watch<HomeAwaitingCallActionCubit>().state;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +288,29 @@ class HomeView extends StatelessWidget {
               ).copyWith(fontSize: 18.sp, fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 12.h),
-            _buildAwaitingSection(context),
+            ...calls.map((call) {
+              final isConfirmLoading =
+                  actionState.status == HomeAwaitingCallActionStatus.loading &&
+                      actionState.actionType == HomeAwaitingCallActionType.confirm &&
+                      actionState.callId == call.id;
+              final isRescheduleLoading =
+                  actionState.status == HomeAwaitingCallActionStatus.loading &&
+                      actionState.actionType == HomeAwaitingCallActionType.reschedule &&
+                      actionState.callId == call.id;
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: 12.h),
+                child: AwaitingCard(
+                  subtitle: _awaitingSubtitle(context, call),
+                  confirmLoading: isConfirmLoading,
+                  requestLoading: isRescheduleLoading,
+                  onConfirm: () =>
+                      context.read<HomeAwaitingCallActionCubit>().confirm(call.id),
+                  onRequestReschedule: () =>
+                      _onRequestReschedule(context, call.id),
+                ),
+              );
+            }),
             SizedBox(height: 28.h),
           ],
         );
@@ -353,36 +324,50 @@ class HomeView extends StatelessWidget {
     return user.hasPermission(permission);
   }
 
-  CallEntity? _nextCallWithinHour(List<CallEntity> calls) {
-    final now = DateTime.now();
-    final oneHourLater = now.add(const Duration(hours: 1));
-    final todayStart = DateTime(now.year, now.month, now.day);
-    final tomorrowStart = todayStart.add(const Duration(days: 1));
-
-    final upcoming =
-        calls.where((call) {
-            if (call.status != 'scheduled') return false;
-            final localStart = call.scheduledStartsAt.toLocal();
-            if (localStart.isBefore(todayStart) ||
-                !localStart.isBefore(tomorrowStart)) {
-              return false;
-            }
-            if (localStart.isBefore(now)) return false;
-            return !localStart.isAfter(oneHourLater);
-          }).toList()
-          ..sort((a, b) => a.scheduledStartsAt.compareTo(b.scheduledStartsAt));
-
-    return upcoming.isEmpty ? null : upcoming.first;
+  List<HomeAwaitingCall> _pendingCalls(List<HomeAwaitingCall> calls) {
+    const visibleStatuses = <String>{
+      'pending_confirmation',
+      'reschedule_requested',
+    };
+    return calls
+        .where((call) => visibleStatuses.contains(call.status.toLowerCase().trim()))
+        .toList()
+      ..sort((a, b) {
+        final first = a.scheduledStartsAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final second = b.scheduledStartsAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        return first.compareTo(second);
+      });
   }
 
-  String _awaitingSubtitle(BuildContext context, CallEntity call) {
-    final callLabel = call.mode == 'audio'
-        ? context.tr.scheduleAudioCall
-        : context.tr.scheduleVideoCall;
-    final localStart = call.scheduledStartsAt.toLocal();
+  String _awaitingSubtitle(BuildContext context, HomeAwaitingCall call) {
     final locale = Localizations.localeOf(context).toString();
-    final timeText = DateFormat.jm(locale).format(localStart);
-    return '$callLabel - $timeText';
+    final start = call.scheduledStartsAt;
+    final timeText = start == null ? '' : _formatCallDateTime(context, start, locale);
+    final owner = call.createdByName.trim().isEmpty
+        ? (call.workspaceName ?? context.tr.homeUpcomingCall)
+        : call.createdByName.trim();
+    if (timeText.isEmpty) return owner;
+    return '$owner • $timeText';
+  }
+
+  String _formatCallDateTime(BuildContext context, DateTime date, String locale) {
+    final now = DateTime.now();
+    final isToday = now.year == date.year && now.month == date.month && now.day == date.day;
+    final timePart = DateFormat.jm(locale).format(date);
+    if (isToday) {
+      return 'Today, $timePart';
+    }
+    return '${DateFormat.yMMMd(locale).format(date)}, $timePart';
+  }
+
+  Future<void> _onRequestReschedule(BuildContext context, int callId) async {
+    final selectedDate = await RescheduleBottomSheet.show(context);
+    if (!context.mounted || selectedDate == null) return;
+    final payloadDate = DateFormat("M/d/yyyy'T'HH:mm:ss").format(selectedDate.toLocal());
+    await context.read<HomeAwaitingCallActionCubit>().reschedule(
+          callId: callId,
+          scheduledStartsAt: payloadDate,
+        );
   }
 
   /// Vertical list of recent activity tiles.

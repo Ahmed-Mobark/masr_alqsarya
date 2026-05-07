@@ -3064,6 +3064,42 @@ abstract class AppLocalizations {
   /// **'BOOK SESSION'**
   String get sessionsBookSession;
 
+  /// No description provided for @sessionsBookNow.
+  ///
+  /// In en, this message translates to:
+  /// **'BOOK NOW'**
+  String get sessionsBookNow;
+
+  /// No description provided for @sessionsBookedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked'**
+  String get sessionsBookedBadge;
+
+  /// No description provided for @sessionsBookedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Session booked successfully.'**
+  String get sessionsBookedSuccess;
+
+  /// No description provided for @sessionsBookedFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not book this session. Please try again.'**
+  String get sessionsBookedFailed;
+
+  /// No description provided for @sessionLobbyJoinNotAvailableYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Join will be available when the session starts.'**
+  String get sessionLobbyJoinNotAvailableYet;
+
+  /// No description provided for @sessionLobbyJoinAvailableAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Join will be available at {time}.'**
+  String sessionLobbyJoinAvailableAt(String time);
+
   /// No description provided for @sessionsPublic.
   ///
   /// In en, this message translates to:
@@ -3669,6 +3705,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'REQUEST RESCHEDULE'**
   String get rescheduleSubmit;
+
+  /// No description provided for @homeCallConfirmedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Call confirmed successfully.'**
+  String get homeCallConfirmedSuccess;
+
+  /// No description provided for @homeCallRescheduledSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Call rescheduled successfully.'**
+  String get homeCallRescheduledSuccess;
+
+  /// No description provided for @homeCallActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to complete this action right now.'**
+  String get homeCallActionFailed;
 
   /// No description provided for @documentDetailsTitle.
   ///

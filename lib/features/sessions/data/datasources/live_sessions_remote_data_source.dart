@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:masr_al_qsariya/core/config/app_end_points.dart';
 import 'package:masr_al_qsariya/core/network/network_service/api_basehelper.dart';
 import 'package:masr_al_qsariya/features/sessions/data/models/live_session_lobby_model.dart';
@@ -26,6 +27,11 @@ abstract class LiveSessionsRemoteDataSource {
     int page,
     int perPage,
     String? sortDirection,
+  });
+
+  Future<void> bookLiveSession({
+    required int workspaceId,
+    required int liveSessionId,
   });
 }
 
@@ -91,5 +97,16 @@ class LiveSessionsRemoteDataSourceImpl implements LiveSessionsRemoteDataSource {
       },
     );
     return SessionLibraryListModel.fromJson(response);
+  }
+
+  @override
+  Future<void> bookLiveSession({
+    required int workspaceId,
+    required int liveSessionId,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceLiveSessionBookings(workspaceId),
+      formData: FormData.fromMap({'live_session_id': liveSessionId}),
+    );
   }
 }

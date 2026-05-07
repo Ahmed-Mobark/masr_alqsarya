@@ -561,6 +561,19 @@
   "sessionsNextAvailableTitle": "Prochaines sessions disponibles",
   "sessionsJoin": "REJOINDRE",
   "sessionsBookSession": "RÉSERVER UNE SESSION",
+  "sessionsBookNow": "RÉSERVER MAINTENANT",
+  "sessionsBookedBadge": "Réservée",
+  "sessionsBookedSuccess": "Session réservée avec succès.",
+  "sessionsBookedFailed": "Impossible de réserver cette session. Veuillez réessayer.",
+  "sessionLobbyJoinNotAvailableYet": "Rejoindre sera disponible au début de la session.",
+  "sessionLobbyJoinAvailableAt": "Rejoindre sera disponible à {time}.",
+  "@sessionLobbyJoinAvailableAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "sessionsPublic": "Public",
   "sessionsPrivate": "Privé",
   "sessionsSampleExpertName": "Dr Kevin Lowe",
@@ -679,6 +692,9 @@
   "rescheduleSelectDate": "Sélectionnez une nouvelle date",
   "rescheduleSelectTime": "Sélectionner l'heure",
   "rescheduleSubmit": "REPROGRAMMER",
+  "homeCallConfirmedSuccess": "Appel confirmé avec succès.",
+  "homeCallRescheduledSuccess": "Appel reprogrammé avec succès.",
+  "homeCallActionFailed": "Impossible d'effectuer cette action pour le moment.",
 
   "documentDetailsTitle": "Document",
   "documentDetailsFileSummary": "Résumé du fichier",

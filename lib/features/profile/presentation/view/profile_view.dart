@@ -9,7 +9,7 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/delete_account_dialog.dart';
 import 'package:masr_al_qsariya/features/notifications/presentation/view/notifications_view.dart';
 import 'package:masr_al_qsariya/features/profile/presentation/view/account_security_view.dart';
@@ -37,7 +37,9 @@ class _ProfileBody extends StatelessWidget {
       listenWhen: (prev, curr) => prev.action != curr.action,
       listener: (context, state) {
         if (state.action == AuthAction.navigateToLogin) {
-          sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
+          sl<AppNavigator>().pushAndRemoveUntil(
+            screen: const OnboardingView(initialPage: 3),
+          );
         }
       },
       child: Scaffold(

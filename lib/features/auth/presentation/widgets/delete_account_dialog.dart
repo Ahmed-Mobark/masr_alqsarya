@@ -9,7 +9,7 @@ import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/features/auth/domain/usecases/delete_account_usecase.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
+import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
 
 class DeleteAccountDialog extends StatefulWidget {
   const DeleteAccountDialog({super.key, required this.scaffoldContext});
@@ -77,7 +77,9 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
             message: root.tr.accountSecurityAccountDeleted,
           );
         }
-        sl<AppNavigator>().pushAndRemoveUntil(screen: const LoginView());
+        sl<AppNavigator>().pushAndRemoveUntil(
+          screen: const OnboardingView(initialPage: 3),
+        );
       },
     );
   }

@@ -70,4 +70,18 @@ class LiveSessionsRepositoryImpl
       return model.toEntity();
     });
   }
+
+  @override
+  Future<Either<Failure, Unit>> bookLiveSession({
+    required int workspaceId,
+    required int liveSessionId,
+  }) {
+    return handleEither(() async {
+      await _remote.bookLiveSession(
+        workspaceId: workspaceId,
+        liveSessionId: liveSessionId,
+      );
+      return unit;
+    });
+  }
 }

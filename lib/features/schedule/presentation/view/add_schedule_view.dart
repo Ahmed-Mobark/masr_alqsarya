@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -100,53 +102,43 @@ class _AddScheduleBody extends StatelessWidget {
                     16.w,
                     8.h,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: canGoToPreviousMonth
-                            ? () => cubit.changeMonth(-1)
-                            : null,
-                        child: Opacity(
-                          opacity: canGoToPreviousMonth ? 1 : 0.35,
-                          child: Row(
-                            children: [
-                              Text(
-                                _monthString(context, state.focusedMonth),
-                                style: AppTextStyles.heading2(
-                                  color: AppColors.darkText,
-                                ).copyWith(fontSize: 16.sp),
-                              ),
-                              SizedBox(width: 4.w),
-                              Icon(
-                                Iconsax.arrow_down_1,
-                                size: 16.sp,
-                                color: AppColors.darkText,
-                              ),
-                            ],
+                  child: Directionality(
+                    textDirection: ui.TextDirection.ltr,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: canGoToPreviousMonth
+                              ? () => cubit.changeMonth(-1)
+                              : null,
+                          child: Opacity(
+                            opacity: canGoToPreviousMonth ? 1 : 0.35,
+                            child: Icon(
+                              Icons.chevron_left,
+                              size: 26.sp,
+                              color: AppColors.darkText,
+                            ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () => cubit.changeMonth(1),
-                        child: Row(
-                          children: [
-                            Text(
-                              '${state.focusedMonth.year}',
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              '${_monthString(context, state.focusedMonth)} ${state.focusedMonth.year}',
                               style: AppTextStyles.heading2(
                                 color: AppColors.darkText,
                               ).copyWith(fontSize: 16.sp),
                             ),
-                            SizedBox(width: 4.w),
-                            Icon(
-                              Iconsax.arrow_down_1,
-                              size: 16.sp,
-                              color: AppColors.darkText,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                        GestureDetector(
+                          onTap: () => cubit.changeMonth(1),
+                          child: Icon(
+                            Icons.chevron_right,
+                            size: 26.sp,
+                            color: AppColors.darkText,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Container(

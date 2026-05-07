@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:masr_al_qsariya/core/config/app_images.dart';
 import 'package:masr_al_qsariya/core/extensions/localization.dart';
@@ -7,21 +8,35 @@ import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
+import 'package:masr_al_qsariya/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/view/verification_view.dart';
 
 class OnboardingView extends StatefulWidget {
-  const OnboardingView({super.key});
+  const OnboardingView({
+    super.key,
+    this.initialPage = 0,
+  });
+
+  final int initialPage;
 
   @override
   State<OnboardingView> createState() => _OnboardingViewState();
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
+  late final PageController _pageController;
+  late int _currentPage;
 
   static const _totalPages = 4;
+
+  @override
+  void initState() {
+    super.initState();
+    final safeInitial = widget.initialPage.clamp(0, _totalPages - 1);
+    _currentPage = safeInitial;
+    _pageController = PageController(initialPage: safeInitial);
+  }
 
   @override
   void dispose() {
@@ -40,7 +55,12 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   void _onSkip() {
     sl<Storage>().storeOnboardingCompleted(isOnboardingCompleted: true);
-    sl<AppNavigator>().pushReplacement(screen: const LoginView());
+    if (_currentPage == _totalPages - 1) return;
+    _pageController.animateToPage(
+      _totalPages - 1,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _onBack() {
@@ -59,7 +79,12 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   void _onJoinWithCode() {
     sl<Storage>().storeOnboardingCompleted(isOnboardingCompleted: true);
-    sl<AppNavigator>().push(screen: const VerificationView());
+    sl<AppNavigator>().push(
+      screen: BlocProvider(
+        create: (_) => sl<AuthCubit>(),
+        child: const VerificationView(),
+      ),
+    );
   }
 
   @override

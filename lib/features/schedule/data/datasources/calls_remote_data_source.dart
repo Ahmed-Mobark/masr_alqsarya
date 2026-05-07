@@ -58,6 +58,17 @@ abstract class CallsRemoteDataSource {
     required int callId,
     required bool approved,
   });
+
+  Future<void> confirmCall({
+    required int workspaceId,
+    required int callId,
+  });
+
+  Future<void> rescheduleCall({
+    required int workspaceId,
+    required int callId,
+    required String scheduledStartsAt,
+  });
 }
 
 class CallsRemoteDataSourceImpl implements CallsRemoteDataSource {
@@ -222,6 +233,30 @@ class CallsRemoteDataSourceImpl implements CallsRemoteDataSource {
         'approved': approved, // bool ("true"/"false")
         'consent': approved ? 'approve' : 'deny',
         'status': approved ? 'approved' : 'denied',
+      }),
+    );
+  }
+
+  @override
+  Future<void> confirmCall({
+    required int workspaceId,
+    required int callId,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallConfirm(workspaceId, callId),
+    );
+  }
+
+  @override
+  Future<void> rescheduleCall({
+    required int workspaceId,
+    required int callId,
+    required String scheduledStartsAt,
+  }) async {
+    await _api.post<Map<String, dynamic>>(
+      url: AppEndpoints.workspaceCallReschedule(workspaceId, callId),
+      formData: FormData.fromMap({
+        'scheduled_starts_at': scheduledStartsAt,
       }),
     );
   }

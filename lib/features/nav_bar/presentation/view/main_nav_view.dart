@@ -45,16 +45,25 @@ class _MainNavContentState extends State<_MainNavContent> {
   static const String _pWorkspaceSupportExpenses =
       'mobile.home.workspace_support_expenses';
 
-  late final List<Widget> _screens = [
-    const HomeView(),
-    const ScheduleView(),
-    const NewsView(),
-    BlocProvider(
-      create: (_) => sl<MessagesCubit>()..loadThreads(),
-      child: const MessagesView(),
-    ),
-    const ExpenseView(),
-  ];
+  Widget _buildScreenForIndex(int index) {
+    switch (index) {
+      case 0:
+        return const HomeView();
+      case 1:
+        return const ScheduleView();
+      case 2:
+        return const NewsView();
+      case 3:
+        return BlocProvider(
+          create: (_) => sl<MessagesCubit>()..loadThreads(),
+          child: const MessagesView(),
+        );
+      case 4:
+        return const ExpenseView();
+      default:
+        return const HomeView();
+    }
+  }
 
   bool _can(String permission) {
     final user = sl<Storage>().getUser();
@@ -134,7 +143,7 @@ class _MainNavContentState extends State<_MainNavContent> {
               cubit.setIndex(effectiveIndex);
             });
           }
-          return IndexedStack(index: effectiveIndex, children: _screens);
+          return _buildScreenForIndex(effectiveIndex);
         },
       ),
       bottomNavigationBar: Container(

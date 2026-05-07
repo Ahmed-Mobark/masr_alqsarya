@@ -15,6 +15,7 @@ class LiveSessionSummaryModel {
     this.startsAt,
     this.durationMinutes,
     this.visibility,
+    this.isBooked,
   });
 
   final int id;
@@ -29,49 +30,37 @@ class LiveSessionSummaryModel {
   final DateTime? startsAt;
   final int? durationMinutes;
   final String? visibility;
+  final bool? isBooked;
 
   factory LiveSessionSummaryModel.fromMap(Map<String, dynamic> json) {
     final root = Map<String, dynamic>.from(json);
     final m = liveSessionMediatorOrPersona(root);
 
-    final name = liveSessionReadString(m, const [
-          'name',
-          'full_name',
-          'display_name',
-        ]) ??
-        liveSessionReadString(root, const [
-          'mediator_name',
-          'host_name',
-        ]) ??
+    final name =
+        liveSessionReadString(m, const ['name', 'full_name', 'display_name']) ??
+        liveSessionReadString(root, const ['mediator_name', 'host_name']) ??
         '';
 
-    final sessionTitle = liveSessionReadString(root, const [
-          'title',
-          'topic',
-          'name',
-        ]) ??
-        '';
+    final sessionTitle =
+        liveSessionReadString(root, const ['title', 'topic', 'name']) ?? '';
 
-    final role = liveSessionReadString(m, const [
+    final role =
+        liveSessionReadString(m, const [
           'title',
           'role',
           'headline',
           'specialty',
         ]) ??
-        liveSessionReadString(root, const [
-          'mediator_title',
-          'host_title',
-        ]) ??
+        liveSessionReadString(root, const ['mediator_title', 'host_title']) ??
         '';
 
-    final rating = liveSessionReadString(m, const [
-          'rating',
-          'average_rating',
-        ]) ??
+    final rating =
+        liveSessionReadString(m, const ['rating', 'average_rating']) ??
         liveSessionReadString(root, const ['mediator_rating']) ??
         '';
 
-    final image = liveSessionReadString(root, const [
+    final image =
+        liveSessionReadString(root, const [
           'cover_image_url',
           'coverImageUrl',
         ]) ??
@@ -100,12 +89,16 @@ class LiveSessionSummaryModel {
       title: sessionTitle,
       status: status,
       personaId: liveSessionReadInt(root, const ['persona_id']),
-      isRecorded: liveSessionReadBool(root, const ['is_recorded', 'isRecorded']),
+      isRecorded: liveSessionReadBool(root, const [
+        'is_recorded',
+        'isRecorded',
+      ]),
       mediatorName: name,
       mediatorTitle: role,
       mediatorRating: rating,
       mediatorImageUrl: image,
-      startsAt: liveSessionParseStartDateTime(root) ??
+      startsAt:
+          liveSessionParseStartDateTime(root) ??
           liveSessionReadDateTime(root, const [
             'starts_at',
             'start_at',
@@ -117,21 +110,23 @@ class LiveSessionSummaryModel {
         'duration',
       ]),
       visibility: visibility,
+      isBooked: liveSessionReadBool(root, const ['is_booked', 'isBooked']),
     );
   }
 
   LiveSessionSummary toEntity() => LiveSessionSummary(
-        id: id,
-        title: title,
-        status: status,
-        personaId: personaId,
-        isRecorded: isRecorded,
-        mediatorName: mediatorName,
-        mediatorTitle: mediatorTitle,
-        mediatorRating: mediatorRating,
-        mediatorImageUrl: mediatorImageUrl,
-        startsAt: startsAt,
-        durationMinutes: durationMinutes,
-        visibility: visibility,
-      );
+    id: id,
+    title: title,
+    status: status,
+    personaId: personaId,
+    isRecorded: isRecorded,
+    mediatorName: mediatorName,
+    mediatorTitle: mediatorTitle,
+    mediatorRating: mediatorRating,
+    mediatorImageUrl: mediatorImageUrl,
+    startsAt: startsAt,
+    durationMinutes: durationMinutes,
+    visibility: visibility,
+    isBooked: isBooked,
+  );
 }

@@ -11,6 +11,7 @@ class LiveSessionLobby extends Equatable {
     this.startsAt,
     this.durationMinutes,
     this.sessionLink,
+    this.isBooked,
     required this.recordingConsentDescription,
     required this.recordingConsentAcknowledgement,
   });
@@ -24,8 +25,41 @@ class LiveSessionLobby extends Equatable {
   final DateTime? startsAt;
   final int? durationMinutes;
   final String? sessionLink;
+  final bool? isBooked;
   final String recordingConsentDescription;
   final String recordingConsentAcknowledgement;
+
+  LiveSessionLobby copyWith({
+    int? id,
+    String? mediatorName,
+    String? mediatorTitle,
+    String? mediatorRating,
+    String? mediatorBio,
+    String? mediatorImageUrl,
+    DateTime? startsAt,
+    int? durationMinutes,
+    String? sessionLink,
+    bool? isBooked,
+    String? recordingConsentDescription,
+    String? recordingConsentAcknowledgement,
+  }) {
+    return LiveSessionLobby(
+      id: id ?? this.id,
+      mediatorName: mediatorName ?? this.mediatorName,
+      mediatorTitle: mediatorTitle ?? this.mediatorTitle,
+      mediatorRating: mediatorRating ?? this.mediatorRating,
+      mediatorBio: mediatorBio ?? this.mediatorBio,
+      mediatorImageUrl: mediatorImageUrl ?? this.mediatorImageUrl,
+      startsAt: startsAt ?? this.startsAt,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
+      sessionLink: sessionLink ?? this.sessionLink,
+      isBooked: isBooked ?? this.isBooked,
+      recordingConsentDescription:
+          recordingConsentDescription ?? this.recordingConsentDescription,
+      recordingConsentAcknowledgement: recordingConsentAcknowledgement ??
+          this.recordingConsentAcknowledgement,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -38,6 +72,7 @@ class LiveSessionLobby extends Equatable {
         startsAt,
         durationMinutes,
         sessionLink,
+        isBooked,
         recordingConsentDescription,
         recordingConsentAcknowledgement,
       ];

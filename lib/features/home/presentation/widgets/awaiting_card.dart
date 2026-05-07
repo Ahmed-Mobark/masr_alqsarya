@@ -8,33 +8,30 @@ class AwaitingCard extends StatelessWidget {
   const AwaitingCard({
     super.key,
     required this.subtitle,
-    this.onJoin,
-    this.joinLoading = false,
+    this.onConfirm,
+    this.onRequestReschedule,
+    this.confirmLoading = false,
+    this.requestLoading = false,
   });
 
   final String subtitle;
-  final VoidCallback? onJoin;
-  final bool joinLoading;
+  final VoidCallback? onConfirm;
+  final VoidCallback? onRequestReschedule;
+  final bool confirmLoading;
+  final bool requestLoading;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 340.w,
-      padding: EdgeInsets.all(14.w),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(16.r),
+        color: const Color(0xFFF7F4EC),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.5),
-          width: 1.2,
+          color: AppColors.primary.withValues(alpha: 0.55),
+          width: 1.1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,24 +40,22 @@ class AwaitingCard extends StatelessWidget {
           // Top row: icon + info + badge
           Row(
             children: [
-              // Phone icon in yellow-bordered circle
+              // Phone icon box
               Container(
-                width: 44.w,
-                height: 44.w,
+                width: 42.w,
+                height: 42.w,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primary,
-                    width: 1.5,
-                  ),
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(15.r),
+                  border: Border.all(color: AppColors.border, width: 1.0),
                 ),
                 child: Icon(
                   Icons.phone_outlined,
-                  size: 20.sp,
-                  color: AppColors.yellow,
+                  size: 28.sp,
+                  color: const Color(0xFFC9A776),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 8.w),
               // Title + subtitle
               Expanded(
                 child: Column(
@@ -70,17 +65,16 @@ class AwaitingCard extends StatelessWidget {
                       context.tr.homeUpcomingCall,
                       style: AppTextStyles.bodyMedium(
                         color: AppColors.darkText,
-                      ).copyWith(
-                          fontSize: 15.sp, fontWeight: FontWeight.w700),
+                      ).copyWith(fontSize: 14.sp, fontWeight: FontWeight.w700),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 3.h),
                     Text(
                       subtitle,
                       style: AppTextStyles.caption(
                         color: AppColors.greyText,
-                      ).copyWith(fontSize: 12.sp),
+                      ).copyWith(fontSize: 9.sp, fontWeight: FontWeight.w500),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -90,54 +84,93 @@ class AwaitingCard extends StatelessWidget {
               SizedBox(width: 8.w),
               // Badge
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 5.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.25),
+                  color: const Color(0xFFECDDCA),
                   borderRadius: BorderRadius.circular(999.r),
                 ),
                 child: Text(
                   context.tr.homeReminder,
                   style: AppTextStyles.small(
-                    color: AppColors.yellow,
-                  ).copyWith(
-                      fontSize: 11.sp, fontWeight: FontWeight.w600),
+                    color: const Color(0xFFC29A6B),
+                  ).copyWith(fontSize: 10.sp, fontWeight: FontWeight.w700),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 14.h),
-          SizedBox(
-            width: double.infinity,
-            height: 40.h,
-            child: ElevatedButton(
-              onPressed: joinLoading ? null : onJoin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.darkText,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(999.r),
+          SizedBox(height: 12.h),
+          Row(
+            children: [
+              SizedBox(
+                width: 155.w,
+                height: 36.h,
+                child: ElevatedButton(
+                  onPressed: confirmLoading ? null : onConfirm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.darkText,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999.r),
+                    ),
+                  ),
+                  child: confirmLoading
+                      ? SizedBox(
+                          width: 16.r,
+                          height: 16.r,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.darkText,
+                          ),
+                        )
+                      : Text(
+                          context.tr.homeConfirm,
+                          style:
+                              AppTextStyles.smallMedium(
+                                color: AppColors.darkText,
+                              ).copyWith(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
                 ),
               ),
-              child: joinLoading
-                  ? SizedBox(
-                      width: 16.r,
-                      height: 16.r,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.darkText,
+              SizedBox(width: 10.w),
+              Expanded(
+                child: SizedBox(
+                  height: 36.h,
+                  child: OutlinedButton(
+                    onPressed: requestLoading ? null : onRequestReschedule,
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.primary, width: 1.3.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999.r),
                       ),
-                    )
-                  : Text(
-                      context.tr.scheduleJoin,
-                      style: AppTextStyles.smallMedium(
-                        color: AppColors.darkText,
-                      ).copyWith(fontSize: 12.sp, fontWeight: FontWeight.w700),
                     ),
-            ),
+                    child: requestLoading
+                        ? SizedBox(
+                            width: 16.r,
+                            height: 16.r,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.darkText,
+                            ),
+                          )
+                        : Text(
+                            context.tr.homeRequestReschedule,
+                            textAlign: TextAlign.center,
+                            style:
+                                AppTextStyles.smallMedium(
+                                  color: AppColors.darkText,
+                                ).copyWith(
+                                  fontSize: 9.sp,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

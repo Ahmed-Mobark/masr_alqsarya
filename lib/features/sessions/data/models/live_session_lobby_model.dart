@@ -13,6 +13,7 @@ class LiveSessionLobbyModel {
     this.startsAt,
     this.durationMinutes,
     this.sessionLink,
+    this.isBooked,
     required this.recordingConsentDescription,
     required this.recordingConsentAcknowledgement,
   });
@@ -26,6 +27,7 @@ class LiveSessionLobbyModel {
   final DateTime? startsAt;
   final int? durationMinutes;
   final String? sessionLink;
+  final bool? isBooked;
   final String recordingConsentDescription;
   final String recordingConsentAcknowledgement;
 
@@ -86,6 +88,7 @@ class LiveSessionLobbyModel {
       startsAt: summary.startsAt,
       durationMinutes: summary.durationMinutes,
       sessionLink: link,
+      isBooked: summary.isBooked,
       recordingConsentDescription: recording,
       recordingConsentAcknowledgement: acknowledgement,
     );
@@ -101,6 +104,7 @@ class LiveSessionLobbyModel {
         startsAt: startsAt,
         durationMinutes: durationMinutes,
         sessionLink: sessionLink,
+        isBooked: isBooked,
         recordingConsentDescription: recordingConsentDescription,
         recordingConsentAcknowledgement: recordingConsentAcknowledgement,
       );

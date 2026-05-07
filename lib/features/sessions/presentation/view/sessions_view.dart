@@ -6,7 +6,9 @@ import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/theme/app_colors.dart';
 import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
+import 'package:masr_al_qsariya/core/toast/app_toast.dart';
 import 'package:masr_al_qsariya/core/widgets/app_empty_screen.dart';
+import 'package:masr_al_qsariya/features/sessions/domain/usecases/book_live_session_usecase.dart';
 import 'package:masr_al_qsariya/features/sessions/domain/usecases/get_live_session_detail_usecase.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/cubit/live_session_lobby_cubit.dart';
 import 'package:masr_al_qsariya/features/sessions/presentation/cubit/live_sessions_cubit.dart';
@@ -20,6 +22,8 @@ void openLiveSessionLobby(int liveSessionId) {
     screen: BlocProvider(
       create: (_) => LiveSessionLobbyCubit(
         sl<GetLiveSessionDetailUseCase>(),
+        sl<BookLiveSessionUseCase>(),
+        sl(),
         liveSessionId: liveSessionId,
       )..load(),
       child: const SessionLobbyView(),
@@ -70,10 +74,29 @@ class _SessionsViewBody extends StatelessWidget {
       ),
       body: SafeArea(
         top: false,
-        child: BlocBuilder<LiveSessionsCubit, LiveSessionsState>(
+        child: BlocConsumer<LiveSessionsCubit, LiveSessionsState>(
+          listenWhen: (previous, current) =>
+              previous.bookingStatus != current.bookingStatus,
+          listener: (context, state) {
+            if (state.bookingStatus == LiveSessionsBookingStatus.success) {
+              appToast(
+                context: context,
+                type: ToastType.success,
+                message: context.tr.sessionsBookedSuccess,
+              );
+              return;
+            }
+            if (state.bookingStatus == LiveSessionsBookingStatus.failure) {
+              final msg = state.bookingError == 'workspace_missing'
+                  ? context.tr.scheduleErrorWorkspaceMissing
+                  : (state.bookingError ?? context.tr.sessionsBookedFailed);
+              appToast(context: context, type: ToastType.error, message: msg);
+            }
+          },
           builder: (context, state) {
             final loading =
-                state.status == LiveSessionsStatus.loading && state.items.isEmpty;
+                state.status == LiveSessionsStatus.loading &&
+                state.items.isEmpty;
 
             if (loading) {
               return const Center(child: CircularProgressIndicator());
@@ -123,7 +146,13 @@ class _SessionsViewBody extends StatelessWidget {
                   final session = state.items[index];
                   return LiveSessionListTile(
                     session: session,
-                    onTap: () => openLiveSessionLobby(session.id),
+                    onJoin: () => openLiveSessionLobby(session.id),
+                    onBookNow: () =>
+                        context.read<LiveSessionsCubit>().book(session.id),
+                    isBooking:
+                        state.bookingStatus ==
+                            LiveSessionsBookingStatus.loading &&
+                        state.bookingSessionId == session.id,
                   );
                 },
               ),

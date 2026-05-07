@@ -8,7 +8,7 @@ import 'package:masr_al_qsariya/core/theme/app_text_styles.dart';
 class RescheduleBottomSheet extends StatefulWidget {
   const RescheduleBottomSheet({super.key});
 
-  static Future<void> show(BuildContext context) {
+  static Future<DateTime?> show(BuildContext context) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -118,7 +118,18 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
                 height: 50.h,
                 child: ElevatedButton(
                   onPressed: (_selectedDay != null && _selectedTime != null)
-                      ? () => Navigator.pop(context)
+                      ? () {
+                          final day = _selectedDay!;
+                          final time = _selectedTime!;
+                          final selected = DateTime(
+                            day.year,
+                            day.month,
+                            day.day,
+                            time.hour,
+                            time.minute,
+                          );
+                          Navigator.pop(context, selected);
+                        }
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,

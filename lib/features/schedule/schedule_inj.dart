@@ -8,9 +8,11 @@ import 'package:masr_al_qsariya/features/schedule/domain/repositories/calls_repo
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/create_call_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/create_calendar_item_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_cancel_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_confirm_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_end_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_recording_consent_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_recording_start_usecase.dart';
+import 'package:masr_al_qsariya/features/schedule/domain/usecases/call_reschedule_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/get_calls_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/get_calendar_item_types_usecase.dart';
 import 'package:masr_al_qsariya/features/schedule/domain/usecases/join_call_usecase.dart';
@@ -61,6 +63,14 @@ Future<void> initScheduleInjection(GetIt sl) async {
 
   sl.registerLazySingleton<CallCancelUseCase>(
     () => CallCancelUseCase(sl<CallsRepository>()),
+  );
+
+  sl.registerLazySingleton<CallConfirmUseCase>(
+    () => CallConfirmUseCase(sl<CallsRepository>()),
+  );
+
+  sl.registerLazySingleton<CallRescheduleUseCase>(
+    () => CallRescheduleUseCase(sl<CallsRepository>()),
   );
 
   sl.registerFactory<AddScheduleCubit>(

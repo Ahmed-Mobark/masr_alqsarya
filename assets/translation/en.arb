@@ -561,6 +561,19 @@
   "sessionsNextAvailableTitle": "Next Available Sessions",
   "sessionsJoin": "JOIN",
   "sessionsBookSession": "BOOK SESSION",
+  "sessionsBookNow": "BOOK NOW",
+  "sessionsBookedBadge": "Booked",
+  "sessionsBookedSuccess": "Session booked successfully.",
+  "sessionsBookedFailed": "Could not book this session. Please try again.",
+  "sessionLobbyJoinNotAvailableYet": "Join will be available when the session starts.",
+  "sessionLobbyJoinAvailableAt": "Join will be available at {time}.",
+  "@sessionLobbyJoinAvailableAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "sessionsPublic": "Public",
   "sessionsPrivate": "Private",
   "sessionsSampleExpertName": "Dr. Kevin Lowe",
@@ -679,6 +692,9 @@
   "rescheduleSelectDate": "Select a new date",
   "rescheduleSelectTime": "Select Time",
   "rescheduleSubmit": "REQUEST RESCHEDULE",
+  "homeCallConfirmedSuccess": "Call confirmed successfully.",
+  "homeCallRescheduledSuccess": "Call rescheduled successfully.",
+  "homeCallActionFailed": "Unable to complete this action right now.",
 
   "documentDetailsTitle": "Document",
   "documentDetailsFileSummary": "File Summary",

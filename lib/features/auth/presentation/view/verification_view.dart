@@ -134,8 +134,10 @@ class _VerificationViewState extends State<VerificationView> {
       },
       builder: (context, state) {
         final cubit = context.read<AuthCubit>();
-          final maskedEmail = state.registeredEmail != null
-              ? _maskEmail(state.registeredEmail!)
+          final registeredEmail = state.registeredEmail?.trim() ?? '';
+          final hasRegisteredEmail = registeredEmail.isNotEmpty;
+          final maskedEmail = hasRegisteredEmail
+              ? _maskEmail(registeredEmail)
               : '';
 
           return Scaffold(
@@ -248,58 +250,63 @@ class _VerificationViewState extends State<VerificationView> {
                               }),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          _secondsRemaining > 0
-                              ? Row(
-                                  children: [
-                                    Text(
-                                      context.tr.authDidntReceive,
-                                      style: AppTextStyles.caption(
-                                        color: AppColors.greyText,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${(_secondsRemaining ~/ 60).toString().padLeft(2, '0')}:${(_secondsRemaining % 60).toString().padLeft(2, '0')}',
-                                      style: AppTextStyles.caption(
-                                        color: AppColors.primaryDark,
-                                      ).copyWith(fontWeight: FontWeight.w600),
-                                    ),
-                                  ],
-                                )
-                              : GestureDetector(
-                                  onTap: state.isResending
-                                      ? null
-                                      : cubit.resendVerificationCode,
-                                  child: state.isResending
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : RichText(
-                                          text: TextSpan(
-                                            text: context.tr.authDidntReceive,
-                                            style: AppTextStyles.caption(
-                                              color: AppColors.greyText,
-                                            ),
-                                            children: [
-                                              TextSpan(
-                                                text: context.tr.authResend,
-                                                style:
-                                                    AppTextStyles.caption(
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                    ).copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
+                          if (hasRegisteredEmail) ...[
+                            const SizedBox(height: 24),
+                            _secondsRemaining > 0
+                                ? Row(
+                                    children: [
+                                      Text(
+                                        context.tr.authDidntReceive,
+                                        style: AppTextStyles.caption(
+                                          color: AppColors.greyText,
                                         ),
-                                ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        '${(_secondsRemaining ~/ 60).toString().padLeft(2, '0')}:${(_secondsRemaining % 60).toString().padLeft(2, '0')}',
+                                        style: AppTextStyles.caption(
+                                          color: AppColors.primaryDark,
+                                        ).copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : GestureDetector(
+                                    onTap: state.isResending
+                                        ? null
+                                        : cubit.resendVerificationCode,
+                                    child: state.isResending
+                                        ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : RichText(
+                                            text: TextSpan(
+                                              text: context.tr.authDidntReceive,
+                                              style: AppTextStyles.caption(
+                                                color: AppColors.greyText,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: context.tr.authResend,
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        color: AppColors
+                                                            .primaryDark,
+                                                      ).copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                  ),
+                          ],
                         ],
                       ),
                     ),

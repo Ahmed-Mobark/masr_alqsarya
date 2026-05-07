@@ -10,7 +10,6 @@ import 'package:masr_al_qsariya/core/extensions/localization.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
 import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 
 class LanguageView extends StatefulWidget {
   const LanguageView({super.key});
@@ -130,7 +129,7 @@ class _LanguageViewState extends State<LanguageView> {
       final storage = sl<Storage>();
       sl<AppNavigator>().pushReplacement(
         screen: storage.isOnboardingCompleted()
-            ? const LoginView()
+            ? const OnboardingView(initialPage: 3)
             : const OnboardingView(),
       );
     });

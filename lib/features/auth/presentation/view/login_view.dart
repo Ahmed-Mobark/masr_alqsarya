@@ -21,9 +21,16 @@ import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_primary_
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_social_button.dart';
 import 'package:masr_al_qsariya/features/auth/presentation/widgets/auth_text_input.dart';
 import 'package:masr_al_qsariya/features/nav_bar/presentation/view/main_nav_view.dart';
+import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
+
+  void _goBackToEntry() {
+    sl<AppNavigator>().pushReplacement(
+      screen: const OnboardingView(initialPage: 3),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,19 +93,24 @@ class LoginView extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
-
-          return Scaffold(
-            backgroundColor: AppColors.scaffoldColorLight,
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 17.w),
-                child: Form(
-                  key: cubit.loginFormKey,
-                  child: Column(
+          return PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, _) {
+              if (didPop) return;
+              _goBackToEntry();
+            },
+            child: Scaffold(
+              backgroundColor: AppColors.scaffoldColorLight,
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 17.w),
+                  child: Form(
+                    key: cubit.loginFormKey,
+                    child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 12.h),
-                      AuthBackButton(onTap: () => Navigator.pop(context)),
+                      AuthBackButton(onTap: _goBackToEntry),
                       SizedBox(height: 14.h),
                       Center(
                         child: Text(
@@ -201,6 +213,7 @@ class LoginView extends StatelessWidget {
                       ),
                       SizedBox(height: 18.h),
                     ],
+                    ),
                   ),
                 ),
               ),

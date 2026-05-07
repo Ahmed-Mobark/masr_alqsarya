@@ -3,7 +3,6 @@ import 'package:masr_al_qsariya/core/config/app_images.dart';
 import 'package:masr_al_qsariya/core/injection/injection_container.dart';
 import 'package:masr_al_qsariya/core/navigation/app_navigator.dart';
 import 'package:masr_al_qsariya/core/storage/data/storage.dart';
-import 'package:masr_al_qsariya/features/auth/presentation/view/login_view.dart';
 import 'package:masr_al_qsariya/features/language/presentation/view/language_view.dart';
 import 'package:masr_al_qsariya/features/nav_bar/presentation/view/main_nav_view.dart';
 import 'package:masr_al_qsariya/features/onboarding/presentation/view/onboarding_view.dart';
@@ -32,7 +31,7 @@ class _SplashViewState extends State<SplashView> {
             ? const OnboardingView()
             : storage.isAuthorized()
                 ? const MainNavView()
-                : const LoginView();
+                : const OnboardingView(initialPage: 3);
     sl<AppNavigator>().pushReplacement(
       screen: nextScreen,
     );

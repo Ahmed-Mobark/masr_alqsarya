@@ -9,11 +9,15 @@ class LiveSessionListTile extends StatelessWidget {
   const LiveSessionListTile({
     super.key,
     required this.session,
-    required this.onTap,
+    required this.onJoin,
+    required this.onBookNow,
+    this.isBooking = false,
   });
 
   final LiveSessionSummary session;
-  final VoidCallback onTap;
+  final VoidCallback onJoin;
+  final VoidCallback onBookNow;
+  final bool isBooking;
 
   static const String _dash = '\u2014';
 
@@ -36,6 +40,7 @@ class LiveSessionListTile extends StatelessWidget {
   }
 
   static String _sessionTypeCorner(BuildContext context, LiveSessionSummary s) {
+    if (s.isBooked == true) return context.tr.sessionsBookedBadge;
     final v = s.visibility?.toLowerCase().trim();
     if (v == 'private') return context.tr.sessionsPrivate;
     if (v == 'public') return context.tr.sessionsPublic;
@@ -43,6 +48,7 @@ class LiveSessionListTile extends StatelessWidget {
   }
 
   static String _primaryCta(BuildContext context, LiveSessionSummary s) {
+    if (!(s.isBooked ?? false)) return context.tr.sessionsBookNow;
     final v = s.visibility?.toLowerCase().trim();
     if (v == 'private') return context.tr.sessionsBookSession;
     return context.tr.sessionsJoin;
@@ -75,6 +81,16 @@ class LiveSessionListTile extends StatelessWidget {
     return !DateTime.now().isBefore(start);
   }
 
+  bool _showPrimaryButton() {
+    if (!(session.isBooked ?? false)) return true;
+    return _showJoinButton();
+  }
+
+  VoidCallback _onPrimaryTap() {
+    if (!(session.isBooked ?? false)) return onBookNow;
+    return onJoin;
+  }
+
   @override
   Widget build(BuildContext context) {
     final role = session.mediatorTitle.trim().isNotEmpty
@@ -84,7 +100,8 @@ class LiveSessionListTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        // Card tap should always open details; booking is explicit via CTA button.
+        onTap: onJoin,
         borderRadius: BorderRadius.circular(20.r),
         child: SessionOfferCard(
           sessionTypeLabel: _sessionTypeCorner(context, session),
@@ -94,8 +111,9 @@ class LiveSessionListTile extends StatelessWidget {
           expertRole: session.mediatorName.isNotEmpty ? role : '',
           ratingLabel: session.mediatorRating,
           primaryLabel: _primaryCta(context, session),
-          onPrimaryPressed: onTap,
-          showPrimaryButton: _showJoinButton(),
+          onPrimaryPressed: _onPrimaryTap(),
+          showPrimaryButton: _showPrimaryButton(),
+          isPrimaryLoading: isBooking,
           networkImageUrl: session.mediatorImageUrl,
           scheduleDateLabel: _dateLabel(context),
           scheduleTimeLabel: _timeLabel(context),
